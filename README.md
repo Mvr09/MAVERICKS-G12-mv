@@ -2,7 +2,7 @@
 
 Aplicación en español con React/TypeScript/Vite/Tailwind, FastAPI, SQLAlchemy/Alembic y PostgreSQL. Web y worker comparten imagen; solo la web tiene dominio público. Los datos de Helixa representan una cartera ficticia.
 
-**Estado:** implementación y pruebas locales disponibles. No publicada en Railway. El análisis de pago de RSS, validación, test y LiveDay requiere la autorización de consumo pendiente. No se ha acreditado todavía el ensayo de 14 artículos en 300 segundos ni la audibilidad en dispositivo. Consulta [PROGRESS.md](PROGRESS.md) y [auditoría](reports/AUDITORIA.md).
+**Estado:** código publicado en https://mavericks-g12-mv-production.up.railway.app (commit 365bb4c). Frontend y assets HTTP 200; conexión PostgreSQL remota pendiente de configurar (el log confirma localhost:5432; /readyz 503, catálogo 500 en la última comprobación). El análisis de pago de RSS, validación, test y LiveDay requiere la autorización de consumo pendiente. No se ha acreditado todavía el ensayo de 14 artículos en 300 segundos ni la audibilidad en dispositivo. Consulta [PROGRESS.md](PROGRESS.md) y [auditoría](reports/AUDITORIA.md).
 
 ## Arranque local con Docker Compose
 

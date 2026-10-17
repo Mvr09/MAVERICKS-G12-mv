@@ -1,6 +1,6 @@
 # Progreso · Supplier Risk Radar
 
-Actualizado 17-10-2026. Implementación local verificada; aceptación pública pendiente. Primer commit de hito: `6e80b4e`. Se conserva el cambio previo de `evidence/validation_report.json` y el archivo no seguido preexistente.
+Actualizado 17-10-2026. Código publicado en Railway; frontend accesible, base de datos/esquema remoto pendiente de diagnóstico. Primer commit de hito: `6e80b4e`. Se conserva el cambio previo de `evidence/validation_report.json` y el archivo no seguido preexistente.
 
 ## Plan y entregas
 1. **Hecho:** PostgreSQL/Alembic, configuración segura, sesión/CSRF/permisos, importación idempotente y catálogo; dashboard/ficha responsive.
@@ -34,18 +34,36 @@ Actualizado 17-10-2026. Implementación local verificada; aceptación pública p
 Etiquetas excluidas del payload HTTP, 40 candidatos, etapa B múltiple, inventario null/0/no aplicable, prioridad independiente de confianza, máximo de incidentes, recuperación posterior y noticia antigua; caché parcial distinguida; versiones RSS pendientes sustituidas; errores no convertidos en N. Reintento con diagnóstico conserva presupuesto. Bandas numéricas de UI obtenidas de la política de API. Foco de diálogo, filtros móviles y cooldown sin reproducir historial probados.
 
 ## Pendientes y siguiente acción
-- No hay URL pública ni servicios desplegados; no se ha hecho push ni creado gasto externo.
-- Falta acceso Railway (sesión o RAILWAY_TOKEN y workspace) y aprobación de web/worker/PostgreSQL, HTTPS y redeploy.
+- Código publicado por push autorizado a main: 365bb4c. URL pública https://mavericks-g12-mv-production.up.railway.app; frontend/health/assets HTTP 200, readiness 503 y catálogo/fuentes 500.
+- No hay acceso directo Railway: el usuario opera el panel. GitHub confirma autodeploy en peaceful-harmony / production. Log Deploy recibido: DATABASE_URL apunta a localhost. Requiere referencia a PostgreSQL remoto; no se solicita token Railway.
 - Propuesta única en reports/APROBACION_PENDIENTE.md: una ventana de 45 min, hasta 83 artículos adicionales (27 training, 10 validation, 20 test, 14 LiveDay, 12 RSS), máximo 498 peticiones, reintentos incluidos.
 - Pendientes: build Docker, evaluación retenida, RSS analizado en Railway, exportación final y LiveDay ≤300 s medidos; audibilidad y móvil físico. Auditoría marca explícitamente lo no ejecutado; no hay aceptación completa.
-- Próxima acción dependiente: obtener aprobación agrupada y acceso, aplicar los grants autorizados y publicar el paquete limpio. Todo el trabajo independiente queda preparado. Web y worker locales activos, análisis RSS de pago desactivado.
+- Próxima acción dependiente: revisar logs de Deploy/Pre-deploy y corregir conexión PostgreSQL o migraciones según la evidencia. El usuario ya corrigió APP_BASE_URL y ejecutó redeploy. No se amplía consumo JEV; RSS de pago permanece false en la API pública.
 
 ## Continuación: autodeploy existente (17-10-2026)
-- Usuario autoriza push al repositorio conectado; no hay acceso Railway ni autorización adicional de inferencia. Pregunta pendiente: rama conectada (local/remota existente: main).
+- Usuario autoriza push al repositorio conectado; no hay acceso Railway ni autorización adicional de inferencia. Rama main confirmada por el usuario; variables pegadas por el usuario en Railway, valores remotos no accesibles desde esta sesión.
 - `git fetch`, `git ls-remote`: GitHub main en 1c5e149; 6e80b4e y d527d30 aún locales. GitHub muestra deployment fallido en peaceful-harmony / production para 1c5e149.
 - URL aportada: https://mavericks-g12-mv-production.up.railway.app, target port 8000. A las 18:48 UTC, /, /healthz, /readyz, catálogo y config devuelven 404 de Railway «Application not found».
 - Corrección preparada: railway.json predeterminado, entrypoint común python -m app.web con bind 0.0.0.0:8000; web/config/Docker coherentes, migraciones y seed en predeploy, RSS de pago false por defecto. /healthz identifica RAILWAY_GIT_COMMIT_SHA cuando está disponible.
 - Build frontend pasa; suite PostgreSQL local ampliada: 38 pruebas pasan. Sin nuevas llamadas a JEV ni grants.
 - Pasos exactos de panel y logs necesarios: docs/09_AUTODEPLOY_EXISTENTE.md. Siguiente: confirmar rama, revisar/commitear y hacer push autorizado; comprobar URL y assets tras autodeploy.
 
-- Verificación adicional: entrypoint arrancado con PORT=12345 y escucha observada en 0.0.0.0:8000; smoke local pasa. Consumo PostgreSQL de demo: 4 peticiones JEV, grant inicial 3/3, RSS de pago desactivado. La única información de usuario pendiente para el push es la rama conectada al autodeploy.
+- Verificación adicional: entrypoint arrancado con PORT=12345 y escucha observada en 0.0.0.0:8000; smoke local pasa. Consumo PostgreSQL de demo: 4 peticiones JEV, grant inicial 3/3, RSS de pago desactivado. Rama main confirmada; push autorizado ejecutado a continuación.
+
+- Push ejecutado: origin/main avanzó de 1c5e149 a 365bb4cfca506e3d6d34a8a8b1ecd588f9834a2e. GitHub registra «Railway is deploying the service» (pending). Se espera comprobación pública; no se interpreta el push como éxito del servicio.
+- Recordatorio de panel: APP_BASE_URL debe ser el HTTPS público; DATABASE_URL debe referenciar PostgreSQL remoto, no estar vacía ni ser localhost. No se han consultado ni divulgado los valores remotos.
+
+## Resultado publicado y comprobación posterior al panel
+- Push confirmado en GitHub y URL: **365bb4cfca506e3d6d34a8a8b1ecd588f9834a2e**. GitHub pasó pending → success entre 18:59:13 y 18:59:44 UTC. /healthz confirma ese SHA.
+- Comprobación completa 18:59:51 UTC y repetición tras el redeploy indicado por el usuario (19:00:39 UTC): / 200, /healthz 200, /readyz 503, /api/suppliers 500, /api/sources 500, /api/config 200; cuatro assets JS/CSS 200 con MIME correcto. RSS de pago false. **No hay aceptación completa**: catálogo remoto no verificable.
+- Evidencia: reports/autodeploy-365bb4c.json, reports/public-deployment-365bb4c.json y reports/public-deployment-after-panel-redeploy.json. No se afirma éxito de base de datos por el estado Deployed.
+- Solicitadas últimas 80 líneas de Deploy/Pre-deploy (Alembic, seed y primer error SQLAlchemy/psycopg), con secretos ocultos. Build no es el bloqueo observado. Revisar DATABASE_URL de PostgreSQL remoto y ejecución de predeploy según docs/09_AUTODEPLOY_EXISTENTE.md.
+- Los informes posteriores al push y este seguimiento se conservan localmente; no se dispara otro autodeploy solo para registrar el diagnóstico. Los dos cambios preexistentes del usuario siguen excluidos.
+
+## Log recibido: causa confirmada y corrección
+- El log de Deploy apunta a localhost/127.0.0.1/::1:5432 con connection refused; no hay conexión a PostgreSQL remoto. El límite de 500 logs/s se alcanza por tracebacks repetidos en las consultas de la UI.
+- Implementado bloqueo de loopback en Railway, errores JSON 503 sanitizados para configuración/conexión/esquema y backoff de sondeo de 30 s en fallos; consulta inmediata al recuperar foco. Sin cambios en datos ni presupuesto JEV.
+- Pruebas backend: 44 pasan; build TypeScript/Vite pasa. Preparado ensayo de navegador con mocks para recuperación y ausencia de promesas rechazadas.
+- Acción necesaria del usuario: DATABASE_URL debe ser referencia al PostgreSQL del mismo entorno; revisar predeploy Alembic + seed y healthcheck /readyz. Pasos exactos añadidos a docs/09_AUTODEPLOY_EXISTENTE.md. El arreglo de logs no sustituye esta configuración remota.
+
+- Playwright: **9/9 pasan** en Chromium, incluidos 360/390/768/1440 px, teclado, audio simulado y backoff ante 503 (25 s sin repetir, reintento posterior). No demuestra audibilidad física. Revisión de origin/main confirma 365bb4c antes del nuevo push; se excluyen cambios ajenos y capturas regeneradas.

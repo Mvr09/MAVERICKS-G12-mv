@@ -215,10 +215,12 @@ function App() {
     activeContext = useRef(context),
     configRef = useRef<any>({});
   useEffect(() => {
-    api("/session").then((s) => {
-      setPresenter(s.presenter);
-      setCsrf(s.csrf || "");
-    });
+    api("/session")
+      .then((s) => {
+        setPresenter(s.presenter);
+        setCsrf(s.csrf || "");
+      })
+      .catch((e) => setError(e.message));
     api("/config")
       .then((c) => {
         setBands(c.bands);
@@ -227,7 +229,15 @@ function App() {
       })
       .catch((e) => setError(e.message));
   }, []);
-  async function refresh() {
+  const refreshInFlight = useRef(new Set<string>()),
+    nextRefreshAt = useRef(0);
+  async function refresh(force = false) {
+    if (
+      refreshInFlight.current.has(context) ||
+      (!force && Date.now() < nextRefreshAt.current)
+    )
+      return;
+    refreshInFlight.current.add(context);
     try {
       const [o, s, a, f, b, n] = await Promise.all([
         api("/overview?context=" + context),
@@ -238,6 +248,7 @@ function App() {
         api("/alerts?context=" + context),
       ]);
       if (activeContext.current !== context) return;
+      nextRefreshAt.current = 0;
       setOverview(o);
       setSuppliers(s.items);
       setArticles(a);
@@ -258,13 +269,18 @@ function App() {
           .catch(() => setSound("Bloqueado"));
       cursor.current = n.cursor;
     } catch (e) {
-      if (activeContext.current === context) setError((e as Error).message);
+      if (activeContext.current === context) {
+        nextRefreshAt.current = Date.now() + 30000;
+        setError((e as Error).message);
+      }
     } finally {
+      refreshInFlight.current.delete(context);
       if (activeContext.current === context) setLoading(false);
     }
   }
   useEffect(() => {
     activeContext.current = context;
+    nextRefreshAt.current = 0;
     cursor.current = null;
     setOverview(null);
     setSuppliers([]);
@@ -275,7 +291,7 @@ function App() {
     const timer = setInterval(() => {
       if (document.visibilityState === "visible") refresh();
     }, 3000);
-    const focus = () => refresh();
+    const focus = () => refresh(true);
     window.addEventListener("focus", focus);
     return () => {
       clearInterval(timer);

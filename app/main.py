@@ -8,8 +8,9 @@ from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field
 from sqlalchemy import select, text, func
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import OperationalError, ProgrammingError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from app.db import get_db
+from app.db import get_db, DatabaseConfigurationError
 from app.settings import settings, ROOT, POLICY
 from app.models import *
 from app.auth import presenter, identity, login, codec
@@ -31,6 +32,54 @@ async def security(request, call_next):
     if request.url.path.startswith("/api/"):
         response.headers["Cache-Control"] = "no-store"
     return response
+
+
+def database_unavailable(code, message):
+    return JSONResponse(
+        status_code=503,
+        headers={"Retry-After": "30"},
+        content={
+            "code": code,
+            "message": message,
+            "details": None,
+            "retryable": code != "DATABASE_CONFIGURATION",
+        },
+    )
+
+
+@app.exception_handler(DatabaseConfigurationError)
+async def database_config_error(request, exc):
+    return database_unavailable(
+        "DATABASE_CONFIGURATION",
+        "PostgreSQL remoto sin configurar. Requiere intervención del presentador.",
+    )
+
+
+@app.exception_handler(OperationalError)
+async def database_connection_error(request, exc):
+    # Provider messages and SQL parameters can contain credentials or private data.
+    return database_unavailable(
+        "DATABASE_UNAVAILABLE",
+        "La base de datos no está disponible. Reintenta más tarde.",
+    )
+
+
+@app.exception_handler(ProgrammingError)
+async def database_query_error(request, exc):
+    if getattr(exc.orig, "sqlstate", None) in ("42P01", "42703", "3F000"):
+        return database_unavailable(
+            "DATABASE_SCHEMA_UNAVAILABLE",
+            "El esquema de la base de datos requiere migraciones del presentador.",
+        )
+    return JSONResponse(
+        status_code=500,
+        content={
+            "code": "DATABASE_QUERY_ERROR",
+            "message": "No se pudo completar la consulta.",
+            "details": None,
+            "retryable": False,
+        },
+    )
 
 
 @app.exception_handler(StarletteHTTPException)

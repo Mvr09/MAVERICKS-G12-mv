@@ -1,0 +1,48 @@
+{
+  "commit": "365bb4cfca506e3d6d34a8a8b1ecd588f9834a2e",
+  "events": [
+    {
+      "at": "2026-10-17T18:59:13.352395+00:00",
+      "attempt": 1,
+      "github_state": "pending",
+      "checks": [
+        {
+          "context": "peaceful-harmony - MAVERICKS-G12-mv",
+          "state": "pending",
+          "description": "Railway is deploying the service"
+        }
+      ],
+      "health_http": 404
+    },
+    {
+      "at": "2026-10-17T18:59:29.006908+00:00",
+      "attempt": 2,
+      "github_state": "pending",
+      "checks": [
+        {
+          "context": "peaceful-harmony - MAVERICKS-G12-mv",
+          "state": "pending",
+          "description": "Railway is deploying the service"
+        }
+      ],
+      "health_http": 404
+    },
+    {
+      "at": "2026-10-17T18:59:44.656310+00:00",
+      "attempt": 3,
+      "github_state": "success",
+      "checks": [
+        {
+          "context": "peaceful-harmony - MAVERICKS-G12-mv",
+          "state": "success",
+          "description": "Success - mavericks-g12-mv-production.up.railway.app"
+        }
+      ],
+      "health_http": 200,
+      "health": {
+        "status": "ok",
+        "revision": "365bb4cfca506e3d6d34a8a8b1ecd588f9834a2e"
+      }
+    }
+  ]
+}

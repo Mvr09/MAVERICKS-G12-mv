@@ -33,3 +33,18 @@ Comprobación externa reproducible, sin llamadas de pago:
 ```
 
 El script consulta `/`, `/healthz`, `/readyz`, catálogo, fuentes, configuración y assets encontrados en HTML; guarda HTTP, hora y versión observada. No considera el push como prueba de despliegue correcto. No inicia análisis RSS ni cambia los grants de consumo.
+
+## Diagnóstico confirmado por el log recibido
+
+El log del usuario muestra `connection refused` contra `localhost:5432` (IPv4 e IPv6). El proceso web intenta alcanzar una base dentro de su propio contenedor; esa dirección no conecta con un servicio PostgreSQL independiente.
+
+En el panel del proyecto `peaceful-harmony`, entorno `production`:
+
+1. Localizar el servicio PostgreSQL del mismo entorno. Si no existe, la dependencia pendiente es añadir un servicio PostgreSQL desde **New → Database → PostgreSQL**, operación que realiza el usuario en su cuenta.
+2. Abrir **MAVERICKS-G12-mv → Variables** y editar `DATABASE_URL`.
+3. Usar el selector de referencias para elegir **servicio PostgreSQL → DATABASE_URL**. Si el servicio se llama `Postgres`, el valor de referencia es `${{Postgres.DATABASE_URL}}`. Si tiene otro nombre, usar el nombre real. No copiar la URL local ni pegar credenciales en el chat. [Referencias entre servicios](https://docs.railway.com/variables#reference-variables).
+4. Conservar `APP_BASE_URL=https://mavericks-g12-mv-production.up.railway.app`, `PORT=8000` y `RSS_ANALYSIS_ENABLED=false`.
+5. En **Settings → Deploy**, comprobar **Pre-deploy Command**: `alembic upgrade head && python -m app.cli seed`, y **Healthcheck Path**: `/readyz`. Así una ejecución sin base o sin esquema no se valida solo porque `/` sirva HTML.
+6. Aplicar los cambios y desplegar de nuevo. Si después aparece `DATABASE_SCHEMA_UNAVAILABLE`, revisar la salida de Alembic; no borrar la base ni marcar migraciones como aplicadas manualmente.
+
+Corrección de código complementaria: en Railway se rechazan destinos loopback antes de conectar; fallos de conexión/esquema devuelven JSON 503 sin SQL, credenciales ni tracebacks repetidos. La UI limita los reintentos automáticos a uno cada 30 segundos durante un fallo, manteniendo consulta inmediata al recuperar foco. Esto reduce el volumen de logs, pero no crea ni configura PostgreSQL remoto.
