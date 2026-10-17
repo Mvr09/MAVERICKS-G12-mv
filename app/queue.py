@@ -181,7 +181,9 @@ def enqueue_batch(db, bid):
             )
     if not jobs:
         raise ValueError(
-            "Sin presupuesto autorizado disponible para este lote. Los errores requieren diagnóstico y no se convierten en N."
+            "El lote no tiene análisis pendientes para encolar. Usa Reanalizar para una ejecución nueva."
+            if not settings.jev_budget_limits_enabled
+            else "Sin presupuesto autorizado disponible para este lote. Los errores requieren diagnóstico y no se convierten en N."
         )
     if not b.started_at:
         b.started_at = now()

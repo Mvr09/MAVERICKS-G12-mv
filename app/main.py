@@ -727,7 +727,7 @@ def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
     if not jobs:
         db.rollback()
         raise HTTPException(
-            409, "Sin noticias pendientes o presupuesto RSS autorizado disponible."
+            409, "No hay noticias pendientes sin un trabajo de análisis en la cola."
         )
     db.commit()
     return {"job_ids": jobs, "articles": len(jobs), "maximum_requests": len(jobs) * 6}
