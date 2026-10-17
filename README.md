@@ -2,7 +2,7 @@
 
 Aplicación en español con React/TypeScript/Vite/Tailwind, FastAPI, SQLAlchemy/Alembic y PostgreSQL. Web y worker comparten imagen; solo la web tiene dominio público. Los datos de Helixa representan una cartera ficticia.
 
-**Estado:** código publicado en https://mavericks-g12-mv-production.up.railway.app (commit 365bb4c). Frontend y assets HTTP 200; conexión PostgreSQL remota pendiente de configurar (el log confirma localhost:5432; /readyz 503, catálogo 500 en la última comprobación). El análisis de pago de RSS, validación, test y LiveDay requiere la autorización de consumo pendiente. No se ha acreditado todavía el ensayo de 14 artículos en 300 segundos ni la audibilidad en dispositivo. Consulta [PROGRESS.md](PROGRESS.md) y [auditoría](reports/AUDITORIA.md).
+**Estado:** código publicado en https://mavericks-g12-mv-production.up.railway.app (commit bb39a08). Frontend y assets HTTP 200; PostgreSQL conectado y esquema 0002 listo (/readyz 200); catálogo y fuentes todavía vacíos, pendientes de seed/carga (comprobado el 17-10-2026 a las 20:08 UTC). El análisis de pago de RSS, validación, test y LiveDay requiere la autorización de consumo pendiente. No se ha acreditado todavía el ensayo de 14 artículos en 300 segundos ni la audibilidad en dispositivo. Consulta [PROGRESS.md](PROGRESS.md) y [auditoría](reports/AUDITORIA.md).
 
 ## Arranque local con Docker Compose
 
@@ -160,3 +160,7 @@ Tras la aprobación y acceso a Railway:
 8. Reiniciar web/worker y verificar persistencia y recuperación de leases. Ensayar audio y uso móvil real. Actualizar auditoría antes de declarar aceptación completa.
 
 Las migraciones inversas destructivas están bloqueadas deliberadamente. No se borran datos para recuperar un worker: un lease vencido se reclama transaccionalmente, con heartbeat e intentos acotados; al agotar intentos queda error visible. Una respuesta de JEV inválida permanece error y bloquea exportación. No editar respuestas de test/LiveDay a mano.
+
+## Operación de la demo
+
+[Guía paso a paso](docs/10_OPERACION_DEMO.md): Materiales, worker, progreso RSS, lote manual JEV autorizado (10 noticias/60 peticiones) y limpieza confirmada solo de Entrenamiento/LiveDay. El análisis periódico de pago permanece desactivado. La web usa `python -m app.predeploy` para migrar e inicializar las seis fuentes y cupos de forma idempotente.

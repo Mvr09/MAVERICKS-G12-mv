@@ -125,7 +125,7 @@ def ready(db: Session = Depends(get_db)):
         revision = db.execute(
             text("select version_num from alembic_version")
         ).scalar_one()
-        if revision != "0002":
+        if revision != "0003":
             raise ValueError()
     except Exception:
         raise HTTPException(503, "Base de datos o esquema no disponible")
@@ -356,6 +356,7 @@ def sources(db: Session = Depends(get_db)):
 
 @app.post("/api/imports", dependencies=[Depends(presenter)])
 async def imports(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     data = await file.read(settings.max_upload_bytes + 1)
     try:
         batch, diagnostic = import_excel(db, data, file.filename or "")
@@ -421,6 +422,7 @@ def job(jid: str, db: Session = Depends(get_db)):
         "attempts": j.attempts,
         "heartbeat": j.heartbeat,
         "error": j.error,
+        "source_id": j.payload.get("source_id"),
     }
 
 
@@ -482,10 +484,93 @@ def export(bid: str, db: Session = Depends(get_db)):
 @app.post("/api/sources/sync", status_code=202, dependencies=[Depends(presenter)])
 def sync(db: Session = Depends(get_db)):
     from app.queue import enqueue_sync
+    from app.cli import seed
 
+    seed(db)
     jobs = enqueue_sync(db, manual=True)
     db.commit()
-    return {"job_ids": jobs}
+    return {"job_ids": jobs, "worker": worker_status(db)}
+
+
+@app.get("/api/worker")
+def worker_status(db: Session = Depends(get_db)):
+    from datetime import timedelta
+
+    latest = db.scalar(select(func.max(WorkerPresence.heartbeat)))
+    return {
+        "online": bool(latest and latest > now() - timedelta(seconds=30)),
+        "last_seen_at": latest,
+    }
+
+
+@app.get("/api/analysis/budget", dependencies=[Depends(presenter)])
+def analysis_budget(db: Session = Depends(get_db)):
+    grants = db.scalars(select(Grant).where(Grant.split == "rss")).all()
+    return {
+        "remaining": sum(
+            max(0, g.article_limit - g.used)
+            for g in grants
+            if not g.expires_at or g.expires_at > now()
+        ),
+        "reserved": sum(g.used for g in grants),
+        "periodic_enabled": settings.rss_analysis_enabled,
+        "maximum_requests_per_article": 6,
+        "network_requests": db.scalar(
+            select(func.count())
+            .select_from(ApiCall)
+            .join(Article, Article.id == ApiCall.article_id)
+            .where(Article.context == "rss")
+        ),
+    }
+
+
+class ManualRssAnalysis(BaseModel):
+    limit: int = Field(ge=1, le=10)
+
+
+@app.post("/api/analysis/rss", status_code=202, dependencies=[Depends(presenter)])
+def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
+    from app.queue import enqueue_rss_analysis
+
+    if not worker_status(db)["online"]:
+        raise HTTPException(
+            409, "El worker debe estar conectado antes de iniciar un lote JEV."
+        )
+    if db.scalar(select(func.count()).select_from(Supplier)) != 40:
+        raise HTTPException(409, "Importa primero las 40 identidades de la cartera.")
+    jobs = enqueue_rss_analysis(db, body.limit)
+    if not jobs:
+        db.rollback()
+        raise HTTPException(
+            409, "Sin noticias pendientes o presupuesto RSS autorizado disponible."
+        )
+    db.commit()
+    return {"job_ids": jobs, "articles": len(jobs), "maximum_requests": len(jobs) * 6}
+
+
+@app.get("/api/demo/cleanup-preview", dependencies=[Depends(presenter)])
+def demo_preview(db: Session = Depends(get_db)):
+    from app.demo import preview
+
+    return preview(db)
+
+
+class DemoCleanup(BaseModel):
+    confirmation: Literal["LIMPIAR DEMO"]
+    token: str = Field(max_length=20000)
+
+
+@app.post("/api/demo/cleanup", dependencies=[Depends(presenter)])
+def demo_cleanup(body: DemoCleanup, db: Session = Depends(get_db)):
+    from app.demo import cleanup
+
+    try:
+        counts = cleanup(db, body.token)
+        db.commit()
+        return {"deleted": counts}
+    except ValueError as exc:
+        db.rollback()
+        raise HTTPException(409, str(exc))
 
 
 @app.get("/api/alerts")

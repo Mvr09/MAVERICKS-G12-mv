@@ -1,14 +1,21 @@
 import time, threading, logging
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
+from uuid import uuid4
 from sqlalchemy import select, or_, text
 from app.db import Session
-from app.models import Job, Article, now
+from app.models import Job, Article, WorkerPresence, now
 from app.queue import claim, enqueue_sync, enqueue, reserve
 from app.settings import settings, RSS
 
 log = logging.getLogger("radar.worker")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s")
+
+
+def pulse(worker_id):
+    with Session() as db:
+        db.merge(WorkerPresence(id=worker_id, heartbeat=now()))
+        db.commit()
 
 
 def heartbeat(jid, stop):
@@ -79,17 +86,27 @@ def main():
                 revision = db.execute(
                     text("select version_num from alembic_version")
                 ).scalar_one()
-                if revision == "0002":
+                if revision == "0003":
                     break
         except Exception:
             pass
         log.info("Esperando esquema requerido")
         time.sleep(3)
+    from app.cli import seed
+
+    with Session() as db:
+        seed(db)
+        db.commit()
+    worker_id = str(uuid4())
+    last_pulse = 0
     futures = []
     last_sync = 0
     with ThreadPoolExecutor(max_workers=4) as executor:
         while True:
             try:
+                if time.monotonic() - last_pulse >= 5:
+                    pulse(worker_id)
+                    last_pulse = time.monotonic()
                 if time.monotonic() - last_sync >= RSS["poll_seconds"]:
                     with Session() as db:
                         enqueue_sync(db)

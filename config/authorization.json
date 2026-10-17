@@ -7,5 +7,15 @@
     "N005"
   ],
   "initial_training_closed": true,
-  "note": "El límite no se reinicia por hito, reinicio ni despliegue. Los grants adicionales requieren autorización explícita."
+  "note": "El límite no se reinicia por hito, reinicio ni despliegue. Los grants adicionales requieren autorización explícita.",
+  "additional_grants": [
+    {
+      "id": "rss-demo-20261017-10",
+      "split": "rss",
+      "article_limit": 10,
+      "maximum_requests": 60,
+      "expires_at": "2026-10-19T00:00:00Z",
+      "authorization": "Usuario autoriza hasta 10 noticias RSS y 60 peticiones, incluidos reintentos. Un único lote; no se reinicia al desplegar."
+    }
+  ]
 }

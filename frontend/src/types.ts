@@ -42,6 +42,7 @@ export interface Analysis {
   review_reasons: string[];
 }
 export interface Article {
+  split?: string;
   id: string;
   headline: string;
   summary: string;
@@ -115,6 +116,7 @@ export interface Supplier {
   articles?: Article[];
 }
 export interface Source {
+  job_state?: string | null;
   id: string;
   name: string;
   status: string;

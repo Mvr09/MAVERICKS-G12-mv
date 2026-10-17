@@ -7,6 +7,7 @@ from app.models import (
     Analysis,
     Incident,
     Source,
+    Job,
     Batch,
     now,
 )
@@ -29,6 +30,7 @@ def article_view(db, a):
     return {
         "id": a.id,
         "batch_id": a.batch_id,
+        "split": db.get(Batch, a.batch_id).split if a.batch_id else "rss",
         "state": a.state,
         "version": a.version,
         "fetched_at": a.fetched_at,
@@ -174,6 +176,15 @@ def suppliers_view(db, context="exercise"):
 
 
 def sources_view(db):
+    latest = {}
+    source_key = Job.payload["source_id"].as_string()
+    for j in db.scalars(
+        select(Job)
+        .where(Job.kind == "rss")
+        .distinct(source_key)
+        .order_by(source_key, Job.next_attempt_at.desc(), Job.id.desc())
+    ):
+        latest.setdefault(j.payload.get("source_id"), j)
     return [
         {
             "id": s.id,
@@ -187,6 +198,7 @@ def sources_view(db):
             "duplicates": s.duplicates,
             "error_count": s.error_count,
             "error": s.error,
+            "job_state": latest[s.id].state if s.id in latest else None,
         }
         for s in db.scalars(select(Source).order_by(Source.id))
     ]

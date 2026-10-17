@@ -67,3 +67,27 @@ Etiquetas excluidas del payload HTTP, 40 candidatos, etapa B múltiple, inventar
 - Acción necesaria del usuario: DATABASE_URL debe ser referencia al PostgreSQL del mismo entorno; revisar predeploy Alembic + seed y healthcheck /readyz. Pasos exactos añadidos a docs/09_AUTODEPLOY_EXISTENTE.md. El arreglo de logs no sustituye esta configuración remota.
 
 - Playwright: **9/9 pasan** en Chromium, incluidos 360/390/768/1440 px, teclado, audio simulado y backoff ante 503 (25 s sin repetir, reintento posterior). No demuestra audibilidad física. Revisión de origin/main confirma 365bb4c antes del nuevo push; se excluyen cambios ajenos y capturas regeneradas.
+
+## Verificación del arreglo publicado
+- Push autorizado completado a origin/main: **bb39a081c08b2685b56087beaa39e8514c965ed3**. GitHub: pending → success; URL confirma el mismo SHA a las **19:57:44 UTC del 17-10-2026**.
+- HTTP observado: `/` 200, `/healthz` 200, cuatro assets 200 con MIME correcto, `/api/config` 200 y RSS de pago false. `/readyz`, `/api/suppliers` y `/api/sources` devuelven ahora **503 JSON DATABASE_CONFIGURATION**, sin traceback en respuesta. No hay acceso a logs remotos para confirmar su volumen.
+- Evidencia posterior al push conservada localmente: reports/public-deployment-bb39a08.json. No se dispara otro autodeploy solo para registrar la observación. Pruebas previas: 44 backend, 9 navegador, build frontend pasan; ninguna llamada nueva a JEV.
+- Bloqueo restante confirmado: referencia DATABASE_URL a PostgreSQL remoto en el panel del servicio web (y worker si existe), aplicar migraciones + seed en predeploy y redeploy. Mantener puerto 8000, APP_BASE_URL público y RSS_ANALYSIS_ENABLED=false. Comprobar healthcheck /readyz: el estado success de GitHub no acredita readiness.
+- Siguiente comprobación tras el cambio de panel: readiness/esquema y catálogo; en una base nueva, importar catálogo como presentador antes de exigir 40 proveedores. No se declara aceptación completa ni RSS consultado desde Railway.
+
+## Conexión PostgreSQL corregida desde el panel
+- Verificación pública 17-10-2026 20:08:51 UTC: commit bb39a08; /, /healthz, /readyz, catálogo, fuentes, config y cuatro assets HTTP 200. Esquema 0002 disponible. PostgreSQL ya conecta.
+- Catálogo 0 proveedores y fuentes 0: falta inicialización seed/carga; todavía no aceptación completa. Predeploy debe ejecutar también python -m app.cli seed; después importar catálogo como presentador. Evidencia local: reports/public-deployment-after-database-reference.json.
+- RSS de pago sigue false; ninguna llamada nueva a JEV. El usuario compartió una credencial de BD en el chat: no se copia a archivos ni se usa desde esta sesión; recomendada rotación en el panel.
+
+## Cambios solicitados durante prueba del presentador
+- Usuario confirma importación, fichas, persistencia tras recarga y tono de prueba audible; omite prueba móvil física. Pide Materiales en sidebar, feedback RSS, limpieza de Entrenamiento/LiveDay y JEV.
+- RSS remoto diagnosticado: 0 fuentes registradas, 20 materiales. Nuevo predeploy único `python -m app.predeploy`; migración 0003 añade heartbeat de worker. Sync inicializa seis fuentes y deduplica pendientes; UI muestra cola, consultas, errores, conexión y stream real. Worker separado requiere configuración del usuario en Railway; no hay acceso al panel.
+- Materiales: listado, búsqueda, categoría, especificaciones disponibles y enlaces a proveedores. Noticias: filtro por fuente y lote. Silenciar también bloquea Probar alarma.
+- Limpieza autorizada implementada con vista previa, confirmación explícita, bloqueo de trabajo activo/cambio de datos/incidentes compartidos: solo training/LiveDay. Conserva catálogo, RSS, validación/test y consumo JEV. No ejecutada fuera de tests.
+- Autorización adicional explícita: **10 noticias RSS / máximo 60 peticiones**, reintentos incluidos, un único cupo persistente `rss-demo-20261017-10`, hasta 19-10-2026 00:00 UTC. RSS periódico false. Grant inicial training sigue agotado; no ampliar a otros splits.
+- Pruebas actuales: 50 backend y 12 navegador pasan; migración 0003 verificada sobre base local migrada (18 tablas); comando predeploy completo pasa. Añadidas comprobaciones de circuito de errores y confirmación de limpieza pendientes de ejecución final.
+- Siguiente: suite final, revisión de secretos y cambios propios, commit/push autorizado y smoke público. Ejecutar el lote RSS solo con worker remoto disponible; medir llamadas reales y conservar el límite.
+
+- Verificación final: **51 backend pasan**, **13 E2E pasan**, build TypeScript/Vite pasa; 360/390/768/1440 px y materiales 360/1440, teclado, audio lógico, feed RSS con mocks y cancelación de limpieza. Capturas nuevas materials-360/materials-1440 revisadas visualmente. No acredita audibilidad física de la versión corregida.
+- `scripts.check_migrations`: pasa 0003, 18 tablas; `app.predeploy` completo pasa sobre base local aislada. `scripts.package_deploy`: 52 archivos, sin originales ni secretos. origin/main sigue bb39a08 antes del push. Se excluyen cambios ajenos y capturas antiguas regeneradas.

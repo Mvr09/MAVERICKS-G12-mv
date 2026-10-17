@@ -15,10 +15,10 @@ def enqueue(db, key, kind, payload, priority=10):
     return job
 
 
-def reserve(db, article, split):
+def reserve(db, article, split, manual_rss=False):
     if db.get(GrantArticle, article.id):
         return True
-    if split == "rss" and not settings.rss_analysis_enabled:
+    if split == "rss" and not settings.rss_analysis_enabled and not manual_rss:
         return False
     if split == "rss":
         db.execute(text("SELECT pg_advisory_xact_lock(72642, 1)"))
@@ -53,7 +53,28 @@ def reserve(db, article, split):
     return True
 
 
+def enqueue_rss_analysis(db, limit):
+    articles = db.scalars(
+        select(Article)
+        .where(Article.context == "rss", Article.state == "pending")
+        .order_by(Article.fetched_at.desc(), Article.id)
+        .with_for_update(skip_locked=True)
+    ).all()
+    jobs = []
+    for a in articles:
+        if len(jobs) >= limit:
+            break
+        if db.scalar(select(Job).where(Job.key == "analysis:" + a.id)):
+            continue
+        if reserve(db, a, "rss", manual_rss=True):
+            jobs.append(
+                enqueue(db, "analysis:" + a.id, "analysis", {"article_id": a.id}, 1).id
+            )
+    return jobs
+
+
 def enqueue_batch(db, bid):
+    db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     b = db.get(Batch, bid)
     if not b:
         raise ValueError("Lote no encontrado")
@@ -84,6 +105,7 @@ def enqueue_batch(db, bid):
 
 
 def enqueue_sync(db, manual=False):
+    db.execute(text("SELECT pg_advisory_xact_lock(72642, 3)"))
     jobs = []
     slot = (
         str(now().timestamp())
@@ -92,6 +114,19 @@ def enqueue_sync(db, manual=False):
     )
     for s in db.scalars(select(Source)):
         if s.data.get("enabled"):
+            active = db.scalar(
+                select(Job)
+                .where(
+                    Job.kind == "rss",
+                    Job.state.in_(("queued", "running")),
+                    Job.key.like(f"rss:{s.id}:%"),
+                )
+                .order_by(Job.id)
+                .limit(1)
+            )
+            if active:
+                jobs.append(active.id)
+                continue
             jobs.append(
                 enqueue(db, f"rss:{s.id}:{slot}", "rss", {"source_id": s.id}, 10).id
             )
@@ -99,6 +134,7 @@ def enqueue_sync(db, manual=False):
 
 
 def claim(db):
+    db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     exhausted = db.scalars(
         select(Job)
         .where(Job.state == "running", Job.lease_until < now(), Job.attempts >= 3)

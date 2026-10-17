@@ -139,6 +139,10 @@ test("audio: gesto, historial, una emisión, cooldown, foco, mute y bloqueo", as
   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
   await expect.poll(() => page.evaluate(() => (window as any).__tones)).toBe(3);
   await page.getByRole("button", { name: "Silenciar", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Probar alarma", exact: true })
+    .click();
+  expect(await page.evaluate(() => (window as any).__tones)).toBe(3);
   cursor = 5;
   await page.clock.fastForward(31000);
   await page.evaluate(() => window.dispatchEvent(new Event("focus")));

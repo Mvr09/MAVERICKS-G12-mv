@@ -6,8 +6,7 @@
   },
   "deploy": {
     "preDeployCommand": [
-      "alembic upgrade head",
-      "python -m app.cli seed"
+      "python -m app.predeploy"
     ],
     "startCommand": "python -m app.web",
     "healthcheckPath": "/readyz",

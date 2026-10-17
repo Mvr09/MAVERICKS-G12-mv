@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 import httpx
 from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt
-from sqlalchemy import select, func
+from sqlalchemy import select, func, or_
 from app.settings import settings, POLICY
 from app.models import RequestCache, ApiCall, GrantArticle, Grant, now
 from app.importer import digest
@@ -16,6 +16,25 @@ class ProviderError(Exception):
     def __init__(self, code):
         self.code = code
         super().__init__(code)
+
+
+def grant_requires_diagnosis(db, grant_id, acknowledged_at=None):
+    error = ApiCall.usage["_error"].as_string()
+    query = (
+        select(ApiCall.created_at)
+        .join(GrantArticle, GrantArticle.article_id == ApiCall.article_id)
+        .where(
+            GrantArticle.grant_id == grant_id,
+            or_(
+                ApiCall.status.in_((400, 401, 403, 422)),
+                error.like("CONTRACT%"),
+                error == "MODEL_MISMATCH",
+            ),
+        )
+    )
+    if acknowledged_at:
+        query = query.where(ApiCall.created_at >= acknowledged_at)
+    return db.scalar(query.limit(1)) is not None
 
 
 class ProviderResponse(BaseModel):
@@ -179,6 +198,10 @@ class JevClient:
         if attempts >= 3:
             raise ProviderError("ATTEMPTS_EXHAUSTED")
         while attempts < 3:
+            if self.transport is None and grant_requires_diagnosis(
+                self.db, grant.id, ack
+            ):
+                raise ProviderError("PROVIDER_REQUIRES_DIAGNOSIS")
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise ProviderError("ARTICLE_DEADLINE")
@@ -235,7 +258,7 @@ class JevClient:
             finally:
                 record.status = status
                 record.duration = time.monotonic() - start
-                record.usage = usage
+                record.usage = {**usage, "_error": failure.code} if failure else usage
                 self.db.commit()
             if not failure:
                 return result

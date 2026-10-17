@@ -7,11 +7,13 @@ import {
   Routes,
   Route,
   useParams,
+  useNavigate,
 } from "react-router-dom";
 import {
   Activity,
   LayoutDashboard,
   Building2,
+  Package,
   Newspaper,
   Bell,
   Radio,
@@ -193,6 +195,7 @@ function Modal({
   );
 }
 function App() {
+  const navigate = useNavigate();
   const [context, setContext] = useState("exercise"),
     [overview, setOverview] = useState<any>(null),
     [suppliers, setSuppliers] = useState<Supplier[]>([]),
@@ -322,6 +325,7 @@ function App() {
   const navigation = [
     { to: "/", icon: LayoutDashboard, text: "Resumen" },
     { to: "/proveedores", icon: Building2, text: "Proveedores" },
+    { to: "/materiales", icon: Package, text: "Materiales" },
     { to: "/noticias", icon: Newspaper, text: "Noticias" },
     { to: "/alertas", icon: Bell, text: "Alertas" },
     { to: "/fuentes", icon: Radio, text: "Fuentes" },
@@ -429,6 +433,19 @@ function App() {
               </p>
             </div>
             <div className="heading-actions">
+              {presenter && (
+                <DemoControl
+                  onClean={async () => {
+                    cursor.current = null;
+                    navigate("/");
+                    setContext("exercise");
+                    await refresh(true);
+                    setMessage(
+                      "Entrenamiento y LiveDay retirados. Catálogo y consumo conservados.",
+                    );
+                  }}
+                />
+              )}
               <input
                 ref={file}
                 type="file"
@@ -643,6 +660,10 @@ function App() {
                 path="/proveedores/:id"
                 element={<SupplierDetail {...shared} />}
               />
+              <Route
+                path="/materiales"
+                element={<MaterialsPage suppliers={suppliers} />}
+              />
               <Route path="/materiales/:id" element={<MaterialDetail />} />
               <Route
                 path="/noticias"
@@ -761,76 +782,12 @@ function App() {
               <Route
                 path="/fuentes"
                 element={
-                  <>
-                    <div className="notice info">
-                      <Radio size={20} />
-                      <span>
-                        Seis fuentes reales. Análisis de pago{" "}
-                        {config.rss_paid_analysis
-                          ? "habilitado con cupo autorizado"
-                          : "desactivado hasta autorizar presupuesto"}
-                        . Las noticias recibidas quedan pendientes.
-                      </span>
-                    </div>
-                    <section className="card">
-                      <div className="section-heading">
-                        <div>
-                          <h2>Monitor de fuentes RSS</h2>
-                          <p>
-                            Consulta cada 5 minutos · fecha y errores
-                            conservados
-                          </p>
-                        </div>
-                        <button
-                          className="button primary"
-                          disabled={!presenter}
-                          onClick={() =>
-                            action(
-                              () => api("/sources/sync", { method: "POST" }),
-                              "Consultas encoladas. El worker actualizará cada fuente.",
-                            )
-                          }
-                        >
-                          <RefreshCw size={16} />
-                          Actualizar ahora
-                        </button>
-                      </div>
-                      <div className="sources-grid">
-                        {sources.map((s) => (
-                          <article className="source-card" key={s.id}>
-                            <div className="inline">
-                              <Radio size={20} />
-                              <Badge
-                                tone={
-                                  s.status === "error"
-                                    ? "danger"
-                                    : s.last_success_at
-                                      ? "success"
-                                      : "warning"
-                                }
-                              >
-                                {label(s.status)}
-                              </Badge>
-                            </div>
-                            <h3>{s.name}</h3>
-                            <p>
-                              Última consulta:{" "}
-                              {date(s.last_attempt_at || undefined)}
-                            </p>
-                            <p>
-                              Último éxito:{" "}
-                              {date(s.last_success_at || undefined)}
-                            </p>
-                            <div className="source-count">
-                              <strong>{s.item_count}</strong> nuevas versiones ·
-                              HTTP {s.http_status || "—"}
-                            </div>
-                            {s.error && <p className="error-text">{s.error}</p>}
-                          </article>
-                        ))}
-                      </div>
-                    </section>
-                  </>
+                  <SourcesPage
+                    sources={sources}
+                    onRss={() => setContext("rss")}
+                    config={config}
+                    {...shared}
+                  />
                 }
               />
               <Route
@@ -1180,7 +1137,13 @@ function Ranking({
     </>
   );
 }
-function NewsList({ articles }: { articles: Article[] }) {
+function NewsList({
+  articles,
+  onOpen,
+}: {
+  articles: Article[];
+  onOpen?: () => void;
+}) {
   return articles.length ? (
     <div className="news-list">
       {articles.map((a) => (
@@ -1200,7 +1163,9 @@ function NewsList({ articles }: { articles: Article[] }) {
             </Badge>
           </div>
           <h3>
-            <Link to={"/noticias/" + a.id}>{a.headline}</Link>
+            <Link to={"/noticias/" + a.id} onClick={onOpen}>
+              {a.headline}
+            </Link>
           </h3>
           <small>
             {date(a.published_date)}
@@ -1219,6 +1184,7 @@ function NewsPage({ articles }: { articles: Article[] }) {
   const [q, setQ] = useState(""),
     [state, setState] = useState(""),
     [source, setSource] = useState(""),
+    [split, setSplit] = useState(""),
     [from, setFrom] = useState(""),
     [to, setTo] = useState(""),
     [event, setEvent] = useState(""),
@@ -1266,6 +1232,23 @@ function NewsPage({ articles }: { articles: Article[] }) {
         </select>
       </div>
       <div className="ranking-toolbar news-filters">
+        <label>
+          Lote de origen
+          <select
+            aria-label="Lote de origen"
+            value={split}
+            onChange={(e) => setSplit(e.target.value)}
+          >
+            <option value="">Todos los lotes</option>
+            {[...new Set(articles.map((a) => a.split).filter(Boolean))].map(
+              (s) => (
+                <option key={s} value={s}>
+                  {s === "rss" ? "Noticias reales" : label(s!)}
+                </option>
+              ),
+            )}
+          </select>
+        </label>
         <label>
           Desde
           <input
@@ -1319,6 +1302,7 @@ function NewsPage({ articles }: { articles: Article[] }) {
             setQ("");
             setState("");
             setSource("");
+            setSplit("");
             setFrom("");
             setTo("");
             setEvent("");
@@ -1337,6 +1321,7 @@ function NewsPage({ articles }: { articles: Article[] }) {
                 .includes(q.toLowerCase())) &&
             (!state || a.state === state) &&
             (!source || a.source === source) &&
+            (!split || a.split === split) &&
             (!from || a.published_date >= from) &&
             (!to || a.published_date.slice(0, 10) <= to) &&
             (!event || a.analysis?.event_type === event) &&
@@ -1835,16 +1820,40 @@ function MaterialDetail() {
   if (!m) return <div role="status">{error || "Cargando material…"}</div>;
   return (
     <section className="card detail-card">
-      <Link className="text-link" to="/proveedores">
-        ← Cartera de proveedores
+      <Link className="text-link" to="/materiales">
+        ← Catálogo de materiales
       </Link>
       <div className="eyebrow">
         {m.material_id} · {m.category}
       </div>
       <h2>{m.name}</h2>
       <p>
-        Necesidad mensual declarada: {number(m.monthly_requirement)} {m.unit}
+        Especificaciones disponibles en el catálogo importado. No se han
+        informado fichas técnicas adicionales.
       </p>
+      <div className="fact-box">
+        <h3>Datos del material</h3>
+        <dl className="material-specs">
+          <div>
+            <dt>Identificador</dt>
+            <dd>{m.material_id}</dd>
+          </div>
+          <div>
+            <dt>Categoría</dt>
+            <dd>{m.category}</dd>
+          </div>
+          <div>
+            <dt>Necesidad mensual</dt>
+            <dd>
+              {number(m.monthly_requirement)} {m.unit}
+            </dd>
+          </div>
+          <div>
+            <dt>Unidad declarada</dt>
+            <dd>{m.unit || "No informada"}</dd>
+          </div>
+        </dl>
+      </div>
       <div className="detail-grid">
         <div>
           <h3>Productos relacionados</h3>
@@ -2067,3 +2076,522 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </BrowserRouter>,
 );
+
+function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
+  const [materials, setMaterials] = useState<Material[]>([]),
+    [query, setQuery] = useState(""),
+    [category, setCategory] = useState(""),
+    [error, setError] = useState(""),
+    [loading, setLoading] = useState(true);
+  useEffect(() => {
+    let active = true;
+    api<Material[]>("/materials")
+      .then((rows) => {
+        if (active) setMaterials(rows);
+      })
+      .catch((e) => {
+        if (active) setError(e.message);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+  const supplier = (id: string | null) =>
+    suppliers.find((s) => s.supplier_id === id);
+  const rows = materials.filter(
+    (m) =>
+      (!category || m.category === category) &&
+      [
+        m.material_id,
+        m.name,
+        m.category,
+        supplier(m.primary_id)?.name,
+        ...m.products,
+      ]
+        .join(" ")
+        .toLocaleLowerCase("es")
+        .includes(query.toLocaleLowerCase("es")),
+  );
+  return (
+    <section className="card detail-card">
+      <div className="section-heading">
+        <div>
+          <h2>Catálogo de materiales</h2>
+          <p>
+            Especificaciones, productos y proveedores del catálogo importado
+          </p>
+        </div>
+        <Badge>{materials.length} materiales</Badge>
+      </div>
+      <div className="ranking-toolbar material-filters">
+        <label>
+          Buscar material
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Nombre, ID, producto o proveedor"
+          />
+        </label>
+        <label>
+          Categoría del material
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="">Todas las categorías</option>
+            {[...new Set(materials.map((m) => m.category))].sort().map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+        </label>
+        <button
+          className="button"
+          onClick={() => {
+            setQuery("");
+            setCategory("");
+          }}
+        >
+          Limpiar filtros
+        </button>
+      </div>
+      {error && (
+        <p role="alert" className="error-text">
+          {error}
+        </p>
+      )}
+      {loading ? (
+        <p role="status">Cargando materiales…</p>
+      ) : rows.length ? (
+        <div className="materials-grid">
+          {rows.map((m) => (
+            <article className="source-card" key={m.material_id}>
+              <div className="eyebrow">
+                {m.material_id} · {m.category}
+              </div>
+              <h3>
+                <Link className="text-link" to={"/materiales/" + m.material_id}>
+                  {m.name}
+                </Link>
+              </h3>
+              <p>
+                Necesidad mensual:{" "}
+                <strong>
+                  {number(m.monthly_requirement)} {m.unit}
+                </strong>
+              </p>
+              <p>
+                Proveedor principal:{" "}
+                <Link className="text-link" to={"/proveedores/" + m.primary_id}>
+                  {supplier(m.primary_id)?.name || m.primary_id}
+                </Link>
+              </p>
+              <p>
+                {m.products.length
+                  ? m.products.join(" · ")
+                  : "Productos no mapeados"}
+              </p>
+              <Link
+                className="button small"
+                to={"/materiales/" + m.material_id}
+              >
+                Ver especificaciones <ChevronRight size={16} />
+              </Link>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <Empty
+          title={
+            materials.length
+              ? "Sin coincidencias"
+              : "Catálogo pendiente de importación"
+          }
+        >
+          Prueba otros filtros o importa el Excel de entrenamiento.
+        </Empty>
+      )}
+    </section>
+  );
+}
+
+function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
+  const [worker, setWorker] = useState<any>(null),
+    [stream, setStream] = useState<Article[]>([]),
+    [submitting, setSubmitting] = useState(false),
+    [budget, setBudget] = useState<any>(null),
+    [analysisBusy, setAnalysisBusy] = useState(false),
+    [notice, setNotice] = useState(""),
+    [error, setError] = useState("");
+  const baseline = useRef<Set<string> | null>(null);
+  useEffect(() => {
+    let active = true,
+      inFlight = false;
+    async function load() {
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const [w, rows, b] = await Promise.all([
+          api("/worker"),
+          api<Article[]>("/articles?context=rss"),
+          presenter ? api("/analysis/budget") : Promise.resolve(null),
+        ]);
+        if (active) {
+          setWorker(w);
+          setStream(rows);
+          setBudget(b);
+          baseline.current ??= new Set(rows.map((a) => a.id));
+        }
+      } catch (e) {
+        if (active) setError((e as Error).message);
+      } finally {
+        inFlight = false;
+      }
+    }
+    load();
+    const timer = setInterval(load, 3000);
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
+  }, [presenter]);
+  const active = sources.filter((s: Source) =>
+      ["queued", "running"].includes(s.job_state || ""),
+    ),
+    completed = sources.filter((s: Source) => s.job_state === "done").length,
+    failures = sources.filter((s: Source) => s.job_state === "error").length,
+    newCount = baseline.current
+      ? stream.filter((a) => !baseline.current!.has(a.id)).length
+      : 0;
+  async function synchronize() {
+    setSubmitting(true);
+    setError("");
+    setNotice("Solicitando actualización de las seis fuentes…");
+    baseline.current = new Set(stream.map((a) => a.id));
+    try {
+      const r = await api("/sources/sync", { method: "POST" });
+      setWorker(r.worker);
+      setNotice(
+        `${r.job_ids.length} consultas registradas. El progreso y las noticias se actualizarán en esta pantalla.`,
+      );
+      await refresh(true);
+    } catch (e) {
+      setError((e as Error).message);
+      setNotice("");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+  return (
+    <>
+      <div className="notice info">
+        <Radio size={20} />
+        <span>
+          Seis fuentes reales. Análisis periódico de pago{" "}
+          {config.rss_paid_analysis
+            ? "habilitado con cupo autorizado"
+            : "desactivado"}
+          . Las noticias sin analizar permanecen pendientes.
+        </span>
+      </div>
+      <section
+        className="card detail-card"
+        aria-busy={submitting || (active.length > 0 && !!worker?.online)}
+      >
+        <div className="section-heading">
+          <div>
+            <h2>Monitor de fuentes RSS</h2>
+            <p>
+              La actualización manual se encola inmediatamente. El servicio de
+              procesamiento atiende la cola.
+            </p>
+          </div>
+          <button
+            className="button primary"
+            disabled={
+              !presenter ||
+              submitting ||
+              (active.length > 0 && !!worker?.online)
+            }
+            onClick={synchronize}
+          >
+            <RefreshCw
+              size={16}
+              className={
+                submitting || (active.length > 0 && worker?.online)
+                  ? "spin"
+                  : ""
+              }
+            />
+            {submitting
+              ? "Solicitando…"
+              : active.length && worker?.online
+                ? "Actualizando…"
+                : "Actualizar ahora"}
+          </button>
+        </div>
+        {error && (
+          <div className="notice error" role="alert">
+            {error}
+          </div>
+        )}
+        {notice && <p role="status">{notice}</p>}
+        {worker && !worker.online && (
+          <div className="notice warning">
+            <Clock3 size={20} />
+            <span>
+              Procesamiento sin conexión. Las consultas permanecerán en cola
+              hasta que el worker esté activo. Última señal:{" "}
+              {date(worker.last_seen_at)}.
+            </span>
+          </div>
+        )}
+        {sources.length === 0 && (
+          <p>
+            No hay fuentes inicializadas. «Actualizar ahora» registrará las seis
+            fuentes configuradas.
+          </p>
+        )}
+        <div className="sync-summary" aria-live="polite">
+          <strong>{stream.length} noticias recibidas</strong>
+          <span>{newCount} nuevas desde esta visita o actualización</span>
+          <span>
+            {active.length} en cola o consultándose · {completed} fuentes
+            completadas · {failures} con error
+          </span>
+        </div>
+        {!!active.length && (
+          <progress
+            max={sources.length}
+            value={completed + failures}
+            aria-label="Progreso de consulta RSS"
+          />
+        )}
+        <div className="sources-grid">
+          {sources.map((s: Source) => (
+            <article className="source-card" key={s.id}>
+              <div className="inline">
+                <Radio size={20} />
+                <Badge
+                  tone={
+                    s.status === "error"
+                      ? "danger"
+                      : s.last_success_at
+                        ? "success"
+                        : "warning"
+                  }
+                >
+                  {s.job_state === "queued"
+                    ? "En cola"
+                    : s.job_state === "running"
+                      ? "Consultando…"
+                      : label(s.status)}
+                </Badge>
+              </div>
+              <h3>{s.name}</h3>
+              <p>Última consulta: {date(s.last_attempt_at || undefined)}</p>
+              <p>Último éxito: {date(s.last_success_at || undefined)}</p>
+              <div className="source-count">
+                <strong>{s.item_count}</strong> nuevas versiones · HTTP{" "}
+                {s.http_status || "—"}
+              </div>
+              {s.error && <p className="error-text">{s.error}</p>}
+            </article>
+          ))}
+        </div>
+      </section>
+      {presenter && (
+        <section className="card detail-card">
+          <div className="section-heading">
+            <div>
+              <h2>Análisis JEV del lote autorizado</h2>
+              <p>
+                Inicio manual · máximo seis peticiones por artículo, incluidos
+                reintentos · sin análisis periódico
+              </p>
+            </div>
+          </div>
+          <p>
+            {budget
+              ? `${budget.remaining} artículos de cupo disponibles · ${budget.reserved} reservados · ${budget.network_requests} peticiones registradas`
+              : "Consultando presupuesto…"}
+          </p>
+          <p>
+            {stream.filter((a) => ["done", "review"].includes(a.state)).length}{" "}
+            noticias procesadas ·{" "}
+            {stream.filter((a) => a.state === "error").length} con error · los
+            fallos permanecen visibles.
+          </p>
+          <button
+            className="button primary"
+            disabled={
+              analysisBusy ||
+              !worker?.online ||
+              !budget?.remaining ||
+              !stream.some((a) => a.state === "pending")
+            }
+            onClick={async () => {
+              setAnalysisBusy(true);
+              setError("");
+              try {
+                const r = await api("/analysis/rss", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    limit: Math.min(10, budget.remaining),
+                  }),
+                });
+                setNotice(
+                  `${r.articles} noticias encoladas para JEV; máximo ${r.maximum_requests} peticiones, reintentos incluidos.`,
+                );
+                setBudget(await api("/analysis/budget"));
+                await refresh(true);
+              } catch (e) {
+                setError((e as Error).message);
+              } finally {
+                setAnalysisBusy(false);
+              }
+            }}
+          >
+            {analysisBusy
+              ? "Encolando análisis…"
+              : `Analizar hasta ${Math.min(10, budget?.remaining || 0)} noticias con JEV`}
+          </button>
+          {!budget?.remaining && (
+            <p>El cupo agotado no se restablece al reiniciar ni desplegar.</p>
+          )}
+        </section>
+      )}
+      <section className="card detail-card">
+        <div className="section-heading">
+          <div>
+            <h2>Noticias que van llegando</h2>
+            <p>
+              Últimas incorporaciones reales · fuente y fecha de publicación
+              conservadas
+            </p>
+          </div>
+          <Link className="text-link" to="/noticias" onClick={onRss}>
+            Ver noticias
+          </Link>
+        </div>
+        <NewsList articles={stream.slice(0, 12)} onOpen={onRss} />
+      </section>
+    </>
+  );
+}
+
+function DemoControl({ onClean }: { onClean: () => Promise<void> }) {
+  const [open, setOpen] = useState(false),
+    [preview, setPreview] = useState<any>(null),
+    [confirmation, setConfirmation] = useState(""),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  async function review() {
+    setOpen(true);
+    setPreview(null);
+    setConfirmation("");
+    setError("");
+    try {
+      setPreview(await api("/demo/cleanup-preview"));
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  return (
+    <>
+      <button className="button" onClick={review}>
+        Preparar demo
+      </button>
+      {open && (
+        <Modal
+          title="Preparar demo: limpiar Entrenamiento y LiveDay"
+          close={() => {
+            if (!busy) setOpen(false);
+          }}
+        >
+          <p>
+            Esta acción elimina únicamente los lotes de Entrenamiento y LiveDay,
+            sus noticias, resultados y elementos asociados.
+          </p>
+          <p>
+            <strong>Conserva:</strong> proveedores, materiales, noticias RSS,
+            validación y test. El consumo JEV registrado se conserva y no
+            recupera cupo.
+          </p>
+          {!preview && !error && <p role="status">Calculando alcance…</p>}
+          {preview && (
+            <div className="fact-box">
+              <p>
+                <strong>
+                  {preview.counts.batches} lotes · {preview.counts.articles}{" "}
+                  noticias · {preview.counts.analyses} análisis
+                </strong>
+              </p>
+              <p>
+                {preview.counts.incidents} incidentes · {preview.counts.alerts}{" "}
+                alertas · {preview.counts.drafts} borradores asociados
+              </p>
+            </div>
+          )}
+          {(error || preview?.blocked) && (
+            <p className="error-text" role="alert">
+              {error || preview.blocked}
+            </p>
+          )}
+          <label className="cleanup-confirmation">
+            Escribe LIMPIAR DEMO para confirmar
+            <input
+              value={confirmation}
+              onChange={(e) => setConfirmation(e.target.value)}
+              autoComplete="off"
+              disabled={busy}
+            />
+          </label>
+          <div className="inline">
+            <button
+              className="button"
+              disabled={busy}
+              onClick={() => setOpen(false)}
+            >
+              Cancelar
+            </button>
+            <button
+              className="button primary"
+              disabled={
+                busy ||
+                !preview ||
+                !!preview.blocked ||
+                confirmation !== "LIMPIAR DEMO" ||
+                !preview.counts.batches
+              }
+              onClick={async () => {
+                setBusy(true);
+                setError("");
+                try {
+                  await api("/demo/cleanup", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      confirmation,
+                      token: preview.token,
+                    }),
+                  });
+                  setOpen(false);
+                  await onClean();
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              {busy ? "Limpiando…" : "Eliminar Entrenamiento y LiveDay"}
+            </button>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+}

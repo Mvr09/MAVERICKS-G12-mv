@@ -11,7 +11,7 @@ El repositorio incluye `railway.json` como configuración web predeterminada, eq
 1. Abrir el servicio web `MAVERICKS-G12-mv` del proyecto existente, entorno `production`.
 2. **Settings → Source**: repositorio `Mvr09/MAVERICKS-G12-mv`, rama de autodeploy confirmada, raíz del repositorio `/`. No seleccionar `frontend/` como raíz.
 3. **Settings → Build**: Dockerfile `Dockerfile` en la raíz. **Config File**: `/railway.json` (o `/railway.web.json`, equivalente). Si se había seleccionado otro archivo, corregirlo.
-4. **Settings → Deploy**: Start Command `python -m app.web`; predeploy `alembic upgrade head` seguido de `python -m app.cli seed`; healthcheck `/readyz`. Estos campos ya están en railway.json. No poner migraciones en el worker.
+4. **Settings → Deploy**: Start Command `python -m app.web`; predeploy `python -m app.predeploy` (migraciones seguidas de seed); healthcheck `/readyz`. Estos campos ya están en railway.json. No poner migraciones en el worker.
 5. **Settings → Networking → Public Networking**: conservar el dominio indicado y **Target Port 8000**, asociado al servicio web.
 6. **Variables** de web: establecer `PORT=8000`, `APP_BASE_URL=https://mavericks-g12-mv-production.up.railway.app`, `JEV_MODEL=jev-1.13.0`, `RSS_ANALYSIS_ENABLED=false` y `DEMO_FIXTURES_ENABLED=false`.
 7. Añadir `DATABASE_URL` con **Add Reference** al servicio PostgreSQL existente. Si se llama `Postgres`, la referencia habitual es `${{Postgres.DATABASE_URL}}`; elegir el nombre real desde el selector. No usar localhost ni copiar la URL de desarrollo. Si no existe PostgreSQL, esa dependencia debe provisionarla el usuario en el panel.
@@ -44,7 +44,9 @@ En el panel del proyecto `peaceful-harmony`, entorno `production`:
 2. Abrir **MAVERICKS-G12-mv → Variables** y editar `DATABASE_URL`.
 3. Usar el selector de referencias para elegir **servicio PostgreSQL → DATABASE_URL**. Si el servicio se llama `Postgres`, el valor de referencia es `${{Postgres.DATABASE_URL}}`. Si tiene otro nombre, usar el nombre real. No copiar la URL local ni pegar credenciales en el chat. [Referencias entre servicios](https://docs.railway.com/variables#reference-variables).
 4. Conservar `APP_BASE_URL=https://mavericks-g12-mv-production.up.railway.app`, `PORT=8000` y `RSS_ANALYSIS_ENABLED=false`.
-5. En **Settings → Deploy**, comprobar **Pre-deploy Command**: `alembic upgrade head && python -m app.cli seed`, y **Healthcheck Path**: `/readyz`. Así una ejecución sin base o sin esquema no se valida solo porque `/` sirva HTML.
+5. En **Settings → Deploy**, comprobar **Pre-deploy Command**: `python -m app.predeploy`, y **Healthcheck Path**: `/readyz`. Así una ejecución sin base o sin esquema no se valida solo porque `/` sirva HTML.
 6. Aplicar los cambios y desplegar de nuevo. Si después aparece `DATABASE_SCHEMA_UNAVAILABLE`, revisar la salida de Alembic; no borrar la base ni marcar migraciones como aplicadas manualmente.
 
 Corrección de código complementaria: en Railway se rechazan destinos loopback antes de conectar; fallos de conexión/esquema devuelven JSON 503 sin SQL, credenciales ni tracebacks repetidos. La UI limita los reintentos automáticos a uno cada 30 segundos durante un fallo, manteniendo consulta inmediata al recuperar foco. Esto reduce el volumen de logs, pero no crea ni configura PostgreSQL remoto.
+
+La configuración actual usa un único comando de predeploy; ejecuta migración e inicialización en orden y falla si alguna operación falla. Evita depender de múltiples entradas en la lista preDeployCommand. Referencia: https://docs.railway.com/config-as-code/reference. Operación del worker, cupo manual y limpieza: [guía de demo](10_OPERACION_DEMO.md).

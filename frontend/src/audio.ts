@@ -20,6 +20,7 @@ export class RadarAudio {
     this.enabled = false;
   }
   async play() {
+    if (this.muted) return;
     if (!this.context || this.context.state !== "running")
       throw new Error("Activa primero el sonido");
     const oscillator = this.context.createOscillator(),

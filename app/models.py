@@ -117,6 +117,12 @@ class Job(Base):
     error: Mapped[str | None] = mapped_column(String)
 
 
+class WorkerPresence(Base):
+    __tablename__ = "worker_presence"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    heartbeat: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
 class Incident(Base):
     __tablename__ = "incidents"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)

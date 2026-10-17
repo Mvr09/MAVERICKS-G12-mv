@@ -1,0 +1,74 @@
+{
+  "checked_at": "2026-10-17T19:57:44.166016+00:00",
+  "url": "https://mavericks-g12-mv-production.up.railway.app",
+  "expected_commit": "bb39a081c08b2685b56087beaa39e8514c965ed3",
+  "requests": [
+    {
+      "path": "/",
+      "http": 200,
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/healthz",
+      "http": 200,
+      "content_type": "application/json",
+      "status": "ok",
+      "revision": "bb39a081c08b2685b56087beaa39e8514c965ed3",
+      "schema": null
+    },
+    {
+      "path": "/readyz",
+      "http": 503,
+      "content_type": "application/json",
+      "error": "PostgreSQL remoto sin configurar. Requiere intervención del presentador."
+    },
+    {
+      "path": "/api/suppliers",
+      "http": 503,
+      "content_type": "application/json",
+      "error": "PostgreSQL remoto sin configurar. Requiere intervención del presentador."
+    },
+    {
+      "path": "/api/sources",
+      "http": 503,
+      "content_type": "application/json",
+      "error": "PostgreSQL remoto sin configurar. Requiere intervención del presentador."
+    },
+    {
+      "path": "/api/config",
+      "http": 200,
+      "content_type": "application/json",
+      "rss_paid_analysis": false
+    },
+    {
+      "path": "/assets/charts-BO1fCyQ7.js",
+      "http": 200,
+      "content_type": "text/javascript; charset=utf-8",
+      "bytes": 323423
+    },
+    {
+      "path": "/assets/icons-BqUrsdrc.js",
+      "http": 200,
+      "content_type": "text/javascript; charset=utf-8",
+      "bytes": 19497
+    },
+    {
+      "path": "/assets/index-BvMeme7g.css",
+      "http": 200,
+      "content_type": "text/css; charset=utf-8",
+      "bytes": 27713
+    },
+    {
+      "path": "/assets/index-CBzCu-uZ.js",
+      "http": 200,
+      "content_type": "text/javascript; charset=utf-8",
+      "bytes": 256074
+    }
+  ],
+  "success": false,
+  "asset_count": 4,
+  "revision_matches": true,
+  "application_healthy": false,
+  "catalogue_ready": false,
+  "rss_paid_analysis_disabled": true
+}

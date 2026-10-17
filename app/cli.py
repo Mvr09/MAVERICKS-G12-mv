@@ -2,7 +2,7 @@
 
 import argparse, json
 from pathlib import Path
-from sqlalchemy import select
+from sqlalchemy import select, text
 from app.db import Session
 from app.models import Source, Grant
 from app.settings import ROOT, RSS, settings
@@ -10,11 +10,12 @@ from app.importer import import_excel
 
 
 def seed(db):
+    db.execute(text("SELECT pg_advisory_xact_lock(72642, 2)"))
+    authorization = json.loads((ROOT / "config/authorization.json").read_text())
     for source in RSS["sources"]:
         if not db.get(Source, source["id"]):
             db.add(Source(id=source["id"], data=source))
     if not db.get(Grant, "initial-training-3"):
-        authorization = json.loads((ROOT / "config/authorization.json").read_text())
         db.add(
             Grant(
                 id="initial-training-3",
@@ -23,6 +24,21 @@ def seed(db):
                 used=authorization["initial_training_consumed"],
             )
         )
+    for grant in authorization.get("additional_grants", []):
+        if not db.get(Grant, grant["id"]):
+            from datetime import datetime
+
+            db.add(
+                Grant(
+                    id=grant["id"],
+                    split=grant["split"],
+                    article_limit=grant["article_limit"],
+                    used=0,
+                    expires_at=datetime.fromisoformat(
+                        grant["expires_at"].replace("Z", "+00:00")
+                    ),
+                )
+            )
 
 
 def main():

@@ -21,15 +21,15 @@ Revisión de la aplicación conforme a `prompts/03_AUDITORIA_Y_ENTREGA.md`. Los 
 | A15 | pasa | E2E con mocks identificados: consulta al alternativo, edición, guardado, copia y TXT. Texto declara stock sin confirmar y no constituye pedido. Sin integración externa de envío. |
 | A16 | no ejecutado | Exportación XLSX sintética probada: una fila por entrada, IDs ordenados con `; `, tipos texto y bloqueo por error; falta exportación de test/LiveDay con inferencia final autorizada. |
 | A17 | no ejecutado | Reinicio real local conserva sesión, 40 proveedores, 74 artículos y 3 análisis; worker reiniciado sin ampliar JEV; claim concurrente/lease probado. Falta redeploy Railway. |
-| A18 | no ejecutado | Lectura pública, CSRF, permisos y bloqueo de originales/secretos probados localmente; empaquetado permite solo archivos revisados. No existe aún URL HTTPS pública. |
+| A18 | no ejecutado | Lectura pública, CSRF, permisos y bloqueo de originales/secretos probados localmente; empaquetado permite solo archivos revisados. URL HTTPS publicada, /readyz y rutas de catálogo HTTP 200; falta verificación posterior de esta ampliación. |
 | A19 | pasa | Chrome/Playwright, emulación 360/390/768/1440 px; sin overflow, filtros con teclado y foco de diálogo. Capturas en reports. Pendiente móvil físico; no se presenta emulación como dispositivo real. |
 | A20 | no ejecutado | LiveDay sin inferencia. No hay tiempo medido del lote de 14 en Railway. Los 1,476 s de la comprobación de tres artículos no se extrapolan. |
 
 ## Pruebas realizadas
 
-- 36 pruebas propias unitarias/integración sobre PostgreSQL dedicado `radar_test`, con mocks identificados.
+- 51 pruebas propias unitarias/integración sobre PostgreSQL dedicado `radar_test`, con mocks identificados.
 - 16 tests de referencia, sin llamadas externas.
-- 8 E2E sobre servidor separado con banner de mocks: catálogo/ficha en cuatro anchuras, teclado, borradores/carga/exportación y lógica de audio.
+- 13 E2E sobre servidor separado con banner de mocks: catálogo/ficha en cuatro anchuras, teclado, borradores/carga/exportación y lógica de audio.
 - Build TypeScript/Vite correcto; dependencias frontend fijadas y última instalación sin vulnerabilidades reportadas por npm.
 - JEV autenticado local: N001/N002/N005; cuatro HTTP 200, cero reintentos, modelo devuelto `jev-1.13.0`. Solo se registra metadato de ejecución, no respuestas protegidas.
 - RSS real local: seis HTTP 200; estados/fallos aislados, últimas consultas y artículos pendientes persistidos. No se acredita disponibilidad desde Railway.
@@ -37,4 +37,8 @@ Revisión de la aplicación conforme a `prompts/03_AUDITORIA_Y_ENTREGA.md`. Los 
 
 ## Pendientes bloqueantes para aceptación completa
 
-Autorización de despliegue y acceso Railway; build real de contenedor (Docker no instalado aquí); grants concretos para evaluación y fase final/RSS; ensayo HTTPS/redeploy y fuentes desde Railway; lote LiveDay completo medido ≤300 s; audibilidad y uso en dispositivo real. No se declara aceptación completa.
+Worker remoto y fuentes desde Railway; grants concretos para evaluación y fase final (solo RSS manual 10/60 autorizado); lote LiveDay completo medido ≤300 s; audibilidad y uso en dispositivo real. No se declara aceptación completa.
+
+## Ampliación operativa
+
+Materiales y progreso RSS comprobados con mocks de navegador; nueva presencia de worker y migración 0003. Limpieza de Entrenamiento/LiveDay probada solo en base aislada, con conservación de cartera/RSS/evaluación y consumo; bloquea operaciones en curso, incidentes compartidos y confirmaciones obsoletas. La limpieza no se ejecuta en Railway. Autorización RSS adicional: 10 artículos y 60 peticiones como máximo; análisis periódico false. Los resultados externos de este lote se documentarán por separado cuando se ejecuten.

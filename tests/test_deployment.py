@@ -21,8 +21,7 @@ def test_railway_default_and_explicit_web_config_agree():
     assert configs[0] == configs[1] == configs[2]
     assert configs[0]["deploy"]["startCommand"] == "python -m app.web"
     assert configs[0]["deploy"]["preDeployCommand"] == [
-        "alembic upgrade head",
-        "python -m app.cli seed",
+        "python -m app.predeploy",
     ]
     assert configs[0]["deploy"]["healthcheckPath"] == "/readyz"
     worker = json.loads(Path("railway.worker.json").read_text())
