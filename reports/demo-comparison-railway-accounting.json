@@ -1,0 +1,91 @@
+{
+  "checked_at": "2026-10-17T22:20:04.938585+00:00",
+  "revision": "2650ea7041abdd0b6928eaf22b616ff96a70e561",
+  "worker_compatible": true,
+  "options_count": 9,
+  "preview_counts": {
+    "batches": 0,
+    "articles": 10,
+    "analyses": 10,
+    "incidents": 0,
+    "alerts": 0,
+    "drafts": 0,
+    "comparisons": 1,
+    "suppliers": 0,
+    "materials": 0
+  },
+  "preview_blocked": null,
+  "delete_executed": false,
+  "rerun_executed": false,
+  "article_id": "7e1e7bd7-3e18-4dd1-aa1b-acb867e4b66b",
+  "model": "jev-1.13.0",
+  "unlimited_requests_before": 45,
+  "comparison_id": "f36ca7f6-232c-4ba7-b786-3eb648318a9c",
+  "job_id": "605aafbe-293f-4168-9755-67c4de37c994",
+  "original_unchanged": true,
+  "comparison": {
+    "id": "f36ca7f6-232c-4ba7-b786-3eb648318a9c",
+    "article_id": "7e1e7bd7-3e18-4dd1-aa1b-acb867e4b66b",
+    "network_requests": 3,
+    "state": "done",
+    "created_at": "2026-10-17T22:19:39.685929+00:00",
+    "ballots": [
+      {
+        "analysis_status": "review",
+        "is_risk": "N",
+        "urgent": "N",
+        "affected_supplier_ids": [],
+        "event_type": "natural_disaster",
+        "error": null,
+        "review_reasons": [
+          "event_state_confidence_low",
+          "event_type_confidence_low"
+        ],
+        "model_id": "jev-1.13.0"
+      },
+      {
+        "analysis_status": "review",
+        "is_risk": "N",
+        "urgent": "N",
+        "affected_supplier_ids": [],
+        "event_type": "natural_disaster",
+        "error": null,
+        "review_reasons": [
+          "event_state_confidence_low",
+          "event_type_confidence_low"
+        ],
+        "model_id": "jev-1.13.0"
+      },
+      {
+        "analysis_status": "review",
+        "is_risk": "N",
+        "urgent": "N",
+        "affected_supplier_ids": [],
+        "event_type": "natural_disaster",
+        "error": null,
+        "review_reasons": [
+          "event_state_confidence_low",
+          "event_type_confidence_low"
+        ],
+        "model_id": "jev-1.13.0"
+      }
+    ],
+    "summary": {
+      "completed": 3,
+      "done_votes": 0,
+      "review_votes": 3,
+      "errors": 0,
+      "decision_agreement": 3,
+      "majority_without_review": false,
+      "review_reasons": [
+        "event_state_confidence_low",
+        "event_type_confidence_low"
+      ],
+      "advisory_only": true,
+      "message": "La mayoría sigue sin una conclusión suficiente para retirar la revisión.",
+      "limitation": "Tres consultas al mismo modelo no son tres expertos independientes. No cambian el análisis vigente, la prioridad, las alarmas ni las exportaciones."
+    }
+  },
+  "unlimited_requests_after": 48,
+  "completed_at": "2026-10-17T22:20:08.499356+00:00"
+}
