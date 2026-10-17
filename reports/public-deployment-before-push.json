@@ -1,0 +1,48 @@
+{
+  "checked_at": "2026-10-17T18:52:42.058541+00:00",
+  "url": "https://mavericks-g12-mv-production.up.railway.app",
+  "expected_commit": "",
+  "requests": [
+    {
+      "path": "/",
+      "http": 404,
+      "content_type": "application/json",
+      "error": "Application not found"
+    },
+    {
+      "path": "/healthz",
+      "http": 404,
+      "content_type": "application/json",
+      "error": "Application not found"
+    },
+    {
+      "path": "/readyz",
+      "http": 404,
+      "content_type": "application/json",
+      "error": "Application not found"
+    },
+    {
+      "path": "/api/suppliers",
+      "http": 404,
+      "content_type": "application/json",
+      "error": "Application not found"
+    },
+    {
+      "path": "/api/sources",
+      "http": 404,
+      "content_type": "application/json",
+      "error": "Application not found"
+    },
+    {
+      "path": "/api/config",
+      "http": 404,
+      "content_type": "application/json",
+      "error": "Application not found"
+    }
+  ],
+  "success": false,
+  "revision_matches": false,
+  "application_healthy": false,
+  "catalogue_ready": false,
+  "rss_paid_analysis_disabled": null
+}

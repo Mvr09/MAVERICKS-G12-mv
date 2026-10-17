@@ -6,9 +6,10 @@
   },
   "deploy": {
     "preDeployCommand": [
-      "alembic upgrade head"
+      "alembic upgrade head",
+      "python -m app.cli seed"
     ],
-    "startCommand": "sh -c 'exec uvicorn app.main:app --host 0.0.0.0 --port \"${PORT:-8000}\"'",
+    "startCommand": "python -m app.web",
     "healthcheckPath": "/readyz",
     "healthcheckTimeout": 120,
     "restartPolicyType": "ON_FAILURE",

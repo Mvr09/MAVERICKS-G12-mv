@@ -128,6 +128,10 @@ Comprobaciones externas autorizadas:
 
 `check_rss` consulta realmente seis fuentes; su informe identifica el entorno local. `check_restart` lanza una web auxiliar en 8002, la reinicia y comprueba sesión/rutas/datos. No ejecuta JEV. `check_jev` fue utilizado para el cupo inicial y no debe reiniciarse para obtener presupuesto nuevo.
 
+## Autodeploy del servicio existente
+
+La continuación usa GitHub → Railway sobre el servicio existente y el dominio `https://mavericks-g12-mv-production.up.railway.app`, target port 8000. `railway.json` configura la web por defecto y `python -m app.web` fija `0.0.0.0:8000`. El `.env` local no se transfiere: variables, PostgreSQL y dominio se revisan en el panel por el usuario. El push ha sido autorizado; no amplía el presupuesto de JEV. [Pasos de panel y diagnóstico](docs/09_AUTODEPLOY_EXISTENTE.md).
+
 ## Railway: publicación pendiente de aprobación
 
 Repositorio de trabajo: `Mvr09/MAVERICKS-G12-mv`, rama local `main`. Destino propuesto: proyecto **supplier-risk-radar**, entorno **demo**, servicios **web**, **worker** y **PostgreSQL**. No se ha hecho push, creado recursos ni generado dominio. El repositorio original contiene XLSX ya seguidos por Git; por eso el despliegue se prepara desde un paquete limpio y no requiere publicar esos archivos.

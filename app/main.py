@@ -1,4 +1,4 @@
-import io, json
+import io, json, os
 from pathlib import Path
 from typing import Literal
 from fastapi import FastAPI, Depends, HTTPException, Request, Response, UploadFile, File
@@ -64,7 +64,10 @@ async def validation_error(request, exc):
 
 @app.get("/healthz")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "revision": os.environ.get("RAILWAY_GIT_COMMIT_SHA") or "local",
+    }
 
 
 @app.get("/readyz")

@@ -16,6 +16,7 @@ files = [
     ".env.example",
     "requirements.lock",
     "alembic.ini",
+    "railway.json",
     "railway.web.json",
     "railway.worker.json",
     "README.md",
