@@ -1,76 +1,2053 @@
-import React,{useEffect,useState,useRef} from 'react';
-import {createRoot} from 'react-dom/client';
-import {BrowserRouter,NavLink,Link,Routes,Route,useParams} from 'react-router-dom';
-import {Activity,LayoutDashboard,Building2,Newspaper,Bell,Radio,Volume2,VolumeX,ShieldCheck,ArrowUpRight,Search,SlidersHorizontal,Upload,RefreshCw,ChevronRight,X,Download,Copy,LogIn,CheckCircle2,AlertTriangle,Clock3,Menu,LogOut} from 'lucide-react';
-import {ResponsiveContainer,BarChart,Bar,XAxis,YAxis,Tooltip,CartesianGrid} from 'recharts';
-import {api,setCsrf,date,number} from './api';
-import type {Supplier,Article,Source,Batch,Alert} from './types';
-import {audio} from './audio';
-import './style.css';
+import React, { useEffect, useState, useRef } from "react";
+import { createRoot } from "react-dom/client";
+import {
+  BrowserRouter,
+  NavLink,
+  Link,
+  Routes,
+  Route,
+  useParams,
+} from "react-router-dom";
+import {
+  Activity,
+  LayoutDashboard,
+  Building2,
+  Newspaper,
+  Bell,
+  Radio,
+  Volume2,
+  VolumeX,
+  ShieldCheck,
+  ArrowUpRight,
+  Search,
+  SlidersHorizontal,
+  Upload,
+  RefreshCw,
+  ChevronRight,
+  X,
+  Download,
+  Copy,
+  LogIn,
+  CheckCircle2,
+  AlertTriangle,
+  Clock3,
+  Menu,
+  LogOut,
+} from "lucide-react";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
+import { api, setCsrf, date, number } from "./api";
+import type {
+  Material,
+  Supplier,
+  Article,
+  Source,
+  Batch,
+  Alert,
+} from "./types";
+import { audio } from "./audio";
+import { setBands, getBands, bandFor } from "./policy";
+import "./style.css";
 
-const names:Record<string,string>={training:'Entrenamiento',validation:'Validación retenida',test:'Test final',liveday:'LiveDay',pending:'Pendiente',done:'Analizado',review:'Requiere revisión',error:'Error',ok:'Consultada',unchanged:'Sin novedades',active:'Activo',monitoring:'En seguimiento',resolved:'Recuperado',positive:'Noticia positiva',High:'Alta',Medium:'Media',Low:'Baja'};
-const label=(s:string)=>names[s]||s;
-function Badge({children,tone='neutral'}:{children:React.ReactNode;tone?:string}){return <span className={'badge '+tone}>{children}</span>}
-function Score({value}:{value:number|null}){return <div className={'score '+(value==null?'pending':value>=80?'critical':value>=65?'high':value>=35?'medium':'low')}><strong>{number(value)}</strong><small>/ 100</small></div>}
-function Empty({title,children}:{title:string;children?:React.ReactNode}){return <div className="empty"><Activity size={30}/><h3>{title}</h3><p>{children||'Los resultados aparecerán aquí cuando se complete el análisis.'}</p></div>}
-function Modal({title,close,children}:{title:string;close:()=>void;children:React.ReactNode}){
- const ref=useRef<HTMLDialogElement>(null);useEffect(()=>{const prev=document.activeElement as HTMLElement;ref.current?.showModal();ref.current?.querySelector<HTMLElement>('[autofocus],input,textarea')?.focus();return()=>prev?.focus()},[]);
- return <dialog ref={ref} onCancel={e=>{e.preventDefault();close()}} onClick={e=>{if(e.target===ref.current)close()}}><header><h2>{title}</h2><button className="icon-button" onClick={close} aria-label="Cerrar"><X/></button></header>{children}</dialog>
+const names: Record<string, string> = {
+  training: "Entrenamiento",
+  validation: "Validación retenida",
+  test: "Test final",
+  liveday: "LiveDay",
+  pending: "Pendiente",
+  superseded: "Versión anterior",
+  done: "Analizado",
+  review: "Requiere revisión",
+  error: "Error",
+  ok: "Consultada",
+  unchanged: "Sin novedades",
+  active: "Activo",
+  monitoring: "En seguimiento",
+  resolved: "Recuperado",
+  positive: "Noticia positiva",
+  High: "Alta",
+  Medium: "Media",
+  Low: "Baja",
+};
+Object.assign(names, {
+  fire_incident: "Incendio o explosión",
+  natural_disaster: "Desastre natural",
+  labour_strike: "Huelga",
+  regulatory_action: "Acción regulatoria",
+  export_restriction: "Restricción de exportación",
+  financial_distress: "Dificultades financieras",
+  quality_recall: "Retirada o calidad",
+  logistics_disruption: "Interrupción logística",
+  utility_outage: "Interrupción de suministros",
+  leadership_change: "Cambio de dirección",
+  acquisition: "Adquisición",
+  recovery: "Recuperación",
+  positive_news: "Noticia positiva",
+  other: "Otro evento",
+  not_relevant: "Sin vínculo operativo",
+  inventory_missing: "Inventario físico no informado",
+  criticality_missing: "Criticidad no informada",
+  single_source_missing: "Fuente única no informada",
+  category_share_missing: "Gasto en categoría no informado",
+  severity_missing: "Severidad no disponible",
+  buffer_horizon_missing: "Falta plazo para comparar cobertura",
+  evidence_missing: "Falta evidencia suficiente",
+  critical_without_urgency: "Prioridad crítica sin urgencia: revisar",
+  decision_ambiguous_or_contradictory: "Decisión ambigua o contradictoria",
+  recovery_requires_compatible_incident:
+    "Recuperación sin un único incidente compatible",
+  event_group_ambiguous: "Agrupación de evento ambigua",
+  resolved_event_requires_review: "Incidente resuelto: revisar nueva evidencia",
+  link_ambiguous: "Vínculo ambiguo",
+  severity_confidence_low: "Confianza de severidad insuficiente",
+  impact_state_confidence_low: "Estado del impacto incierto",
+  evidence_confidence_low: "Selección de evidencia incierta",
+  duration_confidence_low: "Duración incierta",
+  event_type_confidence_low: "Tipo de evento incierto",
+  event_state_confidence_low: "Estado del evento incierto",
+});
+const label = (s: string) => names[s] || s;
+const reviewLabel = (s: string) => {
+  const [key, id] = s.split(":");
+  return (names[key] || "Revisar decisión del motor") + (id ? " · " + id : "");
+};
+function Badge({
+  children,
+  tone = "neutral",
+}: {
+  children: React.ReactNode;
+  tone?: string;
+}) {
+  return <span className={"badge " + tone}>{children}</span>;
 }
-function App(){
- const [context,setContext]=useState('exercise'),[overview,setOverview]=useState<any>(null),[suppliers,setSuppliers]=useState<Supplier[]>([]),[articles,setArticles]=useState<Article[]>([]),[sources,setSources]=useState<Source[]>([]),[batches,setBatches]=useState<Batch[]>([]),[alerts,setAlerts]=useState<Alert[]>([]),[config,setConfig]=useState<any>({}),[presenter,setPresenter]=useState(false),[loginOpen,setLoginOpen]=useState(false),[password,setPassword]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState(''),[loading,setLoading]=useState(true),[sound,setSound]=useState('Desactivado'),[more,setMore]=useState(false);
- const cursor=useRef<number|null>(null),file=useRef<HTMLInputElement>(null);
- useEffect(()=>{api('/session').then(s=>{setPresenter(s.presenter);setCsrf(s.csrf||'')});api('/config').then(setConfig)},[]);
- async function refresh(){
-  try{const [o,s,a,f,b,n]=await Promise.all([api('/overview?context='+context),api('/suppliers?context='+context),api('/articles?context='+context),api('/sources'),api('/batches'),api('/alerts?context='+context)]);
-   setOverview(o);setSuppliers(s.items);setArticles(a);setSources(f);setBatches(b);setAlerts(n.items);
-   document.title=(n.unread?`(${n.unread}) `:'')+'Supplier Risk Radar · Helixa';
-   if(cursor.current!==null)await audio.notify(n.items.filter((x:Alert)=>x.id>cursor.current!),config.cooldown_seconds||30).catch(()=>setSound('Bloqueado'));
-   cursor.current=n.cursor;setError('');
-  }catch(e){setError((e as Error).message)}finally{setLoading(false)}
- }
- useEffect(()=>{cursor.current=null;setLoading(true);refresh();const timer=setInterval(()=>{if(document.visibilityState==='visible')refresh()},3000);const focus=()=>refresh();window.addEventListener('focus',focus);return()=>{clearInterval(timer);window.removeEventListener('focus',focus)}},[context]);
- async function action(fn:()=>Promise<any>,success='Operación completada'){try{await fn();setMessage(success);refresh()}catch(e){setError((e as Error).message)}}
- async function upload(f:File){const data=new FormData();data.append('file',f);await action(()=>api('/imports',{method:'POST',body:data}),'Archivo importado. Revisa el lote antes de analizar.');}
- const shared={context,presenter,action,refresh};
- const navigation=[{to:'/',icon:LayoutDashboard,text:'Resumen'},{to:'/proveedores',icon:Building2,text:'Proveedores'},{to:'/noticias',icon:Newspaper,text:'Noticias'},{to:'/alertas',icon:Bell,text:'Alertas'},{to:'/fuentes',icon:Radio,text:'Fuentes'},{to:'/analitica',icon:Activity,text:'Analítica'}];
- return <div className="app"><a className="skip" href="#contenido">Saltar al contenido</a>
- <aside className="sidebar"><Link to="/" className="brand"><span className="brand-icon"><Activity/></span><span>Supplier Risk<span className="brand-light">Radar</span></span></Link><div className="workspace-label">HELIXA PHARMACEUTICALS</div><nav aria-label="Principal">{navigation.map(n=><NavLink key={n.to} to={n.to} end={n.to==='/'}><n.icon size={19}/>{n.text}{n.to==='/alertas'&&alerts.filter(a=>!a.acknowledged).length>0&&<span className="nav-count">{alerts.filter(a=>!a.acknowledged).length}</span>}</NavLink>)}</nav><div className="sidebar-footer"><ShieldCheck size={18}/><div>Cartera simulada<small>Decisiones con evidencia</small></div></div></aside>
- <div className="main-shell"><header className="topbar"><div className="context-picker"><span className="status-dot"/><label className="sr-only" htmlFor="context">Contexto</label><select id="context" value={context} onChange={e=>setContext(e.target.value)}><option value="exercise">Ejercicio</option><option value="rss">Noticias reales</option></select></div><div className="topbar-actions"><span className="public-tag">{presenter?'Presentador':'Vista pública'}</span><button className="icon-button mobile-sound" aria-label="Activar sonido" onClick={()=>audio.activate().then(()=>setSound('Activado')).catch(()=>setSound('Bloqueado'))}><Volume2 size={19}/></button><button className="button small" onClick={()=>presenter?action(()=>api('/session',{method:'DELETE'}).then(()=>{setPresenter(false);setCsrf('')}),'Sesión cerrada'):setLoginOpen(true)}>{presenter?<LogOut size={16}/>:<LogIn size={16}/>}<span>{presenter?'Salir':'Acceso presentador'}</span></button></div></header>
- <main id="contenido"><div className="page-heading"><div><div className="eyebrow">INTELIGENCIA DE SUMINISTRO</div><h1>Radar de proveedores<span className="heading-dot">.</span></h1><p>{context==='rss'?'Exposición potencial de una cartera simulada a noticias reales.':'Detecta señales, entiende el impacto y prioriza la respuesta.'}</p></div><div className="heading-actions"><input ref={file} type="file" accept=".xlsx" className="sr-only" aria-label="Archivo Excel" onChange={e=>{if(e.target.files?.[0])upload(e.target.files[0]);e.target.value=''}}/><button className="button primary" onClick={()=>presenter?file.current?.click():setLoginOpen(true)}><Upload size={17}/>Importar Excel</button></div></div>
- {error&&<div className="notice error" role="alert"><AlertTriangle size={20}/><span>{error}</span><button className="icon-button" onClick={()=>setError('')} aria-label="Cerrar error"><X size={17}/></button></div>}
- {message&&<div className="notice success" role="status"><CheckCircle2 size={20}/><span>{message}</span><button className="icon-button" onClick={()=>setMessage('')} aria-label="Cerrar aviso"><X size={17}/></button></div>}
- {!config.engine_configured&&<div className="notice warning">Motor sin configurar. El catálogo sigue disponible; las noticias permanecen pendientes.</div>}
- <div className="sound-bar"><div><Volume2 size={16}/><span>Sonido: <strong>{sound}</strong></span></div><div className="sound-actions"><button onClick={()=>audio.activate().then(()=>setSound('Activado')).catch(()=>setSound('Bloqueado'))}>Activar sonido</button><button onClick={()=>audio.play().catch(()=>setSound('Bloqueado: activa primero el sonido'))}>Probar alarma</button><button onClick={()=>{audio.mute();setSound('Silenciado')}}><VolumeX size={14}/>Silenciar</button></div></div>
- {loading&&!overview?<div className="loading" role="status">Cargando datos del radar…</div>:<Routes>
- <Route path="/" element={<><div className="kpis"><Kpi label="Proveedores urgentes" value={overview?.urgent_suppliers} note={`de ${suppliers.length} proveedores en cartera`} icon={<Bell/>} tone="purple"/><Kpi label="Incidentes activos" value={overview?.active_incidents} note="Eventos distintos · sin sumar titulares" icon={<Activity/>} tone="cyan"/><Kpi label="Noticias analizadas" value={overview?.processed} note={`de ${overview?.received||0} recibidas · ${overview?.pending||0} pendientes`} icon={<Newspaper/>} tone="blue"/><Kpi label="Fuentes consultadas" value={`${overview?.healthy_sources||0} / 6`} note="RSS · estado de la última consulta" icon={<Radio/>} tone="green"/></div>
- <div className="dashboard-grid"><section className="card ranking-panel"><div className="section-heading"><div><h2>Prioridad de proveedores</h2><p>Máximo de incidentes activos por proveedor</p></div><Badge>{suppliers.length} proveedores</Badge></div><Ranking suppliers={suppliers} context={context}/><Link className="card-footer-link" to="/proveedores">Explorar la cartera completa <ChevronRight size={16}/></Link></section><div className="side-column"><section className="card"><div className="section-heading"><h2>Últimas señales</h2><Link to="/noticias" aria-label="Ver todas las noticias"><ArrowUpRight size={19}/></Link></div><NewsList articles={articles.slice(0,4)}/></section><section className="card sources-mini"><div className="section-heading"><h2>Estado de fuentes</h2><Link to="/fuentes">Ver todas</Link></div>{sources.map(s=><div className="source-mini" key={s.id}><span className={'status-dot '+(s.status==='error'?'danger':s.last_success_at?'':'unknown')}/><span>{s.name}</span><small>{label(s.status)}</small></div>)}</section></div></div><Batches batches={batches} {...shared}/></>}/>
- <Route path="/proveedores" element={<section className="card"><div className="section-heading"><div><h2>Cartera de proveedores</h2><p>Identidad, exposición y alternativas conocidas</p></div></div><Ranking suppliers={suppliers} context={context} full/></section>}/>
- <Route path="/proveedores/:id" element={<SupplierDetail {...shared}/>}/>
- <Route path="/noticias" element={<NewsPage articles={articles}/>}/>
- <Route path="/noticias/:id" element={<ArticleDetail context={context}/>}/>
- <Route path="/alertas" element={<section className="card"><div className="section-heading"><div><h2>Centro de alertas</h2><p>Reconocer una alerta conserva el incidente activo</p></div><Badge>{alerts.filter(a=>!a.acknowledged).length} sin leer</Badge></div>{alerts.length?alerts.slice().reverse().map(a=><article className="alert-item" key={a.id}><div className="alert-icon"><Bell size={20}/></div><div><div className="inline"><Badge tone={a.needs_review?'warning':'danger'}>{a.needs_review?'Requiere revisión':'Urgente'}</Badge><small>{date(a.created_at)}</small></div><h3><Link to={'/proveedores/'+a.supplier_id}>{a.supplier_name}</Link></h3><p>{a.headline}</p><small>Prioridad {number(a.priority)} · {a.sound_eligible?'Elegible para sonido':'Solo aviso visual'}</small><div className="inline"><button className="button small" disabled={!presenter||a.acknowledged} onClick={()=>action(()=>api(`/alerts/${a.id}/ack`,{method:'POST'}))}>{a.acknowledged?'Reconocida':'Reconocer'}</button><Link className="text-link" to={'/proveedores/'+a.supplier_id}>Ver evidencia →</Link></div></div></article>):<Empty title="Sin alertas registradas">Las noticias pendientes no se consideran libres de riesgo.</Empty>}</section>}/>
- <Route path="/fuentes" element={<><div className="notice info"><Radio size={20}/><span>Seis fuentes reales. Análisis de pago {config.rss_paid_analysis?'habilitado con cupo autorizado':'desactivado hasta autorizar presupuesto'}. Las noticias recibidas quedan pendientes.</span></div><section className="card"><div className="section-heading"><div><h2>Monitor de fuentes RSS</h2><p>Consulta cada 5 minutos · fecha y errores conservados</p></div><button className="button primary" disabled={!presenter} onClick={()=>action(()=>api('/sources/sync',{method:'POST'}),'Consultas encoladas. El worker actualizará cada fuente.')}><RefreshCw size={16}/>Actualizar ahora</button></div><div className="sources-grid">{sources.map(s=><article className="source-card" key={s.id}><div className="inline"><Radio size={20}/><Badge tone={s.status==='error'?'danger':s.last_success_at?'success':'warning'}>{label(s.status)}</Badge></div><h3>{s.name}</h3><p>Última consulta: {date(s.last_attempt_at||undefined)}</p><p>Último éxito: {date(s.last_success_at||undefined)}</p><div className="source-count"><strong>{s.item_count}</strong> nuevas versiones · HTTP {s.http_status||'—'}</div>{s.error&&<p className="error-text">{s.error}</p>}</article>)}</div></section></>}/>
- <Route path="/analitica" element={<Analytics overview={overview} suppliers={suppliers} sources={sources} batches={batches} {...shared}/>}/>
- <Route path="*" element={<Empty title="Página no encontrada"><Link to="/">Volver al resumen</Link></Empty>}/>
- </Routes>}
- <footer className="page-footer"><span>Helixa Pharmaceuticals · Cartera ficticia</span><span>Política {config.policy_version||'1.0.0'} · {config.model||'jev-1.13.0'}</span></footer></main></div>
- <nav className="mobile-nav" aria-label="Navegación móvil">{navigation.filter(n=>['/','/noticias','/alertas'].includes(n.to)).map(n=><NavLink key={n.to} to={n.to} end={n.to==='/'}><n.icon size={21}/><span>{n.text}</span></NavLink>)}<button onClick={()=>setMore(!more)} aria-expanded={more}><Menu size={21}/>Más</button></nav>
- {more&&<div className="more-menu">{navigation.filter(n=>['/proveedores','/fuentes','/analitica'].includes(n.to)).map(n=><Link key={n.to} to={n.to} onClick={()=>setMore(false)}><n.icon size={18}/>{n.text}</Link>)}</div>}
- {loginOpen&&<Modal title="Acceso de presentador" close={()=>setLoginOpen(false)}><form className="modal-body" onSubmit={async e=>{e.preventDefault();try{const s=await api('/session',{method:'POST',body:JSON.stringify({password})});setCsrf(s.csrf);setPresenter(true);setLoginOpen(false);setPassword('');setError('')}catch(e){setError((e as Error).message);setLoginOpen(false)}}}><p>Acceso a cargas, análisis, sincronización y borradores.</p><label htmlFor="password">Contraseña</label><input id="password" type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} required autoFocus/><button className="button primary" type="submit">Entrar</button></form></Modal>}
- </div>
+function Score({ value }: { value: number | null }) {
+  return (
+    <div className={"score " + bandFor(value)}>
+      <strong>{number(value)}</strong>
+      <small>/ 100</small>
+    </div>
+  );
 }
-function Kpi({label:caption,value,note,icon,tone}:{label:string;value:any;note:string;icon:React.ReactNode;tone:string}){return <div className="kpi card"><div className="kpi-top"><span>{caption}</span><div className={'kpi-icon '+tone}>{icon}</div></div><div className="kpi-value">{value??'—'}</div><small>{note}</small></div>}
-function Ranking({suppliers,context,full=false}:{suppliers:Supplier[];context:string;full?:boolean}){
- const [q,setQ]=useState(''),[filters,setFilters]=useState(false),[category,setCategory]=useState(''),[criticality,setCriticality]=useState(''),[single,setSingle]=useState(''),[urgent,setUrgent]=useState(false),[alternate,setAlternate]=useState(''),[product,setProduct]=useState('');
- const rows=suppliers.filter(s=>(!q||[s.name,s.supplier_id,s.material,s.country].join(' ').toLowerCase().includes(q.toLowerCase()))&&(!category||s.category===category)&&(!criticality||s.criticality===criticality)&&(!single||s.single_source===single)&&(!urgent||s.urgent)&&(!alternate||Boolean(s.alternate_id)===(alternate==='Y'))&&(!product||s.products.includes(product)));
- return <><div className="ranking-toolbar"><div className="search"><Search size={17}/><input aria-label="Buscar proveedor" placeholder="Buscar proveedor, material o país…" value={q} onChange={e=>setQ(e.target.value)}/></div><button className={'button '+(filters?'selected':'')} onClick={()=>setFilters(!filters)} aria-expanded={filters}><SlidersHorizontal size={16}/><span>Filtros</span></button></div>{filters&&<div className="filters"><label>Categoría<select aria-label="Categoría" value={category} onChange={e=>setCategory(e.target.value)}><option value="">Todas</option>{[...new Set(suppliers.map(s=>s.category))].map(c=><option key={c}>{c}</option>)}</select></label><label>Criticidad<select aria-label="Criticidad" value={criticality} onChange={e=>setCriticality(e.target.value)}><option value="">Todas</option>{['High','Medium','Low'].map(c=><option value={c} key={c}>{label(c)}</option>)}</select></label><label>Fuente única<select aria-label="Fuente única" value={single} onChange={e=>setSingle(e.target.value)}><option value="">Todas</option><option value="Y">Sí</option><option value="N">No</option></select></label><label>Alternativo aprobado<select aria-label="Alternativo aprobado" value={alternate} onChange={e=>setAlternate(e.target.value)}><option value="">Todos</option><option value="Y">Sí</option><option value="N">No</option></select></label><label>Producto<select aria-label="Producto" value={product} onChange={e=>setProduct(e.target.value)}><option value="">Todos</option>{[...new Set(suppliers.flatMap(s=>s.products))].map(p=><option key={p}>{p}</option>)}</select></label><label className="checkbox"><input type="checkbox" checked={urgent} onChange={e=>setUrgent(e.target.checked)}/>Solo urgentes</label><button className="button" onClick={()=>{setQ('');setCategory('');setCriticality('');setSingle('');setAlternate('');setProduct('');setUrgent(false)}}>Limpiar</button><button className="button primary" onClick={()=>setFilters(false)}>Aplicar</button></div>}
- <div className="ranking-header"><span>Proveedor / material</span><span>Dependencia</span><span>Prioridad</span><span/></div><div className="ranking-list">{rows.length?rows.slice(0,full?100:8).map(s=><Link key={s.supplier_id} to={'/proveedores/'+s.supplier_id} className="supplier-row"><div className="supplier-identity"><span className="supplier-avatar">{s.name.split(' ').map(x=>x[0]).slice(0,2).join('')}</span><div><h3>{s.name}</h3><p>{s.country} <span>·</span> {s.material}</p><small>{s.latest_evidence?`Evidencia: ${date(s.latest_evidence)}`:'Pendiente de análisis'}</small></div></div><div className="dependency"><Badge tone={s.criticality==='High'?'purple':'neutral'}>Criticidad {label(s.criticality).toLowerCase()}</Badge>{s.single_source==='Y'&&<small>Fuente única</small>}{s.urgent&&<Badge tone="danger">Urgente</Badge>}{s.needs_review&&<Badge tone="warning">Revisión</Badge>}</div><Score value={s.priority}/><ChevronRight size={17} className="row-arrow"/></Link>):<Empty title={suppliers.length?'Sin coincidencias':'Catálogo pendiente de importación'}>Ajusta los filtros o importa el Excel de entrenamiento con acceso de presentador.</Empty>}</div><div className="list-count">{Math.min(rows.length,full?100:8)} de {rows.length} proveedores · {context==='rss'?'Exposición potencial':'Datos del ejercicio'}</div></>
+function Empty({
+  title,
+  children,
+}: {
+  title: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="empty">
+      <Activity size={30} />
+      <h3>{title}</h3>
+      <p>
+        {children ||
+          "Los resultados aparecerán aquí cuando se complete el análisis."}
+      </p>
+    </div>
+  );
 }
-function NewsList({articles}:{articles:Article[]}){return articles.length?<div className="news-list">{articles.map(a=><article className="news-item" key={a.id}><div className="inline"><small className="source-label">{a.source}</small><Badge tone={a.state==='review'?'warning':a.state==='error'?'danger':'neutral'}>{label(a.state)}</Badge></div><h3><Link to={'/noticias/'+a.id}>{a.headline}</Link></h3><small>{date(a.published_date)}{a.cached?' · Resultado cacheado':''}</small></article>)}</div>:<Empty title="Aún no hay noticias">Importa un lote o consulta los RSS desde la vista de presentador.</Empty>}
-function NewsPage({articles}:{articles:Article[]}){const [q,setQ]=useState(''),[state,setState]=useState(''),[source,setSource]=useState('');return <section className="card"><div className="section-heading"><div><h2>Noticias y evidencias</h2><p>Fuente, fecha y estado de cada entrada</p></div><Badge>{articles.length} recibidas</Badge></div><div className="ranking-toolbar"><div className="search"><Search size={18}/><input placeholder="Buscar noticias…" aria-label="Buscar noticias" value={q} onChange={e=>setQ(e.target.value)}/></div><select aria-label="Estado de análisis" value={state} onChange={e=>setState(e.target.value)}><option value="">Todos los estados</option>{['pending','done','review','error'].map(s=><option key={s} value={s}>{label(s)}</option>)}</select><select aria-label="Fuente" value={source} onChange={e=>setSource(e.target.value)}><option value="">Todas las fuentes</option>{[...new Set(articles.map(a=>a.source))].map(s=><option key={s}>{s}</option>)}</select></div><NewsList articles={articles.filter(a=>(!q||(a.headline+' '+a.summary).toLowerCase().includes(q.toLowerCase()))&&(!state||a.state===state)&&(!source||a.source===source))}/></section>}
-function ArticleDetail({context}:{context:string}){const {id}=useParams();const [a,setA]=useState<Article|null>(null);useEffect(()=>{api('/articles/'+id).then(setA)},[id,context]);if(!a)return <div role="status">Cargando noticia…</div>;return <section className="card detail-card"><Link className="text-link" to="/noticias">← Noticias</Link><div className="inline"><Badge>{label(a.state)}</Badge><span>{a.source} · {date(a.published_date)}</span></div><h2>{a.headline}</h2><p className="article-summary">{a.summary}</p>{a.url&&/^https?:\/\//.test(a.url)&&<a className="button" href={a.url} target="_blank" rel="noreferrer">Abrir fuente original <ArrowUpRight size={16}/></a>}{a.analysis?<><h3>Evidencia literal</h3>{a.analysis.evidence.map(e=><blockquote key={e.id}>{e.text}</blockquote>)}<h3>Evaluación por proveedor</h3>{a.analysis.assessments.map(s=><div className="assessment" key={s.supplier_id}><Link to={'/proveedores/'+s.supplier_id}>{s.supplier_id}</Link><Score value={s.priority}/><span>Vínculo {number(s.p_link*100)}% · Riesgo {s.is_risk} · Urgencia {s.urgent}</span>{s.needs_review&&<Badge tone="warning">Requiere revisión</Badge>}</div>)}<small>Modelo: {a.analysis.model_id} · Versión de noticia {a.version} · {a.cached?'Resultado cacheado':'Petición procesada'}</small></>:<div className="notice warning">Análisis pendiente. No se ha emitido una decisión de riesgo.</div>}</section>}
-function SupplierDetail({context,presenter,action,refresh}:any){const {id}=useParams();const [s,setS]=useState<Supplier|null>(null),[draft,setDraft]=useState<{id:string;text:string}|null>(null),[error,setError]=useState('');useEffect(()=>{api('/suppliers/'+id+'?context='+context).then(setS).catch(e=>setError(e.message))},[id,context]);async function create(kind:string,iid:string){try{setDraft(await api('/drafts',{method:'POST',body:JSON.stringify({supplier_id:id,incident_id:iid,kind})}))}catch(e){setError((e as Error).message)}}if(!s)return <div role="status">{error||'Cargando proveedor…'}</div>;return <><Link className="text-link" to="/proveedores">← Volver a proveedores</Link><section className="card detail-card"><div className="supplier-detail-heading"><div><div className="eyebrow">{s.supplier_id} · {s.category}</div><h2>{s.name}</h2><p>{s.city}, {s.country} · {s.material}</p><div className="inline"><Badge tone="purple">Criticidad {label(s.criticality)}</Badge><Badge>{s.single_source==='Y'?'Fuente única':'Varias fuentes'}</Badge>{s.urgent&&<Badge tone="danger">Urgente</Badge>}</div></div><div><Score value={s.priority}/><small>Prioridad actual</small></div></div>{error&&<div className="notice error">{error}</div>}<div className="detail-grid"><div><h3>Qué ocurrió y qué sabemos</h3>{s.incidents.length?s.incidents.map(i=><article className="incident-card" key={i.id}><div className="inline"><Badge tone={i.state==='resolved'?'success':i.state==='monitoring'?'warning':'danger'}>{label(i.state)}</Badge><small>{date(i.event_date)}</small></div><h4>{i.history.findLast(h=>h.headline)?.headline||label(i.event_type)}</h4>{i.history.filter(h=>h.assessment).map((h,n)=><div key={n}><p>{h.assessment?.needs_review?'Requiere revisión: '+h.assessment.review_reasons.map(label).join(', '):'Evaluación completada con evidencia.'}</p><p>Vínculo {number((h.assessment?.p_link||0)*100)}% · Severidad {number(h.assessment?.severity)} / 10</p><div className="factor-grid">{Object.entries(h.assessment?.factor_values||{}).map(([k,v])=><div key={k}><small>{{C:'Criticidad',U:'Fuente única',B:'Presión de cobertura',G:'Gasto en categoría'}[k]}</small><strong>{number(v)}</strong></div>)}</div></div>)}{i.stale&&<Badge tone="warning">Requiere actualización</Badge>}<small>Máximo histórico: {number(i.historical_priority)} / 100</small><div className="inline"><button className="button primary" disabled={!presenter} onClick={()=>create('supplier',i.id)}>Consultar proveedor</button><button className="button" disabled={!presenter||!s.alternate_id} onClick={()=>create('alternate',i.id)}>Consultar alternativo</button></div></article>):<Empty title="Sin incidentes analizados">La ausencia de análisis no implica ausencia de riesgo.</Empty>}<h3>Noticias relacionadas</h3><NewsList articles={s.articles||[]}/></div><aside><div className="fact-box"><h3>Contexto de suministro</h3><dl><dt>Cobertura de inventario</dt><dd>{['Logistics','Services'].includes(s.category)?'Inventario no aplicable':s.inventory_days==null?'Inventario no informado':`${s.inventory_days} días`}</dd><dt>Lead time</dt><dd>{s.lead_days==null?'No informado':`${s.lead_days} días`}</dd><dt>Gasto en categoría</dt><dd>{number(s.share_category_pct)}%</dd></dl><p className="small-note">La prioridad ordena atención; no es una probabilidad de quiebra ni una fecha de rotura de stock.</p></div><div className="fact-box"><h3>Productos relacionados</h3>{s.products.length?s.products.map(p=><Badge key={p}>{p}</Badge>):<p>Productos no mapeados</p>}</div><div className="fact-box"><h3>Alternativo aprobado</h3>{s.alternate?<><Link to={'/proveedores/'+s.alternate.supplier_id}>{s.alternate.name}</Link><p>{s.alternate.city}, {s.alternate.country}</p><Badge tone="warning">Stock sin confirmar</Badge></>:<p>Sin alternativo aprobado</p>}</div></aside></div></section>{draft&&<Modal title="Borrador de consulta" close={()=>setDraft(null)}><div className="modal-body"><div className="notice info">Borrador editable. No se envía a ningún destinatario.</div><label htmlFor="draft">Texto de la consulta</label><textarea id="draft" rows={15} value={draft.text} onChange={e=>setDraft({...draft,text:e.target.value})}/><div className="inline"><button className="button primary" onClick={()=>action(()=>api('/drafts/'+draft.id,{method:'PATCH',body:JSON.stringify({text:draft.text})}))}>Guardar</button><button className="button" onClick={()=>navigator.clipboard.writeText(draft.text).catch(()=>setError('No se pudo copiar. Selecciona y copia el texto.'))}><Copy size={16}/>Copiar</button><button className="button" onClick={()=>{const url=URL.createObjectURL(new Blob([draft.text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='consulta-proveedor.txt';a.click();URL.revokeObjectURL(url)}}><Download size={16}/>Descargar TXT</button></div></div></Modal>}</>}
-function Batches({batches,presenter,action}:any){return <section className="card batches"><div className="section-heading"><div><h2>Lotes del ejercicio</h2><p>Resultados y exportaciones independientes de RSS</p></div><Badge>{batches.length} importados</Badge></div>{batches.length?batches.map((b:Batch)=><div className="batch-row" key={b.id}><div><h3>{label(b.split)}</h3><small>{b.count} entradas · {b.done} completadas · {b.pending} pendientes · {b.errors} errores</small><progress max={b.count} value={b.done} aria-label={'Progreso '+label(b.split)}/>{b.elapsed_seconds!=null&&<small>Tiempo medido del lote: {number(b.elapsed_seconds)} s</small>}</div><div className="inline"><button className="button" disabled={!presenter||b.done===b.count} onClick={()=>action(()=>api('/batches/'+b.id+'/analyze',{method:'POST'}),'Análisis encolado dentro del presupuesto autorizado.')}>Analizar</button><button className="button" disabled={!presenter||b.done!==b.count||b.errors>0} onClick={()=>window.location.assign('/api/batches/'+b.id+'/export.xlsx')}><Download size={16}/>Exportar</button></div></div>):<Empty title="Importa el primer archivo">El catálogo se carga desde el Excel de entrenamiento.</Empty>}</section>}
-function Analytics({overview,suppliers,sources,batches,...shared}:any){const data=sources.map((s:Source)=>({name:s.name,recibidas:s.received_count,duplicadas:s.duplicates}));const distribution=['Sin analizar','Baja','Media','Alta','Crítica'].map((name,index)=>({name,count:suppliers.filter((s:Supplier)=>index===0?s.priority==null:s.priority!=null&&(index===1?s.priority<35:index===2?s.priority>=35&&s.priority<65:index===3?s.priority>=65&&s.priority<80:s.priority>=80)).length}));return <><section className="card detail-card"><h2>Analítica de ingestión</h2><p>Denominador: {overview?.received||0} artículos del contexto seleccionado.</p><div className="analytics-stats">{[['Recibidas','received'],['Procesadas','processed'],['Pendientes','pending'],['Con error','errors'],['Vinculadas','linked'],['Riesgo','risk'],['Urgentes','urgent'],['En revisión','review']].map(([l,k])=><div key={k}><small>{l}</small><strong>{overview?.[k]||0}</strong></div>)}</div><div className="charts"><div><h3>Volumen RSS por fuente</h3><div className="chart"><ResponsiveContainer width="100%" height="100%"><BarChart data={data} margin={{left:0,right:10,bottom:40}}><CartesianGrid strokeDasharray="3 3" vertical={false}/><XAxis dataKey="name" angle={-25} textAnchor="end" height={70} tick={{fontSize:10}}/><YAxis allowDecimals={false} width={30}/><Tooltip/><Bar name="Recibidas" dataKey="recibidas" fill="#635bff" radius={[4,4,0,0]}/></BarChart></ResponsiveContainer></div><p className="small-note">{sources.map((s:Source)=>`${s.name}: ${s.received_count} recibidas, ${s.duplicates} duplicadas`).join(' · ')}</p></div><div><h3>Distribución de prioridad</h3>{distribution.map(r=><div className="distribution" key={r.name}><span>{r.name}</span><meter min={0} max={Math.max(suppliers.length,1)} value={r.count}/><strong>{r.count}</strong></div>)}<p className="small-note">Proveedores únicos. Sin analizar no equivale a prioridad baja.</p></div></div><p>Latencia p50: {number(overview?.latencies?.p50)} s · p95: {number(overview?.latencies?.p95)} s · muestra n={overview?.latencies?.n||0}. Una muestra pequeña no establece rendimiento general.</p></section><Batches batches={batches} {...shared}/></>}
-createRoot(document.getElementById('root')!).render(<BrowserRouter><App/></BrowserRouter>);
+function Modal({
+  title,
+  close,
+  children,
+}: {
+  title: string;
+  close: () => void;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const prev = document.activeElement as HTMLElement;
+    ref.current?.showModal();
+    ref.current
+      ?.querySelector<HTMLElement>("[autofocus],input,textarea")
+      ?.focus();
+    return () => prev?.focus();
+  }, []);
+  return (
+    <dialog
+      ref={ref}
+      onCancel={(e) => {
+        e.preventDefault();
+        close();
+      }}
+      onClick={(e) => {
+        if (e.target === ref.current) close();
+      }}
+    >
+      <header>
+        <h2>{title}</h2>
+        <button className="icon-button" onClick={close} aria-label="Cerrar">
+          <X />
+        </button>
+      </header>
+      {children}
+    </dialog>
+  );
+}
+function App() {
+  const [context, setContext] = useState("exercise"),
+    [overview, setOverview] = useState<any>(null),
+    [suppliers, setSuppliers] = useState<Supplier[]>([]),
+    [articles, setArticles] = useState<Article[]>([]),
+    [sources, setSources] = useState<Source[]>([]),
+    [batches, setBatches] = useState<Batch[]>([]),
+    [alerts, setAlerts] = useState<Alert[]>([]),
+    [config, setConfig] = useState<any>({}),
+    [presenter, setPresenter] = useState(false),
+    [loginOpen, setLoginOpen] = useState(false),
+    [password, setPassword] = useState(""),
+    [message, setMessage] = useState(""),
+    [error, setError] = useState(""),
+    [loading, setLoading] = useState(true),
+    [sound, setSound] = useState("Desactivado"),
+    [more, setMore] = useState(false),
+    [alertFilter, setAlertFilter] = useState("all");
+  const cursor = useRef<number | null>(null),
+    file = useRef<HTMLInputElement>(null),
+    activeContext = useRef(context),
+    configRef = useRef<any>({});
+  useEffect(() => {
+    api("/session").then((s) => {
+      setPresenter(s.presenter);
+      setCsrf(s.csrf || "");
+    });
+    api("/config")
+      .then((c) => {
+        setBands(c.bands);
+        configRef.current = c;
+        setConfig(c);
+      })
+      .catch((e) => setError(e.message));
+  }, []);
+  async function refresh() {
+    try {
+      const [o, s, a, f, b, n] = await Promise.all([
+        api("/overview?context=" + context),
+        api("/suppliers?context=" + context),
+        api("/articles?context=" + context),
+        api("/sources"),
+        api("/batches"),
+        api("/alerts?context=" + context),
+      ]);
+      if (activeContext.current !== context) return;
+      setOverview(o);
+      setSuppliers(s.items);
+      setArticles(a);
+      setSources(f);
+      setBatches(b);
+      setAlerts(n.items);
+      document.title =
+        (n.unread ? `(${n.unread}) ` : "") + "Supplier Risk Radar · Helixa";
+      if (
+        cursor.current !== null &&
+        configRef.current.cooldown_seconds !== undefined
+      )
+        await audio
+          .notify(
+            n.items.filter((x: Alert) => x.id > cursor.current!),
+            configRef.current.cooldown_seconds,
+          )
+          .catch(() => setSound("Bloqueado"));
+      cursor.current = n.cursor;
+    } catch (e) {
+      if (activeContext.current === context) setError((e as Error).message);
+    } finally {
+      if (activeContext.current === context) setLoading(false);
+    }
+  }
+  useEffect(() => {
+    activeContext.current = context;
+    cursor.current = null;
+    setOverview(null);
+    setSuppliers([]);
+    setArticles([]);
+    setAlerts([]);
+    setLoading(true);
+    refresh();
+    const timer = setInterval(() => {
+      if (document.visibilityState === "visible") refresh();
+    }, 3000);
+    const focus = () => refresh();
+    window.addEventListener("focus", focus);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("focus", focus);
+    };
+  }, [context]);
+  async function action(
+    fn: () => Promise<any>,
+    success = "Operación completada",
+  ) {
+    try {
+      await fn();
+      setMessage(success);
+      refresh();
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  async function upload(f: File) {
+    const data = new FormData();
+    data.append("file", f);
+    await action(
+      () => api("/imports", { method: "POST", body: data }),
+      "Archivo importado. Revisa el lote antes de analizar.",
+    );
+  }
+  const shared = { context, presenter, action, refresh };
+  const navigation = [
+    { to: "/", icon: LayoutDashboard, text: "Resumen" },
+    { to: "/proveedores", icon: Building2, text: "Proveedores" },
+    { to: "/noticias", icon: Newspaper, text: "Noticias" },
+    { to: "/alertas", icon: Bell, text: "Alertas" },
+    { to: "/fuentes", icon: Radio, text: "Fuentes" },
+    { to: "/analitica", icon: Activity, text: "Analítica" },
+  ];
+  return (
+    <div className="app">
+      <a className="skip" href="#contenido">
+        Saltar al contenido
+      </a>
+      <aside className="sidebar">
+        <Link to="/" className="brand">
+          <span className="brand-icon">
+            <Activity />
+          </span>
+          <span>
+            Supplier Risk<span className="brand-light">Radar</span>
+          </span>
+        </Link>
+        <div className="workspace-label">HELIXA PHARMACEUTICALS</div>
+        <nav aria-label="Principal">
+          {navigation.map((n) => (
+            <NavLink key={n.to} to={n.to} end={n.to === "/"}>
+              <n.icon size={19} />
+              {n.text}
+              {n.to === "/alertas" &&
+                alerts.filter((a) => !a.acknowledged).length > 0 && (
+                  <span className="nav-count">
+                    {alerts.filter((a) => !a.acknowledged).length}
+                  </span>
+                )}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="sidebar-footer">
+          <ShieldCheck size={18} />
+          <div>
+            Cartera simulada<small>Decisiones con evidencia</small>
+          </div>
+        </div>
+      </aside>
+      <div className="main-shell">
+        <header className="topbar">
+          <div className="context-picker">
+            <span className="status-dot" />
+            <label className="sr-only" htmlFor="context">
+              Contexto
+            </label>
+            <select
+              id="context"
+              value={context}
+              onChange={(e) => setContext(e.target.value)}
+            >
+              <option value="exercise">Ejercicio</option>
+              <option value="rss">Noticias reales</option>
+            </select>
+          </div>
+          <div className="topbar-actions">
+            <span className="public-tag">
+              {presenter ? "Presentador" : "Vista pública"}
+            </span>
+            <button
+              className="icon-button mobile-sound"
+              aria-label="Activar sonido"
+              onClick={() =>
+                audio
+                  .activate()
+                  .then(() => setSound("Activado"))
+                  .catch(() => setSound("Bloqueado"))
+              }
+            >
+              <Volume2 size={19} />
+            </button>
+            <button
+              className="button small"
+              onClick={() =>
+                presenter
+                  ? action(
+                      () =>
+                        api("/session", { method: "DELETE" }).then(() => {
+                          setPresenter(false);
+                          setCsrf("");
+                        }),
+                      "Sesión cerrada",
+                    )
+                  : setLoginOpen(true)
+              }
+            >
+              {presenter ? <LogOut size={16} /> : <LogIn size={16} />}
+              <span>{presenter ? "Salir" : "Acceso presentador"}</span>
+            </button>
+          </div>
+        </header>
+        <main id="contenido">
+          <div className="page-heading">
+            <div>
+              <div className="eyebrow">INTELIGENCIA DE SUMINISTRO</div>
+              <h1>
+                Radar de proveedores<span className="heading-dot">.</span>
+              </h1>
+              <p>
+                {context === "rss"
+                  ? "Exposición potencial de una cartera simulada a noticias reales."
+                  : "Detecta señales, entiende el impacto y prioriza la respuesta."}
+              </p>
+            </div>
+            <div className="heading-actions">
+              <input
+                ref={file}
+                type="file"
+                accept=".xlsx"
+                className="sr-only"
+                aria-label="Archivo Excel"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) upload(e.target.files[0]);
+                  e.target.value = "";
+                }}
+              />
+              <button
+                className="button primary"
+                onClick={() =>
+                  presenter ? file.current?.click() : setLoginOpen(true)
+                }
+              >
+                <Upload size={17} />
+                Importar Excel
+              </button>
+            </div>
+          </div>
+          {config.fixtures && (
+            <div className="notice warning">
+              Demostración de interfaz · MOCKS IDENTIFICADOS. Estos resultados
+              no proceden de JEV real.
+            </div>
+          )}
+          {error && (
+            <div className="notice error" role="alert">
+              <AlertTriangle size={20} />
+              <span>{error}</span>
+              <button
+                className="icon-button"
+                onClick={() => setError("")}
+                aria-label="Cerrar error"
+              >
+                <X size={17} />
+              </button>
+            </div>
+          )}
+          {message && (
+            <div className="notice success" role="status">
+              <CheckCircle2 size={20} />
+              <span>{message}</span>
+              <button
+                className="icon-button"
+                onClick={() => setMessage("")}
+                aria-label="Cerrar aviso"
+              >
+                <X size={17} />
+              </button>
+            </div>
+          )}
+          {config.engine_configured === false && (
+            <div className="notice warning">
+              Motor sin configurar. El catálogo sigue disponible; las noticias
+              permanecen pendientes.
+            </div>
+          )}
+          <div className="sound-bar">
+            <div>
+              <Volume2 size={16} />
+              <span>
+                Sonido: <strong>{sound}</strong>
+              </span>
+            </div>
+            <div className="sound-actions">
+              <button
+                onClick={() =>
+                  audio
+                    .activate()
+                    .then(() => setSound("Activado"))
+                    .catch(() => setSound("Bloqueado"))
+                }
+              >
+                Activar sonido
+              </button>
+              <button
+                onClick={() =>
+                  audio
+                    .play()
+                    .catch(() =>
+                      setSound("Bloqueado: activa primero el sonido"),
+                    )
+                }
+              >
+                Probar alarma
+              </button>
+              <button
+                onClick={() => {
+                  audio.mute();
+                  setSound("Silenciado");
+                }}
+              >
+                <VolumeX size={14} />
+                Silenciar
+              </button>
+            </div>
+          </div>
+          {loading && !overview ? (
+            <div className="loading" role="status">
+              Cargando datos del radar…
+            </div>
+          ) : (
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <div className="kpis">
+                      <Kpi
+                        label="Proveedores urgentes"
+                        value={overview?.urgent_suppliers}
+                        note={`de ${suppliers.length} proveedores en cartera`}
+                        icon={<Bell />}
+                        tone="purple"
+                      />
+                      <Kpi
+                        label="Incidentes activos"
+                        value={overview?.active_incidents}
+                        note="Eventos distintos · sin sumar titulares"
+                        icon={<Activity />}
+                        tone="cyan"
+                      />
+                      <Kpi
+                        label="Noticias analizadas"
+                        value={overview?.processed}
+                        note={`de ${overview?.received || 0} recibidas · ${overview?.pending || 0} pendientes`}
+                        icon={<Newspaper />}
+                        tone="blue"
+                      />
+                      <Kpi
+                        label="Fuentes consultadas"
+                        value={`${overview?.healthy_sources || 0} / 6`}
+                        note="RSS · estado de la última consulta"
+                        icon={<Radio />}
+                        tone="green"
+                      />
+                    </div>
+                    <div className="dashboard-grid">
+                      <section className="card ranking-panel">
+                        <div className="section-heading">
+                          <div>
+                            <h2>Prioridad de proveedores</h2>
+                            <p>Máximo de incidentes activos por proveedor</p>
+                          </div>
+                          <Badge>{suppliers.length} proveedores</Badge>
+                        </div>
+                        <Ranking suppliers={suppliers} context={context} />
+                        <Link className="card-footer-link" to="/proveedores">
+                          Explorar la cartera completa{" "}
+                          <ChevronRight size={16} />
+                        </Link>
+                      </section>
+                      <div className="side-column">
+                        <section className="card">
+                          <div className="section-heading">
+                            <h2>Últimas señales</h2>
+                            <Link
+                              to="/noticias"
+                              aria-label="Ver todas las noticias"
+                            >
+                              <ArrowUpRight size={19} />
+                            </Link>
+                          </div>
+                          <NewsList articles={articles.slice(0, 4)} />
+                        </section>
+                        <section className="card sources-mini">
+                          <div className="section-heading">
+                            <h2>Estado de fuentes</h2>
+                            <Link to="/fuentes">Ver todas</Link>
+                          </div>
+                          {sources.map((s) => (
+                            <div className="source-mini" key={s.id}>
+                              <span
+                                className={
+                                  "status-dot " +
+                                  (s.status === "error"
+                                    ? "danger"
+                                    : s.last_success_at
+                                      ? ""
+                                      : "unknown")
+                                }
+                              />
+                              <span>{s.name}</span>
+                              <small>{label(s.status)}</small>
+                            </div>
+                          ))}
+                        </section>
+                      </div>
+                    </div>
+                    <Batches batches={batches} {...shared} />
+                  </>
+                }
+              />
+              <Route
+                path="/proveedores"
+                element={
+                  <section className="card">
+                    <div className="section-heading">
+                      <div>
+                        <h2>Cartera de proveedores</h2>
+                        <p>Identidad, exposición y alternativas conocidas</p>
+                      </div>
+                    </div>
+                    <Ranking suppliers={suppliers} context={context} full />
+                  </section>
+                }
+              />
+              <Route
+                path="/proveedores/:id"
+                element={<SupplierDetail {...shared} />}
+              />
+              <Route path="/materiales/:id" element={<MaterialDetail />} />
+              <Route
+                path="/noticias"
+                element={<NewsPage articles={articles} />}
+              />
+              <Route
+                path="/noticias/:id"
+                element={<ArticleDetail {...shared} />}
+              />
+              <Route
+                path="/alertas"
+                element={
+                  <section className="card">
+                    <div className="section-heading">
+                      <div>
+                        <h2>Centro de alertas</h2>
+                        <p>Reconocer una alerta conserva el incidente activo</p>
+                      </div>
+                      <Badge>
+                        {alerts.filter((a) => !a.acknowledged).length} sin leer
+                      </Badge>
+                    </div>
+                    <div className="ranking-toolbar">
+                      <select
+                        aria-label="Estado de alerta"
+                        value={alertFilter}
+                        onChange={(e) => setAlertFilter(e.target.value)}
+                      >
+                        <option value="all">Todas las alertas</option>
+                        <option value="new">Sin leer</option>
+                        <option value="ack">Reconocidas</option>
+                        <option value="resolved">Recuperadas</option>
+                      </select>
+                    </div>
+                    {alerts.length ? (
+                      alerts
+                        .filter(
+                          (a) =>
+                            alertFilter === "all" ||
+                            (alertFilter === "new" && !a.acknowledged) ||
+                            (alertFilter === "ack" && a.acknowledged) ||
+                            (alertFilter === "resolved" &&
+                              a.state === "resolved"),
+                        )
+                        .slice()
+                        .reverse()
+                        .map((a) => (
+                          <article className="alert-item" key={a.id}>
+                            <div className="alert-icon">
+                              <Bell size={20} />
+                            </div>
+                            <div>
+                              <div className="inline">
+                                <Badge
+                                  tone={
+                                    a.state === "resolved"
+                                      ? "success"
+                                      : a.needs_review
+                                        ? "warning"
+                                        : "danger"
+                                  }
+                                >
+                                  {a.state === "resolved"
+                                    ? "Recuperada"
+                                    : a.needs_review
+                                      ? "Requiere revisión"
+                                      : "Urgente"}
+                                </Badge>
+                                <small>{date(a.created_at)}</small>
+                              </div>
+                              <h3>
+                                <Link to={"/proveedores/" + a.supplier_id}>
+                                  {a.supplier_name}
+                                </Link>
+                              </h3>
+                              <p>{a.headline}</p>
+                              <small>
+                                Prioridad {number(a.priority)} ·{" "}
+                                {a.sound_eligible
+                                  ? "Elegible para sonido"
+                                  : "Solo aviso visual"}
+                              </small>
+                              <div className="inline">
+                                <button
+                                  className="button small"
+                                  disabled={!presenter || a.acknowledged}
+                                  onClick={() =>
+                                    action(() =>
+                                      api(`/alerts/${a.id}/ack`, {
+                                        method: "POST",
+                                      }),
+                                    )
+                                  }
+                                >
+                                  {a.acknowledged ? "Reconocida" : "Reconocer"}
+                                </button>
+                                <Link
+                                  className="text-link"
+                                  to={"/proveedores/" + a.supplier_id}
+                                >
+                                  Ver evidencia →
+                                </Link>
+                              </div>
+                            </div>
+                          </article>
+                        ))
+                    ) : (
+                      <Empty title="Sin alertas registradas">
+                        Las noticias pendientes no se consideran libres de
+                        riesgo.
+                      </Empty>
+                    )}
+                  </section>
+                }
+              />
+              <Route
+                path="/fuentes"
+                element={
+                  <>
+                    <div className="notice info">
+                      <Radio size={20} />
+                      <span>
+                        Seis fuentes reales. Análisis de pago{" "}
+                        {config.rss_paid_analysis
+                          ? "habilitado con cupo autorizado"
+                          : "desactivado hasta autorizar presupuesto"}
+                        . Las noticias recibidas quedan pendientes.
+                      </span>
+                    </div>
+                    <section className="card">
+                      <div className="section-heading">
+                        <div>
+                          <h2>Monitor de fuentes RSS</h2>
+                          <p>
+                            Consulta cada 5 minutos · fecha y errores
+                            conservados
+                          </p>
+                        </div>
+                        <button
+                          className="button primary"
+                          disabled={!presenter}
+                          onClick={() =>
+                            action(
+                              () => api("/sources/sync", { method: "POST" }),
+                              "Consultas encoladas. El worker actualizará cada fuente.",
+                            )
+                          }
+                        >
+                          <RefreshCw size={16} />
+                          Actualizar ahora
+                        </button>
+                      </div>
+                      <div className="sources-grid">
+                        {sources.map((s) => (
+                          <article className="source-card" key={s.id}>
+                            <div className="inline">
+                              <Radio size={20} />
+                              <Badge
+                                tone={
+                                  s.status === "error"
+                                    ? "danger"
+                                    : s.last_success_at
+                                      ? "success"
+                                      : "warning"
+                                }
+                              >
+                                {label(s.status)}
+                              </Badge>
+                            </div>
+                            <h3>{s.name}</h3>
+                            <p>
+                              Última consulta:{" "}
+                              {date(s.last_attempt_at || undefined)}
+                            </p>
+                            <p>
+                              Último éxito:{" "}
+                              {date(s.last_success_at || undefined)}
+                            </p>
+                            <div className="source-count">
+                              <strong>{s.item_count}</strong> nuevas versiones ·
+                              HTTP {s.http_status || "—"}
+                            </div>
+                            {s.error && <p className="error-text">{s.error}</p>}
+                          </article>
+                        ))}
+                      </div>
+                    </section>
+                  </>
+                }
+              />
+              <Route
+                path="/analitica"
+                element={
+                  <Analytics
+                    overview={overview}
+                    suppliers={suppliers}
+                    sources={sources}
+                    batches={batches}
+                    {...shared}
+                  />
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <Empty title="Página no encontrada">
+                    <Link to="/">Volver al resumen</Link>
+                  </Empty>
+                }
+              />
+            </Routes>
+          )}
+          <footer className="page-footer">
+            <span>Helixa Pharmaceuticals · Cartera ficticia</span>
+            <span>
+              Política {config.policy_version || "1.0.0"} ·{" "}
+              {config.model || "jev-1.13.0"}
+            </span>
+          </footer>
+        </main>
+      </div>
+      <nav className="mobile-nav" aria-label="Navegación móvil">
+        {navigation
+          .filter((n) => ["/", "/noticias", "/alertas"].includes(n.to))
+          .map((n) => (
+            <NavLink key={n.to} to={n.to} end={n.to === "/"}>
+              <n.icon size={21} />
+              <span>{n.text}</span>
+            </NavLink>
+          ))}
+        <button onClick={() => setMore(!more)} aria-expanded={more}>
+          <Menu size={21} />
+          Más
+        </button>
+      </nav>
+      {more && (
+        <div className="more-menu">
+          {navigation
+            .filter((n) =>
+              ["/proveedores", "/fuentes", "/analitica"].includes(n.to),
+            )
+            .map((n) => (
+              <Link key={n.to} to={n.to} onClick={() => setMore(false)}>
+                <n.icon size={18} />
+                {n.text}
+              </Link>
+            ))}
+        </div>
+      )}
+      {loginOpen && (
+        <Modal title="Acceso de presentador" close={() => setLoginOpen(false)}>
+          <form
+            className="modal-body"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                const s = await api("/session", {
+                  method: "POST",
+                  body: JSON.stringify({ password }),
+                });
+                setCsrf(s.csrf);
+                setPresenter(true);
+                setLoginOpen(false);
+                setPassword("");
+                setError("");
+              } catch (e) {
+                setError((e as Error).message);
+                setLoginOpen(false);
+              }
+            }}
+          >
+            <p>Acceso a cargas, análisis, sincronización y borradores.</p>
+            <label htmlFor="password">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoFocus
+            />
+            <button className="button primary" type="submit">
+              Entrar
+            </button>
+          </form>
+        </Modal>
+      )}
+    </div>
+  );
+}
+function Kpi({
+  label: caption,
+  value,
+  note,
+  icon,
+  tone,
+}: {
+  label: string;
+  value: any;
+  note: string;
+  icon: React.ReactNode;
+  tone: string;
+}) {
+  return (
+    <div className="kpi card">
+      <div className="kpi-top">
+        <span>{caption}</span>
+        <div className={"kpi-icon " + tone}>{icon}</div>
+      </div>
+      <div className="kpi-value">{value ?? "—"}</div>
+      <small>{note}</small>
+    </div>
+  );
+}
+function Ranking({
+  suppliers,
+  context,
+  full = false,
+}: {
+  suppliers: Supplier[];
+  context: string;
+  full?: boolean;
+}) {
+  const [q, setQ] = useState(""),
+    [filters, setFilters] = useState(false),
+    [category, setCategory] = useState(""),
+    [criticality, setCriticality] = useState(""),
+    [single, setSingle] = useState(""),
+    [urgent, setUrgent] = useState(false),
+    [alternate, setAlternate] = useState(""),
+    [product, setProduct] = useState("");
+  const rows = suppliers.filter(
+    (s) =>
+      (!q ||
+        [s.name, s.supplier_id, s.material, s.country]
+          .join(" ")
+          .toLowerCase()
+          .includes(q.toLowerCase())) &&
+      (!category || s.category === category) &&
+      (!criticality || s.criticality === criticality) &&
+      (!single || s.single_source === single) &&
+      (!urgent || s.urgent) &&
+      (!alternate || Boolean(s.alternate_id) === (alternate === "Y")) &&
+      (!product || s.products.includes(product)),
+  );
+  return (
+    <>
+      <div className="ranking-toolbar">
+        <div className="search">
+          <Search size={17} />
+          <input
+            aria-label="Buscar proveedor"
+            placeholder="Buscar proveedor, material o país…"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+          />
+        </div>
+        <button
+          className={"button " + (filters ? "selected" : "")}
+          onClick={() => setFilters(!filters)}
+          aria-expanded={filters}
+        >
+          <SlidersHorizontal size={16} />
+          <span>Filtros</span>
+        </button>
+      </div>
+      {filters && (
+        <div className="filters">
+          <label>
+            Categoría
+            <select
+              aria-label="Categoría"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="">Todas</option>
+              {[...new Set(suppliers.map((s) => s.category))].map((c) => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Criticidad
+            <select
+              aria-label="Criticidad"
+              value={criticality}
+              onChange={(e) => setCriticality(e.target.value)}
+            >
+              <option value="">Todas</option>
+              {["High", "Medium", "Low"].map((c) => (
+                <option value={c} key={c}>
+                  {label(c)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Fuente única
+            <select
+              aria-label="Fuente única"
+              value={single}
+              onChange={(e) => setSingle(e.target.value)}
+            >
+              <option value="">Todas</option>
+              <option value="Y">Sí</option>
+              <option value="N">No</option>
+            </select>
+          </label>
+          <label>
+            Alternativo aprobado
+            <select
+              aria-label="Alternativo aprobado"
+              value={alternate}
+              onChange={(e) => setAlternate(e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="Y">Sí</option>
+              <option value="N">No</option>
+            </select>
+          </label>
+          <label>
+            Producto
+            <select
+              aria-label="Producto"
+              value={product}
+              onChange={(e) => setProduct(e.target.value)}
+            >
+              <option value="">Todos</option>
+              {[...new Set(suppliers.flatMap((s) => s.products))].map((p) => (
+                <option key={p}>{p}</option>
+              ))}
+            </select>
+          </label>
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={urgent}
+              onChange={(e) => setUrgent(e.target.checked)}
+            />
+            Solo urgentes
+          </label>
+          <button
+            className="button"
+            onClick={() => {
+              setQ("");
+              setCategory("");
+              setCriticality("");
+              setSingle("");
+              setAlternate("");
+              setProduct("");
+              setUrgent(false);
+            }}
+          >
+            Limpiar
+          </button>
+          <button className="button primary" onClick={() => setFilters(false)}>
+            Aplicar
+          </button>
+        </div>
+      )}
+      <div className="ranking-header">
+        <span>Proveedor / material</span>
+        <span>Dependencia</span>
+        <span>Prioridad</span>
+        <span />
+      </div>
+      <div className="ranking-list">
+        {rows.length ? (
+          rows.slice(0, full ? 100 : 8).map((s) => (
+            <Link
+              key={s.supplier_id}
+              to={"/proveedores/" + s.supplier_id}
+              className="supplier-row"
+            >
+              <div className="supplier-identity">
+                <span className="supplier-avatar">
+                  {s.name
+                    .split(" ")
+                    .map((x) => x[0])
+                    .slice(0, 2)
+                    .join("")}
+                </span>
+                <div>
+                  <h3>{s.name}</h3>
+                  <p>
+                    {s.country} <span>·</span> {s.material}
+                  </p>
+                  <small>
+                    {s.latest_evidence
+                      ? `Evidencia: ${date(s.latest_evidence)}`
+                      : "Pendiente de análisis"}
+                  </small>
+                </div>
+              </div>
+              <div className="dependency">
+                <Badge tone={s.criticality === "High" ? "purple" : "neutral"}>
+                  Criticidad {label(s.criticality).toLowerCase()}
+                </Badge>
+                {s.single_source === "Y" && <small>Fuente única</small>}
+                {s.status === "resolved" && (
+                  <Badge tone="success">Recuperado</Badge>
+                )}
+                {s.status === "positive" && (
+                  <Badge tone="success">Sin riesgo activo</Badge>
+                )}
+                {s.urgent && <Badge tone="danger">Urgente</Badge>}
+                {s.needs_review && <Badge tone="warning">Revisión</Badge>}
+              </div>
+              <Score value={s.priority} />
+              <ChevronRight size={17} className="row-arrow" />
+              <div className="mobile-row-action">
+                <span className="reason-text">{s.reason}</span>
+                <span>Ver detalle →</span>
+              </div>
+            </Link>
+          ))
+        ) : (
+          <Empty
+            title={
+              suppliers.length
+                ? "Sin coincidencias"
+                : "Catálogo pendiente de importación"
+            }
+          >
+            Ajusta los filtros o importa el Excel de entrenamiento con acceso de
+            presentador.
+          </Empty>
+        )}
+      </div>
+      <div className="list-count">
+        {Math.min(rows.length, full ? 100 : 8)} de {rows.length} proveedores ·{" "}
+        {context === "rss" ? "Exposición potencial" : "Datos del ejercicio"}
+      </div>
+    </>
+  );
+}
+function NewsList({ articles }: { articles: Article[] }) {
+  return articles.length ? (
+    <div className="news-list">
+      {articles.map((a) => (
+        <article className="news-item" key={a.id}>
+          <div className="inline">
+            <small className="source-label">{a.source}</small>
+            <Badge
+              tone={
+                a.state === "review"
+                  ? "warning"
+                  : a.state === "error"
+                    ? "danger"
+                    : "neutral"
+              }
+            >
+              {label(a.state)}
+            </Badge>
+          </div>
+          <h3>
+            <Link to={"/noticias/" + a.id}>{a.headline}</Link>
+          </h3>
+          <small>
+            {date(a.published_date)}
+            {a.cached ? " · Resultado cacheado" : ""}
+          </small>
+        </article>
+      ))}
+    </div>
+  ) : (
+    <Empty title="Aún no hay noticias">
+      Importa un lote o consulta los RSS desde la vista de presentador.
+    </Empty>
+  );
+}
+function NewsPage({ articles }: { articles: Article[] }) {
+  const [q, setQ] = useState(""),
+    [state, setState] = useState(""),
+    [source, setSource] = useState(""),
+    [from, setFrom] = useState(""),
+    [to, setTo] = useState(""),
+    [event, setEvent] = useState(""),
+    [relevant, setRelevant] = useState(false);
+  return (
+    <section className="card">
+      <div className="section-heading">
+        <div>
+          <h2>Noticias y evidencias</h2>
+          <p>Fuente, fecha y estado de cada entrada</p>
+        </div>
+        <Badge>{articles.length} recibidas</Badge>
+      </div>
+      <div className="ranking-toolbar">
+        <div className="search">
+          <Search size={18} />
+          <input
+            placeholder="Buscar noticias…"
+            aria-label="Buscar noticias"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+          />
+        </div>
+        <select
+          aria-label="Estado de análisis"
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+        >
+          <option value="">Todos los estados</option>
+          {["pending", "done", "review", "error"].map((s) => (
+            <option key={s} value={s}>
+              {label(s)}
+            </option>
+          ))}
+        </select>
+        <select
+          aria-label="Fuente"
+          value={source}
+          onChange={(e) => setSource(e.target.value)}
+        >
+          <option value="">Todas las fuentes</option>
+          {[...new Set(articles.map((a) => a.source))].map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </select>
+      </div>
+      <div className="ranking-toolbar news-filters">
+        <label>
+          Desde
+          <input
+            aria-label="Fecha desde"
+            type="date"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+          />
+        </label>
+        <label>
+          Hasta
+          <input
+            aria-label="Fecha hasta"
+            type="date"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+          />
+        </label>
+        <label>
+          Evento
+          <select
+            aria-label="Tipo de evento"
+            value={event}
+            onChange={(e) => setEvent(e.target.value)}
+          >
+            <option value="">Todos los eventos</option>
+            {[
+              ...new Set(
+                articles.flatMap((a) =>
+                  a.analysis?.event_type ? [a.analysis.event_type] : [],
+                ),
+              ),
+            ].map((v) => (
+              <option key={v} value={v}>
+                {label(v)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            checked={relevant}
+            onChange={(e) => setRelevant(e.target.checked)}
+          />
+          Solo con proveedores identificados
+        </label>
+        <button
+          className="button"
+          onClick={() => {
+            setQ("");
+            setState("");
+            setSource("");
+            setFrom("");
+            setTo("");
+            setEvent("");
+            setRelevant(false);
+          }}
+        >
+          Limpiar
+        </button>
+      </div>
+      <NewsList
+        articles={articles.filter(
+          (a) =>
+            (!q ||
+              (a.headline + " " + a.summary)
+                .toLowerCase()
+                .includes(q.toLowerCase())) &&
+            (!state || a.state === state) &&
+            (!source || a.source === source) &&
+            (!from || a.published_date >= from) &&
+            (!to || a.published_date.slice(0, 10) <= to) &&
+            (!event || a.analysis?.event_type === event) &&
+            (!relevant || Boolean(a.analysis?.affected_supplier_ids.length)),
+        )}
+      />
+    </section>
+  );
+}
+function ArticleDetail({ context, presenter, action }: any) {
+  const { id } = useParams();
+  const [a, setA] = useState<Article | null>(null),
+    [error, setError] = useState("");
+  useEffect(() => {
+    setA(null);
+    setError("");
+    api("/articles/" + id)
+      .then(setA)
+      .catch((e) => setError(e.message));
+  }, [id, context]);
+  if (!a)
+    return (
+      <div role={error ? "alert" : "status"}>
+        {error || "Cargando noticia…"}
+      </div>
+    );
+  return (
+    <section className="card detail-card">
+      <Link className="text-link" to="/noticias">
+        ← Noticias
+      </Link>
+      <div className="inline">
+        <Badge>{label(a.state)}</Badge>
+        <span>
+          {a.source} · {date(a.published_date)}
+        </span>
+      </div>
+      <h2>{a.headline}</h2>
+      <p className="article-summary">{a.summary}</p>
+      {a.analysis?.analysis_status === "error" && (
+        <div className="notice error">
+          <span>
+            Análisis sin decisión: {a.analysis.error}. El presentador debe
+            diagnosticar el fallo antes de reintentar.
+          </span>
+        </div>
+      )}
+      {a.state === "error" && presenter && (
+        <RetryAnalysis article={a} action={action} />
+      )}
+
+      {a.url && /^https?:\/\//.test(a.url) && (
+        <a className="button" href={a.url} target="_blank" rel="noreferrer">
+          Abrir fuente original <ArrowUpRight size={16} />
+        </a>
+      )}
+      {a.analysis ? (
+        <>
+          <h3>Evidencia literal</h3>
+          {a.analysis.evidence
+            .filter((e) =>
+              a.analysis!.assessments.some((s) =>
+                s.evidence_ids.includes(e.id),
+              ),
+            )
+            .map((e) => (
+              <blockquote key={e.id}>{e.text}</blockquote>
+            ))}
+          <h3>Evaluación por proveedor</h3>
+          {a.analysis.assessments.map((s) => (
+            <div className="assessment" key={s.supplier_id}>
+              <Link to={"/proveedores/" + s.supplier_id}>{s.supplier_id}</Link>
+              <Score value={s.priority} />
+              <span>
+                Vínculo {number(s.p_link * 100)}% · Riesgo {s.is_risk} ·
+                Urgencia {s.urgent}
+              </span>
+              {s.needs_review && (
+                <Badge tone="warning">Requiere revisión</Badge>
+              )}
+              {s.review_reasons.map((r) => (
+                <small key={r}>{reviewLabel(r)}</small>
+              ))}
+            </div>
+          ))}
+          <small>
+            Modelo: {a.analysis.model_id} · Versión de noticia {a.version} ·{" "}
+            {a.cached
+              ? "Resultado cacheado"
+              : a.cache_stages?.length
+                ? "Caché parcial y peticiones nuevas"
+                : "Petición procesada"}
+          </small>
+        </>
+      ) : (
+        <div className="notice warning">
+          Análisis pendiente. No se ha emitido una decisión de riesgo.
+        </div>
+      )}
+    </section>
+  );
+}
+function RetryAnalysis({ article, action }: any) {
+  const [open, setOpen] = useState(false),
+    [reason, setReason] = useState("");
+  return (
+    <>
+      <button className="button" onClick={() => setOpen(true)}>
+        Reintentar tras diagnóstico
+      </button>
+      {open && (
+        <Modal
+          title="Diagnóstico antes de reintentar"
+          close={() => setOpen(false)}
+        >
+          <form
+            className="modal-body"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              await action(
+                () =>
+                  api("/articles/" + article.id + "/retry", {
+                    method: "POST",
+                    body: JSON.stringify({ reason }),
+                  }),
+                "Reintento encolado con el mismo límite de consumo.",
+              );
+              setOpen(false);
+            }}
+          >
+            <p>
+              Indica la corrección realizada sin incluir credenciales. Los
+              intentos agotados no se reinician.
+            </p>
+            <label htmlFor="diagnostic">Diagnóstico y corrección</label>
+            <textarea
+              id="diagnostic"
+              required
+              minLength={12}
+              maxLength={2000}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <button className="button primary" type="submit">
+              Registrar y reintentar
+            </button>
+          </form>
+        </Modal>
+      )}
+    </>
+  );
+}
+function SupplierDetail({ context, presenter, action, refresh }: any) {
+  const { id } = useParams();
+  const [s, setS] = useState<Supplier | null>(null),
+    [draft, setDraft] = useState<{ id: string; text: string } | null>(null),
+    [error, setError] = useState(""),
+    [resolution, setResolution] = useState<string | null>(null),
+    [reason, setReason] = useState("");
+  useEffect(() => {
+    api("/suppliers/" + id + "?context=" + context)
+      .then(setS)
+      .catch((e) => setError(e.message));
+  }, [id, context]);
+  async function create(kind: string, iid: string) {
+    try {
+      setDraft(
+        await api("/drafts", {
+          method: "POST",
+          body: JSON.stringify({ supplier_id: id, incident_id: iid, kind }),
+        }),
+      );
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  if (!s) return <div role="status">{error || "Cargando proveedor…"}</div>;
+  return (
+    <>
+      <Link className="text-link" to="/proveedores">
+        ← Volver a proveedores
+      </Link>
+      <section className="card detail-card">
+        <div className="supplier-detail-heading">
+          <div>
+            <div className="eyebrow">
+              {s.supplier_id} · {s.category}
+            </div>
+            <h2>{s.name}</h2>
+            <p>
+              {s.city}, {s.country} · {s.material}
+            </p>
+            <div className="inline">
+              <Badge tone="purple">Criticidad {label(s.criticality)}</Badge>
+              <Badge>
+                {s.single_source === "Y" ? "Fuente única" : "Varias fuentes"}
+              </Badge>
+              {s.urgent && <Badge tone="danger">Urgente</Badge>}
+            </div>
+          </div>
+          <div>
+            <Score value={s.priority} />
+            <small>Prioridad actual</small>
+          </div>
+        </div>
+        {error && <div className="notice error">{error}</div>}
+        <div className="detail-grid">
+          <div>
+            <h3>Qué ocurrió y qué sabemos</h3>
+            {s.incidents.length ? (
+              s.incidents.map((i) => (
+                <article className="incident-card" key={i.id}>
+                  <div className="inline">
+                    <Badge
+                      tone={
+                        i.state === "resolved"
+                          ? "success"
+                          : i.state === "monitoring"
+                            ? "warning"
+                            : "danger"
+                      }
+                    >
+                      {label(i.state)}
+                    </Badge>
+                    <small>{date(i.event_date)}</small>
+                  </div>
+                  <h4>
+                    {i.history.findLast((h) => h.headline)?.headline ||
+                      label(i.event_type)}
+                  </h4>
+                  {i.history
+                    .filter((h) => h.assessment)
+                    .map((h, n) => (
+                      <div key={n}>
+                        {h.explanation && (
+                          <blockquote>{h.explanation}</blockquote>
+                        )}
+                        <p>
+                          {h.assessment?.needs_review
+                            ? "Requiere revisión: " +
+                              h.assessment.review_reasons
+                                .map(reviewLabel)
+                                .join(", ")
+                            : "Evaluación completada con evidencia."}
+                        </p>
+                        <p>
+                          Vínculo {number((h.assessment?.p_link || 0) * 100)}% ·
+                          Severidad {number(h.assessment?.severity)} / 10
+                        </p>
+                        <div className="factor-grid">
+                          {Object.entries(
+                            h.assessment?.factor_values || {},
+                          ).map(([k, v]) => (
+                            <div key={k}>
+                              <small>
+                                {
+                                  {
+                                    C: "Criticidad",
+                                    U: "Fuente única",
+                                    B: "Presión de cobertura",
+                                    G: "Gasto en categoría",
+                                  }[k]
+                                }
+                              </small>
+                              <strong>{number(v)}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  {i.stale && (
+                    <Badge tone="warning">Requiere actualización</Badge>
+                  )}
+                  {i.history
+                    .filter((h) => h.reason)
+                    .map((h, n) => (
+                      <p key={n}>Resolución registrada: {h.reason}</p>
+                    ))}
+                  <small>
+                    Máximo histórico: {number(i.historical_priority)} / 100
+                  </small>
+                  <div className="inline">
+                    <button
+                      className="button primary"
+                      disabled={!presenter}
+                      onClick={() => create("supplier", i.id)}
+                    >
+                      Consultar proveedor
+                    </button>
+                    <button
+                      className="button"
+                      disabled={!presenter || !s.alternate_id}
+                      onClick={() => create("alternate", i.id)}
+                    >
+                      Consultar alternativo
+                    </button>
+                    {i.state !== "resolved" && (
+                      <button
+                        className="button"
+                        disabled={!presenter}
+                        onClick={() => {
+                          setReason("");
+                          setResolution(i.id);
+                        }}
+                      >
+                        Resolver con motivo
+                      </button>
+                    )}
+                  </div>
+                </article>
+              ))
+            ) : (
+              <Empty title="Sin incidentes analizados">
+                La ausencia de análisis no implica ausencia de riesgo.
+              </Empty>
+            )}
+            <h3>Noticias relacionadas</h3>
+            <NewsList articles={s.articles || []} />
+          </div>
+          <aside>
+            <div className="fact-box">
+              <h3>Contexto de suministro</h3>
+              <dl>
+                <dt>Cobertura de inventario</dt>
+                <dd>
+                  {["Logistics", "Services"].includes(s.category)
+                    ? "Inventario no aplicable"
+                    : s.inventory_days == null
+                      ? "Inventario no informado"
+                      : `${s.inventory_days} días`}
+                </dd>
+                <dt>Lead time</dt>
+                <dd>
+                  {s.lead_days == null ? "No informado" : `${s.lead_days} días`}
+                </dd>
+                <dt>Gasto en categoría</dt>
+                <dd>{number(s.share_category_pct)}%</dd>
+              </dl>
+              <p className="small-note">
+                La prioridad ordena atención; no es una probabilidad de quiebra
+                ni una fecha de rotura de stock.
+              </p>
+            </div>
+            <div className="fact-box">
+              <h3>Materiales mapeados</h3>
+              {s.materials.length ? (
+                s.materials.map((m) => (
+                  <p key={m.material_id}>
+                    <Link
+                      className="text-link"
+                      to={"/materiales/" + m.material_id}
+                    >
+                      {m.name} →
+                    </Link>
+                  </p>
+                ))
+              ) : (
+                <p>Sin correspondencia en Materials</p>
+              )}
+              <h3>Productos relacionados</h3>
+              {s.products.length ? (
+                s.products.map((p) => <Badge key={p}>{p}</Badge>)
+              ) : (
+                <p>Productos no mapeados</p>
+              )}
+            </div>
+            <div className="fact-box">
+              <h3>Alternativo aprobado</h3>
+              {s.alternate ? (
+                <>
+                  <Link to={"/proveedores/" + s.alternate.supplier_id}>
+                    {s.alternate.name}
+                  </Link>
+                  <p>
+                    {s.alternate.city}, {s.alternate.country}
+                  </p>
+                  <Badge tone="warning">Stock sin confirmar</Badge>
+                </>
+              ) : (
+                <p>Sin alternativo aprobado</p>
+              )}
+            </div>
+          </aside>
+        </div>
+      </section>
+      {resolution && (
+        <Modal title="Resolver incidente" close={() => setResolution(null)}>
+          <form
+            className="modal-body"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                await api("/incidents/" + resolution + "/resolve", {
+                  method: "POST",
+                  body: JSON.stringify({ reason }),
+                });
+                setResolution(null);
+                setS(await api("/suppliers/" + id + "?context=" + context));
+                refresh();
+              } catch (e) {
+                setError((e as Error).message);
+              }
+            }}
+          >
+            <label htmlFor="reason">Motivo y evidencia de resolución</label>
+            <textarea
+              id="reason"
+              minLength={8}
+              maxLength={2000}
+              required
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <button className="button primary" type="submit">
+              Registrar resolución
+            </button>
+          </form>
+        </Modal>
+      )}
+      {draft && (
+        <Modal title="Borrador de consulta" close={() => setDraft(null)}>
+          <div className="modal-body">
+            <div className="notice info">
+              Borrador editable. No se envía a ningún destinatario.
+            </div>
+            <label htmlFor="draft">Texto de la consulta</label>
+            <textarea
+              id="draft"
+              rows={15}
+              value={draft.text}
+              onChange={(e) => setDraft({ ...draft, text: e.target.value })}
+            />
+            <div className="inline">
+              <button
+                className="button primary"
+                onClick={() =>
+                  action(() =>
+                    api("/drafts/" + draft.id, {
+                      method: "PATCH",
+                      body: JSON.stringify({ text: draft.text }),
+                    }),
+                  )
+                }
+              >
+                Guardar
+              </button>
+              <button
+                className="button"
+                onClick={() =>
+                  navigator.clipboard
+                    .writeText(draft.text)
+                    .catch(() =>
+                      setError(
+                        "No se pudo copiar. Selecciona y copia el texto.",
+                      ),
+                    )
+                }
+              >
+                <Copy size={16} />
+                Copiar
+              </button>
+              <button
+                className="button"
+                onClick={() => {
+                  const url = URL.createObjectURL(
+                    new Blob([draft.text], {
+                      type: "text/plain;charset=utf-8",
+                    }),
+                  );
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = "consulta-proveedor.txt";
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+              >
+                <Download size={16} />
+                Descargar TXT
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+}
+function MaterialDetail() {
+  const { id } = useParams();
+  const [m, setM] = useState<Material | null>(null),
+    [error, setError] = useState("");
+  useEffect(() => {
+    api<Material>("/materials/" + id)
+      .then(setM)
+      .catch((e) => setError(e.message));
+  }, [id]);
+  if (!m) return <div role="status">{error || "Cargando material…"}</div>;
+  return (
+    <section className="card detail-card">
+      <Link className="text-link" to="/proveedores">
+        ← Cartera de proveedores
+      </Link>
+      <div className="eyebrow">
+        {m.material_id} · {m.category}
+      </div>
+      <h2>{m.name}</h2>
+      <p>
+        Necesidad mensual declarada: {number(m.monthly_requirement)} {m.unit}
+      </p>
+      <div className="detail-grid">
+        <div>
+          <h3>Productos relacionados</h3>
+          {m.products.length ? (
+            m.products.map((p) => <Badge key={p}>{p}</Badge>)
+          ) : (
+            <p>Productos no mapeados</p>
+          )}
+        </div>
+        <aside>
+          <div className="fact-box">
+            <h3>Proveedor principal</h3>
+            {m.primary ? (
+              <Link className="text-link" to={"/proveedores/" + m.primary_id}>
+                {m.primary.name}
+              </Link>
+            ) : (
+              <p>No informado</p>
+            )}
+          </div>
+          <div className="fact-box">
+            <h3>Alternativo aprobado</h3>
+            {m.alternate ? (
+              <>
+                <Link
+                  className="text-link"
+                  to={"/proveedores/" + m.alternate_id}
+                >
+                  {m.alternate.name}
+                </Link>
+                <Badge tone="warning">Stock sin confirmar</Badge>
+              </>
+            ) : (
+              <p>Sin alternativo aprobado</p>
+            )}
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
+}
+function Batches({ batches, presenter, action }: any) {
+  return (
+    <section className="card batches">
+      <div className="section-heading">
+        <div>
+          <h2>Lotes del ejercicio</h2>
+          <p>Resultados y exportaciones independientes de RSS</p>
+        </div>
+        <Badge>{batches.length} importados</Badge>
+      </div>
+      {batches.length ? (
+        batches.map((b: Batch) => (
+          <div className="batch-row" key={b.id}>
+            <div>
+              <h3>{label(b.split)}</h3>
+              <small>
+                {b.count} entradas · {b.done} completadas · {b.pending}{" "}
+                pendientes · {b.errors} errores
+              </small>
+              <progress
+                max={b.count}
+                value={b.done}
+                aria-label={"Progreso " + label(b.split)}
+              />
+              {b.elapsed_seconds != null && (
+                <small>
+                  Tiempo medido del lote: {number(b.elapsed_seconds)} s
+                </small>
+              )}
+            </div>
+            <div className="inline">
+              <button
+                className="button"
+                disabled={!presenter || b.done === b.count}
+                onClick={() =>
+                  action(
+                    () =>
+                      api("/batches/" + b.id + "/analyze", { method: "POST" }),
+                    "Análisis encolado dentro del presupuesto autorizado.",
+                  )
+                }
+              >
+                Analizar
+              </button>
+              <button
+                className="button"
+                disabled={!presenter || b.done !== b.count || b.errors > 0}
+                onClick={() =>
+                  window.location.assign(
+                    "/api/batches/" + b.id + "/export.xlsx",
+                  )
+                }
+              >
+                <Download size={16} />
+                Exportar
+              </button>
+            </div>
+          </div>
+        ))
+      ) : (
+        <Empty title="Importa el primer archivo">
+          El catálogo se carga desde el Excel de entrenamiento.
+        </Empty>
+      )}
+    </section>
+  );
+}
+function Analytics({ overview, suppliers, sources, batches, ...shared }: any) {
+  const data = sources.map((s: Source) => ({
+    name: s.name,
+    recibidas: s.received_count,
+    duplicadas: s.duplicates,
+  }));
+  const distribution = [
+    {
+      name: "Sin analizar",
+      count: suppliers.filter((s: Supplier) => s.priority === null).length,
+    },
+    ...getBands().map((b) => ({
+      name: b.label_es,
+      count: suppliers.filter((s: Supplier) => bandFor(s.priority) === b.id)
+        .length,
+    })),
+  ];
+  return (
+    <>
+      <section className="card detail-card">
+        <h2>Analítica de ingestión</h2>
+        <p>
+          Denominador: {overview?.received || 0} artículos del contexto
+          seleccionado.
+        </p>
+        <div className="analytics-stats">
+          {[
+            ["Recibidas", "received"],
+            ["Procesadas", "processed"],
+            ["Pendientes", "pending"],
+            ["Con error", "errors"],
+            ["Vinculadas", "linked"],
+            ["Riesgo", "risk"],
+            ["Urgentes", "urgent"],
+            ["En revisión", "review"],
+          ].map(([l, k]) => (
+            <div key={k}>
+              <small>{l}</small>
+              <strong>{overview?.[k] || 0}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="charts">
+          <div>
+            <h3>Volumen RSS por fuente</h3>
+            <div className="chart">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={data}
+                  margin={{ left: 0, right: 10, bottom: 40 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    angle={-25}
+                    textAnchor="end"
+                    height={70}
+                    tick={{ fontSize: 10 }}
+                  />
+                  <YAxis allowDecimals={false} width={30} />
+                  <Tooltip />
+                  <Bar
+                    isAnimationActive={false}
+                    name="Recibidas"
+                    dataKey="recibidas"
+                    fill="#635bff"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="small-note">
+              {sources
+                .map(
+                  (s: Source) =>
+                    `${s.name}: ${s.received_count} recibidas, ${s.duplicates} duplicadas`,
+                )
+                .join(" · ")}
+            </p>
+          </div>
+          <div>
+            <h3>Distribución de prioridad</h3>
+            {distribution.map((r) => (
+              <div className="distribution" key={r.name}>
+                <span>{r.name}</span>
+                <meter
+                  min={0}
+                  max={Math.max(suppliers.length, 1)}
+                  value={r.count}
+                />
+                <strong>{r.count}</strong>
+              </div>
+            ))}
+            <p className="small-note">
+              Proveedores únicos. Sin analizar no equivale a prioridad baja.
+            </p>
+          </div>
+        </div>
+        <p>
+          Latencia p50: {number(overview?.latencies?.p50)} s · p95:{" "}
+          {number(overview?.latencies?.p95)} s · muestra n=
+          {overview?.latencies?.n || 0}. Una muestra pequeña no establece
+          rendimiento general.
+        </p>
+      </section>
+      <Batches batches={batches} {...shared} />
+    </>
+  );
+}
+createRoot(document.getElementById("root")!).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
+);

@@ -1,0 +1,5 @@
+{
+  "filesystem_runtime": "passes",
+  "docker_build": "not executed: Docker unavailable",
+  "secrets_in_package": false
+}

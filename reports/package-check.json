@@ -1,0 +1,7 @@
+{
+  "frontend_secret_check": "passes",
+  "deploy_allowlist": "passes",
+  "files": 47,
+  "docker_build": "not executed: Docker unavailable",
+  "https_deployment": "not executed: approval/access pending"
+}

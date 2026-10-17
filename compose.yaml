@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16.15-bookworm
+    environment:
+      POSTGRES_USER: radar
+      POSTGRES_PASSWORD: radar_local_only
+      POSTGRES_DB: radar
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["radar_pg:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U radar -d radar"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  migrate:
+    build: .
+    image: supplier-risk-radar:local
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://radar:radar_local_only@postgres:5432/radar
+    command: sh -c "alembic upgrade head && python -m app.cli seed"
+    depends_on:
+      postgres: {condition: service_healthy}
+  web:
+    image: supplier-risk-radar:local
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://radar:radar_local_only@postgres:5432/radar
+      APP_BASE_URL: http://localhost:8000
+    ports: ["127.0.0.1:8000:8000"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  worker:
+    image: supplier-risk-radar:local
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://radar:radar_local_only@postgres:5432/radar
+      RSS_ANALYSIS_ENABLED: "false"
+    command: python -m app.worker
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+volumes:
+  radar_pg:

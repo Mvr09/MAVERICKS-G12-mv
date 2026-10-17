@@ -1,0 +1,17 @@
+{
+  "environment": "local; not Railway",
+  "checked_at": "2026-10-17T18:22:40.993373+00:00",
+  "worker_restart": true,
+  "jobs": [
+    "done",
+    "done",
+    "done",
+    "done",
+    "done",
+    "done"
+  ],
+  "seconds": 3.318,
+  "jev_requests_before": 4,
+  "jev_requests_after": 4,
+  "rss_paid_analysis": false
+}

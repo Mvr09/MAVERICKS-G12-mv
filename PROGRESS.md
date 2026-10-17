@@ -1,47 +1,41 @@
-# Progreso — Supplier Risk Radar
+# Progreso · Supplier Risk Radar
 
-## Plan y estado (17-10-2026)
-1. Base visible: PostgreSQL, Alembic, configuración segura, sesión, catálogo/importaciones y dashboard/ficha responsive.
-2. Motor: dos etapas JEV, política de referencia, cola con leases, evidencias y exportación.
-3. Continuidad: seis RSS reales, versiones, deduplicación e incidentes/recuperaciones.
-4. Experiencia: filtros, analítica, alarmas, borradores y accesibilidad.
-5. Integración: pruebas, auditoría A01–A20, imagen y preparación Railway.
+Actualizado 17-10-2026. Implementación local verificada; aceptación pública pendiente. Primer commit de hito: `6e80b4e`. Se conserva el cambio previo de `evidence/validation_report.json` y el archivo no seguido preexistente.
 
-## Lectura y decisiones
-- Leídos README, docs, contratos, configuración, manifiesto y referencias de motor/preguntas. No se busca ni utiliza answer key.
-- Se conserva `evidence/validation_report.json` modificado y el archivo no seguido preexistente; no pertenecen a esta entrega.
-- TYPESAFE_API_KEY, ADMIN_PASSWORD, SESSION_SECRET: configuradas. DATABASE_URL: faltante; preparar PostgreSQL local y configuración separada sin cambiar `.env`.
-- Uso de Railway y stack explícitos prevalece sobre el flujo de hosting Sites; no se crea un Site.
-- El prompt actual sustituye aprobaciones antiguas. Publicación/push/recursos de pago requieren aprobación agrupada final.
-- Contrato oficial consultado: https://docs.typesafe.ai/api y /models; endpoint /v1/systemone, versión fijada jev-1.13.0.
+## Plan y entregas
+1. **Hecho:** PostgreSQL/Alembic, configuración segura, sesión/CSRF/permisos, importación idempotente y catálogo; dashboard/ficha responsive.
+2. **Hecho:** cliente JEV oficial en dos etapas, contrato Pydantic/JSON Schema, evidencias, política de referencia, cola con leases/heartbeat y exportación.
+3. **Hecho:** seis RSS reales, estados/ETag/304, versiones, deduplicación, incidentes, recuperación e historia. Análisis RSS real pendiente de presupuesto.
+4. **Hecho:** filtros, proveedor/material/productos, analítica, alertas visuales/lógica sonora, borradores editables, copia/TXT y resolución motivada.
+5. **Preparado:** Dockerfile no privilegiado, Compose, Railway web/worker, README y paquete permitido. Auditoría A01–A20 en reports/AUDITORIA.md.
 
-## Autorizaciones
-- JEV: hasta 3 artículos de entrenamiento, dos etapas, máximo 2 reintentos; consumidos 0 artículos / 0 peticiones.
-- RSS: consultas reales autorizadas; análisis periódico de pago desactivado.
-- Pendientes: ampliar consumo para validación, test/LiveDay, RSS analizado y ensayo Railway; publicación y recursos externos.
+## Evidencia y comandos ejecutados
+- Lectura inicial: README, docs/, config/, contracts/, referencias, manifiesto y prompts de diseño/auditoría. No se buscó ni abrió answer key ni se exploraron XLSX ajenos al manifiesto.
+- `alembic upgrade head`: migraciones 0001–0002; esquema de 17 tablas comprobado en base independiente nueva. PostgreSQL 16.15 local en 127.0.0.1:55432 (binarios en /tmp).
+- `app.cli import-manifest`: 40 proveedores, 20 materiales, 6 productos; lotes 30/10/20/14; originales intactos. Repetición idempotente.
+- `DATABASE_URL=…/radar_test .venv/bin/python -m pytest -q`: **36 pasan**. Base desechable independiente, mocks identificados; sin llamadas de pago.
+- `python -m unittest discover -s reference -p 'test_*.py' -v`: **16 pasan**. No se sobrescribió el informe de validación del usuario.
+- `npm --prefix frontend run build`: pasa; dependencias exactas y lockfile, gráficos separados. Última instalación npm: 0 vulnerabilidades informadas.
+- `E2E_URL=…:8001 E2E_FULL=1 npm --prefix frontend run test:e2e`: **8 pasan**, mocks identificados. Carga, borrador, guardado/copia/TXT, exportación, foco y lógica de audio.
+- `npm --prefix frontend run test:e2e -- responsive.spec.ts`: **5 pasan** con datos locales reales, 360/390/768/1440 px; resumen, ficha, noticias, fuentes, analítica y material sin overflow. Capturas en reports/. Chrome emulado; no móvil físico.
+- `scripts.smoke http://127.0.0.1:8000`: salud/listados/ruta profunda 200, secretos/originales 404, mutación pública 401.
+- `scripts.check_restart`: sesión, 40 proveedores, 74 entradas y 3 análisis sobreviven al reinicio real de web.
+- `scripts.check_worker`: seis trabajos RSS completados, reinicio conservado, peticiones JEV antes/después = 4/4; reports/worker-local.json.
+- `scripts.package_deploy`: paquete permitido en .runtime/deploy y tar.gz; revisión de secretos del frontend/paquete pasa. Sin originales, etiquetas o .env. Docker no disponible: build de imagen no ejecutado.
 
-## Siguiente tarea
-Implementar y verificar la base sobre PostgreSQL, sin utilizar SQLite como sustituto de persistencia.
+## Pruebas externas y autorización consumida
+- Credenciales TYPESAFE_API_KEY, ADMIN_PASSWORD, SESSION_SECRET configuradas; no se muestran, regeneran ni modifica `.env`. DATABASE_URL faltaba; configurada por proceso para ensayos locales.
+- JEV real: **3/3 artículos consumidos**, N001/N002/N005; **4 HTTP 200**, 0 reintentos; versión devuelta jev-1.13.0; **1,476 s** total local. Uso en reports/jev-local.json. No se extrapola a LiveDay.
+- config/authorization.json conserva el cupo agotado también en una base nueva. Nuevos grants solo tras autorización explícita; cuatro llamadas simultáneas globales y hasta tres intentos por etapa.
+- RSS real local: **6/6 HTTP 200**, 37 versiones recientes en la consulta inicial; reportado en reports/rss-local.json. No consultado desde Railway. Análisis de pago desactivado, noticias pendientes.
+- Preguntas/política congeladas en reports/prompt-freeze.json. Validación, test y LiveDay importados, **sin inferencia** ni métricas inventadas.
 
-## Hitos verificados
-- Base y catálogo: migraciones 0001–0002 sobre PostgreSQL 16.15; 40 proveedores, 20 materiales, 6 productos y lotes 30/10/20/14 importados idempotentemente. `.env` intacto.
-- `npm --prefix frontend run build`: pasa. Dependencias con versiones exactas, lockfile; actualización tras avisos, último npm install informa 0 vulnerabilidades.
-- `DATABASE_URL=…/radar_test .venv/bin/python -m pytest -q`: 29 pruebas pasan. Base dedicada y mocks identificados, sin llamadas de pago.
-- `npm --prefix frontend run test:e2e`: 5 pasan; 360/390/768/1440 px sin overflow y filtro/foco de diálogo. Capturas en reports/.
-- Referencia: 16 tests pasan. No se ha sobrescrito el informe de validación preexistente.
-- RSS real local: seis HTTP 200, 37 versiones recientes (4/3/9/10/1/10). Evidencia en reports/rss-local.json. No probado desde Railway; inferencia RSS desactivada.
-- JEV real local: N001, N002, N005; 4 peticiones HTTP 200, 0 reintentos; modelo devuelto jev-1.13.0; 1,476 s total. Detalle de uso en reports/jev-local.json. El cupo inicial queda consumido (3/3), también al desplegar otra base.
-- Preguntas/política congeladas en reports/prompt-freeze.json antes de cualquier evaluación retenida. Validación/test/LiveDay sin inferencia.
+## Correcciones de auditoría
+Etiquetas excluidas del payload HTTP, 40 candidatos, etapa B múltiple, inventario null/0/no aplicable, prioridad independiente de confianza, máximo de incidentes, recuperación posterior y noticia antigua; caché parcial distinguida; versiones RSS pendientes sustituidas; errores no convertidos en N. Reintento con diagnóstico conserva presupuesto. Bandas numéricas de UI obtenidas de la política de API. Foco de diálogo, filtros móviles y cooldown sin reproducir historial probados.
 
-## Correcciones comprobadas
-- Etiquetas aisladas en payload efectivo; 40 Noul y etapa B agrupada para varios proveedores.
-- Inventario null/0/no aplicable, exportación bloqueada ante error, caché/consumo duraderos, reclamación concurrente y lease vencida.
-- Noticia tardía tras recuperación conservada sin reabrir incidente; ranking por máximo.
-- Accesibilidad: nombre explícito en filtros y foco al abrir/cerrar diálogo.
-
-## Limitaciones del entorno
-- Sin Docker/CLI Railway. PostgreSQL descargado a /tmp y arrancado en localhost:55432 mediante escalación del sandbox; no se modificó el sistema ni `.env`.
-- Pendientes: ensayo auditivo real, contenedor, Railway, ampliación de consumo y ensayo completo de 14 artículos. Las pruebas con mocks no acreditan precisión ni rendimiento del lote real.
-
-## Siguiente tarea
-Completar pruebas de borradores/audio, operación y documentación; auditoría A01–A20 y propuesta agrupada de publicación/consumo.
+## Pendientes y siguiente acción
+- No hay URL pública ni servicios desplegados; no se ha hecho push ni creado gasto externo.
+- Falta acceso Railway (sesión o RAILWAY_TOKEN y workspace) y aprobación de web/worker/PostgreSQL, HTTPS y redeploy.
+- Propuesta única en reports/APROBACION_PENDIENTE.md: una ventana de 45 min, hasta 83 artículos adicionales (27 training, 10 validation, 20 test, 14 LiveDay, 12 RSS), máximo 498 peticiones, reintentos incluidos.
+- Pendientes: build Docker, evaluación retenida, RSS analizado en Railway, exportación final y LiveDay ≤300 s medidos; audibilidad y móvil físico. Auditoría marca explícitamente lo no ejecutado; no hay aceptación completa.
+- Próxima acción dependiente: obtener aprobación agrupada y acceso, aplicar los grants autorizados y publicar el paquete limpio. Todo el trabajo independiente queda preparado. Web y worker locales activos, análisis RSS de pago desactivado.
