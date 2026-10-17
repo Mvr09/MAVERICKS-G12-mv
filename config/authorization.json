@@ -1,0 +1,11 @@
+{
+  "initial_training_limit": 3,
+  "initial_training_consumed": 3,
+  "initial_training_news_ids": [
+    "N001",
+    "N002",
+    "N005"
+  ],
+  "initial_training_closed": true,
+  "note": "El límite no se reinicia por hito, reinicio ni despliegue. Los grants adicionales requieren autorización explícita."
+}

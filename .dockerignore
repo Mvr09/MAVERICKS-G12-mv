@@ -1,0 +1,25 @@
+.git
+.env
+.env.*
+!.env.example
+.venv
+node_modules
+**/node_modules
+**/__pycache__
+.pytest_cache
+.runtime
+reports/private
+inputs
+fixtures
+evidence
+*.xlsx
+*.docx
+*.png
+*.log
+frontend/dist
+frontend/test-results
+frontend/playwright-report
+k Radar*
+.agents
+.codex
+.aws

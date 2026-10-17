@@ -1,0 +1,12 @@
+{
+  "question_version": "1.0.0",
+  "policy_version": "1.0.0",
+  "model": "jev-1.13.0",
+  "frozen_at": "2026-10-17",
+  "files": {
+    "reference/jev_requests.py": "0152f231cac1fe8e08c0ea4000076f17e6e008781155d10fe01925ddd59a1de9",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+  },
+  "validation_evaluated": false,
+  "test_or_liveday_analyzed": false
+}

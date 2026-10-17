@@ -1,0 +1,60 @@
+{
+  "environment": "local development; not Railway",
+  "checked_at": "2026-10-17T18:11:55.483665+00:00",
+  "sources": [
+    {
+      "source": "biopharma_dive",
+      "checked_at": "2026-10-17T18:11:54.504470+00:00",
+      "http": 200,
+      "received": 4,
+      "new": 4,
+      "duplicates": 0,
+      "parsed": 10
+    },
+    {
+      "source": "supply_chain_dive",
+      "checked_at": "2026-10-17T18:11:54.499750+00:00",
+      "http": 200,
+      "received": 3,
+      "new": 3,
+      "duplicates": 0,
+      "parsed": 10
+    },
+    {
+      "source": "the_loadstar",
+      "checked_at": "2026-10-17T18:11:54.598646+00:00",
+      "http": 200,
+      "received": 9,
+      "new": 9,
+      "duplicates": 0,
+      "parsed": 10
+    },
+    {
+      "source": "gdacs",
+      "checked_at": "2026-10-17T18:11:55.483002+00:00",
+      "http": 200,
+      "received": 10,
+      "new": 10,
+      "duplicates": 0,
+      "parsed": 225
+    },
+    {
+      "source": "ema",
+      "checked_at": "2026-10-17T18:11:54.432257+00:00",
+      "http": 200,
+      "received": 1,
+      "new": 1,
+      "duplicates": 0,
+      "parsed": 11
+    },
+    {
+      "source": "el_pais",
+      "checked_at": "2026-10-17T18:11:54.448229+00:00",
+      "http": 200,
+      "received": 10,
+      "new": 10,
+      "duplicates": 0,
+      "parsed": 21
+    }
+  ]
+}

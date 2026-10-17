@@ -1,0 +1,77 @@
+{
+  "environment": "local development; not Railway",
+  "checked_at": "2026-10-17T18:13:34.512516+00:00",
+  "authorized_article_limit": 3,
+  "reserved_articles": 3,
+  "seconds": 1.476,
+  "articles": [
+    {
+      "news_id": "N001",
+      "status": "done",
+      "error": null,
+      "model": "jev-1.13.0",
+      "requests": [
+        {
+          "stage": "a",
+          "attempt": 1,
+          "http_status": 200,
+          "seconds": 0.377,
+          "model": "jev-1.13.0",
+          "usage": {
+            "input_tokens": 11770,
+            "output_tokens": 1025
+          }
+        },
+        {
+          "stage": "b",
+          "attempt": 1,
+          "http_status": 200,
+          "seconds": 0.247,
+          "model": "jev-1.13.0",
+          "usage": {
+            "input_tokens": 1630,
+            "output_tokens": 203
+          }
+        }
+      ]
+    },
+    {
+      "news_id": "N002",
+      "status": "done",
+      "error": null,
+      "model": "jev-1.13.0",
+      "requests": [
+        {
+          "stage": "a",
+          "attempt": 1,
+          "http_status": 200,
+          "seconds": 0.325,
+          "model": "jev-1.13.0",
+          "usage": {
+            "input_tokens": 11738,
+            "output_tokens": 1028
+          }
+        }
+      ]
+    },
+    {
+      "news_id": "N005",
+      "status": "review",
+      "error": null,
+      "model": "jev-1.13.0",
+      "requests": [
+        {
+          "stage": "a",
+          "attempt": 1,
+          "http_status": 200,
+          "seconds": 0.293,
+          "model": "jev-1.13.0",
+          "usage": {
+            "input_tokens": 11741,
+            "output_tokens": 1028
+          }
+        }
+      ]
+    }
+  ]
+}
