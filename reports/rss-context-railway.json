@@ -1,0 +1,67 @@
+{
+  "checked_at": "2026-10-17T23:45:11.832247+00:00",
+  "revision": "f50f54fe8cb735898e4b841c92d74ebc373c7e15",
+  "article_id": "702c5e7b-a566-456d-b186-69bdaf92cbe1",
+  "model": "jev-1.13.0",
+  "profile": "rss-2.0.0",
+  "previous_generation": 0,
+  "previous_status": "review",
+  "previous_question_version": "1.0.0",
+  "old_result_preserved_in_history": true,
+  "preview_counts": {
+    "batches": 0,
+    "articles": 1,
+    "analyses": 1,
+    "incidents": 0,
+    "alerts": 0,
+    "drafts": 0,
+    "comparisons": 1,
+    "suppliers": 0,
+    "materials": 0
+  },
+  "requests_before": 64,
+  "exercise_reanalyzed": false,
+  "job_id": "e60be231-3ba3-4851-89ca-d9a9df12715c",
+  "completed_at": "2026-10-17T23:45:15.390526+00:00",
+  "elapsed_seconds": 3.558,
+  "job_state": "done",
+  "generation": 1,
+  "new_requests": 2,
+  "cached": false,
+  "reading": {
+    "status": "public_text",
+    "checked_at": "2026-10-17T23:44:46.596747+00:00",
+    "http_status": 200,
+    "source_url": "https://theloadstar.com/carriers-eye-fak-hikes-as-spot-decline-eases-and-capacity-stays-tight/",
+    "method": "editorial_paragraphs",
+    "text_hash": "8731042a14b327897c359a7be53418e6611dff1ee419754cc0999695702f10f2",
+    "characters": 5365
+  },
+  "analysis_status": "review",
+  "is_risk": "N",
+  "urgent": "N",
+  "affected_supplier_ids": [],
+  "review_reasons": [
+    "link_ambiguous:S032"
+  ],
+  "context_notes": [
+    "event_type_confidence_low"
+  ],
+  "assessments": [
+    {
+      "supplier_id": "S032",
+      "p_identity": 0.03,
+      "p_exposure": 0.36,
+      "p_link": 0.36,
+      "p_risk": 0.54,
+      "p_urgent": 0.18,
+      "needs_review": true,
+      "review_reasons": [
+        "evidence_confidence_low",
+        "impact_state_confidence_low"
+      ]
+    }
+  ],
+  "requests_after": 66,
+  "profile_verified": true
+}

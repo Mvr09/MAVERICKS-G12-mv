@@ -1,0 +1,89 @@
+{
+  "checked_at_local": "2026-10-17T23:47:59.174588+00:00",
+  "server_time": "2026-10-17T23:47:33.253498+00:00",
+  "revision": "f50f54fe8cb735898e4b841c92d74ebc373c7e15",
+  "manual_sync_http": 202,
+  "jev_requests_initiated": 0,
+  "periodic_paid_analysis": false,
+  "clock_note": "Reloj local adelantado aproximadamente26s respecto a Railway; verificación compara timestamps del mismo servidor, duración de ensayo JEV usa monotonic.",
+  "sources": [
+    {
+      "id": "biopharma_dive",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T23:46:49.344867+00:00",
+      "last_success_at": "2026-10-17T23:46:49.451478+00:00",
+      "job_state": "done",
+      "item_count": 0,
+      "received_count": 8,
+      "duplicates": 0,
+      "error": null,
+      "new_query_since_ui_check": true
+    },
+    {
+      "id": "el_pais",
+      "status": "ok",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-17T23:46:49.345583+00:00",
+      "last_success_at": "2026-10-17T23:46:49.501788+00:00",
+      "job_state": "done",
+      "item_count": 0,
+      "received_count": 410,
+      "duplicates": 390,
+      "error": null,
+      "new_query_since_ui_check": true
+    },
+    {
+      "id": "ema",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T23:46:49.864227+00:00",
+      "last_success_at": "2026-10-17T23:46:49.914999+00:00",
+      "job_state": "done",
+      "item_count": 0,
+      "received_count": 3,
+      "duplicates": 1,
+      "error": null,
+      "new_query_since_ui_check": true
+    },
+    {
+      "id": "gdacs",
+      "status": "ok",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-17T23:46:49.338132+00:00",
+      "last_success_at": "2026-10-17T23:46:52.276305+00:00",
+      "job_state": "done",
+      "item_count": 0,
+      "received_count": 190,
+      "duplicates": 168,
+      "error": null,
+      "new_query_since_ui_check": true
+    },
+    {
+      "id": "supply_chain_dive",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T23:46:49.267287+00:00",
+      "last_success_at": "2026-10-17T23:46:49.342281+00:00",
+      "job_state": "done",
+      "item_count": 0,
+      "received_count": 6,
+      "duplicates": 0,
+      "error": null,
+      "new_query_since_ui_check": true
+    },
+    {
+      "id": "the_loadstar",
+      "status": "ok",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-17T23:46:49.889872+00:00",
+      "last_success_at": "2026-10-17T23:46:50.274848+00:00",
+      "job_state": "done",
+      "item_count": 0,
+      "received_count": 369,
+      "duplicates": 351,
+      "error": null,
+      "new_query_since_ui_check": true
+    }
+  ]
+}

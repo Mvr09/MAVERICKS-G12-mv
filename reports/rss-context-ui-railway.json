@@ -1,0 +1,60 @@
+{
+  "checked_at": "2026-10-17T23:46:50.499Z",
+  "mocked": false,
+  "new_jev_requests": 0,
+  "page_errors": [],
+  "reading_profile_visible": true,
+  "potential_exposure_visible": true,
+  "still_requires_review": true,
+  "history_preserved": true,
+  "horizontal_overflow": false,
+  "worker_compatible": true,
+  "revision": "f50f54fe8cb735898e4b841c92d74ebc373c7e15",
+  "liveday_export_http": 200,
+  "liveday_done": 14,
+  "sources": [
+    {
+      "id": "biopharma_dive",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T23:40:51.722197+00:00",
+      "last_success_at": "2026-10-17T23:40:51.842972+00:00"
+    },
+    {
+      "id": "el_pais",
+      "status": "ok",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-17T23:40:51.701691+00:00",
+      "last_success_at": "2026-10-17T23:40:51.849467+00:00"
+    },
+    {
+      "id": "ema",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T23:40:52.308618+00:00",
+      "last_success_at": "2026-10-17T23:40:52.532342+00:00"
+    },
+    {
+      "id": "gdacs",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T23:40:51.708014+00:00",
+      "last_success_at": "2026-10-17T23:40:52.242575+00:00"
+    },
+    {
+      "id": "supply_chain_dive",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T23:40:51.715881+00:00",
+      "last_success_at": "2026-10-17T23:40:51.817041+00:00"
+    },
+    {
+      "id": "the_loadstar",
+      "status": "ok",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-17T23:40:52.303738+00:00",
+      "last_success_at": "2026-10-17T23:40:52.666391+00:00"
+    }
+  ],
+  "periodic_paid_analysis": false
+}

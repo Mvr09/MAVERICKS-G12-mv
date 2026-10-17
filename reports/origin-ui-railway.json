@@ -1,0 +1,43 @@
+{
+  "checked_at": "2026-10-17T23:44:33.574Z",
+  "mocked": false,
+  "new_jev_requests": 0,
+  "viewports": [
+    {
+      "width": 360,
+      "live_articles": 14,
+      "all_processed": true,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "keyboard_focus": true,
+      "rss_context": true
+    },
+    {
+      "width": 390,
+      "live_articles": 14,
+      "all_processed": true,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "keyboard_focus": true,
+      "rss_context": true
+    },
+    {
+      "width": 768,
+      "live_articles": 14,
+      "all_processed": true,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "keyboard_focus": true,
+      "rss_context": true
+    },
+    {
+      "width": 1440,
+      "live_articles": 14,
+      "all_processed": true,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "keyboard_focus": true,
+      "rss_context": true
+    }
+  ]
+}
