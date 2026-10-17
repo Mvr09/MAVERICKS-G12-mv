@@ -8,6 +8,7 @@ import {
   Route,
   useParams,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 import {
   Activity,
@@ -96,6 +97,11 @@ Object.assign(names, {
   not_relevant: "Sin vínculo operativo",
   inventory_missing: "Inventario físico no informado",
   criticality_missing: "Criticidad no informada",
+  risk_without_operational_evidence:
+    "Riesgo propuesto sin evidencia operativa consistente",
+  source_text_limited: "Lectura limitada al resumen o a un texto parcial",
+  source_text_incomplete:
+    "Resumen truncado: falta texto para descartar el impacto con seguridad",
   single_source_missing: "Fuente única no informada",
   category_share_missing: "Gasto en categoría no informado",
   severity_missing: "Severidad no disponible",
@@ -208,6 +214,9 @@ function Modal({
 }
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [origin, setOrigin] = useState("");
+  const effectiveOrigin = location.pathname === "/" ? origin : "";
   const [context, setContext] = useState("exercise"),
     [overview, setOverview] = useState<any>(null),
     [suppliers, setSuppliers] = useState<Supplier[]>([]),
@@ -225,6 +234,8 @@ function App() {
     [sound, setSound] = useState("Desactivado"),
     [more, setMore] = useState(false),
     [alertFilter, setAlertFilter] = useState("all");
+  const scope = context + "|" + effectiveOrigin;
+  const activeScope = useRef(scope);
   const cursor = useRef<number | null>(null),
     file = useRef<HTMLInputElement>(null),
     activeContext = useRef(context),
@@ -248,21 +259,39 @@ function App() {
     nextRefreshAt = useRef(0);
   async function refresh(force = false) {
     if (
-      refreshInFlight.current.has(context) ||
+      refreshInFlight.current.has(scope) ||
       (!force && Date.now() < nextRefreshAt.current)
     )
       return;
-    refreshInFlight.current.add(context);
+    refreshInFlight.current.add(scope);
     try {
       const [o, s, a, f, b, n] = await Promise.all([
-        api("/overview?context=" + context),
-        api("/suppliers?context=" + context),
-        api("/articles?context=" + context),
+        api(
+          "/overview?context=" +
+            context +
+            (effectiveOrigin
+              ? "&origin=" + encodeURIComponent(effectiveOrigin)
+              : ""),
+        ),
+        api(
+          "/suppliers?context=" +
+            context +
+            (effectiveOrigin
+              ? "&origin=" + encodeURIComponent(effectiveOrigin)
+              : ""),
+        ),
+        api(
+          "/articles?context=" +
+            context +
+            (effectiveOrigin
+              ? "&origin=" + encodeURIComponent(effectiveOrigin)
+              : ""),
+        ),
         api("/sources"),
         api("/batches"),
         api("/alerts?context=" + context),
       ]);
-      if (activeContext.current !== context) return;
+      if (activeScope.current !== scope) return;
       nextRefreshAt.current = 0;
       setOverview(o);
       setSuppliers(s.items);
@@ -284,17 +313,18 @@ function App() {
           .catch(() => setSound("Bloqueado"));
       cursor.current = n.cursor;
     } catch (e) {
-      if (activeContext.current === context) {
+      if (activeScope.current === scope) {
         nextRefreshAt.current = Date.now() + 30000;
         setError((e as Error).message);
       }
     } finally {
-      refreshInFlight.current.delete(context);
-      if (activeContext.current === context) setLoading(false);
+      refreshInFlight.current.delete(scope);
+      if (activeScope.current === scope) setLoading(false);
     }
   }
   useEffect(() => {
     activeContext.current = context;
+    activeScope.current = scope;
     nextRefreshAt.current = 0;
     cursor.current = null;
     setOverview(null);
@@ -312,15 +342,16 @@ function App() {
       clearInterval(timer);
       window.removeEventListener("focus", focus);
     };
-  }, [context]);
+  }, [scope]);
   async function action(
     fn: () => Promise<any>,
     success = "Operación completada",
   ) {
     try {
-      await fn();
+      const result = await fn();
       setMessage(success);
-      refresh();
+      await refresh(true);
+      return result;
     } catch (e) {
       setError((e as Error).message);
     }
@@ -328,10 +359,15 @@ function App() {
   async function upload(f: File) {
     const data = new FormData();
     data.append("file", f);
-    await action(
+    const imported = await action(
       () => api("/imports", { method: "POST", body: data }),
       "Archivo importado. Revisa el lote antes de analizar.",
     );
+    if (imported?.batch_id) {
+      setContext("exercise");
+      setOrigin("batch:" + imported.batch_id);
+      navigate("/");
+    }
   }
   const shared = { context, presenter, action, refresh };
   const navigation = [
@@ -389,7 +425,10 @@ function App() {
             <select
               id="context"
               value={context}
-              onChange={(e) => setContext(e.target.value)}
+              onChange={(e) => {
+                setOrigin("");
+                setContext(e.target.value);
+              }}
             >
               <option value="exercise">Ejercicio</option>
               <option value="rss">Noticias reales</option>
@@ -569,6 +608,46 @@ function App() {
                 path="/"
                 element={
                   <>
+                    <section className="card origin-filter">
+                      <label htmlFor="summary-origin">
+                        Origen de los datos
+                      </label>
+                      <select
+                        id="summary-origin"
+                        value={origin}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setOrigin(value);
+                          if (value)
+                            setContext(
+                              value.startsWith("rss:") ? "rss" : "exercise",
+                            );
+                        }}
+                      >
+                        <option value="">
+                          Todos ·{" "}
+                          {context === "rss" ? "Noticias reales" : "Ejercicio"}
+                        </option>
+                        <optgroup label="Archivos del ejercicio">
+                          {batches.map((b) => (
+                            <option key={b.id} value={"batch:" + b.id}>
+                              {b.origin_label || b.filename || label(b.split)}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="Fuentes RSS">
+                          {sources.map((s) => (
+                            <option key={s.id} value={"rss:" + s.id}>
+                              {s.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      </select>
+                      <small>
+                        Indicadores, ranking y señales del origen seleccionado.
+                        Los incidentes recuperados permanecen cerrados.
+                      </small>
+                    </section>
                     <div className="kpis">
                       <Kpi
                         label="Proveedores urgentes"
@@ -594,7 +673,7 @@ function App() {
                       <Kpi
                         label="Fuentes consultadas"
                         value={`${overview?.healthy_sources || 0} / 6`}
-                        note="RSS · estado de la última consulta"
+                        note="RSS · estado global de la última consulta"
                         icon={<Radio />}
                         tone="green"
                       />
@@ -651,7 +730,16 @@ function App() {
                         </section>
                       </div>
                     </div>
-                    <Batches batches={batches} {...shared} />
+                    {context === "exercise" && (
+                      <Batches
+                        batches={
+                          origin.startsWith("batch:")
+                            ? batches.filter((b) => "batch:" + b.id === origin)
+                            : batches
+                        }
+                        {...shared}
+                      />
+                    )}
                   </>
                 }
               />
@@ -1162,7 +1250,7 @@ function NewsList({
       {articles.map((a) => (
         <article className="news-item" key={a.id}>
           <div className="inline">
-            <small className="source-label">{a.source}</small>
+            <small className="source-label">{a.origin_label || a.source}</small>
             <Badge
               tone={
                 a.state === "review"
@@ -1388,7 +1476,45 @@ function ArticleDetail({ context, presenter, action }: any) {
         </span>
       </div>
       <h2>{a.headline}</h2>
+      <small>Origen: {a.origin_label || a.source}</small>
       <p className="article-summary">{a.summary}</p>
+      {a.split === "rss" && (
+        <div className="notice">
+          <span>
+            {a.analysis?.source_reading?.status === "public_text"
+              ? "Texto público ampliado"
+              : a.analysis?.source_reading?.status === "partial"
+                ? "Texto público parcial"
+                : a.analysis?.source_reading
+                  ? "Solo resumen RSS · no se pudo ampliar la lectura"
+                  : a.analysis
+                    ? "Análisis anterior: solo resumen RSS"
+                    : "Lectura ampliada pendiente de análisis"}
+            {a.analysis?.source_reading?.checked_at && (
+              <>
+                {" "}
+                · Consulta del texto:{" "}
+                {date(a.analysis.source_reading.checked_at)}
+              </>
+            )}
+            {a.analysis && <> · Preguntas: {a.analysis.question_version}</>}
+          </span>
+        </div>
+      )}
+      {a.analysis?.context_notes?.length ? (
+        <details>
+          <summary>
+            Observaciones del contexto ({a.analysis.context_notes.length})
+          </summary>
+          <p>
+            Estas dudas descriptivas no cambian por sí solas la decisión ni
+            autorizan una alarma.
+          </p>
+          {a.analysis.context_notes.map((r) => (
+            <p key={r}>{reviewLabel(r)}</p>
+          ))}
+        </details>
+      ) : null}
       {a.analysis?.analysis_status === "error" && (
         <div className="notice error">
           <span>
@@ -1446,6 +1572,13 @@ function ArticleDetail({ context, presenter, action }: any) {
                 Vínculo {number(s.p_link * 100)}% · {riskLabel(s.is_risk)} ·{" "}
                 {urgencyLabel(s.urgent)}
               </span>
+              {s.p_identity != null && (
+                <small>
+                  Identidad explícita: {number(s.p_identity * 100)}% ·
+                  Exposición potencial: {number((s.p_exposure || 0) * 100)}%.
+                  Cartera simulada; no confirma embarques de Helixa.
+                </small>
+              )}
               {s.needs_review && (
                 <Badge tone="warning">Requiere revisión</Badge>
               )}
@@ -1944,6 +2077,7 @@ function MaterialDetail() {
   );
 }
 function Batches({ batches, presenter, action }: any) {
+  const [busy, setBusy] = useState<string | null>(null);
   return (
     <section className="card batches">
       <div className="section-heading">
@@ -1958,6 +2092,9 @@ function Batches({ batches, presenter, action }: any) {
           <div className="batch-row" key={b.id}>
             <div>
               <h3>{label(b.split)}</h3>
+              <small>
+                {b.origin_label || b.filename || "Archivo importado"}
+              </small>
               <small>
                 {b.count} entradas · {b.done} completadas · {b.pending}{" "}
                 pendientes · {b.errors} errores
@@ -1976,17 +2113,42 @@ function Batches({ batches, presenter, action }: any) {
             <div className="inline">
               <button
                 className="button"
-                disabled={!presenter || b.done === b.count}
-                onClick={() =>
-                  action(
-                    () =>
-                      api("/batches/" + b.id + "/analyze", { method: "POST" }),
-                    "Análisis encolado.",
-                  )
+                disabled={
+                  !presenter ||
+                  b.done === b.count ||
+                  busy === b.id ||
+                  !!b.queued ||
+                  !!b.running
                 }
+                onClick={async () => {
+                  setBusy(b.id);
+                  try {
+                    await action(
+                      () =>
+                        api("/batches/" + b.id + "/analyze", {
+                          method: "POST",
+                        }),
+                      "Análisis encolado. El progreso se actualiza automáticamente.",
+                    );
+                  } finally {
+                    setBusy(null);
+                  }
+                }}
               >
-                Analizar
+                {busy === b.id
+                  ? "Encolando…"
+                  : b.queued || b.running
+                    ? "Analizando…"
+                    : "Analizar"}
               </button>
+              {presenter && b.done === b.count && (
+                <DemoControl
+                  buttonLabel="Reanalizar lote"
+                  initialSelection={["batch:" + b.id]}
+                  initialMode="rerun"
+                  onClean={async () => {}}
+                />
+              )}
               <button
                 className="button"
                 disabled={!presenter || b.done !== b.count || b.errors > 0}

@@ -21,6 +21,27 @@ def current(incident):
     )
 
 
+def batch_label(batch):
+    labels = {
+        "training": "Entrenamiento",
+        "validation": "Validación",
+        "test": "Test",
+        "liveday": "LiveDay",
+    }
+    return (
+        batch.filename
+        or labels.get(batch.split, batch.split) + " · archivo anterior " + batch.id[:8]
+    )
+
+
+def origin_matches(article, origin):
+    return not origin or origin == (
+        "batch:" + article.batch_id
+        if article.batch_id
+        else "rss:" + (article.source_id or "")
+    )
+
+
 def article_view(db, a):
     result = db.scalar(
         select(Analysis)
@@ -30,6 +51,10 @@ def article_view(db, a):
     return {
         "id": a.id,
         "batch_id": a.batch_id,
+        "origin": "batch:" + a.batch_id if a.batch_id else "rss:" + (a.source_id or ""),
+        "origin_label": batch_label(db.get(Batch, a.batch_id))
+        if a.batch_id
+        else a.data.get("source", "RSS"),
         "split": db.get(Batch, a.batch_id).split if a.batch_id else "rss",
         "state": a.state,
         "version": a.version,
@@ -44,7 +69,7 @@ def article_view(db, a):
     }
 
 
-def articles_view(db, context="exercise", include_history=False):
+def articles_view(db, context="exercise", include_history=False, origin=""):
     query = select(Article).where(Article.context == context)
     if not include_history:
         latest = (
@@ -62,19 +87,64 @@ def articles_view(db, context="exercise", include_history=False):
     articles = db.scalars(
         query.order_by(Article.fetched_at.desc(), Article.row_order)
     ).all()
-    return [article_view(db, a) for a in articles]
+    return [article_view(db, a) for a in articles if origin_matches(a, origin)]
 
 
-def suppliers_view(db, context="exercise"):
+def suppliers_view(db, context="exercise", origin=""):
     materials = [m.data for m in db.scalars(select(Material)).all()]
     incidents = db.scalars(select(Incident).where(Incident.context == context)).all()
+    if origin:
+        from types import SimpleNamespace
+
+        selected_ids = {
+            a.id
+            for a in db.scalars(select(Article).where(Article.context == context))
+            if origin_matches(a, origin)
+        }
+        projected = []
+        for inc in incidents:
+            history = [h for h in inc.history if h.get("article_id") in selected_ids]
+            if not history:
+                continue
+            entry = max(
+                history, key=lambda h: (h.get("published_date", ""), h.get("at", ""))
+            )
+            assessment = entry.get("assessment", {})
+            state = (
+                "resolved"
+                if inc.state == "resolved"
+                or assessment.get("impact_status") == "resolved"
+                else assessment.get("impact_status", inc.state)
+            )
+            projected.append(
+                SimpleNamespace(
+                    id=inc.id,
+                    supplier_id=inc.supplier_id,
+                    history=history,
+                    state=state,
+                    priority=0
+                    if state == "resolved"
+                    else assessment.get("priority", 0),
+                    historical_priority=max(
+                        (h.get("assessment", {}).get("priority") or 0 for h in history),
+                        default=0,
+                    ),
+                    event_type=inc.event_type,
+                    event_date=entry.get("published_date", inc.event_date),
+                    revision=inc.revision,
+                )
+            )
+        incidents = projected
     known = {}
     analyzed = db.execute(
-        select(Article.data, Analysis.result)
+        select(Article, Analysis.result)
         .join(Analysis, Analysis.article_id == Article.id)
         .where(Article.context == context, Analysis.generation == Article.generation)
     ).all()
-    for article_data, result in analyzed:
+    for article_row, result in analyzed:
+        if not origin_matches(article_row, origin):
+            continue
+        article_data = article_row.data
         if result["analysis_status"] == "error":
             continue
         for assessment in result["assessments"]:

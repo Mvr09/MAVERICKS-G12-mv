@@ -227,6 +227,8 @@ def test_three_votes_are_fresh_persistent_and_do_not_change_original_or_exports(
         a = synthetic(db)
         a.context = "rss"
         a.batch_id = None
+        # RSS2 mantiene revisión si el texto que permitiría decidir está truncado.
+        a.data = {**a.data, "summary": "MOCK IDENTIFICADO: excerpt ends ..."}
         db.commit()
         original = process_article(db, a.id, transport=transport)
         original_view = article_view(db, a)

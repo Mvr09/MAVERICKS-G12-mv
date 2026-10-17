@@ -11,6 +11,8 @@ from app.settings import settings
 
 @pytest.fixture(autouse=True)
 def clean_test_database(monkeypatch):
+    # Las pruebas repetibles no consultan páginas editoriales externas.
+    monkeypatch.setattr("app.enrichment.enrich", lambda *args, **kwargs: None)
     # Keep historical bounded-policy regression tests reproducible.
     monkeypatch.setattr(settings, "jev_budget_limits_enabled", True)
     # Destruction is strictly limited to the dedicated database created for tests.
@@ -23,7 +25,7 @@ def clean_test_database(monkeypatch):
             "CREATE TABLE IF NOT EXISTS alembic_version(version_num varchar(32) primary key)"
         )
         c.exec_driver_sql("DELETE FROM alembic_version")
-        c.exec_driver_sql("INSERT INTO alembic_version VALUES ('0006')")
+        c.exec_driver_sql("INSERT INTO alembic_version VALUES ('0007')")
     with Session() as db:
         seed(db)
         # Most regression tests deliberately exercise the previous bounded grants.

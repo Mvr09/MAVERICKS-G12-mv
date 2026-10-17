@@ -55,7 +55,7 @@ def answer(
             sid = key.rsplit("_", 1)[-1]
             value = (
                 (0.98 if sid in linked else 0.02)
-                if key.startswith("linked_")
+                if key.startswith(("linked_", "identity_", "exposure_"))
                 else (risk if key.startswith("risk_") else urgent)
             )
             out[key] = {"type": kind, "noul": value}

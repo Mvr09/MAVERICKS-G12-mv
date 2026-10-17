@@ -1,6 +1,8 @@
 export interface Assessment {
   supplier_id: string;
   p_link: number;
+  p_identity?: number;
+  p_exposure?: number;
   p_risk: number;
   p_urgent: number;
   is_risk: string;
@@ -19,6 +21,13 @@ export interface Assessment {
   impact_status: string;
 }
 export interface Analysis {
+  context_notes?: string[];
+  source_reading?: {
+    status: string;
+    checked_at?: string;
+    source_url?: string;
+    reason?: string;
+  };
   error?: string | null;
   article_id: string;
   news_id: string;
@@ -33,7 +42,7 @@ export interface Analysis {
   evidence: {
     id: string;
     text: string;
-    field: "headline" | "summary";
+    field: "headline" | "summary" | "full_text";
     start: number;
     end: number;
   }[];
@@ -42,6 +51,9 @@ export interface Analysis {
   review_reasons: string[];
 }
 export interface Article {
+  origin?: string;
+  origin_label?: string;
+  enrichment?: { status: string; checked_at?: string; reason?: string };
   generation?: number;
   split?: string;
   id: string;
@@ -131,6 +143,11 @@ export interface Source {
   error: string | null;
 }
 export interface Batch {
+  filename?: string;
+  origin_label?: string;
+  queued?: number;
+  running?: number;
+  job_errors?: number;
   id: string;
   split: string;
   count: number;

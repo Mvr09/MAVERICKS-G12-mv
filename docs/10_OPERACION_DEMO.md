@@ -85,3 +85,21 @@ Comprobación reproducible desde el workspace autorizado:
 ```
 
 Sin `--start`, el script solo revisa estado. `--rss-after` procesa noticias RSS pendientes al terminar las tres fases, respetando el saldo compartido, la ventana y el cupo diario. No ejecutarlo para crear una nueva autorización. Los resultados completos y métricas están en `reports/private/final-rehearsal.json`; Excel en `.runtime/final/`. Estos directorios no se publican. `GET /api/admin/budgets` y `/api/batches/{id}/execution` requieren presentador y permiten consultar límites, intentos, modelo y uso numérico reportado por la API.
+
+## Resumen por origen y LiveDay
+
+En **Resumen → Origen de los datos** se puede seleccionar cualquier archivo importado o una de las seis fuentes RSS. La selección cambia al contexto correspondiente y filtra indicadores, ranking y últimas señales. El ranking conserva los 40 proveedores y calcula la prioridad con las evidencias seleccionadas; una recuperación vigente no se deshace por filtrar una fuente anterior. Las alertas del encabezado siguen siendo las del contexto completo.
+
+Una carga correcta abre Resumen, cambia a Ejercicio y selecciona el lote cargado. **Analizar** encola los pendientes y muestra Encolando/Analizando; los contadores se actualizan cada tres segundos. **Exportar** se habilita cuando termina el lote sin errores. Un lote completo ofrece **Reanalizar lote**, con revisión del alcance y confirmación; conserva el historial y efectúa consultas nuevas. LiveDay está habilitado y usa las preguntas congeladas del ejercicio.
+
+Se guarda el nombre del archivo a partir de esta versión. Para lotes anteriores sin ese dato se muestra el tipo y un identificador: no se inventa el nombre original. Volver a cargar el mismo archivo completa ese metadato sin duplicar noticias ni ejecutar análisis automáticamente.
+
+## Perfil RSS `rss-2.0.0`
+
+- Antes de una evaluación RSS se intenta obtener texto editorial público del dominio de su fuente configurada. Se respetan robots.txt, HTTPS, límites técnicos de tamaño/tiempo y redirecciones permitidas. No se usan cookies, credenciales editoriales ni mecanismos para sortear muros de pago. Si falla, se conserva el resumen con estado y motivo explícitos.
+- La noticia conserva el resumen original y un snapshot separado de texto ampliado, fecha de consulta, URL, método y hash de contenido. Se reutiliza durante una hora para que reintentos y votos próximos consulten la misma evidencia. La UI muestra la fecha real de obtención, no la fecha del último voto.
+- Primera etapa: 40 preguntas Noul de identidad y otras 40 de exposición, además de evento operativo/tipo/estado. La exposición exige coincidencia de operación; para transporte, ruta y modalidad. El vínculo se obtiene con el máximo de identidad/exposición, sin sumar probabilidades ni suponer independencia.
+- Segunda etapa: continuidad del suministro, urgencia, severidad, impacto, evidencia literal y duración. Una subida de tarifas por sí sola no demuestra interrupción; los retrasos o cancelaciones deben estar descritos. La cartera es simulada y no se presuponen embarques de Helixa.
+- Umbrales, fórmula, modelo y condiciones de sonido permanecen. Metadatos inciertos del tipo/estado se muestran como observaciones. Si el riesgo está claramente descartado, las dudas sobre severidad/impacto/evidencia/duración son descriptivas. Una decisión ambigua, un riesgo con evidencia débil, un resumen truncado sin ampliación o datos de inventario/catálogo faltantes mantienen la revisión. Riesgo positivo contradicho por ausencia clara de evento operativo también exige revisión.
+- Los resultados viejos no se sustituyen automáticamente. Reanalizar una noticia RSS aplica el perfil nuevo y archiva la generación anterior. El contraste de tres JEV sigue siendo auxiliar y no sustituye el resultado principal por mayoría.
+- Ejercicio conserva preguntas/política1.0.0 y sus exportaciones. La versión RSS nueva está cubierta con casos sintéticos independientes y comprobación real; no se ha establecido una mejora estadística de precisión/recall con una muestra RSS etiquetada independiente.

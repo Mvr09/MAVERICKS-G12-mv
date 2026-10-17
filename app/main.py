@@ -15,7 +15,13 @@ from app.settings import settings, ROOT, POLICY, RSS
 from app.models import *
 from app.auth import presenter, identity, login, codec
 from app.importer import import_excel, export_batch, digest
-from app.views import suppliers_view, articles_view, sources_view, article_view
+from app.views import (
+    suppliers_view,
+    articles_view,
+    sources_view,
+    article_view,
+    batch_label,
+)
 
 app = FastAPI(title="Supplier Risk Radar", docs_url=None, redoc_url=None)
 
@@ -125,7 +131,7 @@ def ready(db: Session = Depends(get_db)):
         revision = db.execute(
             text("select version_num from alembic_version")
         ).scalar_one()
-        if revision != "0006":
+        if revision != "0007":
             raise ValueError()
     except Exception:
         raise HTTPException(503, "Base de datos o esquema no disponible")
@@ -178,6 +184,7 @@ def config():
         "model": settings.jev_model,
         "policy_version": POLICY["version"],
         "question_version": POLICY["question_version"],
+        "rss_question_version": "rss-2.0.0",
         "engine_configured": bool(settings.typesafe_api_key.get_secret_value()),
         "bands": POLICY["bands"],
         "cooldown_seconds": POLICY["audio"]["cooldown_seconds"],
@@ -194,10 +201,12 @@ def admin_config():
 
 @app.get("/api/overview")
 def overview(
-    context: Literal["exercise", "rss"] = "exercise", db: Session = Depends(get_db)
+    context: Literal["exercise", "rss"] = "exercise",
+    origin: str = "",
+    db: Session = Depends(get_db),
 ):
-    suppliers = suppliers_view(db, context)
-    articles = articles_view(db, context)
+    suppliers = suppliers_view(db, context, origin)
+    articles = articles_view(db, context, origin=origin)
     sources = sources_view(db)
     processed = [a for a in articles if a["state"] in ("done", "review")]
     return {
@@ -220,17 +229,22 @@ def overview(
         "sources": sources,
         "updated_at": now(),
         "context": context,
-        "latencies": latencies(db, context),
+        "latencies": latencies(db, context, origin),
     }
 
 
-def latencies(db, context):
+def latencies(db, context, origin=""):
+    eligible = (
+        [a["id"] for a in articles_view(db, context, origin=origin)] if origin else None
+    )
     values = sorted(
         db.scalars(
             select(Analysis.duration)
             .join(Article)
             .where(
-                Article.context == context, Analysis.generation == Article.generation
+                Article.context == context,
+                Analysis.generation == Article.generation,
+                Article.id.in_(eligible) if eligible is not None else True,
             )
         ).all()
     )
@@ -243,6 +257,7 @@ def latencies(db, context):
 
 @app.get("/api/suppliers")
 def suppliers(
+    origin: str = "",
     context: Literal["exercise", "rss"] = "exercise",
     q: str = "",
     category: str = "",
@@ -255,7 +270,7 @@ def suppliers(
     page_size: int = 100,
     db: Session = Depends(get_db),
 ):
-    rows = suppliers_view(db, context)
+    rows = suppliers_view(db, context, origin)
     rows = [
         s
         for s in rows
@@ -319,6 +334,7 @@ def material(mid: str, db: Session = Depends(get_db)):
 
 @app.get("/api/articles")
 def articles(
+    origin: str = "",
     context: Literal["exercise", "rss"] = "exercise",
     q: str = "",
     state: str = "",
@@ -329,7 +345,7 @@ def articles(
     relevant: bool = False,
     db: Session = Depends(get_db),
 ):
-    rows = articles_view(db, context)
+    rows = articles_view(db, context, origin=origin)
     return [
         a
         for a in rows
@@ -382,15 +398,24 @@ def batches(db: Session = Depends(get_db)):
     out = []
     for b in db.scalars(select(Batch).order_by(Batch.created_at)):
         rows = db.scalars(select(Article).where(Article.batch_id == b.id)).all()
+        from app.queue import analysis_key
+
+        keys = [analysis_key(a) for a in rows]
+        jobs = db.scalars(select(Job).where(Job.key.in_(keys))).all()
         out.append(
             {
                 "id": b.id,
                 "split": b.split,
+                "filename": b.filename,
+                "origin_label": batch_label(b),
                 "count": b.count,
                 "logical_date": b.logical_date,
                 "done": sum(a.state in ("done", "review") for a in rows),
                 "errors": sum(a.state == "error" for a in rows),
                 "pending": sum(a.state == "pending" for a in rows),
+                "queued": sum(j.state == "queued" for j in jobs),
+                "running": sum(j.state == "running" for j in jobs),
+                "job_errors": sum(j.state == "error" for j in jobs),
                 "started_at": b.started_at,
                 "completed_at": b.completed_at,
                 "elapsed_seconds": (b.completed_at - b.started_at).total_seconds()

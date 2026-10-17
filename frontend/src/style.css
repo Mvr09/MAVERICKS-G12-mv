@@ -1985,3 +1985,21 @@ dialog header {
   cursor: pointer;
   padding: 8px 0;
 }
+
+.origin-filter {
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+.origin-filter label {
+  font-weight: 650;
+}
+.origin-filter select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.origin-filter small {
+  color: var(--muted);
+}

@@ -40,6 +40,7 @@ class Batch(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
     file_hash: Mapped[str] = mapped_column(String, unique=True)
     split: Mapped[str] = mapped_column(String)
+    filename: Mapped[str | None] = mapped_column(String, nullable=True)
     context: Mapped[str] = mapped_column(String, default="exercise")
     logical_date: Mapped[str | None] = mapped_column(String, nullable=True)
     count: Mapped[int] = mapped_column(Integer, default=0)

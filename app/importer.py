@@ -107,6 +107,8 @@ def import_excel(db, data: bytes, filename: str):
     file_hash = hashlib.sha256(data).hexdigest()
     existing = db.scalar(select(Batch).where(Batch.file_hash == file_hash))
     if existing:
+        if not existing.filename:
+            existing.filename = filename.replace("\\", "/").rsplit("/", 1)[-1][:255]
         if existing.split == "test" and not existing.export_headers:
             # Upgrade metadata from an explicitly uploaded, identical original.
             workbook = load_workbook(io.BytesIO(data), read_only=True, data_only=True)
@@ -246,6 +248,7 @@ def import_excel(db, data: bytes, filename: str):
     batch = Batch(
         file_hash=file_hash,
         split=SHEETS[name],
+        filename=filename.replace("\\", "/").rsplit("/", 1)[-1][:255],
         count=len(rows),
         logical_date=max(a["published_date"] for a in normalized),
         export_headers=[str(k) for k in rows[0] if k not in LABELS],

@@ -40,15 +40,27 @@ def durations(article):
 
 
 def normalize(article, suppliers, a, b, candidates):
+    rss = article.context == "rss"
+    from app import rss_questions
+
+    notes = []
     threshold = POLICY["thresholds"]
     aa = a["answers"]
     bb = b["answers"] if b else {}
-    evidence = sentences(article.data)
+    evidence = rss_questions.sentences(article.data) if rss else sentences(article.data)
     reasons = []
     assessments = []
     for k in ("event_type", "event_state"):
         if aa[k]["confidence"] < threshold["choice_score_confidence"]:
-            reasons.append(k + "_confidence_low")
+            (notes if rss else reasons).append(k + "_confidence_low")
+    if rss:
+        metadata = article.data.get("enrichment", {})
+        if metadata.get("status") != "public_text":
+            notes.append("source_text_limited")
+            if "..." in article.data.get("summary", "") or "…" in article.data.get(
+                "summary", ""
+            ):
+                reasons.append("source_text_incomplete")
     for s in suppliers:
         sid = s["supplier_id"]
         pl = aa["linked_" + sid]["noul"]
@@ -62,15 +74,22 @@ def normalize(article, suppliers, a, b, candidates):
         severity = 1 + get("severity")["score"]
         impact = get("impact_state")["choice"]
         review = []
+        risk_relevant = not rss or pr >= threshold["review_low"]
         for prefix in ("severity", "impact_state", "evidence", "duration"):
             if get(prefix)["confidence"] < threshold["choice_score_confidence"]:
-                review.append(prefix + "_confidence_low")
+                (review if risk_relevant else notes).append(prefix + "_confidence_low")
         ev = get("evidence")["choice"]
         duration_id = get("duration")["choice"]
         d = next((x for x in candidates if x["id"] == duration_id), None)
         if ev == "none":
-            review.append("evidence_missing")
+            (review if risk_relevant else notes).append("evidence_missing")
         risk = pl >= threshold["link"] and pr >= threshold["risk"]
+        if (
+            rss
+            and risk
+            and aa.get("operational_event", {}).get("noul", 1) < threshold["review_low"]
+        ):
+            review.append("risk_without_operational_evidence")
         score = priority(
             is_risk=risk,
             severity=severity,
@@ -84,12 +103,14 @@ def normalize(article, suppliers, a, b, candidates):
             if s["category"] in POLICY["buffer_not_applicable_categories"]
             else "physical",
         )
-        review += score["warnings"]
+        review.extend(
+            score["warnings"]
+        )  # Las invariantes de inventario y catálogo permanecen.
         dec = decisions(
             p_link=pl,
             p_risk=pr,
             p_urgent=pu,
-            impact_status=impact,
+            impact_status=impact if risk_relevant else "unrelated",
             needs_review=bool(review or reasons),
         )
         if (
@@ -123,6 +144,11 @@ def normalize(article, suppliers, a, b, candidates):
                 "policy_version": POLICY["version"],
             }
         )
+    if rss:
+        for assessment in assessments:
+            sid = assessment["supplier_id"]
+            assessment["p_identity"] = aa["identity_" + sid]["noul"]
+            assessment["p_exposure"] = aa["exposure_" + sid]["noul"]
     accepted = [s for s in assessments if s["p_link"] >= threshold["link"]]
     result = {
         "article_id": article.id,
@@ -143,6 +169,26 @@ def normalize(article, suppliers, a, b, candidates):
         "evidence": evidence,
         "review_reasons": sorted(set(reasons)),
     }
+    if rss:
+        result["question_version"] = rss_questions.VERSION
+        result["context_notes"] = sorted(set(notes))
+        result["source_reading"] = {
+            k: v
+            for k, v in article.data.get(
+                "enrichment", {"status": "summary_only"}
+            ).items()
+            if k
+            in {
+                "status",
+                "checked_at",
+                "source_url",
+                "text_hash",
+                "characters",
+                "http_status",
+                "reason",
+                "method",
+            }
+        }
     NormalizedAnalysis.model_validate(result)
     valid_evidence = {e["id"] for e in result["evidence"]}
     for e in result["evidence"]:
@@ -176,13 +222,30 @@ def process_article(
         run_key=run_key,
     )
     raw = {}
-    pa = stage_a(a.data, suppliers, settings.jev_model)
+    rss = a.context == "rss"
+    if rss:
+        from app.enrichment import enrich
+        from app import rss_questions
+
+        enrich(db, a)
+        db.commit()
+        raw["_reading_snapshot"] = {
+            "headline": a.data.get("headline"),
+            "summary": a.data.get("summary"),
+            "full_text": a.data.get("full_text", ""),
+            "enrichment": a.data.get("enrichment", {}),
+        }
+    build_a = rss_questions.stage_a if rss else stage_a
+    build_b = rss_questions.stage_b if rss else stage_b
+    question_version = rss_questions.VERSION if rss else POLICY["question_version"]
+    start = time.monotonic()
+    pa = build_a(a.data, suppliers, settings.jev_model)
     request_hash = digest(
         {
             "article": a.id,
             "payload": pa,
             "policy": POLICY["version"],
-            "questions": POLICY["question_version"],
+            "questions": question_version,
         }
     )
     if run_key:
@@ -199,16 +262,29 @@ def process_article(
         return previous.result
     try:
         raw["a"] = client.ask(pa, "a", start + 60)
+        if rss:
+            rss_questions.linked_answers(raw["a"], suppliers)
         candidates = [
             s
             for s in suppliers
             if raw["a"]["answers"]["linked_" + s["supplier_id"]]["noul"]
             >= POLICY["thresholds"]["review_low"]
         ]
-        duration_candidates = durations(a.data)
+        duration_candidates = (
+            durations(
+                {
+                    **a.data,
+                    "summary": a.data.get("summary", "")
+                    + " "
+                    + a.data.get("full_text", ""),
+                }
+            )
+            if rss
+            else durations(a.data)
+        )
         raw["b"] = (
             client.ask(
-                stage_b(a.data, candidates, duration_candidates, settings.jev_model),
+                build_b(a.data, candidates, duration_candidates, settings.jev_model),
                 "b",
                 start + 60,
             )
@@ -232,7 +308,7 @@ def process_article(
             "affected_supplier_ids": [],
             "assessments": [],
             "model_id": settings.jev_model,
-            "question_version": POLICY["question_version"],
+            "question_version": question_version,
             "policy_version": POLICY["version"],
             "error": code,
             "event_type": None,

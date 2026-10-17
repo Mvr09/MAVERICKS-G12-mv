@@ -215,6 +215,16 @@
           },
           "policy_version": {
             "type": "string"
+          },
+          "p_identity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "p_exposure": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
           }
         },
         "allOf": [
@@ -307,7 +317,8 @@
           "field": {
             "enum": [
               "headline",
-              "summary"
+              "summary",
+              "full_text"
             ]
           },
           "start": {
@@ -321,6 +332,71 @@
           "text": {
             "type": "string"
           }
+        }
+      }
+    },
+    "context_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "source_reading": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "summary_only",
+            "partial",
+            "public_text"
+          ]
+        },
+        "checked_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "text_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "characters": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "http_status": {
+          "type": [
+            "integer",
+            "null"
+          ]
         }
       }
     }

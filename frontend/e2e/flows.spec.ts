@@ -71,7 +71,9 @@ test("flujo de presentador con mocks identificados: carga, borrador y exportaci√
   await page
     .getByLabel("Archivo Excel")
     .setInputFiles("../.runtime/e2e-upload.xlsx");
-  await expect(page.getByRole("status")).toContainText("Archivo importado");
+  await expect(
+    page.getByRole("status").filter({ hasText: "Archivo importado" }),
+  ).toBeVisible();
   await page.goto("/noticias");
   await expect(
     page.getByRole("link", { name: "Noticia sint√©tica de carga" }),

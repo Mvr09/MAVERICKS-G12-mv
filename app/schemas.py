@@ -10,7 +10,7 @@ class StrictModel(BaseModel):
 
 class Evidence(StrictModel):
     id: str
-    field: Literal["headline", "summary"]
+    field: Literal["headline", "summary", "full_text"]
     start: int = Field(ge=0)
     end: int = Field(ge=0)
     text: str
@@ -19,6 +19,8 @@ class Evidence(StrictModel):
 class Assessment(StrictModel):
     supplier_id: str
     p_link: float = Field(ge=0, le=1)
+    p_identity: float | None = Field(default=None, ge=0, le=1)
+    p_exposure: float | None = Field(default=None, ge=0, le=1)
     p_risk: float = Field(ge=0, le=1)
     p_urgent: float = Field(ge=0, le=1)
     is_risk: Literal["Y", "N"]
@@ -49,6 +51,17 @@ class Assessment(StrictModel):
         return self
 
 
+class SourceReading(StrictModel):
+    status: Literal["summary_only", "partial", "public_text"]
+    checked_at: str | None = None
+    source_url: str | None = None
+    text_hash: str | None = None
+    characters: int | None = None
+    http_status: int | None = None
+    reason: str | None = None
+    method: str | None = None
+
+
 class NormalizedAnalysis(StrictModel):
     article_id: str
     news_id: str
@@ -65,6 +78,8 @@ class NormalizedAnalysis(StrictModel):
     event_type: str | None
     evidence: list[Evidence]
     review_reasons: list[str]
+    context_notes: list[str] = Field(default_factory=list)
+    source_reading: SourceReading | None = None
 
     @model_validator(mode="after")
     def consistency(self):
