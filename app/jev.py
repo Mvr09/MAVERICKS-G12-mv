@@ -38,10 +38,15 @@ def reserve_request(db, grant):
         .with_for_update()
         .execution_options(populate_existing=True)
     )
-    if not budget or budget.requests_used >= budget.request_limit:
+    if not budget or (
+        budget.request_limit is not None
+        and budget.requests_used >= budget.request_limit
+    ):
         raise ProviderError("REQUEST_BUDGET_EXHAUSTED")
-    if budget.started_at and now() >= budget.started_at + timedelta(
-        seconds=budget.window_seconds
+    if (
+        budget.window_seconds
+        and budget.started_at
+        and now() >= budget.started_at + timedelta(seconds=budget.window_seconds)
     ):
         raise ProviderError("BUDGET_WINDOW_EXPIRED")
     if not budget.started_at:

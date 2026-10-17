@@ -84,3 +84,10 @@
 - 53593e2, 21:44:40–43 UTC: todas las rutas y assets 200, esquema0004, worker compatible. Exportaciones validation/test/LiveDay 200 e idénticas celda a celda tras redeploy; 44 resultados y 37 RSS persistidos. Presupuesto permanece100/200; cero peticiones JEV durante comprobación.
 - Usuario responde «funciona perfecto» al ensayo activar/probar/silenciar/probar. Sonido y mute confirmados por el usuario. Solicitado únicamente dispositivo/navegador para completar metadatos exigidos por auditoría; no atribuir ensayo físico a automatización.
 - Documentación corregida para eliminar el destino propuesto obsoleto y reflejar servicios realmente desplegados. Siguiente: registrar dispositivo/navegador si llega; no consumir saldo restante ni modificar predicciones retenidas.
+
+## Ampliación explícita: pruebas manuales JEV sin cupo
+- Usuario autoriza cupo ilimitado. Implementado presupuesto independiente `manual-unlimited-20261017` con límite y ventana nulos; grants sin límite/vencimiento para los cinco contextos. No se reinicia el presupuesto anterior ni se modifican resultados retenidos.
+- Migración 0005 permite límites nulos y mantiene contadores. Predeploy idempotente instala la autorización. Interfaz diferencia permiso sin límite y disponibilidad diaria de RSS; mantiene grupos manuales de hasta10.
+- Conservados límites técnicos: RSS100 artículos/día UTC, concurrencia4 y hasta3 intentos por etapa; diagnóstico ante autenticación/contrato. RSS periódico de pago sigue false. Sin nuevas llamadas JEV durante desarrollo.
+- Verificación: 64 pruebas backend pasan con transporte mock, incluidas reserva de201 intentos sin HTTP, persistencia del contador, autorizaciones antiguas sin cambios y bloqueo diario/automático RSS. BuildTS/Vite pasa; migración0005 pasa en base local aislada (20tablas). Primera invocación desde sandbox no pudo acceder a PostgreSQL; repetida con acceso local autorizado, pasa. Una advertencia Anyio externa.
+- Se prepara push a main ya autorizado; verificar autorización efectiva, esquema y worker en la URL pública después del autodeploy.

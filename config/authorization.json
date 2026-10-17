@@ -48,6 +48,46 @@
       "budget_id": "demo-final-200-20261017",
       "expires_at": "2026-10-19T00:00:00Z",
       "authorization": "Comparte el máximo global de 200 nuevas peticiones; no restablecer consumo. Prioridad validation, test y LiveDay antes de RSS adicional."
+    },
+    {
+      "id": "manual-unlimited-training-20261017",
+      "split": "training",
+      "article_limit": null,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null,
+      "authorization": "Autorización explícita del usuario: cupo ilimitado para pruebas manuales; no ejecutar lotes ni alterar resultados retenidos automáticamente."
+    },
+    {
+      "id": "manual-unlimited-validation-20261017",
+      "split": "validation",
+      "article_limit": null,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null,
+      "authorization": "Autorización explícita del usuario: cupo ilimitado para pruebas manuales; no ejecutar lotes ni alterar resultados retenidos automáticamente."
+    },
+    {
+      "id": "manual-unlimited-test-20261017",
+      "split": "test",
+      "article_limit": null,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null,
+      "authorization": "Autorización explícita del usuario: cupo ilimitado para pruebas manuales; no ejecutar lotes ni alterar resultados retenidos automáticamente."
+    },
+    {
+      "id": "manual-unlimited-liveday-20261017",
+      "split": "liveday",
+      "article_limit": null,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null,
+      "authorization": "Autorización explícita del usuario: cupo ilimitado para pruebas manuales; no ejecutar lotes ni alterar resultados retenidos automáticamente."
+    },
+    {
+      "id": "manual-unlimited-rss-20261017",
+      "split": "rss",
+      "article_limit": null,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null,
+      "authorization": "Autorización explícita del usuario: cupo ilimitado para pruebas manuales; no ejecutar lotes ni alterar resultados retenidos automáticamente."
     }
   ],
   "request_budgets": [
@@ -56,6 +96,12 @@
       "request_limit": 200,
       "window_seconds": 2700,
       "authorization": "Usuario autoriza hasta 200 llamadas JEV adicionales; compartidas entre lotes y reintentos. RSS consultable conforme a límites. Ventana operativa de 45 minutos desde primera llamada."
+    },
+    {
+      "id": "manual-unlimited-20261017",
+      "request_limit": null,
+      "window_seconds": null,
+      "authorization": "Usuario autoriza cupo JEV ilimitado para pruebas manuales. Sin límite de llamadas ni vencimiento local; conservar consumo histórico y límites técnicos. RSS periódico de pago sigue desactivado."
     }
   ]
 }

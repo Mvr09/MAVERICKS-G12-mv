@@ -47,7 +47,7 @@ def reserve(db, article, split, manual_rss=False):
         select(Grant)
         .where(
             Grant.split == split,
-            Grant.used < Grant.article_limit,
+            or_(Grant.article_limit == None, Grant.used < Grant.article_limit),
             or_(Grant.expires_at == None, Grant.expires_at > now()),
         )
         .order_by(Grant.id)
@@ -67,9 +67,10 @@ def budget_available(db, budget_id):
     b = db.get(ConsumptionBudget, budget_id)
     return bool(
         b
-        and b.requests_used < b.request_limit
+        and (b.request_limit is None or b.requests_used < b.request_limit)
         and (
-            not b.started_at
+            not b.window_seconds
+            or not b.started_at
             or now() < b.started_at + timedelta(seconds=b.window_seconds)
         )
     )

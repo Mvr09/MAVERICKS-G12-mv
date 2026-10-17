@@ -2423,7 +2423,7 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
           </div>
           <p>
             {budget
-              ? `${budget.remaining} artículos de cupo disponibles · ${budget.reserved} reservados · ${budget.network_requests} peticiones registradas`
+              ? `${budget.unlimited ? "JEV sin cupo de consumo · " : ""}${budget.remaining} artículos RSS disponibles hoy · ${budget.reserved} reservados · ${budget.network_requests} peticiones registradas`
               : "Consultando presupuesto…"}
           </p>
           {budget?.request_budgets?.map((b: any) => (
@@ -2431,10 +2431,12 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
               <span>
                 Presupuesto compartido:{" "}
                 <strong>
-                  {b.remaining_requests} de {b.request_limit} peticiones
-                  disponibles
+                  {b.unlimited
+                    ? "Sin límite de peticiones ni vencimiento"
+                    : `${b.remaining_requests} de ${b.request_limit} peticiones disponibles`}
                 </strong>{" "}
-                entre ejercicio y RSS, incluidos reintentos.
+                entre ejercicio y RSS, incluidos reintentos. {b.requests_used}{" "}
+                registradas.
                 {b.closes_at && ` Ventana hasta ${date(b.closes_at)}.`}
               </span>
             </div>

@@ -1,5 +1,6 @@
 import pytest
 from pathlib import Path
+from sqlalchemy import select
 from sqlalchemy.engine import make_url
 from app.db import engine, Base, Session
 from app import models
@@ -19,9 +20,15 @@ def clean_test_database():
             "CREATE TABLE IF NOT EXISTS alembic_version(version_num varchar(32) primary key)"
         )
         c.exec_driver_sql("DELETE FROM alembic_version")
-        c.exec_driver_sql("INSERT INTO alembic_version VALUES ('0004')")
+        c.exec_driver_sql("INSERT INTO alembic_version VALUES ('0005')")
     with Session() as db:
         seed(db)
+        # Most regression tests deliberately exercise the previous bounded grants.
+        for g in db.scalars(select(models.Grant)):
+            if g.id.startswith("manual-unlimited-"):
+                db.delete(g)
+        db.flush()
+        db.delete(db.get(models.ConsumptionBudget, "manual-unlimited-20261017"))
         db.get(
             models.Grant, "initial-training-3"
         ).used = 0  # Only MOCK transport in isolated test database.

@@ -92,7 +92,7 @@ def main():
                 revision = db.execute(
                     text("select version_num from alembic_version")
                 ).scalar_one()
-                if revision == "0004":
+                if revision == "0005":
                     break
         except Exception:
             pass

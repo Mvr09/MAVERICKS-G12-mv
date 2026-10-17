@@ -37,7 +37,7 @@ print(
             "migrations": "passes",
             "database": "radar_migration_test_v2",
             "tables": len(Base.metadata.tables),
-            "revision": "0004",
+            "revision": "0005",
         }
     )
 )

@@ -17,14 +17,22 @@ En el proyecto Railway, comprobar si existe un servicio cuyo comando sea `python
 - `DATABASE_URL`: referencia al mismo PostgreSQL que web.
 - Configurar `TYPESAFE_API_KEY`, `ADMIN_PASSWORD` y `SESSION_SECRET` existentes; no copiarlos al chat, frontend o Git.
 - `JEV_MODEL=jev-1.13.0`, `RSS_ANALYSIS_ENABLED=false`, `DEMO_FIXTURES_ENABLED=false`.
-- Web ejecuta `python -m app.predeploy`: migra a 0003 e inicializa seis fuentes y cupos sin reiniciar consumo. El worker espera el esquema antes de procesar.
+- Web ejecuta `python -m app.predeploy`: migra a 0005 e inicializa seis fuentes y cupos sin reiniciar consumo. El worker espera el esquema antes de procesar.
 - La pantalla **Fuentes** muestra «Procesamiento sin conexión» si no recibe heartbeat durante 30 s. Esto no afirma que el servicio no exista: también puede estar caído o apuntar a otra base.
 
 **Actualizar ahora** registra las fuentes si faltan y encola inmediatamente una consulta por fuente. Un clic repetido reutiliza consultas pendientes. El worker reclama trabajos transaccionalmente y comienza a procesarlos; la consulta periódica gratuita se mantiene cada cinco minutos. La web muestra solicitudes, cola, consultas en curso, resultados, errores y últimas incorporaciones reales. Sin worker no se simula actividad ni se inventan noticias.
 
 Noticias muestra filtros por **Fuente**, **Lote de origen**, estado, fechas, evento y proveedores identificados. El selector superior separa Ejercicio de Noticias reales. Entrar desde el stream RSS selecciona el contexto de noticias reales.
 
-## Lote JEV autorizado
+## Autorización vigente: JEV manual sin cupo
+
+El usuario autoriza cupo ilimitado para probar manualmente. El presupuesto `manual-unlimited-20261017` no tiene límite de peticiones ni vencimiento; hay autorizaciones para training, validation, test, LiveDay y RSS sin tope local de artículos. El predeploy las crea una sola vez y conserva los contadores anteriores. No hace falta editar variables ni pegar claves de nuevo.
+
+En **Ingesta**, seleccionar el lote y pulsar **Analizar**. Los resultados existentes se conservan y se reutiliza la caché; no se recalculan automáticamente ni se modifican respuestas retenidas para ajustar el modelo. En **Fuentes**, pulsar **Actualizar ahora** para consultar RSS y **Analizar hasta 10 noticias con JEV** para analizar las pendientes. Repetir el análisis manual para otros grupos pendientes.
+
+«Sin límite» se refiere al cupo de consumo autorizado de la aplicación: no cambia el saldo, la facturación ni los límites de TypeSafe. Siguen vigentes la concurrencia máxima, tres intentos por etapa, diagnóstico ante errores de contrato/autenticación y el cupo técnico RSS de **100 artículos por día UTC**. No se activa inferencia periódica de pago. `GET /api/admin/budgets` muestra el presupuesto ilimitado con límites nulos y el contador real de llamadas; los presupuestos históricos permanecen visibles.
+
+## Historial: primer lote JEV autorizado
 
 Autorización del usuario del 17-10-2026: **hasta 10 noticias RSS, máximo 60 peticiones HTTP, reintentos incluidos**. Grant `rss-demo-20261017-10`, con vencimiento de seguridad 19-10-2026 00:00 UTC. No se añaden autorizaciones de training, validación, test ni LiveDay.
 
@@ -48,7 +56,7 @@ La implementación no ejecuta esta limpieza automáticamente ni el agente la eje
 
 **Activar sonido** requiere un gesto. **Silenciar** bloquea tanto avisos automáticos como **Probar alarma**; para volver a probar, activar de nuevo. El aviso visual se conserva. La prueba del navegador no certifica audibilidad en un dispositivo físico.
 
-## Evaluación y ensayo final: presupuesto nuevo de 200 llamadas
+## Historial: evaluación y ensayo final de 200 llamadas
 
 El usuario autoriza hasta 200 llamadas JEV adicionales compartidas entre validación, test, LiveDay y RSS. El presupuesto se reserva transaccionalmente antes de cada intento HTTP, incluye reintentos, persiste al desplegar y cierra su ventana 45 minutos después de la primera llamada. Nunca se renueva automáticamente. El cupo anterior de training y RSS permanece agotado.
 

@@ -170,17 +170,17 @@ class Draft(Base):
 class ConsumptionBudget(Base):
     __tablename__ = "consumption_budgets"
     id: Mapped[str] = mapped_column(String, primary_key=True)
-    request_limit: Mapped[int] = mapped_column(Integer)
+    request_limit: Mapped[int | None] = mapped_column(Integer)
     requests_used: Mapped[int] = mapped_column(Integer, default=0)
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    window_seconds: Mapped[int] = mapped_column(Integer, default=2700)
+    window_seconds: Mapped[int | None] = mapped_column(Integer)
 
 
 class Grant(Base):
     __tablename__ = "grants"
     id: Mapped[str] = mapped_column(String, primary_key=True)
     split: Mapped[str] = mapped_column(String)
-    article_limit: Mapped[int] = mapped_column(Integer)
+    article_limit: Mapped[int | None] = mapped_column(Integer)
     used: Mapped[int] = mapped_column(Integer, default=0)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     budget_id: Mapped[str | None] = mapped_column(ForeignKey("consumption_budgets.id"))

@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError, ProgrammingError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.db import get_db, DatabaseConfigurationError
-from app.settings import settings, ROOT, POLICY
+from app.settings import settings, ROOT, POLICY, RSS
 from app.models import *
 from app.auth import presenter, identity, login, codec
 from app.importer import import_excel, export_batch, digest
@@ -125,7 +125,7 @@ def ready(db: Session = Depends(get_db)):
         revision = db.execute(
             text("select version_num from alembic_version")
         ).scalar_one()
-        if revision != "0004":
+        if revision != "0005":
             raise ValueError()
     except Exception:
         raise HTTPException(503, "Base de datos o esquema no disponible")
@@ -541,12 +541,33 @@ def analysis_budget(db: Session = Depends(get_db)):
     from app.queue import budget_available
 
     grants = db.scalars(select(Grant).where(Grant.split == "rss")).all()
+    active = [
+        g
+        for g in grants
+        if (not g.expires_at or g.expires_at > now())
+        and (not g.budget_id or budget_available(db, g.budget_id))
+    ]
+    unlimited = any(g.article_limit is None for g in active)
+    daily_used = db.scalar(
+        select(func.count())
+        .select_from(GrantArticle)
+        .join(Article)
+        .where(
+            Article.context == "rss",
+            GrantArticle.reserved_at
+            >= now().replace(hour=0, minute=0, second=0, microsecond=0),
+        )
+    )
+    daily_remaining = max(0, RSS["daily_analysis_budget"] - daily_used)
     return {
-        "remaining": sum(
-            max(0, g.article_limit - g.used)
-            for g in grants
-            if (not g.expires_at or g.expires_at > now())
-            and (not g.budget_id or budget_available(db, g.budget_id))
+        "unlimited": unlimited,
+        "daily_limit": RSS["daily_analysis_budget"],
+        "daily_remaining": daily_remaining,
+        "remaining": min(
+            daily_remaining,
+            daily_remaining
+            if unlimited
+            else sum(max(0, g.article_limit - g.used) for g in active),
         ),
         "reserved": sum(g.used for g in grants),
         "periodic_enabled": settings.rss_analysis_enabled,
@@ -571,13 +592,19 @@ def budget_status(db: Session = Depends(get_db)):
                 "id": b.id,
                 "request_limit": b.request_limit,
                 "requests_used": b.requests_used,
-                "remaining_requests": max(0, b.request_limit - b.requests_used)
-                if not b.started_at
-                or now() < b.started_at + timedelta(seconds=b.window_seconds)
-                else 0,
+                "remaining_requests": None
+                if b.request_limit is None
+                else (
+                    max(0, b.request_limit - b.requests_used)
+                    if not b.window_seconds
+                    or not b.started_at
+                    or now() < b.started_at + timedelta(seconds=b.window_seconds)
+                    else 0
+                ),
+                "unlimited": b.request_limit is None,
                 "started_at": b.started_at,
                 "closes_at": b.started_at + timedelta(seconds=b.window_seconds)
-                if b.started_at
+                if b.started_at and b.window_seconds
                 else None,
             }
             for b in db.scalars(

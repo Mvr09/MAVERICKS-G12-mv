@@ -48,7 +48,9 @@ def seed(db):
                     budget_id=grant.get("budget_id"),
                     expires_at=datetime.fromisoformat(
                         grant["expires_at"].replace("Z", "+00:00")
-                    ),
+                    )
+                    if grant.get("expires_at")
+                    else None,
                 )
             )
 
