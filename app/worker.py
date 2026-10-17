@@ -4,8 +4,8 @@ from datetime import timedelta
 from uuid import uuid4
 from sqlalchemy import select, or_, text
 from app.db import Session
-from app.models import Job, Article, WorkerPresence, now
-from app.queue import claim, enqueue_sync, enqueue, reserve
+from app.models import Job, Article, WorkerPresence, Comparison, now
+from app.queue import claim, enqueue_sync, enqueue, reserve, analysis_key
 from app.settings import settings, RSS
 
 log = logging.getLogger("radar.worker")
@@ -46,7 +46,10 @@ def run_job(jid):
                 from app.analysis import process_article
 
                 article = db.get(Article, j.payload["article_id"])
-                if article and article.state == "superseded":
+                if article and (
+                    article.state == "superseded"
+                    or article.generation != j.payload.get("generation", 0)
+                ):
                     j.state = "done"
                     j.error = None
                     j.lease_until = None
@@ -60,6 +63,22 @@ def run_job(jid):
                 j = db.get(Job, jid)
                 j.state = "error" if r["analysis_status"] == "error" else "done"
                 j.error = r["error"]
+            elif j.kind == "comparison":
+                from app.comparison import process_comparison
+
+                article = db.get(Article, j.payload["article_id"])
+                comparison = db.get(Comparison, j.payload["comparison_id"])
+                if article.generation != j.payload.get("generation", 0):
+                    comparison.state = "cancelled"
+                    j.state = "cancelled"
+                else:
+                    result = process_comparison(db, comparison.id)
+                    j.state = result.state
+                    j.error = (
+                        "COMPARISON_REQUIRES_DIAGNOSIS"
+                        if result.state == "error"
+                        else None
+                    )
             elif j.kind == "rss":
                 from app.rss import sync_source
 
@@ -77,6 +96,14 @@ def run_job(jid):
             j = db.get(Job, jid)
             j.state = "error"
             j.error = "WORKER_INTERNAL_ERROR"
+            if j.kind == "comparison":
+                comparison = db.get(Comparison, j.payload.get("comparison_id"))
+                if comparison:
+                    comparison.state = "error"
+                    comparison.summary = {
+                        **comparison.summary,
+                        "message": "Fallo interno del worker; requiere diagnóstico.",
+                    }
             j.lease_until = None
             db.commit()
         log.error("job=%s status=WORKER_INTERNAL_ERROR", jid)
@@ -92,7 +119,7 @@ def main():
                 revision = db.execute(
                     text("select version_num from alembic_version")
                 ).scalar_one()
-                if revision == "0005":
+                if revision == "0006":
                     break
         except Exception:
             pass
@@ -129,9 +156,12 @@ def main():
                                 if reserve(db, a, "rss"):
                                     enqueue(
                                         db,
-                                        "analysis:" + a.id,
+                                        analysis_key(a),
                                         "analysis",
-                                        {"article_id": a.id},
+                                        {
+                                            "article_id": a.id,
+                                            "generation": a.generation,
+                                        },
                                         1,
                                     )
                         db.commit()

@@ -9,9 +9,19 @@ from app.models import (
     GrantArticle,
     ConsumptionBudget,
     Source,
+    RssDailyUsage,
+    Comparison,
     now,
 )
 from app.settings import RSS, settings
+
+
+def analysis_key(article):
+    return (
+        "analysis:"
+        + article.id
+        + (f":g{article.generation}" if article.generation else "")
+    )
 
 
 def enqueue(db, key, kind, payload, priority=10):
@@ -25,23 +35,38 @@ def enqueue(db, key, kind, payload, priority=10):
 
 
 def reserve(db, article, split, manual_rss=False):
-    if db.get(GrantArticle, article.id):
-        return True
+    db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     if split == "rss" and not settings.rss_analysis_enabled and not manual_rss:
         return False
+    existing = db.get(GrantArticle, article.id)
+    if existing:
+        old_grant = db.get(Grant, existing.grant_id)
+        if (
+            old_grant
+            and (not old_grant.expires_at or old_grant.expires_at > now())
+            and (not old_grant.budget_id or budget_available(db, old_grant.budget_id))
+        ):
+            return True
+    daily_key = None
     if split == "rss":
+        from app.importer import digest
+
         db.execute(text("SELECT pg_advisory_xact_lock(72642, 1)"))
+        daily_key = digest(
+            [now().date().isoformat(), article.origin_key, article.content_hash]
+        )
         daily = db.scalar(
             select(func.count())
-            .select_from(GrantArticle)
-            .join(Article)
+            .select_from(RssDailyUsage)
             .where(
-                Article.context == "rss",
-                GrantArticle.reserved_at
-                >= now().replace(hour=0, minute=0, second=0, microsecond=0),
+                RssDailyUsage.reserved_at
+                >= now().replace(hour=0, minute=0, second=0, microsecond=0)
             )
         )
-        if daily >= RSS["daily_analysis_budget"]:
+        if (
+            not db.get(RssDailyUsage, daily_key)
+            and daily >= RSS["daily_analysis_budget"]
+        ):
             return False
     grants = db.scalars(
         select(Grant)
@@ -58,7 +83,12 @@ def reserve(db, article, split, manual_rss=False):
         return False
     grant = grants[0]
     grant.used += 1
-    db.add(GrantArticle(article_id=article.id, grant_id=grant.id))
+    if existing:
+        existing.grant_id = grant.id
+    else:
+        db.add(GrantArticle(article_id=article.id, grant_id=grant.id))
+    if daily_key and not db.get(RssDailyUsage, daily_key):
+        db.add(RssDailyUsage(id=daily_key))
     db.flush()
     return True
 
@@ -77,6 +107,7 @@ def budget_available(db, budget_id):
 
 
 def enqueue_rss_analysis(db, limit):
+    db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     articles = db.scalars(
         select(Article)
         .where(Article.context == "rss", Article.state == "pending")
@@ -87,11 +118,17 @@ def enqueue_rss_analysis(db, limit):
     for a in articles:
         if len(jobs) >= limit:
             break
-        if db.scalar(select(Job).where(Job.key == "analysis:" + a.id)):
+        if db.scalar(select(Job).where(Job.key == analysis_key(a))):
             continue
         if reserve(db, a, "rss", manual_rss=True):
             jobs.append(
-                enqueue(db, "analysis:" + a.id, "analysis", {"article_id": a.id}, 1).id
+                enqueue(
+                    db,
+                    analysis_key(a),
+                    "analysis",
+                    {"article_id": a.id, "generation": a.generation},
+                    1,
+                ).id
             )
     return jobs
 
@@ -114,7 +151,11 @@ def enqueue_batch(db, bid):
         if reserve(db, a, b.split):
             jobs.append(
                 enqueue(
-                    db, "analysis:" + a.id, "analysis", {"article_id": a.id}, 100
+                    db,
+                    analysis_key(a),
+                    "analysis",
+                    {"article_id": a.id, "generation": a.generation},
+                    100,
                 ).id
             )
     if not jobs:
@@ -166,6 +207,14 @@ def claim(db):
     for job in exhausted:
         job.state = "error"
         job.error = "LEASE_ATTEMPTS_EXHAUSTED"
+        if job.kind == "comparison":
+            row = db.get(Comparison, job.payload.get("comparison_id"))
+            if row:
+                row.state = "error"
+                row.summary = {
+                    **row.summary,
+                    "message": "Lease agotado tras tres reclamaciones; requiere diagnóstico.",
+                }
         job.lease_until = None
     # Locking is transactional across independent worker processes.
     expired = and_(Job.state == "running", Job.lease_until < now())

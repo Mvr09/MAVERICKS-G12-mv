@@ -2,7 +2,7 @@
 
 Aplicación en español con React/TypeScript/Vite/Tailwind, FastAPI, SQLAlchemy/Alembic y PostgreSQL. Web y worker comparten imagen; solo la web tiene dominio público. Los datos de Helixa representan una cartera ficticia.
 
-**Estado:** desplegado en https://mavericks-g12-mv-production.up.railway.app, web/worker/PostgreSQL operativos, esquema 0005 preparado para autorización manual ilimitada. Ensayo real: test 20 en 5,763 s y LiveDay 14 + Excel en 5,753 s; 37 RSS procesados. Ensayo anterior: 100/200 llamadas consumidas. Nueva autorización manual JEV sin cupo ni vencimiento; inferencia periódica desactivada, límite técnico RSS 100 artículos/día UTC. Validación n=10: recall de riesgo 60 %, F1 0,75 y proveedores exactos 8/10. **Aceptación incompleta:** A06 falla en un caso múltiple y A14 tiene sonido/silencio confirmados por el usuario y requiere registrar dispositivo/navegador. [Informe de entrega](reports/INFORME_FINAL.md), [auditoría](reports/AUDITORIA.md) y [seguimiento](PROGRESS.md).
+**Estado:** desplegado en https://mavericks-g12-mv-production.up.railway.app, web/worker/PostgreSQL operativos, esquema 0006 preparado para selección de demo y reanálisis versionado. Ensayo real: test 20 en 5,763 s y LiveDay 14 + Excel en 5,753 s; 37 RSS procesados. Ensayo anterior: 100/200 llamadas consumidas. Nueva autorización manual JEV sin cupo ni vencimiento; inferencia periódica desactivada, límite técnico RSS 100 artículos/día UTC. Validación n=10: recall de riesgo 60 %, F1 0,75 y proveedores exactos 8/10. **Aceptación incompleta:** A06 falla en un caso múltiple y A14 tiene sonido/silencio confirmados por el usuario y requiere registrar dispositivo/navegador. [Informe de entrega](reports/INFORME_FINAL.md), [auditoría](reports/AUDITORIA.md) y [seguimiento](PROGRESS.md).
 
 ## Arranque local con Docker Compose
 
@@ -163,4 +163,4 @@ Las migraciones inversas destructivas están bloqueadas deliberadamente. No se b
 
 ## Operación de la demo
 
-[Guía paso a paso](docs/10_OPERACION_DEMO.md): Materiales, worker, progreso RSS, lotes manuales JEV sujetos a grants persistentes y al presupuesto compartido autorizado y limpieza confirmada solo de Entrenamiento/LiveDay. El análisis periódico de pago permanece desactivado. La web usa `python -m app.predeploy` para migrar e inicializar las seis fuentes y cupos de forma idempotente.
+[Guía paso a paso](docs/10_OPERACION_DEMO.md): Materiales, worker, progreso RSS, lotes manuales JEV sujetos a grants persistentes y al presupuesto compartido autorizado y limpieza mediante checkboxes de lotes/fuentes, catálogo con dependencias y reanálisis con historial. RSS admite contraste auxiliar con tres evaluaciones JEV; no retira revisiones automáticamente. El análisis periódico de pago permanece desactivado. La web usa `python -m app.predeploy` para migrar e inicializar las seis fuentes y cupos de forma idempotente.

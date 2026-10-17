@@ -206,8 +206,15 @@ def global_slot(deadline):
 
 class JevClient:
     def __init__(
-        self, db, article_id, transport=None, sleep=time.sleep, diagnostic_ack_at=None
+        self,
+        db,
+        article_id,
+        transport=None,
+        sleep=time.sleep,
+        diagnostic_ack_at=None,
+        run_key="",
     ):
+        self.run_key = run_key
         self.diagnostic_ack_at = diagnostic_ack_at
         self.db = db
         self.article_id = article_id
@@ -219,6 +226,8 @@ class JevClient:
     def ask(self, payload, stage, deadline):
         # Cache includes the entire effective payload plus question version.
         key = digest({"payload": payload, "questions": POLICY["question_version"]})
+        if self.run_key:
+            key = digest({"request": key, "run_key": self.run_key})
         cached = self.db.get(RequestCache, key)
         if cached:
             self.cached_stages.append(stage)
@@ -238,11 +247,19 @@ class JevClient:
         attempts = self.db.scalar(
             select(func.count())
             .select_from(ApiCall)
-            .where(ApiCall.article_id == self.article_id, ApiCall.stage == stage)
+            .where(
+                ApiCall.article_id == self.article_id,
+                ApiCall.stage == stage,
+                ApiCall.run_key == self.run_key,
+            )
         )
         previous = self.db.scalar(
             select(ApiCall)
-            .where(ApiCall.article_id == self.article_id, ApiCall.stage == stage)
+            .where(
+                ApiCall.article_id == self.article_id,
+                ApiCall.stage == stage,
+                ApiCall.run_key == self.run_key,
+            )
             .order_by(ApiCall.created_at.desc())
         )
         ack = (
@@ -278,6 +295,7 @@ class JevClient:
             record = ApiCall(
                 article_id=self.article_id,
                 stage=stage,
+                run_key=self.run_key,
                 attempt=attempts,
                 model=payload["model"],
                 duration=0,

@@ -20,7 +20,7 @@ with engine.begin() as c:
         "CREATE TABLE IF NOT EXISTS alembic_version(version_num varchar(32) primary key)"
     )
     c.exec_driver_sql("DELETE FROM alembic_version")
-    c.exec_driver_sql("INSERT INTO alembic_version VALUES ('0004')")
+    c.exec_driver_sql("INSERT INTO alembic_version VALUES ('0006')")
 with Session() as db:
     seed(db)
     import_excel(

@@ -61,6 +61,7 @@ class Article(Base):
     row_order: Mapped[int] = mapped_column(Integer, default=0)
     news_id: Mapped[str] = mapped_column(String)
     content_hash: Mapped[str] = mapped_column(String)
+    generation: Mapped[int] = mapped_column(Integer, default=0)
     data: Mapped[dict] = mapped_column(JSON)
     state: Mapped[str] = mapped_column(String, default="pending")
     fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
@@ -82,6 +83,7 @@ class Analysis(Base):
     __tablename__ = "analyses"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
     article_id: Mapped[str] = mapped_column(ForeignKey("articles.id"), index=True)
+    generation: Mapped[int] = mapped_column(Integer, default=0)
     request_hash: Mapped[str] = mapped_column(String, unique=True)
     result: Mapped[dict] = mapped_column(JSON)
     raw: Mapped[dict] = mapped_column(JSON)
@@ -190,6 +192,7 @@ class ApiCall(Base):
     __tablename__ = "api_calls"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
     article_id: Mapped[str] = mapped_column(String)
+    run_key: Mapped[str] = mapped_column(String, default="")
     stage: Mapped[str] = mapped_column(String)
     attempt: Mapped[int] = mapped_column(Integer)
     model: Mapped[str] = mapped_column(String)
@@ -225,4 +228,20 @@ class GrantArticle(Base):
     __tablename__ = "grant_articles"
     article_id: Mapped[str] = mapped_column(ForeignKey("articles.id"), primary_key=True)
     grant_id: Mapped[str] = mapped_column(ForeignKey("grants.id"))
+    reserved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class Comparison(Base):
+    __tablename__ = "comparisons"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
+    article_id: Mapped[str] = mapped_column(ForeignKey("articles.id"), index=True)
+    state: Mapped[str] = mapped_column(String, default="queued")
+    ballots: Mapped[list] = mapped_column(JSON, default=list)
+    summary: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class RssDailyUsage(Base):
+    __tablename__ = "rss_daily_usage"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
     reserved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)

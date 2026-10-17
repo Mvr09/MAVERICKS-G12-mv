@@ -109,6 +109,9 @@ def ingest(db, source, content):
 
 
 def sync_source(db, source_id, transport=None, check_dns=True):
+    from sqlalchemy import text
+
+    db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     source = db.scalar(
         select(Source).where(Source.id == source_id).with_for_update(skip_locked=True)
     )

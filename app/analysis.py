@@ -155,14 +155,25 @@ def normalize(article, suppliers, a, b, candidates):
     return result
 
 
-def process_article(db, article_id, transport=None, diagnostic_ack_at=None):
+def process_article(
+    db, article_id, transport=None, diagnostic_ack_at=None, run_key=None, publish=True
+):
     a = db.get(Article, article_id)
     suppliers = [s.data for s in db.scalars(select(Supplier).order_by(Supplier.id))]
     if len(suppliers) != 40:
         raise ProviderError("CATALOG_REQUIRES_40_SUPPLIERS")
     start = time.monotonic()
+    run_key = (
+        run_key
+        if run_key is not None
+        else (f"{a.id}:generation:{a.generation}" if a.generation else "")
+    )
     client = JevClient(
-        db, a.id, transport=transport, diagnostic_ack_at=diagnostic_ack_at
+        db,
+        a.id,
+        transport=transport,
+        diagnostic_ack_at=diagnostic_ack_at,
+        run_key=run_key,
     )
     raw = {}
     pa = stage_a(a.data, suppliers, settings.jev_model)
@@ -174,7 +185,13 @@ def process_article(db, article_id, transport=None, diagnostic_ack_at=None):
             "questions": POLICY["question_version"],
         }
     )
-    previous = db.scalar(select(Analysis).where(Analysis.request_hash == request_hash))
+    if run_key:
+        request_hash = digest({"request": request_hash, "run_key": run_key})
+    previous = (
+        db.scalar(select(Analysis).where(Analysis.request_hash == request_hash))
+        if publish
+        else None
+    )
     if previous and previous.result["analysis_status"] != "error":
         a.state = previous.result["analysis_status"]
         previous.cached = True
@@ -201,7 +218,8 @@ def process_article(db, article_id, transport=None, diagnostic_ack_at=None):
         result = normalize(a, suppliers, raw["a"], raw["b"], duration_candidates)
         from app.incidents import reconcile
 
-        reconcile(db, a, result)
+        if publish:
+            reconcile(db, a, result)
     except (ProviderError, ValueError) as exc:
         code = exc.code if isinstance(exc, ProviderError) else "DATA_INVALID"
         result = {
@@ -222,6 +240,8 @@ def process_article(db, article_id, transport=None, diagnostic_ack_at=None):
             "review_reasons": [],
         }
         validate(result, SCHEMA)
+    if not publish:
+        return result
     raw["_cache_stages"] = client.cached_stages
     raw["_new_requests"] = client.network_requests
     fully_cached = bool(client.cached_stages) and client.network_requests == 0
@@ -234,6 +254,7 @@ def process_article(db, article_id, transport=None, diagnostic_ack_at=None):
         db.add(
             Analysis(
                 article_id=a.id,
+                generation=a.generation,
                 request_hash=request_hash,
                 result=result,
                 raw=raw,

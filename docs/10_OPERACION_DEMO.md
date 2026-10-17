@@ -40,17 +40,31 @@ Con worker conectado y noticias recibidas, el presentador puede pulsar **Analiza
 
 `RSS_ANALYSIS_ENABLED=false` mantiene desactivada la inferencia periódica; no impide ejecutar este lote manual con grant explícito. Los artículos no incluidos quedan pendientes. El límite inicial de tres artículos de entrenamiento permanece agotado.
 
-## Limpiar para la demo
+## Preparar demo: seleccionar, borrar o reanalizar
 
-**Preparar demo** abre una vista previa y no borra al abrirse. El presentador revisa cantidades, escribe `LIMPIAR DEMO` y pulsa **Eliminar Entrenamiento y LiveDay**.
+1. Entrar como presentador y abrir **Preparar demo**.
+2. Marcar los lotes Excel o fuentes RSS deseados. No hay ninguna opción marcada por defecto. **Seleccionar todo** incluye el catálogo; para conservarlo, desmarcarlo.
+3. Elegir **Borrar datos seleccionados** o **Volver a ejecutar el análisis**.
+4. Pulsar **Revisar alcance**. La vista muestra noticias, análisis, incidentes, alertas y borradores relacionados; al reanalizar indica el máximo de peticiones nuevas.
+5. Escribir **LIMPIAR DEMO** para borrar, o **REANALIZAR** para ejecutar consultas nuevas, y confirmar. Cambiar la selección invalida la vista previa y exige revisarla de nuevo.
 
-- Elimina esos lotes, sus noticias y resultados, trabajos y elementos asociados exclusivamente a ellos.
-- Conserva proveedores, materiales, RSS, validación, test y sus resultados, sesiones y fuentes.
-- Conserva el consumo y registro de llamadas JEV. La limpieza no concede presupuesto ni permite reusar una autorización agotada.
-- Si hay análisis del alcance en curso, datos cambiados desde la vista previa o incidentes compartidos con lotes que deben conservarse, rechaza la operación sin borrado parcial.
-- Después se pueden volver a importar los Excel para la demo; inferencia adicional requiere autorización específica.
+El borrado de un lote permite cargar de nuevo su Excel. El borrado de RSS conserva la configuración de la fuente y limpia sus cabeceras condicionales: **Actualizar ahora** podrá consultar el feed completo que el proveedor siga ofreciendo. Para borrar noticias de Excel se selecciona el lote completo, evitando una importación parcial ambigua. Una noticia individual puede reanalizarse desde su ficha.
 
-La implementación no ejecuta esta limpieza automáticamente ni el agente la ejecuta como parte del despliegue.
+El catálogo solo puede borrarse si también se seleccionan todas las noticias que dependen de él. Las opciones no seleccionadas permanecen. En incidentes compartidos se retiran solo las evidencias seleccionadas y se recalcula el estado con las restantes; sus alertas y borradores anteriores también dependen de esa evidencia y se incluyen expresamente en el alcance. Un aviso visual regenerado por esta operación no reproduce sonido.
+
+Un trabajo en ejecución bloquea la operación. Una vista previa caduca a los 15 minutos o al cambiar los datos; no se ejecuta un borrado parcial. No se borran ni se devuelven consumos: ApiCall, caché, contadores y registro diario RSS sobreviven al borrado/recarga.
+
+**Reanalizar** conserva la noticia y archiva la generación anterior de resultados. Crea un trabajo nuevo con consultas JEV nuevas, sin reiniciar los intentos antiguos. Los reintentos y la caché quedan separados por generación; reclamar el mismo trabajo no duplica consultas. Hasta finalizar, la exportación del lote queda pendiente. **Historial de análisis** en la noticia permite consultar versiones previas; las exportaciones y el ranking usan únicamente la generación vigente. No utilizar reanálisis para ajustar preguntas o reglas a respuestas retenidas.
+
+La implementación no borra datos ni reanaliza lotes automáticamente como parte del despliegue.
+
+## Contraste RSS con tres evaluaciones JEV
+
+En una noticia RSS ya analizada, el presentador puede pulsar **Contrastar con 3 JEV** y confirmar **Iniciar contraste**. Se encolan tres evaluaciones nuevas del mismo modelo jev-1.13.0, con la política y preguntas existentes, sin reutilizar el resultado del análisis original. Máximo 18 peticiones por contraste incluidos reintentos (hasta seis por evaluación); la segunda etapa se omite si no hay candidatos. Cada voto se guarda antes de continuar y la UI muestra progreso, motivos, decisiones, acuerdo y consumo de ese contraste.
+
+El resultado es **auxiliar**: no altera el análisis vigente, prioridad, alarmas ni exportaciones del reto. Dos votos coincidentes no se convierten en una confianza del 100 %. Los fallos no cuentan como N ni como un voto «sin revisión»; detienen el contraste y exigen diagnóstico cuando corresponde. La revisión por falta de datos, evidencia o ambigüedad sigue visible.
+
+Diagnóstico real previo al cambio: 37 RSS, 23 revisión/14 completadas; 16 noticias con event_type_confidence_low y 17 con event_state_confidence_low, con solapamiento. No se retocan umbrales para reducir esos contadores. [TypeSafe Confidence](https://docs.typesafe.ai/confidence) explica que confidence resume la distribución de opciones: repetir el mismo modelo puede conservar la misma incertidumbre y no equivale a contar con tres expertos independientes.
 
 ## Audio
 

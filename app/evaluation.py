@@ -11,7 +11,7 @@ def evaluate_batch(db, bid):
         label = db.get(EvaluationLabel, a.id)
         analysis = db.scalar(
             select(Analysis)
-            .where(Analysis.article_id == a.id)
+            .where(Analysis.article_id == a.id, Analysis.generation == a.generation)
             .order_by(Analysis.created_at.desc())
         )
         if (

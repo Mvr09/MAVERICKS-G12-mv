@@ -12,7 +12,10 @@ for (const width of [360, 1440]) {
     await expect(
       page.getByText("20 materiales", { exact: true }),
     ).toBeVisible();
-    await page.screenshot({path:`../reports/materials-${width}.png`,fullPage:true});
+    await page.screenshot({
+      path: `../reports/materials-${width}.png`,
+      fullPage: true,
+    });
     const card = page.locator(".materials-grid article").first();
     const id = (await card.locator(".eyebrow").textContent())!.split(" · ")[0];
     await page.getByRole("searchbox", { name: "Buscar material" }).fill(id);
@@ -133,7 +136,25 @@ test("limpieza: vista previa, confirmación explícita y cancelar no borra datos
   await page.route("**/api/session", (r) =>
     r.fulfill({ json: { presenter: true, csrf: "MOCK-CSRF" } }),
   );
-  await page.route("**/api/demo/cleanup-preview", (r) =>
+  await page.route("**/api/demo/options", (r) =>
+    r.fulfill({
+      json: [
+        {
+          id: "batch:MOCK-TRAIN",
+          label: "Entrenamiento",
+          kind: "exercise",
+          count: 30,
+        },
+        {
+          id: "batch:MOCK-LIVE",
+          label: "LiveDay",
+          kind: "exercise",
+          count: 14,
+        },
+      ],
+    }),
+  );
+  await page.route("**/api/demo/preview", (r) =>
     r.fulfill({
       json: {
         counts: {
@@ -157,11 +178,14 @@ test("limpieza: vista previa, confirmación explícita y cancelar no borra datos
   await page
     .getByRole("button", { name: "Preparar demo", exact: true })
     .click();
+  await page.getByRole("checkbox", { name: "Entrenamiento" }).check();
+  await page.getByRole("checkbox", { name: "LiveDay" }).check();
+  await page.getByRole("button", { name: "Revisar alcance" }).click();
   await expect(
     page.getByText("2 lotes · 44 noticias · 0 análisis", { exact: true }),
   ).toBeVisible();
   const confirm = page.getByRole("button", {
-    name: "Eliminar Entrenamiento y LiveDay",
+    name: "Borrar selección",
     exact: true,
   });
   await expect(confirm).toBeDisabled();

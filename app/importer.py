@@ -313,7 +313,7 @@ def export_batch(db, batch_id):
     for a in articles:
         result = db.scalar(
             select(Analysis)
-            .where(Analysis.article_id == a.id)
+            .where(Analysis.article_id == a.id, Analysis.generation == a.generation)
             .order_by(Analysis.created_at.desc())
         )
         if (

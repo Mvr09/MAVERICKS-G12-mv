@@ -1,0 +1,76 @@
+{
+  "checked_at": "2026-10-17T21:52:22.820809+00:00",
+  "revision": "a07ddc802a1567a0f8455edb90ddd4d81df61bad",
+  "schema": "0005",
+  "worker": {
+    "online": true,
+    "compatible": true,
+    "revision": "a07ddc802a1567a0f8455edb90ddd4d81df61bad",
+    "expected_revision": "a07ddc802a1567a0f8455edb90ddd4d81df61bad",
+    "last_seen_at": "2026-10-17T21:51:53.182757+00:00"
+  },
+  "unlimited_budget": {
+    "id": "manual-unlimited-20261017",
+    "request_limit": null,
+    "requests_used": 0,
+    "remaining_requests": null,
+    "unlimited": true,
+    "started_at": null,
+    "closes_at": null
+  },
+  "unlimited_grants": [
+    {
+      "id": "manual-unlimited-liveday-20261017",
+      "split": "liveday",
+      "article_limit": null,
+      "used": 0,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null
+    },
+    {
+      "id": "manual-unlimited-rss-20261017",
+      "split": "rss",
+      "article_limit": null,
+      "used": 0,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null
+    },
+    {
+      "id": "manual-unlimited-test-20261017",
+      "split": "test",
+      "article_limit": null,
+      "used": 0,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null
+    },
+    {
+      "id": "manual-unlimited-training-20261017",
+      "split": "training",
+      "article_limit": null,
+      "used": 0,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null
+    },
+    {
+      "id": "manual-unlimited-validation-20261017",
+      "split": "validation",
+      "article_limit": null,
+      "used": 0,
+      "budget_id": "manual-unlimited-20261017",
+      "expires_at": null
+    }
+  ],
+  "historical_budget": {
+    "id": "demo-final-200-20261017",
+    "request_limit": 200,
+    "requests_used": 100,
+    "remaining_requests": 100,
+    "unlimited": false,
+    "started_at": "2026-10-17T21:16:52.203758+00:00",
+    "closes_at": "2026-10-17T22:01:52.203758+00:00"
+  },
+  "rss_daily_limit": 100,
+  "rss_daily_remaining": 63,
+  "periodic_paid_analysis": false,
+  "new_jev_requests_by_verification": 0
+}

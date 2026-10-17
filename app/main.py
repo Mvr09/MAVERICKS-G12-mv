@@ -125,7 +125,7 @@ def ready(db: Session = Depends(get_db)):
         revision = db.execute(
             text("select version_num from alembic_version")
         ).scalar_one()
-        if revision != "0005":
+        if revision != "0006":
             raise ValueError()
     except Exception:
         raise HTTPException(503, "Base de datos o esquema no disponible")
@@ -226,7 +226,11 @@ def overview(
 def latencies(db, context):
     values = sorted(
         db.scalars(
-            select(Analysis.duration).join(Article).where(Article.context == context)
+            select(Analysis.duration)
+            .join(Article)
+            .where(
+                Article.context == context, Analysis.generation == Article.generation
+            )
         ).all()
     )
     return {
@@ -446,7 +450,8 @@ class DiagnosticRetry(BaseModel):
 def retry_article(aid: str, body: DiagnosticRetry, db: Session = Depends(get_db)):
     require_current_worker(db)
     a = db.get(Article, aid)
-    job = db.scalar(select(Job).where(Job.key == "analysis:" + aid).with_for_update())
+    key = "analysis:" + aid + (f":g{a.generation}" if a and a.generation else "")
+    job = db.scalar(select(Job).where(Job.key == key).with_for_update())
     if not a or not job or a.state != "error" or job.state != "error":
         raise HTTPException(
             409, "Solo se reintenta un error diagnosticado con trabajo existente"
@@ -457,7 +462,11 @@ def retry_article(aid: str, body: DiagnosticRetry, db: Session = Depends(get_db)
         )
     stages = db.execute(
         select(ApiCall.stage, func.count())
-        .where(ApiCall.article_id == aid)
+        .where(
+            ApiCall.article_id == aid,
+            ApiCall.run_key
+            == (f"{a.id}:generation:{a.generation}" if a.generation else ""),
+        )
         .group_by(ApiCall.stage)
     ).all()
     if any(count >= 3 for stage, count in stages):
@@ -550,12 +559,10 @@ def analysis_budget(db: Session = Depends(get_db)):
     unlimited = any(g.article_limit is None for g in active)
     daily_used = db.scalar(
         select(func.count())
-        .select_from(GrantArticle)
-        .join(Article)
+        .select_from(RssDailyUsage)
         .where(
-            Article.context == "rss",
-            GrantArticle.reserved_at
-            >= now().replace(hour=0, minute=0, second=0, microsecond=0),
+            RssDailyUsage.reserved_at
+            >= now().replace(hour=0, minute=0, second=0, microsecond=0)
         )
     )
     daily_remaining = max(0, RSS["daily_analysis_budget"] - daily_used)
@@ -713,6 +720,79 @@ def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
     return {"job_ids": jobs, "articles": len(jobs), "maximum_requests": len(jobs) * 6}
 
 
+class DemoSelection(BaseModel):
+    selection: list[str] = Field(max_length=500)
+    mode: Literal["delete", "rerun"] = "delete"
+
+
+@app.get("/api/demo/options", dependencies=[Depends(presenter)])
+def demo_options(db: Session = Depends(get_db)):
+    from app.demo import options
+
+    return options(db)
+
+
+@app.post("/api/demo/preview", dependencies=[Depends(presenter)])
+def selected_demo_preview(body: DemoSelection, db: Session = Depends(get_db)):
+    from app.demo import preview
+
+    try:
+        return preview(db, body.selection, body.mode)
+    except ValueError as exc:
+        raise HTTPException(409, str(exc))
+
+
+@app.post(
+    "/api/articles/{aid}/compare", status_code=202, dependencies=[Depends(presenter)]
+)
+def compare_article(aid: str, db: Session = Depends(get_db)):
+    from app.comparison import enqueue_comparison
+
+    require_current_worker(db)
+    try:
+        comparison, job = enqueue_comparison(db, aid)
+        db.commit()
+        return {
+            "comparison_id": comparison.id,
+            "job_id": job.id,
+            "maximum_requests": 18,
+        }
+    except ValueError as exc:
+        db.rollback()
+        raise HTTPException(409, str(exc))
+
+
+@app.get("/api/articles/{aid}/comparisons", dependencies=[Depends(presenter)])
+def comparisons(aid: str, db: Session = Depends(get_db)):
+    from app.comparison import view
+
+    return [
+        view(db, row)
+        for row in db.scalars(
+            select(Comparison)
+            .where(Comparison.article_id == aid)
+            .order_by(Comparison.created_at.desc())
+        )
+    ]
+
+
+@app.get("/api/articles/{aid}/runs", dependencies=[Depends(presenter)])
+def analysis_runs(aid: str, db: Session = Depends(get_db)):
+    return [
+        {
+            "generation": r.generation,
+            "created_at": r.created_at,
+            "result": r.result,
+            "cached": r.cached,
+        }
+        for r in db.scalars(
+            select(Analysis)
+            .where(Analysis.article_id == aid)
+            .order_by(Analysis.generation.desc())
+        )
+    ]
+
+
 @app.get("/api/demo/cleanup-preview", dependencies=[Depends(presenter)])
 def demo_preview(db: Session = Depends(get_db)):
     from app.demo import preview
@@ -721,7 +801,7 @@ def demo_preview(db: Session = Depends(get_db)):
 
 
 class DemoCleanup(BaseModel):
-    confirmation: Literal["LIMPIAR DEMO"]
+    confirmation: Literal["LIMPIAR DEMO", "REANALIZAR"]
     token: str = Field(max_length=20000)
 
 
@@ -730,6 +810,15 @@ def demo_cleanup(body: DemoCleanup, db: Session = Depends(get_db)):
     from app.demo import cleanup
 
     try:
+        try:
+            approved = codec().loads(body.token)
+        except Exception:
+            raise ValueError("Confirmación inválida. Revisa la vista previa.")
+        expected = "REANALIZAR" if approved.get("mode") == "rerun" else "LIMPIAR DEMO"
+        if body.confirmation != expected:
+            raise ValueError("La confirmación no corresponde a la acción elegida.")
+        if approved.get("mode") == "rerun":
+            require_current_worker(db)
         counts = cleanup(db, body.token)
         db.commit()
         return {"deleted": counts}

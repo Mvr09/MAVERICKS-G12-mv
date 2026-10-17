@@ -435,13 +435,14 @@ function App() {
             <div className="heading-actions">
               {presenter && (
                 <DemoControl
-                  onClean={async () => {
+                  onClean={async (result) => {
                     cursor.current = null;
                     navigate("/");
-                    setContext("exercise");
                     await refresh(true);
                     setMessage(
-                      "Entrenamiento y LiveDay retirados. Catálogo y consumo conservados.",
+                      result?.mode === "rerun"
+                        ? `${result.job_ids.length} análisis encolados; los resultados aparecerán conforme terminen.`
+                        : "Selección borrada. Consumo e historial de llamadas conservados.",
                     );
                   }}
                 />
@@ -1336,11 +1337,26 @@ function ArticleDetail({ context, presenter, action }: any) {
   const [a, setA] = useState<Article | null>(null),
     [error, setError] = useState("");
   useEffect(() => {
+    let active = true;
     setA(null);
     setError("");
-    api("/articles/" + id)
-      .then(setA)
-      .catch((e) => setError(e.message));
+    async function refreshArticle() {
+      try {
+        const value = await api("/articles/" + id);
+        if (active) {
+          setA(value);
+          setError("");
+        }
+      } catch (e) {
+        if (active) setError((e as Error).message);
+      }
+    }
+    refreshArticle();
+    const timer = window.setInterval(refreshArticle, 3000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
   }, [id, context]);
   if (!a)
     return (
@@ -1369,10 +1385,24 @@ function ArticleDetail({ context, presenter, action }: any) {
           </span>
         </div>
       )}
+      {presenter && (
+        <div className="inline">
+          <DemoControl
+            buttonLabel="Reanalizar noticia"
+            initialSelection={["article:" + a.id]}
+            initialMode="rerun"
+            onClean={async () => {
+              setA(await api("/articles/" + id));
+            }}
+          />
+        </div>
+      )}
       {a.state === "error" && presenter && (
         <RetryAnalysis article={a} action={action} />
       )}
 
+      {presenter && <AnalysisHistory article={a} />}
+      {presenter && a.split === "rss" && <ComparisonControl article={a} />}
       {a.url && /^https?:\/\//.test(a.url) && (
         <a className="button" href={a.url} target="_blank" rel="noreferrer">
           Abrir fuente original <ArrowUpRight size={16} />
@@ -1380,6 +1410,11 @@ function ArticleDetail({ context, presenter, action }: any) {
       )}
       {a.analysis ? (
         <>
+          {a.analysis.review_reasons.map((r) => (
+            <p className="notice warning" key={r}>
+              {reviewLabel(r)}
+            </p>
+          ))}
           <h3>Evidencia literal</h3>
           {a.analysis.evidence
             .filter((e) =>
@@ -2506,103 +2541,190 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
   );
 }
 
-function DemoControl({ onClean }: { onClean: () => Promise<void> }) {
+function DemoControl({
+  onClean,
+  initialSelection = [],
+  initialMode = "delete",
+  buttonLabel = "Preparar demo",
+}: {
+  onClean: (result?: any) => Promise<void>;
+  initialSelection?: string[];
+  initialMode?: "delete" | "rerun";
+  buttonLabel?: string;
+}) {
   const [open, setOpen] = useState(false),
+    [options, setOptions] = useState<any[]>([]),
+    [selection, setSelection] = useState<string[]>([]),
+    [mode, setMode] = useState<"delete" | "rerun">(initialMode),
     [preview, setPreview] = useState<any>(null),
     [confirmation, setConfirmation] = useState(""),
     [busy, setBusy] = useState(false),
+    [loading, setLoading] = useState(false),
     [error, setError] = useState("");
-  async function review() {
-    setOpen(true);
+  const phrase = mode === "rerun" ? "REANALIZAR" : "LIMPIAR DEMO";
+  function invalidate() {
     setPreview(null);
     setConfirmation("");
     setError("");
+  }
+  async function show() {
+    setOpen(true);
+    invalidate();
+    setLoading(true);
+    setMode(initialMode);
+    setSelection(initialSelection);
     try {
-      setPreview(await api("/demo/cleanup-preview"));
+      const rows = await api("/demo/options");
+      setOptions([
+        ...initialSelection
+          .filter((x) => x.startsWith("article:"))
+          .map((id) => ({
+            id,
+            label: "Esta noticia",
+            kind: "individual",
+            count: 1,
+          })),
+        ...rows,
+      ]);
     } catch (e) {
       setError((e as Error).message);
+    } finally {
+      setLoading(false);
     }
   }
   return (
     <>
-      <button className="button" onClick={review}>
-        Preparar demo
+      <button className="button" onClick={show}>
+        {buttonLabel}
       </button>
       {open && (
         <Modal
-          title="Preparar demo: limpiar Entrenamiento y LiveDay"
+          title="Preparar demo: elegir datos y acción"
           close={() => {
             if (!busy) setOpen(false);
           }}
         >
-          <p>
-            Esta acción elimina únicamente los lotes de Entrenamiento y LiveDay,
-            sus noticias, resultados y elementos asociados.
-          </p>
-          <p>
-            <strong>Conserva:</strong> proveedores, materiales, noticias RSS,
-            validación y test. El consumo JEV registrado se conserva y no
-            recupera cupo.
-          </p>
-          {!preview && !error && <p role="status">Calculando alcance…</p>}
-          {preview && (
-            <div className="fact-box">
-              <p>
-                <strong>
-                  {preview.counts.batches} lotes · {preview.counts.articles}{" "}
-                  noticias · {preview.counts.analyses} análisis
-                </strong>
-              </p>
-              <p>
-                {preview.counts.incidents} incidentes · {preview.counts.alerts}{" "}
-                alertas · {preview.counts.drafts} borradores asociados
-              </p>
-            </div>
-          )}
-          {(error || preview?.blocked) && (
-            <p className="error-text" role="alert">
-              {error || preview.blocked}
+          <div className="modal-body">
+            <p>
+              Marca los datos sobre los que quieres actuar. Las opciones sin
+              marcar se conservan.
             </p>
-          )}
-          <label className="cleanup-confirmation">
-            Escribe LIMPIAR DEMO para confirmar
-            <input
-              value={confirmation}
-              onChange={(e) => setConfirmation(e.target.value)}
-              autoComplete="off"
-              disabled={busy}
-            />
-          </label>
-          <div className="inline">
+            <fieldset className="demo-options" disabled={busy || loading}>
+              <legend>Datos seleccionados</legend>
+              <div className="inline">
+                <button
+                  className="button"
+                  type="button"
+                  onClick={() => {
+                    invalidate();
+                    setSelection(
+                      options
+                        .filter(
+                          (o) => mode === "delete" || o.kind !== "catalog",
+                        )
+                        .map((o) => o.id),
+                    );
+                  }}
+                >
+                  Seleccionar todo
+                </button>
+                <button
+                  className="button"
+                  type="button"
+                  onClick={() => {
+                    invalidate();
+                    setSelection([]);
+                  }}
+                >
+                  Desmarcar todo
+                </button>
+              </div>
+              {options.map((o) => (
+                <label className="demo-option" key={o.id}>
+                  <input
+                    type="checkbox"
+                    checked={selection.includes(o.id)}
+                    disabled={mode === "rerun" && o.kind === "catalog"}
+                    onChange={(e) => {
+                      invalidate();
+                      setSelection(
+                        e.target.checked
+                          ? [...selection, o.id]
+                          : selection.filter((id) => id !== o.id),
+                      );
+                    }}
+                  />
+                  <span>
+                    {o.label}
+                    <small>
+                      {o.kind === "rss" ? "Noticias reales · " : ""}
+                      {o.count}{" "}
+                      {o.kind === "catalog" ? "proveedores" : "noticias"}
+                    </small>
+                  </span>
+                </label>
+              ))}
+            </fieldset>
+            {loading && <p role="status">Cargando opciones…</p>}
+            <fieldset className="demo-options" disabled={busy}>
+              <legend>Acción</legend>
+              <label className="demo-option">
+                <input
+                  type="radio"
+                  name="demo-mode"
+                  checked={mode === "delete"}
+                  onChange={() => {
+                    invalidate();
+                    setMode("delete");
+                  }}
+                />
+                <span>
+                  Borrar datos seleccionados
+                  <small>
+                    Permite volver a importar Excel o consultar las fuentes RSS.
+                  </small>
+                </span>
+              </label>
+              <label className="demo-option">
+                <input
+                  type="radio"
+                  name="demo-mode"
+                  checked={mode === "rerun"}
+                  onChange={() => {
+                    invalidate();
+                    setMode("rerun");
+                    setSelection(selection.filter((x) => x !== "catalog"));
+                  }}
+                />
+                <span>
+                  Volver a ejecutar el análisis
+                  <small>
+                    Nuevas consultas JEV; conserva las noticias y archiva
+                    resultados anteriores.
+                  </small>
+                </span>
+              </label>
+            </fieldset>
+            <p>
+              El consumo y los registros de llamadas JEV se conservan. Los
+              incidentes compartidos se recalculan con las evidencias restantes.
+              Sus alertas y borradores asociados se retiran por depender de la
+              revisión anterior.
+            </p>
             <button
               className="button"
-              disabled={busy}
-              onClick={() => setOpen(false)}
-            >
-              Cancelar
-            </button>
-            <button
-              className="button primary"
-              disabled={
-                busy ||
-                !preview ||
-                !!preview.blocked ||
-                confirmation !== "LIMPIAR DEMO" ||
-                !preview.counts.batches
-              }
+              disabled={busy || loading || !selection.length}
               onClick={async () => {
                 setBusy(true);
                 setError("");
+                setConfirmation("");
                 try {
-                  await api("/demo/cleanup", {
-                    method: "POST",
-                    body: JSON.stringify({
-                      confirmation,
-                      token: preview.token,
+                  setPreview(
+                    await api("/demo/preview", {
+                      method: "POST",
+                      body: JSON.stringify({ selection, mode }),
                     }),
-                  });
-                  setOpen(false);
-                  await onClean();
+                  );
                 } catch (e) {
                   setError((e as Error).message);
                 } finally {
@@ -2610,11 +2732,287 @@ function DemoControl({ onClean }: { onClean: () => Promise<void> }) {
                 }
               }}
             >
-              {busy ? "Limpiando…" : "Eliminar Entrenamiento y LiveDay"}
+              Revisar alcance
             </button>
+            {preview && (
+              <div className="fact-box" aria-live="polite">
+                <p>
+                  <strong>
+                    {preview.counts.batches} lotes · {preview.counts.articles}{" "}
+                    noticias · {preview.counts.analyses} análisis
+                  </strong>
+                </p>
+                <p>
+                  {preview.counts.incidents} incidentes ·{" "}
+                  {preview.counts.alerts} alertas · {preview.counts.drafts}{" "}
+                  borradores asociados
+                </p>
+                {preview.counts.suppliers > 0 && (
+                  <p>
+                    Catálogo: {preview.counts.suppliers} proveedores y{" "}
+                    {preview.counts.materials} materiales.
+                  </p>
+                )}
+                {mode === "rerun" && (
+                  <p>
+                    Hasta {preview.maximum_requests} peticiones nuevas,
+                    incluidos reintentos. La exportación queda pendiente hasta
+                    terminar el nuevo análisis.
+                  </p>
+                )}
+              </div>
+            )}
+            {(error || preview?.blocked) && (
+              <p className="error-text" role="alert">
+                {error || preview.blocked}
+              </p>
+            )}
+            {preview && (
+              <label className="cleanup-confirmation">
+                Escribe {phrase} para confirmar
+                <input
+                  value={confirmation}
+                  onChange={(e) => setConfirmation(e.target.value)}
+                  autoComplete="off"
+                  disabled={busy}
+                />
+              </label>
+            )}
+            <div className="inline">
+              <button
+                className="button"
+                disabled={busy}
+                onClick={() => setOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                className="button primary"
+                disabled={
+                  busy ||
+                  !preview ||
+                  !!preview.blocked ||
+                  confirmation !== phrase
+                }
+                onClick={async () => {
+                  setBusy(true);
+                  setError("");
+                  try {
+                    const response = await api("/demo/cleanup", {
+                      method: "POST",
+                      body: JSON.stringify({
+                        confirmation,
+                        token: preview.token,
+                      }),
+                    });
+                    setOpen(false);
+                    await onClean(response.deleted);
+                  } catch (e) {
+                    setError((e as Error).message);
+                    setPreview(null);
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              >
+                {busy
+                  ? "Procesando…"
+                  : mode === "rerun"
+                    ? "Encolar nuevo análisis"
+                    : "Borrar selección"}
+              </button>
+            </div>
           </div>
         </Modal>
       )}
     </>
+  );
+}
+
+function ComparisonControl({ article }: { article: Article }) {
+  const [rows, setRows] = useState<any[]>([]),
+    [error, setError] = useState(""),
+    [open, setOpen] = useState(false),
+    [busy, setBusy] = useState(false);
+  useEffect(() => {
+    let active = true;
+    async function refresh() {
+      try {
+        const values = await api("/articles/" + article.id + "/comparisons");
+        if (active) setRows(values);
+      } catch (e) {
+        if (active) setError((e as Error).message);
+      }
+    }
+    refresh();
+    const timer = window.setInterval(refresh, 3000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [article.id]);
+  const current = rows[0],
+    running = current && ["queued", "running"].includes(current.state);
+  return (
+    <section className="comparison-panel">
+      <h3>Contraste con tres evaluaciones JEV</h3>
+      <p>
+        Tres consultas nuevas del mismo modelo, con la política actual. Sirven
+        para comparar incertidumbre; no son expertos independientes ni eliminan
+        automáticamente una revisión.
+      </p>
+      <button
+        className="button"
+        disabled={
+          busy || running || !["review", "done"].includes(article.state)
+        }
+        onClick={() => setOpen(true)}
+      >
+        Contrastar con 3 JEV
+      </button>
+      {error && (
+        <p className="error-text" role="alert">
+          {error}
+        </p>
+      )}
+      {current && (
+        <div aria-live="polite">
+          <p>
+            <Badge
+              tone={
+                current.state === "error"
+                  ? "danger"
+                  : running
+                    ? "warning"
+                    : "info"
+              }
+            >
+              {label(current.state)}
+            </Badge>{" "}
+            · {current.ballots.length}/3 evaluaciones terminadas
+          </p>
+          {current.summary.message && <p>{current.summary.message}</p>}
+          <ol>
+            {current.ballots.map((b: any, index: number) => (
+              <li key={index}>
+                <strong>
+                  Evaluación {index + 1}: {label(b.analysis_status)}
+                </strong>{" "}
+                · Riesgo {b.is_risk ?? "Sin decisión"} · Urgencia{" "}
+                {b.urgent ?? "Sin decisión"} · Proveedores{" "}
+                {b.affected_supplier_ids.join(", ") || "sin vínculo"} ·{" "}
+                {label(b.event_type || "other")}
+                {b.error && <p className="error-text">{b.error}</p>}
+                {b.review_reasons.map((r: string) => (
+                  <p key={r}>{reviewLabel(r)}</p>
+                ))}
+              </li>
+            ))}
+          </ol>
+          {current.ballots.length > 0 && (
+            <p>
+              {current.summary.done_votes}/3 sin revisión ·{" "}
+              {current.summary.review_votes}/3 con revisión ·{" "}
+              {current.summary.errors} errores. Acuerdo en decisión:{" "}
+              {current.summary.decision_agreement}/3.
+            </p>
+          )}
+          <small>
+            El análisis vigente, su prioridad, sus alarmas y las exportaciones
+            se conservan.
+          </small>
+        </div>
+      )}
+      {open && (
+        <Modal
+          title="Iniciar contraste de tres evaluaciones"
+          close={() => {
+            if (!busy) setOpen(false);
+          }}
+        >
+          <div className="modal-body">
+            <p>
+              Se harán hasta 18 peticiones JEV, incluidos reintentos: dos etapas
+              por evaluación, con un máximo de tres intentos por etapa. No se
+              consulta la segunda etapa cuando no hay proveedores candidatos.
+            </p>
+            <p>
+              El resultado será auxiliar. Una mayoría no sustituye la evidencia
+              ni los datos que faltan y puede repetir el mismo error del modelo.
+            </p>
+            <div className="inline">
+              <button
+                className="button"
+                disabled={busy}
+                onClick={() => setOpen(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                className="button primary"
+                disabled={busy}
+                onClick={async () => {
+                  setBusy(true);
+                  setError("");
+                  try {
+                    await api("/articles/" + article.id + "/compare", {
+                      method: "POST",
+                    });
+                    setRows(
+                      await api("/articles/" + article.id + "/comparisons"),
+                    );
+                    setOpen(false);
+                  } catch (e) {
+                    setError((e as Error).message);
+                    setOpen(false);
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              >
+                {busy ? "Encolando…" : "Iniciar contraste"}
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+    </section>
+  );
+}
+
+function AnalysisHistory({ article }: { article: Article }) {
+  const [rows, setRows] = useState<any[]>([]),
+    [error, setError] = useState("");
+  return (
+    <details
+      className="comparison-panel"
+      onToggle={async (e) => {
+        if (!(e.target as HTMLDetailsElement).open) return;
+        try {
+          setRows(await api("/articles/" + article.id + "/runs"));
+        } catch (e) {
+          setError((e as Error).message);
+        }
+      }}
+    >
+      <summary>Historial de análisis</summary>
+      {error && <p role="alert">{error}</p>}
+      {rows.map((r: any) => (
+        <details key={r.generation}>
+          <summary>
+            Análisis {r.generation + 1} · {date(r.created_at)} ·{" "}
+            {label(r.result.analysis_status)}
+          </summary>
+          <p>
+            Riesgo {r.result.is_risk ?? "Sin decisión"} · Urgencia{" "}
+            {r.result.urgent ?? "Sin decisión"} · Proveedores{" "}
+            {r.result.affected_supplier_ids.join(", ") || "sin vínculo"}
+          </p>
+          {r.result.evidence.map((e: any) => (
+            <blockquote key={e.id}>{e.text}</blockquote>
+          ))}
+        </details>
+      ))}
+    </details>
   );
 }

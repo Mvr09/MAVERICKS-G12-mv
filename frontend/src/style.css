@@ -1939,3 +1939,49 @@ dialog header {
 .cleanup-confirmation input {
   width: 100%;
 }
+
+/* Operaciones de demo: selección táctil y contraste de evaluaciones. */
+.demo-options {
+  border: 1px solid #d8d5e8;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 16px 0;
+  min-width: 0;
+}
+.demo-option {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 4px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.demo-option input {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  accent-color: #6d28d9;
+  margin-top: 3px;
+}
+.demo-option span {
+  flex: 1;
+  min-width: 0;
+}
+.demo-option small {
+  display: block;
+  margin-top: 4px;
+}
+.comparison-panel {
+  border: 1px solid #d8d5e8;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  overflow-wrap: anywhere;
+}
+.comparison-panel li {
+  margin: 12px 0;
+}
+.comparison-panel summary {
+  cursor: pointer;
+  padding: 8px 0;
+}

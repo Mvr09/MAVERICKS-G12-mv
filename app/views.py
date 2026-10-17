@@ -24,7 +24,7 @@ def current(incident):
 def article_view(db, a):
     result = db.scalar(
         select(Analysis)
-        .where(Analysis.article_id == a.id)
+        .where(Analysis.article_id == a.id, Analysis.generation == a.generation)
         .order_by(Analysis.created_at.desc())
     )
     return {
@@ -33,6 +33,7 @@ def article_view(db, a):
         "split": db.get(Batch, a.batch_id).split if a.batch_id else "rss",
         "state": a.state,
         "version": a.version,
+        "generation": a.generation,
         "fetched_at": a.fetched_at,
         "source_id": a.source_id,
         **a.data,
@@ -71,7 +72,7 @@ def suppliers_view(db, context="exercise"):
     analyzed = db.execute(
         select(Article.data, Analysis.result)
         .join(Analysis, Analysis.article_id == Article.id)
-        .where(Article.context == context)
+        .where(Article.context == context, Analysis.generation == Article.generation)
     ).all()
     for article_data, result in analyzed:
         if result["analysis_status"] == "error":
