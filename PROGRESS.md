@@ -1,93 +1,44 @@
-# Progreso · Supplier Risk Radar
+# Supplier Risk Radar · seguimiento
 
-Actualizado 17-10-2026. Código publicado en Railway; frontend accesible, base de datos/esquema remoto pendiente de diagnóstico. Primer commit de hito: `6e80b4e`. Se conserva el cambio previo de `evidence/validation_report.json` y el archivo no seguido preexistente.
+## Estado actual · 17-10-2026
+- Publicado por push autorizado a `origin/main`: **8477e5b5411e892b2436923fbc195e821859c904**. Repositorio Mvr09/MAVERICKS-G12-mv; Railway peaceful-harmony / production. No hay acceso directo al panel.
+- URL real: https://mavericks-g12-mv-production.up.railway.app. Comprobación 20:39:01 UTC: /, /healthz, /readyz, catálogo, fuentes, config y cuatro assets **HTTP 200**; SHA coincide, esquema **0003**, **40 proveedores**, **20 materiales**, **6 fuentes**. Catálogo conservado después del autodeploy.
+- RSS remoto confirmado: **worker conectado**, seis fuentes consultadas realmente desde Railway (200/304, sin errores actuales), **37 artículos** persistidos. Lote autorizado completado: 10 artículos (1 done, 9 review), 27 pendientes.
+- Cupo adicional autorizado por el usuario: **10 noticias RSS / máximo 60 peticiones JEV**, reintentos incluidos. Grant `rss-demo-20261017-10`, límite persistente, vencimiento de seguridad 19-10-2026 00:00 UTC. Verificado remoto: **0 disponibles, 10 reservados/consumidos, 10 peticiones RSS nuevas**, sin caché ni reintentos; modelo jev-1.13.0. **6,964 s** medidos desde solicitud hasta trabajos terminados. Inferencia periódica **false**.
 
-## Plan y entregas
-1. **Hecho:** PostgreSQL/Alembic, configuración segura, sesión/CSRF/permisos, importación idempotente y catálogo; dashboard/ficha responsive.
-2. **Hecho:** cliente JEV oficial en dos etapas, contrato Pydantic/JSON Schema, evidencias, política de referencia, cola con leases/heartbeat y exportación.
-3. **Hecho:** seis RSS reales, estados/ETag/304, versiones, deduplicación, incidentes, recuperación e historia. Análisis RSS real pendiente de presupuesto.
-4. **Hecho:** filtros, proveedor/material/productos, analítica, alertas visuales/lógica sonora, borradores editables, copia/TXT y resolución motivada.
-5. **Preparado:** Dockerfile no privilegiado, Compose, Railway web/worker, README y paquete permitido. Auditoría A01–A20 en reports/AUDITORIA.md.
+## Implementación y correcciones
+- React/TS/Vite/Tailwind, FastAPI/Pydantic/SQLAlchemy/Alembic/PostgreSQL; web y worker usan misma imagen. Web escucha 0.0.0.0:8000 conforme al dominio existente. Sesión presentador, CSRF, lectura pública normalizada, originales/secretos no públicos.
+- Importador explícito de cuatro Excel del manifiesto, hash/idempotencia y diagnósticos; etiquetas de evaluación separadas. Originales intactos, sin buscar/abrir answer key. 40 identidades evaluadas por Noul y dos etapas de referencia; preguntas/política congeladas.
+- Cola PostgreSQL con claim transaccional, leases, heartbeat y límites; caché e intentos durables. RSS deduplicado/versionado, incidentes agrupados y recuperaciones conservadoras; prioridad máxima por proveedor. Exportación no convierte errores en N.
+- Despliegue corregido desde 365bb4c y bb39a08. Log recibido confirmó localhost:5432 por DATABASE_URL vacía; usuario corrigió la conexión PostgreSQL remota. Guard loopback, errores 503 sanitizados y backoff UI de 30 s evitan tracebacks repetidos. Se verificó recuperación de readiness.
+- Ampliación pedida: **Materiales** en sidebar, listado/búsqueda/categoría, fichas con datos disponibles y proveedores; Noticias filtra por fuente y lote. RSS muestra progreso real, cola, errores, worker y stream de incorporaciones. «Silenciar» también bloquea «Probar alarma».
+- Predeploy preparado: `python -m app.predeploy` ejecuta migración + seed secuencialmente. Migración 0003 añade presencia de worker. El sync manual y arranque de worker también inicializan seis fuentes/cupos idempotentemente; el sync manual remoto lo ha comprobado.
+- **Preparar demo**: vista previa y confirmación explícita LIMPIAR DEMO para retirar solo training/LiveDay y dependencias exclusivas. Conserva catálogo, RSS, validation/test, caché y consumo. Bloquea trabajo activo, cambios desde preview e incidentes compartidos. **No ejecutado en Railway**.
 
-## Evidencia y comandos ejecutados
-- Lectura inicial: README, docs/, config/, contracts/, referencias, manifiesto y prompts de diseño/auditoría. No se buscó ni abrió answer key ni se exploraron XLSX ajenos al manifiesto.
-- `alembic upgrade head`: migraciones 0001–0002; esquema de 17 tablas comprobado en base independiente nueva. PostgreSQL 16.15 local en 127.0.0.1:55432 (binarios en /tmp).
-- `app.cli import-manifest`: 40 proveedores, 20 materiales, 6 productos; lotes 30/10/20/14; originales intactos. Repetición idempotente.
-- `DATABASE_URL=…/radar_test .venv/bin/python -m pytest -q`: **36 pasan**. Base desechable independiente, mocks identificados; sin llamadas de pago.
-- `python -m unittest discover -s reference -p 'test_*.py' -v`: **16 pasan**. No se sobrescribió el informe de validación del usuario.
-- `npm --prefix frontend run build`: pasa; dependencias exactas y lockfile, gráficos separados. Última instalación npm: 0 vulnerabilidades informadas.
-- `E2E_URL=…:8001 E2E_FULL=1 npm --prefix frontend run test:e2e`: **8 pasan**, mocks identificados. Carga, borrador, guardado/copia/TXT, exportación, foco y lógica de audio.
-- `npm --prefix frontend run test:e2e -- responsive.spec.ts`: **5 pasan** con datos locales reales, 360/390/768/1440 px; resumen, ficha, noticias, fuentes, analítica y material sin overflow. Capturas en reports/. Chrome emulado; no móvil físico.
-- `scripts.smoke http://127.0.0.1:8000`: salud/listados/ruta profunda 200, secretos/originales 404, mutación pública 401.
-- `scripts.check_restart`: sesión, 40 proveedores, 74 entradas y 3 análisis sobreviven al reinicio real de web.
-- `scripts.check_worker`: seis trabajos RSS completados, reinicio conservado, peticiones JEV antes/después = 4/4; reports/worker-local.json.
-- `scripts.package_deploy`: paquete permitido en .runtime/deploy y tar.gz; revisión de secretos del frontend/paquete pasa. Sin originales, etiquetas o .env. Docker no disponible: build de imagen no ejecutado.
+## Pruebas y evidencia
+- **51 unitarias/integración** sobre PostgreSQL dedicado `radar_test`: pasan; única advertencia de deprecación Anyio externa. Incluyen payload efectivo sin las cinco etiquetas, permisos/CSRF, importación, decisión, cola, preservación de consumo y limpieza acotada, fallos y circuito de diagnóstico.
+- **13 E2E Chromium** con mocks identificados: pasan. 360/390/768/1440 px, teclado, materiales, progreso RSS, borrador/TXT, carga/exportación, audio lógico/cooldown/foco/bloqueo y cancelación de limpieza. Capturas de materiales revisadas visualmente. Usuario confirma fichas, persistencia tras recarga y tono audible de versión previa; omite móvil físico. Audibilidad corregida pendiente de ensayo físico.
+- Build TypeScript/Vite: pasa. Migración 0003 desde 0002: pasa, 18 tablas. `app.predeploy` completo sobre base aislada: pasa. Paquete permitido: 52 archivos, sin originales ni secretos. Build Docker ejecutado por Railway; Docker local no disponible.
+- Suite de referencia: 16 pasan, sin llamadas externas. JEV real inicial: **3/3 training consumidos**, N001/N002/N005, **4 HTTP 200**, sin reintentos, modelo devuelto jev-1.13.0, **1,476 s local**. No se extrapola a 14 artículos.
+- RSS real local previo: **6/6 HTTP 200**, 37 versiones recientes iniciales; reports/rss-local.json y worker-local.json. Los resultados locales no se presentan como consultas de Railway.
+- Comandos: `npm --prefix frontend run build`; `DATABASE_URL=<base radar_test> .venv/bin/python -m pytest -q`; preparación `python -m tests.setup_e2e` y `E2E_URL=http://127.0.0.1:8001 E2E_FULL=1 npm --prefix frontend run test:e2e`; `python -m scripts.check_migrations`; `python -m scripts.package_deploy`; `python -m scripts.check_public_deployment --expected-commit <SHA>`.
+- Evidencia posterior al push conservada localmente: reports/public-deployment-8477e5b.json, rss-railway-after-sync.json y railway-ui-8477e5b.json. No disparar otro autodeploy solo para registrar observaciones.
 
-## Pruebas externas y autorización consumida
-- Credenciales TYPESAFE_API_KEY, ADMIN_PASSWORD, SESSION_SECRET configuradas; no se muestran, regeneran ni modifica `.env`. DATABASE_URL faltaba; configurada por proceso para ensayos locales.
-- JEV real: **3/3 artículos consumidos**, N001/N002/N005; **4 HTTP 200**, 0 reintentos; versión devuelta jev-1.13.0; **1,476 s** total local. Uso en reports/jev-local.json. No se extrapola a LiveDay.
-- config/authorization.json conserva el cupo agotado también en una base nueva. Nuevos grants solo tras autorización explícita; cuatro llamadas simultáneas globales y hasta tres intentos por etapa.
-- RSS real local: **6/6 HTTP 200**, 37 versiones recientes en la consulta inicial; reportado en reports/rss-local.json. No consultado desde Railway. Análisis de pago desactivado, noticias pendientes.
-- Preguntas/política congeladas en reports/prompt-freeze.json. Validación, test y LiveDay importados, **sin inferencia** ni métricas inventadas.
+## Autorización, seguridad y cambios ajenos
+- Push a main autorizado expresamente para este proyecto; commits revisados sin secretos ni cambios ajenos. Se preservan evidence/validation_report.json y el archivo ajeno sin seguimiento. Capturas antiguas regeneradas no añadidas al último commit.
+- .env no modificado, mostrado ni empaquetado. Credenciales requeridas existentes; solo uso autorizado en runtime. Usuario compartió contraseña de BD en chat: no se copió a archivos ni se usó desde aquí; recomendada rotación en panel.
+- No crear recursos Railway desde esta sesión; usuario configura worker/panel. Propuesta anterior de mayor evaluación no implica aprobación. No consumir JEV training/validation/test/LiveDay adicional; únicamente RSS 10/60 autorizado.
 
-## Correcciones de auditoría
-Etiquetas excluidas del payload HTTP, 40 candidatos, etapa B múltiple, inventario null/0/no aplicable, prioridad independiente de confianza, máximo de incidentes, recuperación posterior y noticia antigua; caché parcial distinguida; versiones RSS pendientes sustituidas; errores no convertidos en N. Reintento con diagnóstico conserva presupuesto. Bandas numéricas de UI obtenidas de la política de API. Foco de diálogo, filtros móviles y cooldown sin reproducir historial probados.
+## Comprobación real del worker y JEV · 17-10-2026
+- Usuario confirma despliegue del worker. GET /api/worker online true; seis fuentes han completado consultas reales (últimas 200 o 304, errores 0). El monitor ya no muestra aviso de worker sin conexión.
+- `python -m scripts.check_rss_execution --analyze`: autenticación 200, encolado 202, 10 trabajos done, **10 HTTP JEV nuevos**, **6,964 s** incluidos encolado/espera; modelo devuelto jev-1.13.0 en los diez resultados. Ningún error, caché o reintento. Solo una etapa necesaria en estos artículos sin candidatos; no se fuerza una segunda llamada vacía.
+- **9 review / 1 done / 27 pending**. Revisión por confianza insuficiente de tipo/estado del evento; no se presenta como certeza de riesgo ni como precisión evaluada. RSS no altera exportaciones del ejercicio.
+- `python -m scripts.check_rss_execution` sin --analyze verifica de nuevo sin ampliar consumo ni alterar tiempo inicial. Grant persistente queda agotado 10/10; RSS periódico false. Uso del proveedor almacenado por el adaptador en api_calls.usage; no recuperado por estos endpoints, sin estimación de coste inventada.
+- Smoke real posterior: /, salud/readiness, catálogo, fuentes, config y assets 200; conserva 40 proveedores y seis fuentes. Chromium público sin mocks: nueve tarjetas al filtrar revisión, siete opciones de fuente (todas + seis), sin errores JS ni overflow a 1440 px, worker activo.
+- Evidencia: reports/rss-railway-execution.json, public-deployment-after-rss-jev.json, railway-rss-ui-real.json y capturas railway-rss-*-real.png. Script reproducible nuevo sin valores de credenciales.
 
-## Pendientes y siguiente acción
-- Código publicado por push autorizado a main: 365bb4c. URL pública https://mavericks-g12-mv-production.up.railway.app; frontend/health/assets HTTP 200, readiness 503 y catálogo/fuentes 500.
-- No hay acceso directo Railway: el usuario opera el panel. GitHub confirma autodeploy en peaceful-harmony / production. Log Deploy recibido: DATABASE_URL apunta a localhost. Requiere referencia a PostgreSQL remoto; no se solicita token Railway.
-- Propuesta única en reports/APROBACION_PENDIENTE.md: una ventana de 45 min, hasta 83 artículos adicionales (27 training, 10 validation, 20 test, 14 LiveDay, 12 RSS), máximo 498 peticiones, reintentos incluidos.
-- Pendientes: build Docker, evaluación retenida, RSS analizado en Railway, exportación final y LiveDay ≤300 s medidos; audibilidad y móvil físico. Auditoría marca explícitamente lo no ejecutado; no hay aceptación completa.
-- Próxima acción dependiente: revisar logs de Deploy/Pre-deploy y corregir conexión PostgreSQL o migraciones según la evidencia. El usuario ya corrigió APP_BASE_URL y ejecutó redeploy. No se amplía consumo JEV; RSS de pago permanece false en la API pública.
-
-## Continuación: autodeploy existente (17-10-2026)
-- Usuario autoriza push al repositorio conectado; no hay acceso Railway ni autorización adicional de inferencia. Rama main confirmada por el usuario; variables pegadas por el usuario en Railway, valores remotos no accesibles desde esta sesión.
-- `git fetch`, `git ls-remote`: GitHub main en 1c5e149; 6e80b4e y d527d30 aún locales. GitHub muestra deployment fallido en peaceful-harmony / production para 1c5e149.
-- URL aportada: https://mavericks-g12-mv-production.up.railway.app, target port 8000. A las 18:48 UTC, /, /healthz, /readyz, catálogo y config devuelven 404 de Railway «Application not found».
-- Corrección preparada: railway.json predeterminado, entrypoint común python -m app.web con bind 0.0.0.0:8000; web/config/Docker coherentes, migraciones y seed en predeploy, RSS de pago false por defecto. /healthz identifica RAILWAY_GIT_COMMIT_SHA cuando está disponible.
-- Build frontend pasa; suite PostgreSQL local ampliada: 38 pruebas pasan. Sin nuevas llamadas a JEV ni grants.
-- Pasos exactos de panel y logs necesarios: docs/09_AUTODEPLOY_EXISTENTE.md. Siguiente: confirmar rama, revisar/commitear y hacer push autorizado; comprobar URL y assets tras autodeploy.
-
-- Verificación adicional: entrypoint arrancado con PORT=12345 y escucha observada en 0.0.0.0:8000; smoke local pasa. Consumo PostgreSQL de demo: 4 peticiones JEV, grant inicial 3/3, RSS de pago desactivado. Rama main confirmada; push autorizado ejecutado a continuación.
-
-- Push ejecutado: origin/main avanzó de 1c5e149 a 365bb4cfca506e3d6d34a8a8b1ecd588f9834a2e. GitHub registra «Railway is deploying the service» (pending). Se espera comprobación pública; no se interpreta el push como éxito del servicio.
-- Recordatorio de panel: APP_BASE_URL debe ser el HTTPS público; DATABASE_URL debe referenciar PostgreSQL remoto, no estar vacía ni ser localhost. No se han consultado ni divulgado los valores remotos.
-
-## Resultado publicado y comprobación posterior al panel
-- Push confirmado en GitHub y URL: **365bb4cfca506e3d6d34a8a8b1ecd588f9834a2e**. GitHub pasó pending → success entre 18:59:13 y 18:59:44 UTC. /healthz confirma ese SHA.
-- Comprobación completa 18:59:51 UTC y repetición tras el redeploy indicado por el usuario (19:00:39 UTC): / 200, /healthz 200, /readyz 503, /api/suppliers 500, /api/sources 500, /api/config 200; cuatro assets JS/CSS 200 con MIME correcto. RSS de pago false. **No hay aceptación completa**: catálogo remoto no verificable.
-- Evidencia: reports/autodeploy-365bb4c.json, reports/public-deployment-365bb4c.json y reports/public-deployment-after-panel-redeploy.json. No se afirma éxito de base de datos por el estado Deployed.
-- Solicitadas últimas 80 líneas de Deploy/Pre-deploy (Alembic, seed y primer error SQLAlchemy/psycopg), con secretos ocultos. Build no es el bloqueo observado. Revisar DATABASE_URL de PostgreSQL remoto y ejecución de predeploy según docs/09_AUTODEPLOY_EXISTENTE.md.
-- Los informes posteriores al push y este seguimiento se conservan localmente; no se dispara otro autodeploy solo para registrar el diagnóstico. Los dos cambios preexistentes del usuario siguen excluidos.
-
-## Log recibido: causa confirmada y corrección
-- El log de Deploy apunta a localhost/127.0.0.1/::1:5432 con connection refused; no hay conexión a PostgreSQL remoto. El límite de 500 logs/s se alcanza por tracebacks repetidos en las consultas de la UI.
-- Implementado bloqueo de loopback en Railway, errores JSON 503 sanitizados para configuración/conexión/esquema y backoff de sondeo de 30 s en fallos; consulta inmediata al recuperar foco. Sin cambios en datos ni presupuesto JEV.
-- Pruebas backend: 44 pasan; build TypeScript/Vite pasa. Preparado ensayo de navegador con mocks para recuperación y ausencia de promesas rechazadas.
-- Acción necesaria del usuario: DATABASE_URL debe ser referencia al PostgreSQL del mismo entorno; revisar predeploy Alembic + seed y healthcheck /readyz. Pasos exactos añadidos a docs/09_AUTODEPLOY_EXISTENTE.md. El arreglo de logs no sustituye esta configuración remota.
-
-- Playwright: **9/9 pasan** en Chromium, incluidos 360/390/768/1440 px, teclado, audio simulado y backoff ante 503 (25 s sin repetir, reintento posterior). No demuestra audibilidad física. Revisión de origin/main confirma 365bb4c antes del nuevo push; se excluyen cambios ajenos y capturas regeneradas.
-
-## Verificación del arreglo publicado
-- Push autorizado completado a origin/main: **bb39a081c08b2685b56087beaa39e8514c965ed3**. GitHub: pending → success; URL confirma el mismo SHA a las **19:57:44 UTC del 17-10-2026**.
-- HTTP observado: `/` 200, `/healthz` 200, cuatro assets 200 con MIME correcto, `/api/config` 200 y RSS de pago false. `/readyz`, `/api/suppliers` y `/api/sources` devuelven ahora **503 JSON DATABASE_CONFIGURATION**, sin traceback en respuesta. No hay acceso a logs remotos para confirmar su volumen.
-- Evidencia posterior al push conservada localmente: reports/public-deployment-bb39a08.json. No se dispara otro autodeploy solo para registrar la observación. Pruebas previas: 44 backend, 9 navegador, build frontend pasan; ninguna llamada nueva a JEV.
-- Bloqueo restante confirmado: referencia DATABASE_URL a PostgreSQL remoto en el panel del servicio web (y worker si existe), aplicar migraciones + seed en predeploy y redeploy. Mantener puerto 8000, APP_BASE_URL público y RSS_ANALYSIS_ENABLED=false. Comprobar healthcheck /readyz: el estado success de GitHub no acredita readiness.
-- Siguiente comprobación tras el cambio de panel: readiness/esquema y catálogo; en una base nueva, importar catálogo como presentador antes de exigir 40 proveedores. No se declara aceptación completa ni RSS consultado desde Railway.
-
-## Conexión PostgreSQL corregida desde el panel
-- Verificación pública 17-10-2026 20:08:51 UTC: commit bb39a08; /, /healthz, /readyz, catálogo, fuentes, config y cuatro assets HTTP 200. Esquema 0002 disponible. PostgreSQL ya conecta.
-- Catálogo 0 proveedores y fuentes 0: falta inicialización seed/carga; todavía no aceptación completa. Predeploy debe ejecutar también python -m app.cli seed; después importar catálogo como presentador. Evidencia local: reports/public-deployment-after-database-reference.json.
-- RSS de pago sigue false; ninguna llamada nueva a JEV. El usuario compartió una credencial de BD en el chat: no se copia a archivos ni se usa desde esta sesión; recomendada rotación en el panel.
-
-## Cambios solicitados durante prueba del presentador
-- Usuario confirma importación, fichas, persistencia tras recarga y tono de prueba audible; omite prueba móvil física. Pide Materiales en sidebar, feedback RSS, limpieza de Entrenamiento/LiveDay y JEV.
-- RSS remoto diagnosticado: 0 fuentes registradas, 20 materiales. Nuevo predeploy único `python -m app.predeploy`; migración 0003 añade heartbeat de worker. Sync inicializa seis fuentes y deduplica pendientes; UI muestra cola, consultas, errores, conexión y stream real. Worker separado requiere configuración del usuario en Railway; no hay acceso al panel.
-- Materiales: listado, búsqueda, categoría, especificaciones disponibles y enlaces a proveedores. Noticias: filtro por fuente y lote. Silenciar también bloquea Probar alarma.
-- Limpieza autorizada implementada con vista previa, confirmación explícita, bloqueo de trabajo activo/cambio de datos/incidentes compartidos: solo training/LiveDay. Conserva catálogo, RSS, validación/test y consumo JEV. No ejecutada fuera de tests.
-- Autorización adicional explícita: **10 noticias RSS / máximo 60 peticiones**, reintentos incluidos, un único cupo persistente `rss-demo-20261017-10`, hasta 19-10-2026 00:00 UTC. RSS periódico false. Grant inicial training sigue agotado; no ampliar a otros splits.
-- Pruebas actuales: 50 backend y 12 navegador pasan; migración 0003 verificada sobre base local migrada (18 tablas); comando predeploy completo pasa. Añadidas comprobaciones de circuito de errores y confirmación de limpieza pendientes de ejecución final.
-- Siguiente: suite final, revisión de secretos y cambios propios, commit/push autorizado y smoke público. Ejecutar el lote RSS solo con worker remoto disponible; medir llamadas reales y conservar el límite.
-
-- Verificación final: **51 backend pasan**, **13 E2E pasan**, build TypeScript/Vite pasa; 360/390/768/1440 px y materiales 360/1440, teclado, audio lógico, feed RSS con mocks y cancelación de limpieza. Capturas nuevas materials-360/materials-1440 revisadas visualmente. No acredita audibilidad física de la versión corregida.
-- `scripts.check_migrations`: pasa 0003, 18 tablas; `app.predeploy` completo pasa sobre base local aislada. `scripts.package_deploy`: 52 archivos, sin originales ni secretos. origin/main sigue bb39a08 antes del push. Se excluyen cambios ajenos y capturas antiguas regeneradas.
+## Pendiente / siguiente acción
+1. Registrar hito probado y verificar conservación de resultados/cupo tras el autodeploy del script/informes, sin volver a iniciar análisis.
+2. Usuario puede revisar Noticias → Noticias reales, filtros Fuente y Estado de análisis. No ejecutar limpieza desde el agente.
+3. Consumo adicional requiere nueva autorización concreta. Training inicial y RSS 10/60 agotados; no ejecutar evaluación retenida, test ni LiveDay.
+4. Auditoría A01–A20: pendientes evaluación retenida/final, exportación final/LiveDay 14 ≤300 s, audibilidad corregida y dispositivo físico. Este lote de 10 RSS no acredita rendimiento de LiveDay ni aceptación completa.

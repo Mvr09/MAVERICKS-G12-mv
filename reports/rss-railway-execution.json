@@ -1,0 +1,387 @@
+{
+  "url": "https://mavericks-g12-mv-production.up.railway.app",
+  "checked_at": "2026-10-17T20:56:31.649971+00:00",
+  "revision": "8477e5b5411e892b2436923fbc195e821859c904",
+  "worker": {
+    "online": true,
+    "last_seen_at": "2026-10-17T20:56:02.920518+00:00"
+  },
+  "sources": [
+    {
+      "id": "biopharma_dive",
+      "status": "unchanged",
+      "last_attempt_at": "2026-10-17T20:51:44.450165+00:00",
+      "last_success_at": "2026-10-17T20:51:44.586637+00:00",
+      "http_status": 304,
+      "received_count": 4,
+      "duplicates": 0,
+      "error": null,
+      "job_state": "done"
+    },
+    {
+      "id": "el_pais",
+      "status": "ok",
+      "last_attempt_at": "2026-10-17T20:51:44.693641+00:00",
+      "last_success_at": "2026-10-17T20:51:44.834352+00:00",
+      "http_status": 200,
+      "received_count": 20,
+      "duplicates": 10,
+      "error": null,
+      "job_state": "done"
+    },
+    {
+      "id": "ema",
+      "status": "unchanged",
+      "last_attempt_at": "2026-10-17T20:51:44.449071+00:00",
+      "last_success_at": "2026-10-17T20:51:44.581801+00:00",
+      "http_status": 304,
+      "received_count": 1,
+      "duplicates": 0,
+      "error": null,
+      "job_state": "done"
+    },
+    {
+      "id": "gdacs",
+      "status": "unchanged",
+      "last_attempt_at": "2026-10-17T20:51:44.700453+00:00",
+      "last_success_at": "2026-10-17T20:51:45.225400+00:00",
+      "http_status": 304,
+      "received_count": 10,
+      "duplicates": 0,
+      "error": null,
+      "job_state": "done"
+    },
+    {
+      "id": "supply_chain_dive",
+      "status": "unchanged",
+      "last_attempt_at": "2026-10-17T20:51:44.449569+00:00",
+      "last_success_at": "2026-10-17T20:51:44.603497+00:00",
+      "http_status": 304,
+      "received_count": 3,
+      "duplicates": 0,
+      "error": null,
+      "job_state": "done"
+    },
+    {
+      "id": "the_loadstar",
+      "status": "ok",
+      "last_attempt_at": "2026-10-17T20:51:44.448520+00:00",
+      "last_success_at": "2026-10-17T20:51:44.891663+00:00",
+      "http_status": 200,
+      "received_count": 18,
+      "duplicates": 9,
+      "error": null,
+      "job_state": "done"
+    }
+  ],
+  "periodic_paid_analysis": false,
+  "authentication_http": 200,
+  "budget_observed": {
+    "remaining": 0,
+    "reserved": 10,
+    "periodic_enabled": false,
+    "maximum_requests_per_article": 6,
+    "network_requests": 10
+  },
+  "budget_before": {
+    "remaining": 10,
+    "reserved": 0,
+    "periodic_enabled": false,
+    "maximum_requests_per_article": 6,
+    "network_requests": 0
+  },
+  "execution_started_at": "2026-10-17T20:55:14.268846+00:00",
+  "enqueue_http": 202,
+  "job_ids": [
+    "ebbf85ab-6d4d-434a-89cc-e33644ffdc2d",
+    "8ca0fcf3-b9c7-408f-ba08-e47162bb86d7",
+    "06f9ef8d-c658-4fd0-b966-f8b05cee87e2",
+    "dff6b8f1-dadb-4e2b-bf94-5d12c0bbcac8",
+    "d5410a5f-d765-41b2-9996-4680fa006564",
+    "bb1de665-bd37-4ba2-be7a-a227e38f05f3",
+    "6f9cfabc-f622-4490-bfcd-7df7dea659d3",
+    "ad865f38-14ca-4473-afa7-5daeee72e455",
+    "6ff5a2c8-09ee-482c-8d3f-6eea200f0903",
+    "acd6a9d9-4af1-4a3e-b453-acda2ca8f25b"
+  ],
+  "articles_queued": 10,
+  "maximum_requests": 60,
+  "jobs": [
+    {
+      "id": "ebbf85ab-6d4d-434a-89cc-e33644ffdc2d",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:48.853910+00:00",
+      "error": null,
+      "source_id": null
+    },
+    {
+      "id": "8ca0fcf3-b9c7-408f-ba08-e47162bb86d7",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:48.877353+00:00",
+      "error": null,
+      "source_id": null
+    },
+    {
+      "id": "06f9ef8d-c658-4fd0-b966-f8b05cee87e2",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:48.904972+00:00",
+      "error": null,
+      "source_id": null
+    },
+    {
+      "id": "dff6b8f1-dadb-4e2b-bf94-5d12c0bbcac8",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:48.937930+00:00",
+      "error": null,
+      "source_id": null
+    },
+    {
+      "id": "d5410a5f-d765-41b2-9996-4680fa006564",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:49.463291+00:00",
+      "error": null,
+      "source_id": null
+    },
+    {
+      "id": "bb1de665-bd37-4ba2-be7a-a227e38f05f3",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:49.489715+00:00",
+      "error": null,
+      "source_id": null
+    },
+    {
+      "id": "6f9cfabc-f622-4490-bfcd-7df7dea659d3",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:49.507275+00:00",
+      "error": null,
+      "source_id": null
+    },
+    {
+      "id": "ad865f38-14ca-4473-afa7-5daeee72e455",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:49.525027+00:00",
+      "error": null,
+      "source_id": null
+    },
+    {
+      "id": "6ff5a2c8-09ee-482c-8d3f-6eea200f0903",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:50.044648+00:00",
+      "error": null,
+      "source_id": null
+    },
+    {
+      "id": "acd6a9d9-4af1-4a3e-b453-acda2ca8f25b",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-17T20:54:50.062861+00:00",
+      "error": null,
+      "source_id": null
+    }
+  ],
+  "job_states": {
+    "done": 10
+  },
+  "execution_finished_at": "2026-10-17T20:55:21.232823+00:00",
+  "elapsed_seconds": 6.964,
+  "article_states": {
+    "review": 9,
+    "done": 1,
+    "pending": 27
+  },
+  "total_rss_articles": 37,
+  "processed_articles": [
+    {
+      "id": "7e1e7bd7-3e18-4dd1-aa1b-acb867e4b66b",
+      "source": "GDACS",
+      "state": "review",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [
+        "event_type_confidence_low"
+      ],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    },
+    {
+      "id": "4e9722fe-b182-4b29-9b0e-5815cc83ac7e",
+      "source": "GDACS",
+      "state": "review",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [
+        "event_type_confidence_low"
+      ],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    },
+    {
+      "id": "0a77ff46-41c2-4fd4-83cb-5930b8c859e4",
+      "source": "GDACS",
+      "state": "review",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [
+        "event_state_confidence_low",
+        "event_type_confidence_low"
+      ],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    },
+    {
+      "id": "e8d8e000-56de-40da-8ec8-f8d03c09b2bf",
+      "source": "GDACS",
+      "state": "review",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [
+        "event_state_confidence_low",
+        "event_type_confidence_low"
+      ],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    },
+    {
+      "id": "82ac7831-6cd9-45f9-9f5b-6f39f751919b",
+      "source": "GDACS",
+      "state": "review",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [
+        "event_state_confidence_low",
+        "event_type_confidence_low"
+      ],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    },
+    {
+      "id": "4c61629f-b76e-4f00-afe9-9f888e27aea0",
+      "source": "GDACS",
+      "state": "review",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [
+        "event_state_confidence_low",
+        "event_type_confidence_low"
+      ],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    },
+    {
+      "id": "7b471718-f26c-4d7d-b77e-ac1680e32220",
+      "source": "GDACS",
+      "state": "review",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [
+        "event_state_confidence_low",
+        "event_type_confidence_low"
+      ],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    },
+    {
+      "id": "dcb30c9c-1c17-407b-a36d-456f9dab0533",
+      "source": "GDACS",
+      "state": "review",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [
+        "event_state_confidence_low"
+      ],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    },
+    {
+      "id": "b01cdbfc-4cea-49bf-929a-35a90179f1f6",
+      "source": "GDACS",
+      "state": "done",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    },
+    {
+      "id": "32314534-419f-4059-ab8e-936a68476c1e",
+      "source": "GDACS",
+      "state": "review",
+      "model": "jev-1.13.0",
+      "error": null,
+      "review_reasons": [
+        "event_state_confidence_low"
+      ],
+      "is_risk": "N",
+      "urgent": "N",
+      "affected_suppliers": [],
+      "new_requests": 1,
+      "cached": false,
+      "cache_stages": []
+    }
+  ],
+  "budget_after": {
+    "remaining": 0,
+    "reserved": 10,
+    "periodic_enabled": false,
+    "maximum_requests_per_article": 6,
+    "network_requests": 10
+  },
+  "new_network_requests": 10,
+  "within_authorized_limit": true,
+  "usage_evidence": "Uso reportado por la API persistido en PostgreSQL api_calls.usage; no consultado por este endpoint."
+}

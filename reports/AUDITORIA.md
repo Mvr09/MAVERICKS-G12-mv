@@ -14,14 +14,14 @@ Revisión de la aplicación conforme a `prompts/03_AUDITORIA_Y_ENTREGA.md`. Los 
 | A08 | pasa | Recuperación compatible posterior cierra solo su incidente, retiene máximo histórico y una noticia anterior recibida tarde no lo reabre (integración con mock). |
 | A09 | pasa | Null físico → revisión; servicio no aplicable omite buffer; cero real → presión máxima. Pruebas propias y de referencia. |
 | A10 | pasa | Motor usa `reference/scoring.py`, política 1.0.0 y redondeo half-up; 16 tests de referencia y pruebas de integración. Confianza separada de gravedad. |
-| A11 | no ejecutado | Las seis fuentes dieron HTTP 200 localmente (37 versiones recientes). `rss-local.json` y `worker-local.json`. Falta consulta desde Railway y análisis RSS real autorizado. |
+| A11 | pasa | Seis fuentes consultadas realmente desde Railway (200/304); 37 artículos. Lote RSS JEV autorizado: 10 procesados, 10 peticiones, modelo jev-1.13.0, 6,964 s; 9 revisión y 27 pendientes. Evidencia rss-railway-execution.json. No se atribuye precisión retenida. |
 | A12 | pasa | RSS repetido, edición del mismo GUID, versiones, 304 y XML peligroso probados con transporte simulado; nunca se fabrican artículos en el flujo real. |
 | A13 | pasa | Mocks 400/401/422: un intento y error/null; 429/529/503: hasta tres intentos; contrato/distribuciones/modelo incorrectos rechazados; exportación bloqueada ante error. |
 | A14 | no ejecutado | E2E pasa gesto, prueba, historial silencioso, una emisión, cooldown 30 s, foco, mute, título y bloqueo. Falta audibilidad en dispositivo físico. |
 | A15 | pasa | E2E con mocks identificados: consulta al alternativo, edición, guardado, copia y TXT. Texto declara stock sin confirmar y no constituye pedido. Sin integración externa de envío. |
 | A16 | no ejecutado | Exportación XLSX sintética probada: una fila por entrada, IDs ordenados con `; `, tipos texto y bloqueo por error; falta exportación de test/LiveDay con inferencia final autorizada. |
 | A17 | no ejecutado | Reinicio real local conserva sesión, 40 proveedores, 74 artículos y 3 análisis; worker reiniciado sin ampliar JEV; claim concurrente/lease probado. Falta redeploy Railway. |
-| A18 | no ejecutado | Lectura pública, CSRF, permisos y bloqueo de originales/secretos probados localmente; empaquetado permite solo archivos revisados. URL HTTPS publicada, /readyz y rutas de catálogo HTTP 200; falta verificación posterior de esta ampliación. |
+| A18 | pasa | Lectura pública, CSRF, permisos y bloqueo de originales/secretos probados localmente; empaquetado permite solo archivos revisados. HTTPS real, /readyz, catálogo, fuentes y assets HTTP 200; autenticación real de presentador 200, sesión cerrada al terminar el ensayo. |
 | A19 | pasa | Chrome/Playwright, emulación 360/390/768/1440 px; sin overflow, filtros con teclado y foco de diálogo. Capturas en reports. Pendiente móvil físico; no se presenta emulación como dispositivo real. |
 | A20 | no ejecutado | LiveDay sin inferencia. No hay tiempo medido del lote de 14 en Railway. Los 1,476 s de la comprobación de tres artículos no se extrapolan. |
 
@@ -37,8 +37,12 @@ Revisión de la aplicación conforme a `prompts/03_AUDITORIA_Y_ENTREGA.md`. Los 
 
 ## Pendientes bloqueantes para aceptación completa
 
-Worker remoto y fuentes desde Railway; grants concretos para evaluación y fase final (solo RSS manual 10/60 autorizado); lote LiveDay completo medido ≤300 s; audibilidad y uso en dispositivo real. No se declara aceptación completa.
+Grants concretos para evaluación y fase final; RSS manual 10/60 autorizado y ya ejecutado; lote LiveDay completo medido ≤300 s; audibilidad y uso en dispositivo real. No se declara aceptación completa.
 
 ## Ampliación operativa
 
 Materiales y progreso RSS comprobados con mocks de navegador; nueva presencia de worker y migración 0003. Limpieza de Entrenamiento/LiveDay probada solo en base aislada, con conservación de cartera/RSS/evaluación y consumo; bloquea operaciones en curso, incidentes compartidos y confirmaciones obsoletas. La limpieza no se ejecuta en Railway. Autorización RSS adicional: 10 artículos y 60 peticiones como máximo; análisis periódico false. Los resultados externos de este lote se documentarán por separado cuando se ejecuten.
+
+### RSS real desde Railway
+
+Worker online y seis fuentes consultadas. Diez artículos procesados con jev-1.13.0 en 6,964 s, diez peticiones nuevas, sin caché ni reintentos. Nueve requieren revisión, uno completado; no es una métrica de precisión ni el lote LiveDay. Cupo RSS 10/10 agotado e inferencia periódica false. UI pública sin mocks comprobada con filtro de revisión y fuente, sin errores de página. reports/rss-railway-execution.json y railway-rss-ui-real.json.

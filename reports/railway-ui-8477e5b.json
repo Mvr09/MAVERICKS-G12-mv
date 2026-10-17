@@ -1,0 +1,21 @@
+{
+  "checked_at": "2026-10-17T20:39:19.310Z",
+  "pages": [
+    {
+      "path": "/materiales",
+      "http": 200,
+      "horizontal_overflow": false
+    },
+    {
+      "path": "/materiales/M01",
+      "http": 200,
+      "horizontal_overflow": false
+    },
+    {
+      "path": "/fuentes",
+      "http": 200,
+      "horizontal_overflow": false
+    }
+  ],
+  "page_errors": []
+}
