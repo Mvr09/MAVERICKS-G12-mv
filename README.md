@@ -2,7 +2,7 @@
 
 Aplicación en español con React/TypeScript/Vite/Tailwind, FastAPI, SQLAlchemy/Alembic y PostgreSQL. Web y worker comparten imagen; solo la web tiene dominio público. Los datos de Helixa representan una cartera ficticia.
 
-**Estado:** desplegado en https://mavericks-g12-mv-production.up.railway.app, web/worker/PostgreSQL operativos, esquema 0004. Ensayo real: test 20 en 5,763 s y LiveDay 14 + Excel en 5,753 s; 37 RSS procesados. Presupuesto nuevo 100/200 llamadas consumidas, inferencia periódica desactivada. Validación n=10: recall de riesgo 60 %, F1 0,75 y proveedores exactos 8/10. **Aceptación incompleta:** A06 falla en un caso múltiple y A14 requiere ensayo auditivo físico. [Informe de entrega](reports/INFORME_FINAL.md), [auditoría](reports/AUDITORIA.md) y [seguimiento](PROGRESS.md).
+**Estado:** desplegado en https://mavericks-g12-mv-production.up.railway.app, web/worker/PostgreSQL operativos, esquema 0004. Ensayo real: test 20 en 5,763 s y LiveDay 14 + Excel en 5,753 s; 37 RSS procesados. Presupuesto nuevo 100/200 llamadas consumidas, inferencia periódica desactivada. Validación n=10: recall de riesgo 60 %, F1 0,75 y proveedores exactos 8/10. **Aceptación incompleta:** A06 falla en un caso múltiple y A14 tiene sonido/silencio confirmados por el usuario y requiere registrar dispositivo/navegador. [Informe de entrega](reports/INFORME_FINAL.md), [auditoría](reports/AUDITORIA.md) y [seguimiento](PROGRESS.md).
 
 ## Arranque local con Docker Compose
 
@@ -132,9 +132,9 @@ Comprobaciones externas autorizadas:
 
 La continuación usa GitHub → Railway sobre el servicio existente y el dominio `https://mavericks-g12-mv-production.up.railway.app`, target port 8000. `railway.json` configura la web por defecto y `python -m app.web` fija `0.0.0.0:8000`. El `.env` local no se transfiere: variables, PostgreSQL y dominio se revisan en el panel por el usuario. El push ha sido autorizado; no amplía el presupuesto de JEV. [Pasos de panel y diagnóstico](docs/09_AUTODEPLOY_EXISTENTE.md).
 
-## Railway: publicación pendiente de aprobación
+## Railway: artefactos y recuperación
 
-Repositorio de trabajo: `Mvr09/MAVERICKS-G12-mv`, rama local `main`. Destino propuesto: proyecto **supplier-risk-radar**, entorno **demo**, servicios **web**, **worker** y **PostgreSQL**. No se ha hecho push, creado recursos ni generado dominio. El repositorio original contiene XLSX ya seguidos por Git; por eso el despliegue se prepara desde un paquete limpio y no requiere publicar esos archivos.
+Repositorio `Mvr09/MAVERICKS-G12-mv`, rama `main`, proyecto existente **peaceful-harmony / production**. Servicios **MAVERICKS-G12-mv** (web), **worker** y **PostgreSQL** desplegados por autodeploy autorizado. Versión de aplicación verificada **53593e2**. No se necesita crear otro proyecto. Los originales ya seguidos en el repositorio se excluyen de la imagen mediante copias explícitas y del paquete permitido.
 
 ```bash
 .venv/bin/python -m scripts.package_deploy
@@ -142,11 +142,11 @@ Repositorio de trabajo: `Mvr09/MAVERICKS-G12-mv`, rama local `main`. Destino pro
 
 Esto genera `.runtime/deploy/` y `.runtime/supplier-risk-radar-deploy.tar.gz` con una lista permitida, sin `.git`, secretos, originales, etiquetas o informes privados. El Dockerfile copia explícitamente código y frontend compilado; ejecuta con UID 10001. Validar `docker build -t supplier-risk-radar:demo .runtime/deploy` en un equipo con Docker o en el build autorizado de Railway; este equipo no dispone de daemon Docker.
 
-Tras la aprobación y acceso a Railway:
+Para reproducir la configuración en un entorno autorizado (el actual ya está desplegado):
 
 1. Crear/seleccionar proyecto y entorno aprobados; añadir PostgreSQL con volumen persistente.
 2. Crear web y worker desde el mismo paquete y Dockerfile. Seleccionar `railway.web.json` para web y `railway.worker.json` para worker. Desactivar suspensión del worker durante la demo.
-3. Vincular `DATABASE_URL` al PostgreSQL privado en ambos servicios; transferir las tres credenciales existentes usando el gestor de variables, sin imprimirlas ni regenerarlas. Fijar `JEV_MODEL=jev-1.13.0`. Solo web ejecuta Alembic y `app.cli seed` en predeploy; worker espera esquema.
+3. Vincular `DATABASE_URL` al PostgreSQL privado en ambos servicios; transferir las tres credenciales existentes usando el gestor de variables, sin imprimirlas ni regenerarlas. Fijar `JEV_MODEL=jev-1.13.0`. Solo web ejecuta `python -m app.predeploy` (migración y seed secuenciales); worker espera esquema.
 4. Generar dominio HTTPS únicamente para web; fijar `APP_BASE_URL` al dominio exacto. Confirmar `/readyz`, cookie Secure y rutas profundas.
 5. Cargar Excel por sesión de presentador. La base conserva el resultado tras redeploy; el contenedor no necesita los originales. Aplicar únicamente los grants de consumo aprobados.
 6. Consultar las seis fuentes desde Railway y registrar evidencia nueva (al menos cuatro saludables). Ejecutar análisis RSS autorizado y mostrar exposición potencial de cartera simulada.
@@ -163,4 +163,4 @@ Las migraciones inversas destructivas están bloqueadas deliberadamente. No se b
 
 ## Operación de la demo
 
-[Guía paso a paso](docs/10_OPERACION_DEMO.md): Materiales, worker, progreso RSS, lote manual JEV autorizado (10 noticias/60 peticiones) y limpieza confirmada solo de Entrenamiento/LiveDay. El análisis periódico de pago permanece desactivado. La web usa `python -m app.predeploy` para migrar e inicializar las seis fuentes y cupos de forma idempotente.
+[Guía paso a paso](docs/10_OPERACION_DEMO.md): Materiales, worker, progreso RSS, lotes manuales JEV sujetos a grants persistentes y al presupuesto compartido autorizado y limpieza confirmada solo de Entrenamiento/LiveDay. El análisis periódico de pago permanece desactivado. La web usa `python -m app.predeploy` para migrar e inicializar las seis fuentes y cupos de forma idempotente.

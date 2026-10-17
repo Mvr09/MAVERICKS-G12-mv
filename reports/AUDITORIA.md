@@ -17,10 +17,10 @@ Ejecutada conforme a `prompts/03_AUDITORIA_Y_ENTREGA.md` y `docs/07_ACEPTACION_Y
 | A11 | pasa | Seis feeds consultados desde Railway, HTTP 200/304 y errores visibles. 37 noticias analizadas con jev-1.13.0: 23 revisión, 14 completadas; no fixtures. |
 | A12 | pasa | Mocks RSS/Atom: 304, duplicado, edición de GUID, versiones y XML peligroso. Sondeo real repetido conserva contador/deduplicación y fecha correcta. |
 | A13 | pasa | Mocks 401/429/529 y límites; caso real detuvo validación, bloqueó exportación y exigió diagnóstico. Adaptador alineado con SDK oficial, sin alterar Score ni política. Reintentos/errores conservados dentro de 100/200 llamadas. |
-| A14 | no ejecutado | Lógica E2E pasa gesto, historial silencioso, emisión única, cooldown, foco, mute y bloqueo. Usuario confirmó tono previo; faltan dispositivo/navegador y audibilidad de la versión corregida. No se atribuye sonido físico a Playwright. |
+| A14 | no ejecutado | Lógica E2E pasa gesto, historial silencioso, emisión única, cooldown, foco, mute y bloqueo. Usuario confirma «funciona perfecto» para activar/probar/silenciar/probar en la versión publicada. Audibilidad y silencio confirmados por el usuario; falta registrar dispositivo/navegador exigidos por el protocolo. No se atribuye sonido físico a Playwright. |
 | A15 | pasa | Railway sin mocks: consulta al alternativo con fragmento validado, edición/guardado, copia y TXT sin envío ni stock inventado. Proveedor directo cubierto con integración. |
 | A16 | pasa | Exportaciones reales val/test/LiveDay: 10/20/14 filas, IDs únicos y orden original, Y/N e IDs ordenados separados por ; . Test conserva columnas de entrada. RSS/fixtures/etiquetas excluidos; errores bloquearon antes de resolver. |
-| A17 | pasa | Redeploy real anterior conserva catálogo/RSS/cupo; claim concurrente y recuperación de leases probados en PostgreSQL. Se comprobará también conservación final de 44 resultados y 100 peticiones tras el último push. |
+| A17 | pasa | Verificación real 21:44:40 UTC tras desplegar 53593e2: 44 resultados de ejercicio, 37 RSS y presupuesto 100/200 conservados; Excel de 10/20/14 filas con todas las celdas idénticas. Claim concurrente y leases probados en PostgreSQL. Evidencia final-delivery-verification.json. |
 | A18 | pasa | HTTPS real y lectura pública; autenticación real, endpoint privado 401 tras logout, CSRF/origen y originales/secretos bloqueados. Bundle/paquete revisados sin secretos. |
 | A19 | pasa | Navegador real sin mocks: 360/390/768/1440 px sin overflow ni errores JS; teclado/diálogo en E2E. Emulación no equivale a móvil físico, omitido por el usuario. |
 | A20 | pasa | LiveDay 14 artículos y Excel recibido en **5,753 s** medidos en Railway desde solicitud de análisis. Incluye cola, inferencia y descarga; no es extrapolación ni replay cacheado. |
@@ -36,4 +36,4 @@ Ejecutada conforme a `prompts/03_AUDITORIA_Y_ENTREGA.md` y `docs/07_ACEPTACION_Y
 
 ## Resultado
 
-**18 pasa, 1 falla (A06), 1 no ejecutado (A14). No hay aceptación completa.** La mejora de matching debe desarrollarse con entrenamiento y evaluarse sin ajustar sobre las respuestas retenidas ya obtenidas. La prueba auditiva requiere colaboración del usuario y no puede certificarse con un navegador automatizado.
+**18 pasa, 1 falla (A06), 1 no ejecutado (A14). No hay aceptación completa.** La mejora de matching debe desarrollarse con entrenamiento y evaluarse sin ajustar sobre las respuestas retenidas ya obtenidas. El usuario confirma sonido y silencio; A14 conserva estado incompleto únicamente hasta registrar dispositivo/navegador. No se atribuye audibilidad a Playwright.

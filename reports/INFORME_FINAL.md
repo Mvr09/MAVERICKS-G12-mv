@@ -2,7 +2,7 @@
 
 ## Publicación
 
-Aplicación real: https://mavericks-g12-mv-production.up.railway.app. Web, worker y PostgreSQL operativos. Escucha web 0.0.0.0:8000, esquema 0004. La ejecución final se realizó con el código 4a3645a, modelo jev-1.13.0, preguntas y política 1.0.0 congeladas. No se consultó el answer key ni se reajustaron reglas con datos retenidos.
+Aplicación real: https://mavericks-g12-mv-production.up.railway.app. Web, worker y PostgreSQL operativos. Versión publicada **53593e2**, verificada a las 21:44:43 UTC con HTTP 200 en /, /healthz, /readyz, catálogo y cuatro assets. Web y worker coinciden en revisión. Escucha web 0.0.0.0:8000, esquema 0004. La ejecución final se realizó con el código 4a3645a, modelo jev-1.13.0, preguntas y política 1.0.0 congeladas. No se consultó el answer key ni se reajustaron reglas con datos retenidos.
 
 ## Lotes medidos en Railway
 
@@ -38,12 +38,14 @@ Presupuesto nuevo: **100/200 peticiones consumidas**, incluidos fallos y reinten
 
 62 pruebas backend/runner pasan al cierre; 33 regresiones dirigidas tras la corrección del adaptador; 13 E2E con mocks identificados. Build y migración desde base nueva pasan. Navegador real contra Railway sin mocks: borrador al alternativo con fragmento validado, edición/guardado, copia y TXT sin envío; endpoint privado 401 al cerrar sesión; sin errores JS ni overflow a 360/390/768/1440 px. Evidencia `final-ui-real.json`.
 
+Tras el último redeploy se compararon todas las celdas de las tres exportaciones: idénticas, HTTP 200. Persisten 44 resultados de ejercicio, 37 RSS y consumo 100/200; cero nuevas llamadas en la comprobación. Evidencia `final-delivery-verification.json` y `public-deployment-final.json`.
+
 La limpieza de Entrenamiento/LiveDay no se ejecutó en Railway. Mantiene vista previa y confirmación explícita; conserva catálogo, RSS, evaluación y consumo.
 
 ## Pendientes de aceptación
 
 - **A06 falla** en un caso retenido de selección múltiple. Una mejora futura exige desarrollo con entrenamiento y nueva evaluación, sin ajustar sobre este resultado de validación/test/LiveDay.
-- **A14 no ejecutado completamente**: falta confirmar dispositivo/navegador y audibilidad de activar/probar/silenciar/probar. Playwright acredita lógica, no sonido físico.
+- **A14 pendiente solo de metadatos del ensayo**: el usuario confirma «funciona perfecto» para activar/probar/silenciar/probar en la versión publicada; falta indicar dispositivo y navegador. Playwright acredita lógica, no sonido físico.
 - Móvil físico omitido por decisión del usuario. No se declara probado.
 
 La aplicación está desplegada y el ensayo LiveDay completado; no se declara aceptación completa mientras persistan estos puntos.

@@ -1,0 +1,104 @@
+{
+  "checked_at": "2026-10-17T21:44:40.030455+00:00",
+  "exports": {
+    "validation": {
+      "http": 200,
+      "rows": 10,
+      "same_cells_after_redeploy": true
+    },
+    "test": {
+      "http": 200,
+      "rows": 20,
+      "same_cells_after_redeploy": true
+    },
+    "liveday": {
+      "http": 200,
+      "rows": 14,
+      "same_cells_after_redeploy": true
+    }
+  },
+  "new_jev_requests": 0,
+  "revision": "53593e22a852dae4038b4e77fe19010d6b6233da",
+  "worker": {
+    "online": true,
+    "compatible": true,
+    "revision": "53593e22a852dae4038b4e77fe19010d6b6233da",
+    "expected_revision": "53593e22a852dae4038b4e77fe19010d6b6233da",
+    "last_seen_at": "2026-10-17T21:44:12.850393+00:00"
+  },
+  "exercise": {
+    "supplier_count": 40,
+    "received": 74,
+    "processed": 44,
+    "pending": 30,
+    "errors": 0,
+    "review": 26
+  },
+  "rss": {
+    "received": 37,
+    "processed": 37,
+    "pending": 0,
+    "errors": 0,
+    "review": 23,
+    "healthy_sources": 6,
+    "source_count": 6
+  },
+  "sources": [
+    {
+      "id": "biopharma_dive",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T21:41:44.306048+00:00",
+      "last_success_at": "2026-10-17T21:41:44.388927+00:00",
+      "status": "unchanged",
+      "error": null
+    },
+    {
+      "id": "el_pais",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-17T21:41:43.763933+00:00",
+      "last_success_at": "2026-10-17T21:41:44.731346+00:00",
+      "status": "ok",
+      "error": null
+    },
+    {
+      "id": "ema",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T21:41:43.783799+00:00",
+      "last_success_at": "2026-10-17T21:41:43.878648+00:00",
+      "status": "unchanged",
+      "error": null
+    },
+    {
+      "id": "gdacs",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T21:41:43.744670+00:00",
+      "last_success_at": "2026-10-17T21:41:44.345698+00:00",
+      "status": "unchanged",
+      "error": null
+    },
+    {
+      "id": "supply_chain_dive",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-17T21:41:44.290771+00:00",
+      "last_success_at": "2026-10-17T21:41:44.419038+00:00",
+      "status": "unchanged",
+      "error": null
+    },
+    {
+      "id": "the_loadstar",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-17T21:41:43.714492+00:00",
+      "last_success_at": "2026-10-17T21:41:44.141160+00:00",
+      "status": "ok",
+      "error": null
+    }
+  ],
+  "budget": {
+    "id": "demo-final-200-20261017",
+    "request_limit": 200,
+    "requests_used": 100,
+    "remaining_requests": 100,
+    "started_at": "2026-10-17T21:16:52.203758+00:00",
+    "closes_at": "2026-10-17T22:01:52.203758+00:00"
+  }
+}

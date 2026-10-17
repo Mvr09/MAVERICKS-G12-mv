@@ -1,10 +1,15 @@
 # Supplier Risk Radar · seguimiento
 
 ## Estado actual · 17-10-2026
-- Publicado por push autorizado a `origin/main`: **e9e0213af2d8a0bc6a1827e8403cabd6a5a7b395** (hito RSS, aplicación del lote en 8477e5b). Repositorio Mvr09/MAVERICKS-G12-mv; Railway peaceful-harmony / production. No hay acceso directo al panel.
-- URL real: https://mavericks-g12-mv-production.up.railway.app. Comprobación 20:39:01 UTC: /, /healthz, /readyz, catálogo, fuentes, config y cuatro assets **HTTP 200**; SHA coincide, esquema **0003**, **40 proveedores**, **20 materiales**, **6 fuentes**. Catálogo conservado después del autodeploy.
-- RSS remoto confirmado: **worker conectado**, seis fuentes consultadas realmente desde Railway (200/304, sin errores actuales), **37 artículos** persistidos. Lote autorizado completado: 10 artículos (1 done, 9 review), 27 pendientes.
-- Cupo adicional autorizado por el usuario: **10 noticias RSS / máximo 60 peticiones JEV**, reintentos incluidos. Grant `rss-demo-20261017-10`, límite persistente, vencimiento de seguridad 19-10-2026 00:00 UTC. Verificado remoto: **0 disponibles, 10 reservados/consumidos, 10 peticiones RSS nuevas**, sin caché ni reintentos; modelo jev-1.13.0. **6,964 s** medidos desde solicitud hasta trabajos terminados. Inferencia periódica **false**.
+- Aplicación publicada mediante push autorizado a `origin/main`: **53593e22a852dae4038b4e77fe19010d6b6233da**. Inferencia final con 4a3645a; modelo jev-1.13.0, preguntas/política 1.0.0 congeladas. GitHub Mvr09/MAVERICKS-G12-mv; Railway peaceful-harmony / production, web + worker + PostgreSQL. Sin acceso directo al panel.
+- URL: https://mavericks-g12-mv-production.up.railway.app. Smoke 21:44:43 UTC: /, /healthz, /readyz, catálogo y cuatro assets **200**; revisión coincide y worker online/compatible, esquema **0004**, 40 proveedores, 20 materiales y seis fuentes saludables (200/304).
+- Persistencia final comprobada tras redeploy: 44 resultados de ejercicio, 37 RSS procesados (23 review/14 done); Excel de validación/test/LiveDay 10/20/14 filas con todas las celdas idénticas. Los 30 training permanecen pendientes; no se repitió ese consumo.
+- Presupuesto adicional autorizado **200 llamadas**: **100 consumidas**, incluidos fallos/reintentos; ventana original 21:16:52–22:01:52 UTC, sin renovación. Comprobación final: cero llamadas nuevas. Inferencia periódica RSS desactivada; consulta gratuita cada 300 s, sujeta a límites del proveedor.
+- LiveDay 14 + Excel en **5,753 s** y test 20 en **5,763 s**, medidos en Railway. Validación n=10: riesgo recall 0,60/F1 0,75, proveedores exactos 8/10; dos riesgos omitidos. Auditoría **18 pasa, A06 falla, A14 incompleto solo por dispositivo/navegador**: usuario confirma sonido/silencio «funciona perfecto». Móvil físico omitido por decisión del usuario.
+- **62 backend + 16 referencia + 13 E2E pasan**; build y migraciones pasan. Navegador real sin mocks a 360/390/768/1440 sin overflow ni errores JS; borrador al alternativo editado, copiado y descargado sin envío. No se ejecutó limpieza.
+- Entrega: reports/INFORME_FINAL.md, AUDITORIA.md, final-execution-summary.json; evidencia posterior final-delivery-verification.json y public-deployment-final.json. No declarar aceptación completa: A06 requiere desarrollo con training y evaluación independiente, sin ajustar a respuestas retenidas.
+
+## Historial de hitos y diagnósticos (los estados siguientes son históricos)
 
 ## Implementación y correcciones
 - React/TS/Vite/Tailwind, FastAPI/Pydantic/SQLAlchemy/Alembic/PostgreSQL; web y worker usan misma imagen. Web escucha 0.0.0.0:8000 conforme al dominio existente. Sesión presentador, CSRF, lectura pública normalizada, originales/secretos no públicos.
@@ -74,3 +79,8 @@
 - Informe español y métricas agregadas: reports/INFORME_FINAL.md, final-execution-summary.json y AUDITORIA.md. Detalle y respuestas protegidas solo en directorios privados. Se verificará persistencia/estado tras el último push de entrega, sin nuevas llamadas de pago.
 
 - Ensayo sintético del runner tras conservar procedencia: pasa. Una invocación sin DATABASE_URL de tests fue rechazada por el guard antes de modificar datos; repetida correctamente sobre radar_test. Corrección final de presentación: titular del incidente usa su evidencia vigente por fecha; diagnóstico RSS mantiene el conteo de sus propios trabajos para no atribuirle llamadas de ventanas posteriores.
+
+## Verificación posterior a publicación
+- 53593e2, 21:44:40–43 UTC: todas las rutas y assets 200, esquema0004, worker compatible. Exportaciones validation/test/LiveDay 200 e idénticas celda a celda tras redeploy; 44 resultados y 37 RSS persistidos. Presupuesto permanece100/200; cero peticiones JEV durante comprobación.
+- Usuario responde «funciona perfecto» al ensayo activar/probar/silenciar/probar. Sonido y mute confirmados por el usuario. Solicitado únicamente dispositivo/navegador para completar metadatos exigidos por auditoría; no atribuir ensayo físico a automatización.
+- Documentación corregida para eliminar el destino propuesto obsoleto y reflejar servicios realmente desplegados. Siguiente: registrar dispositivo/navegador si llega; no consumir saldo restante ni modificar predicciones retenidas.

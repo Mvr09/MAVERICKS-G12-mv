@@ -100,7 +100,7 @@
     "La validación incluye pausa y reintentos de diagnóstico de contrato; no se reajustaron preguntas ni política.",
     "Dos riesgos no detectados de cinco positivos en validación; muestra total 10.",
     "Un caso multproveedor retenido no se vinculó completamente (1/2 conjuntos exactos).",
-    "Audibilidad en dispositivo real pendiente de navegador/dispositivo/resultados.",
+    "Usuario confirma sonido y silencio en la web publicada; falta registrar dispositivo y navegador del ensayo.",
     "Móvil físico omitido por el usuario; emulación comprobada."
   ],
   "usage": {
