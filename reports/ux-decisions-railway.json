@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-17T22:37:47.673Z",
+  "revision": "1bb6fa8888a2ac9c64e83daa600bb420e2017b88",
+  "mocked": false,
+  "page_errors": [],
+  "new_jev_requests": 0,
+  "reanalysis_executed": false,
+  "history_loaded": true,
+  "history_entries": 1,
+  "history_uses_words": true,
+  "comparison_uses_words": true,
+  "raw_code_labels_visible": false,
+  "horizontal_overflow": false
+}
