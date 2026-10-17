@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-10-17T22:57:28.627Z",
+  "revision": "07c6a454eb75045a60e46ab39d3a1a041e446052",
+  "mocked": false,
+  "new_jev_requests": 0,
+  "page_errors": [],
+  "ui_without_budget_notices": true,
+  "limits_enforced": false,
+  "daily_limit": null,
+  "daily_remaining": null,
+  "remaining_requests": null,
+  "periodic_paid_analysis": false,
+  "pending_articles": 0,
+  "historical_budget_count": 2,
+  "worker_compatible": true,
+  "horizontal_overflow": false
+}

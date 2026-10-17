@@ -2,7 +2,7 @@
 
 ## Estado verificado · 18-10-2026 (Madrid)
 
-- Aplicación publicada: **1bb6fa8888a2ac9c64e83daa600bb420e2017b88** (UX; versión funcional anterior2650ea7), `origin/main`, Mvr09/MAVERICKS-G12-mv. Railway peaceful-harmony / production: web, worker y PostgreSQL; ambos despliegues GitHub success. Sin acceso directo al panel.
+- Aplicación publicada: **07c6a454eb75045a60e46ab39d3a1a041e446052** (límites de presupuesto desactivados; UX anterior1bb6fa8), `origin/main`, Mvr09/MAVERICKS-G12-mv. Railway peaceful-harmony / production: web, worker y PostgreSQL; ambos despliegues GitHub success. Sin acceso directo al panel.
 - URL real: https://mavericks-g12-mv-production.up.railway.app. Smoke 17-10 22:19:24 UTC: /, /healthz, /readyz, catálogo, fuentes, configuración y cuatro assets **200**; esquema0006. Worker online/compatible en la misma revisión.
 - Persistencia 22:20:35 UTC:40 proveedores,20 materiales; validation10/test20 procesados y Excel200 idénticos celda a celda tras redeploy. Training/LiveDay ya no están cargados: el agente no los borró ni reimportó. RSS37 procesados (23review/14done), seis fuentes saludables200/304. No se ejecutó borrado ni reanálisis remoto durante esta ampliación.
 - Interfaz/documentación en español. Materiales, dashboard/fichas, fuentes/stream, filtros, ingestión/exportación, permisos, audio y borradores operativos. Servidor0.0.0.0:8000, web/worker misma imagen, predeploy `python -m app.predeploy`.
@@ -56,3 +56,5 @@
 -75pruebas backend pasan: perfil histórico limitado explícito en fixtures para regresión, nuevas pruebas con política vigente sin límites. Encolado101RSS con registro diario ya100 no bloquea; presupuesto agotado y grant caducado permiten HTTPmock conservando incremento de contador. BuildTS/Vite pasa. 18E2E pasan, incluida UI con12pendientes y presupuestos antiguos agotados: botón habilitado y solicitud sin límite numérico. Paquete revisado, se prepara publicación sin nuevas llamadas JEV reales.
 
 - Ajustados mensajes cuando no hay trabajos nuevos: indican lote ya procesado o noticias ya en cola; no sugieren un presupuesto agotado cuando los límites están desactivados. Publicación en curso; sin llamadas JEV nuevas.
+
+- Publicado07c6a45 (cambio principal4c81cc9); web/worker success. Smoke22:56:50UTC: rutas, catálogo y cuatro assets200, esquema0006. Verificación autenticada/Chromium390px22:57:28UTC:limits_enforced=false, daily_limit/daily_remaining/remaining=null, workercompatibletrue, sin avisos de cupo ni overflow/erroresJS. Todos los presupuestos históricos tienen enforced=false. Pago periódicoRSSfalse,0peticionesJEV de comprobación. Evidencia local posterior reports/budget-disabled-railway.json y public-deployment-budget-disabled.json. No se cambiaron datos ni se ejecutó inferencia para verificar la configuración.
