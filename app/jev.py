@@ -39,12 +39,14 @@ def reserve_request(db, grant):
         .execution_options(populate_existing=True)
     )
     if not budget or (
-        budget.request_limit is not None
+        settings.jev_budget_limits_enabled
+        and budget.request_limit is not None
         and budget.requests_used >= budget.request_limit
     ):
         raise ProviderError("REQUEST_BUDGET_EXHAUSTED")
     if (
-        budget.window_seconds
+        settings.jev_budget_limits_enabled
+        and budget.window_seconds
         and budget.started_at
         and now() >= budget.started_at + timedelta(seconds=budget.window_seconds)
     ):
@@ -237,7 +239,7 @@ class JevClient:
         if self.transport is None:
             if not grant:
                 raise ProviderError("CONSUMPTION_NOT_AUTHORIZED")
-            if grant.expires_at:
+            if settings.jev_budget_limits_enabled and grant.expires_at:
                 remaining_authorization = (grant.expires_at - now()).total_seconds()
                 if remaining_authorization <= 0:
                     raise ProviderError("AUTHORIZATION_EXPIRED")

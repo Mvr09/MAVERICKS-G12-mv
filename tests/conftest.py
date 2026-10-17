@@ -6,10 +6,13 @@ from app.db import engine, Base, Session
 from app import models
 from app.importer import import_excel
 from app.cli import seed
+from app.settings import settings
 
 
 @pytest.fixture(autouse=True)
-def clean_test_database():
+def clean_test_database(monkeypatch):
+    # Keep historical bounded-policy regression tests reproducible.
+    monkeypatch.setattr(settings, "jev_budget_limits_enabled", True)
     # Destruction is strictly limited to the dedicated database created for tests.
     if make_url(str(engine.url)).database != "radar_test":
         pytest.fail("Pruebas requieren DATABASE_URL con base dedicada radar_test")

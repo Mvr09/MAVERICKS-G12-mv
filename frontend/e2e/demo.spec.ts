@@ -339,3 +339,78 @@ test("reanálisis actualiza el historial abierto sin recargar y usa palabras en 
   );
   await expect(page.getByText(/Riesgo [YN]|Urgencia [YN]/)).toHaveCount(0);
 });
+
+test("RSS sin presupuesto: permite todas las pendientes aunque los contadores antiguos estén agotados", async ({
+  page,
+}) => {
+  let requestBody: any = null;
+  await page.route("**/api/session", (r) =>
+    r.fulfill({ json: { presenter: true, csrf: "MOCK-CSRF" } }),
+  );
+  await page.route("**/api/worker", (r) =>
+    r.fulfill({ json: { online: true, compatible: true } }),
+  );
+  await page.route("**/api/analysis/budget", (r) =>
+    r.fulfill({
+      json: {
+        limits_enforced: false,
+        unlimited: true,
+        remaining: null,
+        daily_remaining: null,
+        daily_limit: null,
+        reserved: 100,
+        network_requests: 200,
+        request_budgets: [
+          {
+            id: "MOCK-OLD",
+            request_limit: 200,
+            remaining_requests: 0,
+            requests_used: 200,
+            enforced: false,
+          },
+        ],
+      },
+    }),
+  );
+  await page.route("**/api/articles?context=rss", (r) =>
+    r.fulfill({
+      json: Array.from({ length: 12 }, (_, n) => ({
+        id: `MOCK-${n}`,
+        state: "pending",
+        headline: `MOCK RSS ${n}`,
+        summary: "MOCK",
+        source: "MOCK",
+        published_date: new Date().toISOString(),
+        version: 1,
+        analysis: null,
+        cached: false,
+      })),
+    }),
+  );
+  await page.route("**/api/analysis/rss", (r) => {
+    requestBody = r.request().postDataJSON();
+    return r.fulfill({
+      status: 202,
+      json: { articles: 12, job_ids: [], maximum_requests: 72 },
+    });
+  });
+  await page.goto("/fuentes");
+  await expect(
+    page.getByText("Sin límites locales de presupuesto", { exact: false }),
+  ).toBeVisible();
+  const button = page.getByRole("button", {
+    name: "Analizar 12 noticias pendientes con JEV",
+    exact: true,
+  });
+  await expect(button).toBeEnabled();
+  await expect(
+    page.getByText("0 de 200 peticiones disponibles", { exact: false }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText(
+      "El cupo agotado no se restablece al reiniciar ni desplegar.",
+    ),
+  ).toHaveCount(0);
+  await button.click();
+  expect(requestBody).toEqual({});
+});

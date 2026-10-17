@@ -183,6 +183,7 @@ def config():
         "cooldown_seconds": POLICY["audio"]["cooldown_seconds"],
         "fixtures": settings.demo_fixtures_enabled,
         "rss_paid_analysis": settings.rss_analysis_enabled,
+        "jev_budget_limits_enabled": settings.jev_budget_limits_enabled,
     }
 
 
@@ -566,11 +567,20 @@ def analysis_budget(db: Session = Depends(get_db)):
         )
     )
     daily_remaining = max(0, RSS["daily_analysis_budget"] - daily_used)
+    enforce = settings.jev_budget_limits_enabled
     return {
-        "unlimited": unlimited,
-        "daily_limit": RSS["daily_analysis_budget"],
-        "daily_remaining": daily_remaining,
-        "remaining": min(
+        "limits_enforced": enforce,
+        "pending_articles": db.scalar(
+            select(func.count())
+            .select_from(Article)
+            .where(Article.context == "rss", Article.state == "pending")
+        ),
+        "unlimited": not enforce or unlimited,
+        "daily_limit": RSS["daily_analysis_budget"] if enforce else None,
+        "daily_remaining": daily_remaining if enforce else None,
+        "remaining": None
+        if not enforce
+        else min(
             daily_remaining,
             daily_remaining
             if unlimited
@@ -594,9 +604,12 @@ def budget_status(db: Session = Depends(get_db)):
     from datetime import timedelta
 
     return {
+        "limits_enforced": settings.jev_budget_limits_enabled,
         "budgets": [
             {
                 "id": b.id,
+                "enforced": settings.jev_budget_limits_enabled
+                and b.request_limit is not None,
                 "request_limit": b.request_limit,
                 "requests_used": b.requests_used,
                 "remaining_requests": None
@@ -700,7 +713,7 @@ def batch_execution(bid: str, db: Session = Depends(get_db)):
 
 
 class ManualRssAnalysis(BaseModel):
-    limit: int = Field(ge=1, le=10)
+    limit: int | None = Field(default=None, ge=1)
 
 
 @app.post("/api/analysis/rss", status_code=202, dependencies=[Depends(presenter)])

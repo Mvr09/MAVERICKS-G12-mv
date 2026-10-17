@@ -150,7 +150,6 @@ def main():
                                     Article.context == "rss", Article.state == "pending"
                                 )
                                 .order_by(Article.fetched_at)
-                                .limit(RSS["daily_analysis_budget"])
                             ).all()
                             for a in pending:
                                 if reserve(db, a, "rss"):

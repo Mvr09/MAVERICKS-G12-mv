@@ -2,7 +2,7 @@
 
 Aplicación en español con React/TypeScript/Vite/Tailwind, FastAPI, SQLAlchemy/Alembic y PostgreSQL. Web y worker comparten imagen; solo la web tiene dominio público. Los datos de Helixa representan una cartera ficticia.
 
-**Estado:** desplegado en https://mavericks-g12-mv-production.up.railway.app, web/worker/PostgreSQL operativos, esquema 0006, selección de demo y reanálisis versionado. Ensayo real: test 20 en 5,763 s y LiveDay 14 + Excel en 5,753 s; 37 RSS procesados. Ensayo anterior: 100/200 llamadas consumidas. Nueva autorización manual JEV sin cupo ni vencimiento; inferencia periódica desactivada, límite técnico RSS 100 artículos/día UTC. Validación n=10: recall de riesgo 60 %, F1 0,75 y proveedores exactos 8/10. **Aceptación incompleta:** A06 falla en un caso múltiple y A14 tiene sonido/silencio confirmados por el usuario y requiere registrar dispositivo/navegador. [Informe de entrega](reports/INFORME_FINAL.md), [auditoría](reports/AUDITORIA.md) y [seguimiento](PROGRESS.md).
+**Estado:** desplegado en https://mavericks-g12-mv-production.up.railway.app, web/worker/PostgreSQL operativos, esquema 0006, selección de demo y reanálisis versionado. Ensayo real: test 20 en 5,763 s y LiveDay 14 + Excel en 5,753 s; 37 RSS procesados. Ensayo anterior: 100/200 llamadas consumidas. Límites locales de presupuesto desactivados: sin cupos, vencimientos ni tope diario RSS; inferencia periódica desactivada. Validación n=10: recall de riesgo 60 %, F1 0,75 y proveedores exactos 8/10. **Aceptación incompleta:** A06 falla en un caso múltiple y A14 tiene sonido/silencio confirmados por el usuario y requiere registrar dispositivo/navegador. [Informe de entrega](reports/INFORME_FINAL.md), [auditoría](reports/AUDITORIA.md) y [seguimiento](PROGRESS.md).
 
 ## Arranque local con Docker Compose
 
@@ -71,7 +71,7 @@ No existen variables `VITE_*` con credenciales. `.env` queda fuera de Git, Docke
 
 1. Abrir **Resumen**, seleccionar **Ejercicio** o **Noticias reales** y entrar con **Acceso presentador**.
 2. Importar el XLSX. Se reconoce la hoja y se conservan `News_ID` y orden. Revisar el lote en la parte inferior o en Analítica.
-3. **Analizar** encola solo artículos dentro del presupuesto autorizado. Los trabajos son persistentes; la interfaz consulta progreso cada tres segundos cuando está visible y al recuperar foco.
+3. **Analizar** encola los artículos pendientes sin cupos locales de presupuesto. Los trabajos son persistentes; la interfaz consulta progreso cada tres segundos cuando está visible y al recuperar foco.
 4. Abrir proveedor → evidencia literal → factores → productos/materiales/alternativo. `—` significa sin prioridad disponible; no significa ausencia de riesgo. Inventario no informado, no aplicable y cero permanecen distintos.
 5. Crear una consulta a proveedor o alternativo desde un incidente sin revisión obligatoria. Editar, guardar, copiar o descargar TXT. No se envía nada. El alternativo debe confirmar disponibilidad; la consulta no constituye un pedido.
 6. **Activar sonido**, **Probar alarma**, ajustar volumen y mantener la pestaña activa. **Silenciar** no reconoce ni resuelve incidentes. El contador de la pestaña sigue mostrando alertas sin leer.
@@ -86,15 +86,11 @@ Contrato verificado con la [API oficial](https://docs.typesafe.ai/api), la [list
 
 El cupo inicial de tres artículos ya se consumió: N001, N002 y N005; cuatro peticiones HTTP 200, sin reintentos. El informe [jev-local.json](reports/jev-local.json) registra uso y tiempos sin respuestas protegidas. Dos noticias no necesitaron etapa B al no superar candidatos el umbral de revisión. `config/authorization.json` evita reiniciar el cupo al crear otra base.
 
-Un grant adicional se crea **solo después de autorización expresa** con split, número de artículos y fecha de caducidad. Comando preparado:
+El usuario desactivó todos los límites locales de presupuesto. `config/authorization.json` fija `budget_limits_enabled=false`: los grants quedan como registros de consumo, sin bloquear por artículos, peticiones, vencimiento o ventana. El antiguo cupo diario RSS tampoco se aplica. En **Fuentes**, **Analizar noticias pendientes con JEV** encola todas las pendientes de una vez. No se requieren variables nuevas en Railway.
 
-```bash
-.venv/bin/python -m app.cli grant --id AUTORIZACION_IDENTIFICABLE --split rss --limit 12 --expires-at FECHA_UTC_ISO
-```
+La caché y el consumo se conservan en PostgreSQL. Se mantienen concurrencia de cuatro solicitudes, reintentos acotados, timeout y manejo de Retry-After/errores del proveedor. Son controles de ejecución; la aplicación no impone presupuesto monetario ni número diario de análisis. El análisis periódico de pago continúa desactivado.
 
-Los placeholders se sustituyen por la autorización concreta. No ejecutar este comando para ampliar consumo por iniciativa propia. El tope técnico RSS de 100/día no constituye autorización de gasto. La cola reserva consumo transaccionalmente; la caché está en PostgreSQL y las solicitudes simultáneas se limitan a cuatro entre procesos mediante advisory locks. Hay hasta tres intentos por etapa, timeout 15 s y presupuesto de 60 s por artículo. 400/401/422 y errores de contrato requieren diagnóstico, sin reintentos ciegos.
-
-Preguntas y política están congeladas antes de validación: [prompt-freeze.json](reports/prompt-freeze.json). No se han calculado métricas retenidas. El endpoint de evaluación, exclusivo del presentador, entrega matrices y precision/recall/F1 con denominadores; no devuelve etiquetas ni usa test/LiveDay para ajustar reglas. Un lote incompleto bloquea la evaluación.
+Preguntas y política están congeladas antes de validación: [prompt-freeze.json](reports/prompt-freeze.json). Las métricas retenidas se registran en el informe final. El endpoint de evaluación, exclusivo del presentador, entrega matrices y precision/recall/F1 con denominadores; no devuelve etiquetas ni usa test/LiveDay para ajustar reglas. Un lote incompleto bloquea la evaluación.
 
 ## Pruebas reproducibles
 
@@ -163,4 +159,4 @@ Las migraciones inversas destructivas están bloqueadas deliberadamente. No se b
 
 ## Operación de la demo
 
-[Guía paso a paso](docs/10_OPERACION_DEMO.md): Materiales, worker, progreso RSS, lotes manuales JEV sujetos a grants persistentes y al presupuesto compartido autorizado y limpieza mediante checkboxes de lotes/fuentes, catálogo con dependencias y reanálisis con historial. RSS admite contraste auxiliar con tres evaluaciones JEV; no retira revisiones automáticamente. El análisis periódico de pago permanece desactivado. La web usa `python -m app.predeploy` para migrar e inicializar las seis fuentes y cupos de forma idempotente.
+[Guía paso a paso](docs/10_OPERACION_DEMO.md): Materiales, worker, progreso RSS, análisis manual JEV sin límites locales de presupuesto y con registro persistente de consumo y limpieza mediante checkboxes de lotes/fuentes, catálogo con dependencias y reanálisis con historial. RSS admite contraste auxiliar con tres evaluaciones JEV; no retira revisiones automáticamente. El análisis periódico de pago permanece desactivado. La web usa `python -m app.predeploy` para migrar e inicializar las seis fuentes y cupos de forma idempotente.

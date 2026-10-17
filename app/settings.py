@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = json.loads((ROOT / "config/risk_policy.json").read_text())
 RSS = json.loads((ROOT / "config/rss_sources.json").read_text())
+AUTHORIZATION = json.loads((ROOT / "config/authorization.json").read_text())
 
 
 class Settings(BaseSettings):
@@ -18,7 +19,8 @@ class Settings(BaseSettings):
     session_secret: SecretStr = SecretStr("")
     jev_model: str = POLICY["default_model"]
     app_base_url: str = "http://localhost:8000"
-    # Paid inference is fail-closed; a grant must be explicitly created by CLI.
+    # Grants keep durable accounting; the user disabled local budget enforcement.
+    jev_budget_limits_enabled: bool = AUTHORIZATION["budget_limits_enabled"]
     rss_analysis_enabled: bool = False
     demo_fixtures_enabled: bool = False
     max_upload_bytes: int = 10_000_000

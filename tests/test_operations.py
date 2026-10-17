@@ -89,7 +89,7 @@ def test_rss_analysis_requires_presenter_and_connected_worker():
         assert c.post("/api/analysis/rss", json={"limit": 10}).status_code == 401
         headers = login(c)
         assert (
-            c.post("/api/analysis/rss", headers=headers, json={"limit": 11}).status_code
+            c.post("/api/analysis/rss", headers=headers, json={"limit": 0}).status_code
             == 422
         )
         response = c.post("/api/analysis/rss", headers=headers, json={"limit": 10})

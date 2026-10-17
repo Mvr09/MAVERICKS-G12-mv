@@ -56,7 +56,8 @@ def reserve(db, article, split, manual_rss=False, fresh=False):
             )
         )
         if (
-            not db.get(RssDailyUsage, daily_key)
+            settings.jev_budget_limits_enabled
+            and not db.get(RssDailyUsage, daily_key)
             and daily >= RSS["daily_analysis_budget"]
         ):
             return False
@@ -64,6 +65,10 @@ def reserve(db, article, split, manual_rss=False, fresh=False):
         old_grant = db.get(Grant, existing.grant_id)
         if (
             old_grant
+            and (
+                settings.jev_budget_limits_enabled
+                or (old_grant.article_limit is None and old_grant.expires_at is None)
+            )
             and (not old_grant.expires_at or old_grant.expires_at > now())
             and (not old_grant.budget_id or budget_available(db, old_grant.budget_id))
         ):
@@ -71,16 +76,24 @@ def reserve(db, article, split, manual_rss=False, fresh=False):
                 db.add(RssDailyUsage(id=daily_key))
                 db.flush()
             return True
-    grants = db.scalars(
-        select(Grant)
-        .where(
-            Grant.split == split,
+    query = select(Grant).where(Grant.split == split)
+    if settings.jev_budget_limits_enabled:
+        query = query.where(
             or_(Grant.article_limit == None, Grant.used < Grant.article_limit),
             or_(Grant.expires_at == None, Grant.expires_at > now()),
         )
-        .order_by(Grant.article_limit.is_not(None) if fresh else Grant.id, Grant.id)
-        .with_for_update()
-    ).all()
+    else:
+        query = query.where(Grant.article_limit == None, Grant.expires_at == None)
+    query = query.order_by(
+        Grant.article_limit.is_not(None) if fresh else Grant.id, Grant.id
+    ).with_for_update()
+    grants = db.scalars(query).all()
+    if not grants and not settings.jev_budget_limits_enabled:
+        from app.cli import seed
+
+        seed(db)
+        db.flush()
+        grants = db.scalars(query).all()
     grants = [g for g in grants if not g.budget_id or budget_available(db, g.budget_id)]
     if not grants:
         return False
@@ -100,16 +113,21 @@ def budget_available(db, budget_id):
     b = db.get(ConsumptionBudget, budget_id)
     return bool(
         b
-        and (b.request_limit is None or b.requests_used < b.request_limit)
         and (
-            not b.window_seconds
+            not settings.jev_budget_limits_enabled
+            or b.request_limit is None
+            or b.requests_used < b.request_limit
+        )
+        and (
+            not settings.jev_budget_limits_enabled
+            or not b.window_seconds
             or not b.started_at
             or now() < b.started_at + timedelta(seconds=b.window_seconds)
         )
     )
 
 
-def enqueue_rss_analysis(db, limit):
+def enqueue_rss_analysis(db, limit=None):
     db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     articles = db.scalars(
         select(Article)
@@ -119,7 +137,7 @@ def enqueue_rss_analysis(db, limit):
     ).all()
     jobs = []
     for a in articles:
-        if len(jobs) >= limit:
+        if limit is not None and len(jobs) >= limit:
             break
         if db.scalar(select(Job).where(Job.key == analysis_key(a))):
             continue

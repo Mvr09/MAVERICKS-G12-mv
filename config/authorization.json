@@ -103,5 +103,7 @@
       "window_seconds": null,
       "authorization": "Usuario autoriza cupo JEV ilimitado para pruebas manuales. Sin límite de llamadas ni vencimiento local; conservar consumo histórico y límites técnicos. RSS periódico de pago sigue desactivado."
     }
-  ]
+  ],
+  "budget_limits_enabled": false,
+  "current_authorization": "Usuario autoriza desactivar todos los límites locales de presupuesto: sin cupos de artículos/peticiones, vencimientos ni tope diario RSS. Se mantienen registro de consumo, permisos, reintentos y políticas del proveedor. No activa análisis periódico."
 }

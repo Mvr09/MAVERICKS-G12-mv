@@ -1494,7 +1494,7 @@ function RetryAnalysis({ article, action }: any) {
                     method: "POST",
                     body: JSON.stringify({ reason }),
                   }),
-                "Reintento encolado con el mismo límite de consumo.",
+                "Reintento encolado.",
               );
               setOpen(false);
             }}
@@ -1981,7 +1981,7 @@ function Batches({ batches, presenter, action }: any) {
                   action(
                     () =>
                       api("/batches/" + b.id + "/analyze", { method: "POST" }),
-                    "Análisis encolado dentro del presupuesto autorizado.",
+                    "Análisis encolado.",
                   )
                 }
               >
@@ -2275,6 +2275,8 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
     [notice, setNotice] = useState(""),
     [error, setError] = useState("");
   const baseline = useRef<Set<string> | null>(null);
+  const noBudgetLimits = budget?.limits_enforced === false;
+  const pendingCount = stream.filter((a) => a.state === "pending").length;
   useEffect(() => {
     let active = true,
       inFlight = false;
@@ -2339,10 +2341,8 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
         <Radio size={20} />
         <span>
           Seis fuentes reales. Análisis periódico de pago{" "}
-          {config.rss_paid_analysis
-            ? "habilitado con cupo autorizado"
-            : "desactivado"}
-          . Las noticias sin analizar permanecen pendientes.
+          {config.rss_paid_analysis ? "habilitado" : "desactivado"}. Las
+          noticias sin analizar permanecen pendientes.
         </span>
       </div>
       <section
@@ -2400,7 +2400,7 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
         {worker?.online && worker?.compatible === false && (
           <div className="notice warning">
             El worker usa otra versión. Actualiza su despliegue y espera 30
-            segundos para habilitar análisis con el presupuesto actual.
+            segundos antes de iniciar un análisis.
           </div>
         )}
         {sources.length === 0 && (
@@ -2461,33 +2461,36 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
         <section className="card detail-card">
           <div className="section-heading">
             <div>
-              <h2>Análisis JEV del lote autorizado</h2>
+              <h2>Análisis de noticias con JEV</h2>
               <p>
-                Inicio manual · máximo seis peticiones por artículo, incluidos
-                reintentos · sin análisis periódico
+                Inicio manual · consultas y reintentos registrados · sin
+                análisis periódico
               </p>
             </div>
           </div>
           <p>
             {budget
-              ? `${budget.unlimited ? "JEV sin cupo de consumo · " : ""}${budget.remaining} artículos RSS disponibles hoy · ${budget.reserved} reservados · ${budget.network_requests} peticiones registradas`
-              : "Consultando presupuesto…"}
+              ? noBudgetLimits
+                ? `Sin límites locales de presupuesto · ${pendingCount} noticias pendientes · ${budget.network_requests} peticiones registradas`
+                : `${budget.remaining} artículos disponibles · ${budget.network_requests} peticiones registradas`
+              : "Consultando estado del análisis…"}
           </p>
-          {budget?.request_budgets?.map((b: any) => (
-            <div className="notice info" key={b.id}>
-              <span>
-                Presupuesto compartido:{" "}
-                <strong>
-                  {b.unlimited
-                    ? "Sin límite de peticiones ni vencimiento"
-                    : `${b.remaining_requests} de ${b.request_limit} peticiones disponibles`}
-                </strong>{" "}
-                entre ejercicio y RSS, incluidos reintentos. {b.requests_used}{" "}
-                registradas.
-                {b.closes_at && ` Ventana hasta ${date(b.closes_at)}.`}
-              </span>
-            </div>
-          ))}
+          {budget?.limits_enforced === true &&
+            budget.request_budgets?.map((b: any) => (
+              <div className="notice info" key={b.id}>
+                <span>
+                  Presupuesto compartido:{" "}
+                  <strong>
+                    {b.unlimited
+                      ? "Sin límite de peticiones ni vencimiento"
+                      : `${b.remaining_requests} de ${b.request_limit} peticiones disponibles`}
+                  </strong>{" "}
+                  entre ejercicio y RSS, incluidos reintentos. {b.requests_used}{" "}
+                  registradas.
+                  {b.closes_at && ` Ventana hasta ${date(b.closes_at)}.`}
+                </span>
+              </div>
+            ))}
           <p>
             {stream.filter((a) => ["done", "review"].includes(a.state)).length}{" "}
             noticias procesadas ·{" "}
@@ -2500,7 +2503,8 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
               analysisBusy ||
               !worker?.online ||
               worker?.compatible === false ||
-              !budget?.remaining ||
+              !budget ||
+              (!noBudgetLimits && !budget.remaining) ||
               !stream.some((a) => a.state === "pending")
             }
             onClick={async () => {
@@ -2509,9 +2513,9 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
               try {
                 const r = await api("/analysis/rss", {
                   method: "POST",
-                  body: JSON.stringify({
-                    limit: Math.min(10, budget.remaining),
-                  }),
+                  body: JSON.stringify(
+                    noBudgetLimits ? {} : { limit: budget.remaining },
+                  ),
                 });
                 setNotice(
                   `${r.articles} noticias encoladas para JEV; máximo ${r.maximum_requests} peticiones, reintentos incluidos.`,
@@ -2527,9 +2531,11 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
           >
             {analysisBusy
               ? "Encolando análisis…"
-              : `Analizar hasta ${Math.min(10, budget?.remaining || 0)} noticias con JEV`}
+              : noBudgetLimits
+                ? `Analizar ${pendingCount} noticias pendientes con JEV`
+                : `Analizar hasta ${budget?.remaining || 0} noticias con JEV`}
           </button>
-          {!budget?.remaining && (
+          {budget?.limits_enforced === true && !budget.remaining && (
             <p>El cupo agotado no se restablece al reiniciar ni desplegar.</p>
           )}
         </section>
