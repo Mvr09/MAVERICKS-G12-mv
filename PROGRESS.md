@@ -53,3 +53,10 @@
 - Pruebas en curso antes de publicar; consumo de esta autorización todavía 0. Siguiente: terminar regresión/E2E, publicar correcciones y ejecutar ensayo real sin reajustar con resultados retenidos.
 
 - Gate de publicación: **60 pruebas backend/runner pasan**, **13 E2E pasan**, build TS/Vite y paquete permitido pasan; migración desde base nueva y predeploy completo pasan (0004, 20 tablas). Preguntas/política siguen con hashes congelados. Se prepara push autorizado; todavía 0 llamadas nuevas del cupo 200.
+
+## Diagnóstico de la primera ejecución de validación
+- Desplegado 8538d60; ambos servicios y todos los workers recientes coinciden en revisión. Iniciado presupuesto a las 21:16:52 UTC, ventana hasta 22:01:52 UTC.
+- Validación se detiene correctamente: 8 resultados procesados (7 review, 1 done), 2 error; 14 peticiones HTTP 200 registradas, 186 del nuevo cupo restantes. Un CONTRACT_SCORE y otro PROVIDER_REQUIRES_DIAGNOSIS por bloqueo preventivo. Test/LiveDay no iniciados, exportación bloqueada.
+- Consultada documentación primaria TypeSafe Score y API: Score es la suma ponderada de índices por probabilidades. Primera respuesta inválida no conserva diagnóstico numérico, por lo que no se inventa su delta. Se añade captura numérica privada y reconocimiento de diagnóstico por presupuesto, sin reiniciar intentos/cupo ni modificar respuestas.
+- Corregido caso sintético independiente: diferencia decimal exactamente 0,03 podía superar la misma tolerancia por coma flotante; usar Decimal mantiene 0,03 sin ampliar umbral. Preguntas/política/rubricas siguen congeladas; no se usan etiquetas retenidas para ajustar.
+- Próximo paso: desplegar diagnóstico y hacer un reintento aislado de la fila CONTRACT_SCORE dentro de sus tres intentos por etapa. Si vuelve a ser incoherente, inspeccionar números y detener, no aflojar contrato ni fabricar N.

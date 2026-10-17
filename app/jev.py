@@ -1,4 +1,5 @@
 import math, time, random, threading
+from decimal import Decimal
 from contextlib import contextmanager
 from sqlalchemy import text
 from app.db import engine
@@ -20,8 +21,9 @@ from app.importer import digest
 
 
 class ProviderError(Exception):
-    def __init__(self, code):
+    def __init__(self, code, details=None):
         self.code = code
+        self.details = details
         super().__init__(code)
 
 
@@ -60,6 +62,7 @@ def grant_requires_diagnosis(db, grant_id, acknowledged_at=None):
         .outerjoin(GrantArticle, GrantArticle.article_id == ApiCall.article_id)
         .where(
             scope,
+            ApiCall.usage["_diagnosed_at"].as_string().is_(None),
             or_(
                 ApiCall.status.in_((400, 401, 403, 422)),
                 error.like("CONTRACT%"),
@@ -129,11 +132,19 @@ def validate_response(payload, data):
                 raise ProviderError("CONTRACT_CHOICE")
         else:
             finite(a.get("score"), 0, len(q["criteria"]) - 1)
-            if (
-                abs(a["score"] - sum(int(k) * v for k, v in probabilities.items()))
-                > 0.03
-            ):
-                raise ProviderError("CONTRACT_SCORE")
+            weighted = sum(
+                Decimal(k) * Decimal(str(v)) for k, v in probabilities.items()
+            )
+            if abs(Decimal(str(a["score"])) - weighted) > Decimal("0.03"):
+                raise ProviderError(
+                    "CONTRACT_SCORE",
+                    {
+                        "reported_score": a["score"],
+                        "weighted_score": float(weighted),
+                        "probability_sum": sum(probabilities.values()),
+                        "probabilities": probabilities,
+                    },
+                )
             if not isinstance(a.get("legend"), dict) or set(a["legend"]) != keys:
                 raise ProviderError("CONTRACT_LEGEND")
     return r.model_dump()
@@ -285,6 +296,8 @@ class JevClient:
                         data = response.json()
                     except Exception:
                         raise ProviderError("CONTRACT_JSON")
+                    if isinstance(data, dict) and isinstance(data.get("usage"), dict):
+                        usage = data["usage"]
                     result = validate_response(payload, data)
                     usage = result["usage"]
                     self.db.merge(RequestCache(id=key, response=result))
@@ -296,6 +309,8 @@ class JevClient:
                 record.status = status
                 record.duration = time.monotonic() - start
                 record.usage = {**usage, "_error": failure.code} if failure else usage
+                if failure and failure.details:
+                    record.usage = {**record.usage, "_contract": failure.details}
                 self.db.commit()
             if not failure:
                 return result

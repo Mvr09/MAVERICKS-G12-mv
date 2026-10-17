@@ -308,3 +308,89 @@ def test_paid_jobs_require_workers_with_the_current_version():
             c.post("/api/analysis/rss", headers=headers, json={"limit": 1}).status_code
             == 409
         )
+
+
+def test_score_boundary_uses_decimal_precision_without_changing_tolerance():
+    from app.jev import validate_response
+
+    payload = {
+        "model": "jev-1.13.0",
+        "questions": {
+            "severity": {"type": "score", "criteria": ["low", "medium", "high"]}
+        },
+    }
+    response = {
+        "model": "jev-1.13.0",
+        "answers": {
+            "severity": {
+                "type": "score",
+                "score": 1.4,
+                "confidence": 0.8,
+                "legend": {"0": "low", "1": "medium", "2": "high"},
+                "probabilities": {"0": 0.0, "1": 0.57, "2": 0.43},
+            }
+        },
+        "usage": {},
+    }
+    assert validate_response(payload, response)["answers"]["severity"]["score"] == 1.4
+    response["answers"]["severity"]["score"] = 1.39
+    with pytest.raises(ProviderError, match="CONTRACT_SCORE") as failure:
+        validate_response(payload, response)
+    assert failure.value.details["weighted_score"] == 1.43
+
+
+def test_diagnosis_is_private_does_not_reset_budget_and_does_not_hide_new_failures():
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from tests.test_operations import login
+
+    with Session() as db:
+        a = synthetic(db)
+        g = attach(db, a)
+        db.get(ConsumptionBudget, g.budget_id).requests_used = 2
+        db.add(
+            ApiCall(
+                article_id=a.id,
+                stage="b",
+                attempt=1,
+                model="MOCK",
+                status=200,
+                duration=0,
+                usage={"_error": "CONTRACT_SCORE"},
+                budget_id=g.budget_id,
+            )
+        )
+        db.commit()
+        assert grant_requires_diagnosis(db, g.id)
+    with TestClient(app) as c:
+        assert (
+            c.post(
+                "/api/admin/budgets/MOCK-SHARED/diagnose",
+                json={"reason": "MOCK diagnostic reason"},
+            ).status_code
+            == 401
+        )
+        headers = login(c)
+        result = c.post(
+            "/api/admin/budgets/MOCK-SHARED/diagnose",
+            headers=headers,
+            json={"reason": "MOCK: weighted score contract investigated"},
+        ).json()
+        assert len(result["diagnosed_calls"]) == 1 and result["requests_used"] == 2
+    with Session() as db:
+        assert not grant_requires_diagnosis(db, "MOCK-GRANT")
+        assert db.get(ConsumptionBudget, "MOCK-SHARED").requests_used == 2
+        db.add(
+            ApiCall(
+                article_id=a.id,
+                stage="b",
+                attempt=2,
+                model="MOCK",
+                status=200,
+                duration=0,
+                usage={"_error": "CONTRACT_SCORE"},
+                budget_id="MOCK-SHARED",
+            )
+        )
+        db.commit()
+        assert grant_requires_diagnosis(db, "MOCK-GRANT")

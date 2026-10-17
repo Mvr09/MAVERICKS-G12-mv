@@ -589,6 +589,37 @@ def budget_status(db: Session = Depends(get_db)):
     }
 
 
+@app.post("/api/admin/budgets/{budget_id}/diagnose", dependencies=[Depends(presenter)])
+def acknowledge_diagnosis(
+    budget_id: str, body: DiagnosticRetry, db: Session = Depends(get_db)
+):
+    budget = db.scalar(
+        select(ConsumptionBudget)
+        .where(ConsumptionBudget.id == budget_id)
+        .with_for_update()
+    )
+    if not budget:
+        raise HTTPException(404, "Presupuesto no encontrado")
+    diagnosed = []
+    for call in db.scalars(
+        select(ApiCall).where(ApiCall.budget_id == budget_id).with_for_update()
+    ):
+        error = call.usage.get("_error", "")
+        if not call.usage.get("_diagnosed_at") and (
+            call.status in (400, 401, 403, 422)
+            or error.startswith("CONTRACT")
+            or error == "MODEL_MISMATCH"
+        ):
+            call.usage = {
+                **call.usage,
+                "_diagnosed_at": now().isoformat(),
+                "_diagnosis_reason": body.reason,
+            }
+            diagnosed.append(call.id)
+    db.commit()
+    return {"diagnosed_calls": diagnosed, "requests_used": budget.requests_used}
+
+
 @app.get("/api/batches/{bid}/execution", dependencies=[Depends(presenter)])
 def batch_execution(bid: str, db: Session = Depends(get_db)):
     if not db.get(Batch, bid):
@@ -602,6 +633,7 @@ def batch_execution(bid: str, db: Session = Depends(get_db)):
     return {
         "calls": [
             {
+                "id": c.id,
                 "news_id": news_id,
                 "stage": c.stage,
                 "attempt": c.attempt,
@@ -609,6 +641,8 @@ def batch_execution(bid: str, db: Session = Depends(get_db)):
                 "http_status": c.status,
                 "seconds": c.duration,
                 "budget_id": c.budget_id,
+                "error": c.usage.get("_error"),
+                "contract_diagnostic": c.usage.get("_contract"),
                 "usage": {
                     k: v
                     for k, v in c.usage.items()
