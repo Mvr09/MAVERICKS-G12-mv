@@ -1,0 +1,61 @@
+
+# Challenge data - keep local
+
+# Credentials and environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / React
+node_modules/
+dist/
+.vite/
+
+# Local databases and logs
+*.sqlite3
+*.db
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# Operating system
+.DS_Store
+
+
+# NEVER commit the answer key
+*Answer*Key*.xlsx
+*answer_key*.xlsx
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# React
+node_modules/
+dist/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs and local databases
+*.log
+*.sqlite3
+
