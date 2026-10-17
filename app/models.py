@@ -46,6 +46,7 @@ class Batch(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    export_headers: Mapped[list | None] = mapped_column(JSON, nullable=True)
 
 
 class Article(Base):
@@ -67,6 +68,12 @@ class Article(Base):
 
 class EvaluationLabel(Base):
     __tablename__ = "evaluation_labels"
+    article_id: Mapped[str] = mapped_column(ForeignKey("articles.id"), primary_key=True)
+    data: Mapped[dict] = mapped_column(JSON)
+
+
+class ImportRow(Base):
+    __tablename__ = "import_rows"
     article_id: Mapped[str] = mapped_column(ForeignKey("articles.id"), primary_key=True)
     data: Mapped[dict] = mapped_column(JSON)
 
@@ -121,6 +128,7 @@ class WorkerPresence(Base):
     __tablename__ = "worker_presence"
     id: Mapped[str] = mapped_column(String, primary_key=True)
     heartbeat: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    revision: Mapped[str | None] = mapped_column(String)
 
 
 class Incident(Base):
@@ -159,6 +167,15 @@ class Draft(Base):
     context_hash: Mapped[str] = mapped_column(String)
 
 
+class ConsumptionBudget(Base):
+    __tablename__ = "consumption_budgets"
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    request_limit: Mapped[int] = mapped_column(Integer)
+    requests_used: Mapped[int] = mapped_column(Integer, default=0)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    window_seconds: Mapped[int] = mapped_column(Integer, default=2700)
+
+
 class Grant(Base):
     __tablename__ = "grants"
     id: Mapped[str] = mapped_column(String, primary_key=True)
@@ -166,6 +183,7 @@ class Grant(Base):
     article_limit: Mapped[int] = mapped_column(Integer)
     used: Mapped[int] = mapped_column(Integer, default=0)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    budget_id: Mapped[str | None] = mapped_column(ForeignKey("consumption_budgets.id"))
 
 
 class ApiCall(Base):
@@ -178,6 +196,7 @@ class ApiCall(Base):
     status: Mapped[int | None] = mapped_column(Integer)
     duration: Mapped[float] = mapped_column(Float)
     usage: Mapped[dict] = mapped_column(JSON)
+    budget_id: Mapped[str | None] = mapped_column(ForeignKey("consumption_budgets.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 

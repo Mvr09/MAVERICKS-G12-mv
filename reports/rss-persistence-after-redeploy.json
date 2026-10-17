@@ -1,0 +1,26 @@
+{
+  "checked_at": "2026-10-17T20:58:35.191536+00:00",
+  "revision": "e9e0213af2d8a0bc6a1827e8403cabd6a5a7b395",
+  "worker": {
+    "online": true,
+    "last_seen_at": "2026-10-17T20:58:05.122026+00:00"
+  },
+  "total_rss_articles": 37,
+  "article_states": {
+    "review": 9,
+    "done": 1,
+    "pending": 27
+  },
+  "budget": {
+    "remaining": 0,
+    "reserved": 10,
+    "periodic_enabled": false,
+    "maximum_requests_per_article": 6,
+    "network_requests": 10
+  },
+  "job_states": {
+    "done": 10
+  },
+  "original_execution_seconds": 6.964,
+  "new_requests_during_redeploy_verification": 0
+}

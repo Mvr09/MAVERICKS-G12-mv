@@ -8,7 +8,14 @@ import httpx
 from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt
 from sqlalchemy import select, func, or_
 from app.settings import settings, POLICY
-from app.models import RequestCache, ApiCall, GrantArticle, Grant, now
+from app.models import (
+    RequestCache,
+    ApiCall,
+    GrantArticle,
+    Grant,
+    ConsumptionBudget,
+    now,
+)
 from app.importer import digest
 
 
@@ -18,13 +25,41 @@ class ProviderError(Exception):
         super().__init__(code)
 
 
+def reserve_request(db, grant):
+    if not grant or not grant.budget_id:
+        return None
+    from datetime import timedelta
+
+    budget = db.scalar(
+        select(ConsumptionBudget)
+        .where(ConsumptionBudget.id == grant.budget_id)
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
+    if not budget or budget.requests_used >= budget.request_limit:
+        raise ProviderError("REQUEST_BUDGET_EXHAUSTED")
+    if budget.started_at and now() >= budget.started_at + timedelta(
+        seconds=budget.window_seconds
+    ):
+        raise ProviderError("BUDGET_WINDOW_EXPIRED")
+    if not budget.started_at:
+        budget.started_at = now()
+    budget.requests_used += 1
+    db.flush()
+    return budget.id
+
+
 def grant_requires_diagnosis(db, grant_id, acknowledged_at=None):
     error = ApiCall.usage["_error"].as_string()
+    grant = db.get(Grant, grant_id)
+    scope = GrantArticle.grant_id == grant_id
+    if grant and grant.budget_id:
+        scope = or_(scope, ApiCall.budget_id == grant.budget_id)
     query = (
         select(ApiCall.created_at)
-        .join(GrantArticle, GrantArticle.article_id == ApiCall.article_id)
+        .outerjoin(GrantArticle, GrantArticle.article_id == ApiCall.article_id)
         .where(
-            GrantArticle.grant_id == grant_id,
+            scope,
             or_(
                 ApiCall.status.in_((400, 401, 403, 422)),
                 error.like("CONTRACT%"),
@@ -162,9 +197,9 @@ class JevClient:
         if cached:
             self.cached_stages.append(stage)
             return validate_response(payload, cached.response)
+        reservation = self.db.get(GrantArticle, self.article_id)
+        grant = self.db.get(Grant, reservation.grant_id) if reservation else None
         if self.transport is None:
-            reservation = self.db.get(GrantArticle, self.article_id)
-            grant = self.db.get(Grant, reservation.grant_id) if reservation else None
             if not grant:
                 raise ProviderError("CONSUMPTION_NOT_AUTHORIZED")
             if grant.expires_at:
@@ -205,6 +240,7 @@ class JevClient:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise ProviderError("ARTICLE_DEADLINE")
+            budget_id = reserve_request(self.db, grant)
             attempts += 1
             self.network_requests += 1
             start = time.monotonic()
@@ -220,6 +256,7 @@ class JevClient:
                 model=payload["model"],
                 duration=0,
                 usage={},
+                budget_id=budget_id,
             )
             self.db.add(record)
             self.db.commit()

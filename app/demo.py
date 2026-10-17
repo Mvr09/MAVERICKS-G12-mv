@@ -11,6 +11,7 @@ from app.models import (
     Job,
     EvaluationLabel,
     GrantArticle,
+    ImportRow,
 )
 from app.importer import digest
 from app.auth import codec
@@ -97,7 +98,7 @@ def cleanup(db, token):
         db.execute(delete(model).where(model.incident_id.in_(iids)))
     db.execute(delete(Incident).where(Incident.id.in_(iids)))
     db.execute(delete(Job).where(Job.id.in_([j.id for j in jobs])))
-    for model in (EvaluationLabel, Analysis, GrantArticle):
+    for model in (EvaluationLabel, Analysis, GrantArticle, ImportRow):
         db.execute(delete(model).where(model.article_id.in_(aids)))
     db.execute(delete(Article).where(Article.id.in_(aids)))
     db.execute(delete(Batch).where(Batch.id.in_(bids)))

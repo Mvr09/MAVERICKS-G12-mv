@@ -14,9 +14,22 @@ def evaluate_batch(db, bid):
             .where(Analysis.article_id == a.id)
             .order_by(Analysis.created_at.desc())
         )
-        if not label or not analysis or a.state not in ("done", "review"):
+        if (
+            not label
+            or not analysis
+            or a.state not in ("done", "review")
+            or analysis.result.get("analysis_status") not in ("done", "review")
+        ):
             raise ValueError("Evaluación bloqueada: lote incompleto")
+        if any(
+            label.data.get(field) not in ("Y", "N") for field in ("Is_Risk", "Urgent")
+        ):
+            raise ValueError(
+                "Evaluación bloqueada: etiquetas binarias ausentes o inválidas"
+            )
         pairs.append((label.data, analysis.result))
+    if not pairs:
+        raise ValueError("Evaluación bloqueada: lote vacío")
 
     def metric(field, out):
         tp = fp = fn = tn = 0
@@ -66,6 +79,12 @@ def evaluate_batch(db, bid):
             "n": len(pairs),
             "precision": tp / (tp + fp) if tp + fp else 0,
             "recall": tp / (tp + fn) if tp + fn else 0,
+            "exact_set_accuracy": exact / len(pairs),
+            "tp": tp,
+            "fp": fp,
+            "fn": fn,
+            "f1": 2 * tp / (2 * tp + fp + fn) if 2 * tp + fp + fn else 0,
         },
+        "review_count": sum(r["analysis_status"] == "review" for _, r in pairs),
         "question_version": pairs[0][1]["question_version"] if pairs else None,
     }

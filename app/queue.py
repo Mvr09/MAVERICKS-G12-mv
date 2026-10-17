@@ -1,7 +1,16 @@
 from datetime import timedelta
 from sqlalchemy import select, or_, and_, func, text
 from sqlalchemy.dialects.postgresql import insert
-from app.models import Job, Article, Batch, Grant, GrantArticle, Source, now
+from app.models import (
+    Job,
+    Article,
+    Batch,
+    Grant,
+    GrantArticle,
+    ConsumptionBudget,
+    Source,
+    now,
+)
 from app.settings import RSS, settings
 
 
@@ -44,6 +53,7 @@ def reserve(db, article, split, manual_rss=False):
         .order_by(Grant.id)
         .with_for_update()
     ).all()
+    grants = [g for g in grants if not g.budget_id or budget_available(db, g.budget_id)]
     if not grants:
         return False
     grant = grants[0]
@@ -51,6 +61,18 @@ def reserve(db, article, split, manual_rss=False):
     db.add(GrantArticle(article_id=article.id, grant_id=grant.id))
     db.flush()
     return True
+
+
+def budget_available(db, budget_id):
+    b = db.get(ConsumptionBudget, budget_id)
+    return bool(
+        b
+        and b.requests_used < b.request_limit
+        and (
+            not b.started_at
+            or now() < b.started_at + timedelta(seconds=b.window_seconds)
+        )
+    )
 
 
 def enqueue_rss_analysis(db, limit):

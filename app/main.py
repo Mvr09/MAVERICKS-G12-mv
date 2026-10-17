@@ -125,7 +125,7 @@ def ready(db: Session = Depends(get_db)):
         revision = db.execute(
             text("select version_num from alembic_version")
         ).scalar_one()
-        if revision != "0003":
+        if revision != "0004":
             raise ValueError()
     except Exception:
         raise HTTPException(503, "Base de datos o esquema no disponible")
@@ -177,6 +177,7 @@ def config():
     return {
         "model": settings.jev_model,
         "policy_version": POLICY["version"],
+        "question_version": POLICY["question_version"],
         "engine_configured": bool(settings.typesafe_api_key.get_secret_value()),
         "bands": POLICY["bands"],
         "cooldown_seconds": POLICY["audio"]["cooldown_seconds"],
@@ -401,6 +402,7 @@ def batches(db: Session = Depends(get_db)):
 def analyze(bid: str, db: Session = Depends(get_db)):
     from app.queue import enqueue_batch
 
+    require_current_worker(db)
     try:
         jobs = enqueue_batch(db, bid)
         db.commit()
@@ -496,24 +498,50 @@ def sync(db: Session = Depends(get_db)):
 def worker_status(db: Session = Depends(get_db)):
     from datetime import timedelta
 
+    recent = db.scalars(
+        select(WorkerPresence)
+        .where(WorkerPresence.heartbeat > now() - timedelta(seconds=30))
+        .order_by(WorkerPresence.heartbeat.desc())
+    ).all()
     latest = db.scalar(select(func.max(WorkerPresence.heartbeat)))
+    revision = os.environ.get("RAILWAY_GIT_COMMIT_SHA") or "local"
     return {
-        "online": bool(latest and latest > now() - timedelta(seconds=30)),
+        "online": bool(recent),
+        "compatible": bool(recent) and all(w.revision == revision for w in recent),
+        "revision": recent[0].revision if recent else None,
+        "expected_revision": revision,
         "last_seen_at": latest,
     }
 
 
+def require_current_worker(db):
+    status = worker_status(db)
+    if not status["online"]:
+        raise HTTPException(
+            409, "El worker debe estar conectado antes de iniciar un lote JEV."
+        )
+    if not status["compatible"]:
+        raise HTTPException(
+            409,
+            "Hay workers con otra versión. Actualiza el worker y espera 30 segundos antes de analizar.",
+        )
+
+
 @app.get("/api/analysis/budget", dependencies=[Depends(presenter)])
 def analysis_budget(db: Session = Depends(get_db)):
+    from app.queue import budget_available
+
     grants = db.scalars(select(Grant).where(Grant.split == "rss")).all()
     return {
         "remaining": sum(
             max(0, g.article_limit - g.used)
             for g in grants
-            if not g.expires_at or g.expires_at > now()
+            if (not g.expires_at or g.expires_at > now())
+            and (not g.budget_id or budget_available(db, g.budget_id))
         ),
         "reserved": sum(g.used for g in grants),
         "periodic_enabled": settings.rss_analysis_enabled,
+        "request_budgets": budget_status(db)["budgets"],
         "maximum_requests_per_article": 6,
         "network_requests": db.scalar(
             select(func.count())
@@ -521,6 +549,75 @@ def analysis_budget(db: Session = Depends(get_db)):
             .join(Article, Article.id == ApiCall.article_id)
             .where(Article.context == "rss")
         ),
+    }
+
+
+@app.get("/api/admin/budgets", dependencies=[Depends(presenter)])
+def budget_status(db: Session = Depends(get_db)):
+    from datetime import timedelta
+
+    return {
+        "budgets": [
+            {
+                "id": b.id,
+                "request_limit": b.request_limit,
+                "requests_used": b.requests_used,
+                "remaining_requests": max(0, b.request_limit - b.requests_used)
+                if not b.started_at
+                or now() < b.started_at + timedelta(seconds=b.window_seconds)
+                else 0,
+                "started_at": b.started_at,
+                "closes_at": b.started_at + timedelta(seconds=b.window_seconds)
+                if b.started_at
+                else None,
+            }
+            for b in db.scalars(
+                select(ConsumptionBudget).order_by(ConsumptionBudget.id)
+            )
+        ],
+        "grants": [
+            {
+                "id": g.id,
+                "split": g.split,
+                "article_limit": g.article_limit,
+                "used": g.used,
+                "budget_id": g.budget_id,
+                "expires_at": g.expires_at,
+            }
+            for g in db.scalars(select(Grant).order_by(Grant.id))
+        ],
+    }
+
+
+@app.get("/api/batches/{bid}/execution", dependencies=[Depends(presenter)])
+def batch_execution(bid: str, db: Session = Depends(get_db)):
+    if not db.get(Batch, bid):
+        raise HTTPException(404, "Lote no encontrado")
+    rows = db.execute(
+        select(ApiCall, Article.news_id)
+        .join(Article, Article.id == ApiCall.article_id)
+        .where(Article.batch_id == bid)
+        .order_by(ApiCall.created_at)
+    ).all()
+    return {
+        "calls": [
+            {
+                "news_id": news_id,
+                "stage": c.stage,
+                "attempt": c.attempt,
+                "model": c.model,
+                "http_status": c.status,
+                "seconds": c.duration,
+                "budget_id": c.budget_id,
+                "usage": {
+                    k: v
+                    for k, v in c.usage.items()
+                    if k in ("input_tokens", "output_tokens", "total_tokens")
+                    and isinstance(v, (int, float))
+                },
+            }
+            for c, news_id in rows
+        ]
     }
 
 
@@ -532,10 +629,7 @@ class ManualRssAnalysis(BaseModel):
 def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
     from app.queue import enqueue_rss_analysis
 
-    if not worker_status(db)["online"]:
-        raise HTTPException(
-            409, "El worker debe estar conectado antes de iniciar un lote JEV."
-        )
+    require_current_worker(db)
     if db.scalar(select(func.count()).select_from(Supplier)) != 40:
         raise HTTPException(409, "Importa primero las 40 identidades de la cartera.")
     jobs = enqueue_rss_analysis(db, body.limit)
@@ -629,6 +723,8 @@ def resolve(iid: str, body: Resolve, db: Session = Depends(get_db)):
     inc.state = "resolved"
     inc.priority = 0
     inc.revision += 1
+    for alert in db.scalars(select(Alert).where(Alert.incident_id == inc.id)):
+        alert.data = {**alert.data, "state": "resolved", "sound_eligible": False}
     db.commit()
     return {"ok": True}
 

@@ -2349,6 +2349,12 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
             </span>
           </div>
         )}
+        {worker?.online && worker?.compatible === false && (
+          <div className="notice warning">
+            El worker usa otra versión. Actualiza su despliegue y espera 30
+            segundos para habilitar análisis con el presupuesto actual.
+          </div>
+        )}
         {sources.length === 0 && (
           <p>
             No hay fuentes inicializadas. «Actualizar ahora» registrará las seis
@@ -2419,6 +2425,19 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
               ? `${budget.remaining} artículos de cupo disponibles · ${budget.reserved} reservados · ${budget.network_requests} peticiones registradas`
               : "Consultando presupuesto…"}
           </p>
+          {budget?.request_budgets?.map((b: any) => (
+            <div className="notice info" key={b.id}>
+              <span>
+                Presupuesto compartido:{" "}
+                <strong>
+                  {b.remaining_requests} de {b.request_limit} peticiones
+                  disponibles
+                </strong>{" "}
+                entre ejercicio y RSS, incluidos reintentos.
+                {b.closes_at && ` Ventana hasta ${date(b.closes_at)}.`}
+              </span>
+            </div>
+          ))}
           <p>
             {stream.filter((a) => ["done", "review"].includes(a.state)).length}{" "}
             noticias procesadas ·{" "}
@@ -2430,6 +2449,7 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
             disabled={
               analysisBusy ||
               !worker?.online ||
+              worker?.compatible === false ||
               !budget?.remaining ||
               !stream.some((a) => a.state === "pending")
             }

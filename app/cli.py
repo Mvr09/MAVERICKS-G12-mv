@@ -4,7 +4,7 @@ import argparse, json
 from pathlib import Path
 from sqlalchemy import select, text
 from app.db import Session
-from app.models import Source, Grant
+from app.models import Source, Grant, ConsumptionBudget
 from app.settings import ROOT, RSS, settings
 from app.importer import import_excel
 
@@ -12,6 +12,17 @@ from app.importer import import_excel
 def seed(db):
     db.execute(text("SELECT pg_advisory_xact_lock(72642, 2)"))
     authorization = json.loads((ROOT / "config/authorization.json").read_text())
+    for budget in authorization.get("request_budgets", []):
+        if not db.get(ConsumptionBudget, budget["id"]):
+            db.add(
+                ConsumptionBudget(
+                    id=budget["id"],
+                    request_limit=budget["request_limit"],
+                    requests_used=0,
+                    window_seconds=budget["window_seconds"],
+                )
+            )
+    db.flush()
     for source in RSS["sources"]:
         if not db.get(Source, source["id"]):
             db.add(Source(id=source["id"], data=source))
@@ -34,6 +45,7 @@ def seed(db):
                     split=grant["split"],
                     article_limit=grant["article_limit"],
                     used=0,
+                    budget_id=grant.get("budget_id"),
                     expires_at=datetime.fromisoformat(
                         grant["expires_at"].replace("Z", "+00:00")
                     ),

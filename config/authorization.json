@@ -16,6 +16,46 @@
       "maximum_requests": 60,
       "expires_at": "2026-10-19T00:00:00Z",
       "authorization": "Usuario autoriza hasta 10 noticias RSS y 60 peticiones, incluidos reintentos. Un único lote; no se reinicia al desplegar."
+    },
+    {
+      "id": "final-200-validation-20261017",
+      "split": "validation",
+      "article_limit": 10,
+      "budget_id": "demo-final-200-20261017",
+      "expires_at": "2026-10-19T00:00:00Z",
+      "authorization": "Comparte el máximo global de 200 nuevas peticiones; no restablecer consumo. Prioridad validation, test y LiveDay antes de RSS adicional."
+    },
+    {
+      "id": "final-200-test-20261017",
+      "split": "test",
+      "article_limit": 20,
+      "budget_id": "demo-final-200-20261017",
+      "expires_at": "2026-10-19T00:00:00Z",
+      "authorization": "Comparte el máximo global de 200 nuevas peticiones; no restablecer consumo. Prioridad validation, test y LiveDay antes de RSS adicional."
+    },
+    {
+      "id": "final-200-liveday-20261017",
+      "split": "liveday",
+      "article_limit": 14,
+      "budget_id": "demo-final-200-20261017",
+      "expires_at": "2026-10-19T00:00:00Z",
+      "authorization": "Comparte el máximo global de 200 nuevas peticiones; no restablecer consumo. Prioridad validation, test y LiveDay antes de RSS adicional."
+    },
+    {
+      "id": "final-200-rss-20261017",
+      "split": "rss",
+      "article_limit": 90,
+      "budget_id": "demo-final-200-20261017",
+      "expires_at": "2026-10-19T00:00:00Z",
+      "authorization": "Comparte el máximo global de 200 nuevas peticiones; no restablecer consumo. Prioridad validation, test y LiveDay antes de RSS adicional."
+    }
+  ],
+  "request_budgets": [
+    {
+      "id": "demo-final-200-20261017",
+      "request_limit": 200,
+      "window_seconds": 2700,
+      "authorization": "Usuario autoriza hasta 200 llamadas JEV adicionales; compartidas entre lotes y reintentos. RSS consultable conforme a límites. Ventana operativa de 45 minutos desde primera llamada."
     }
   ]
 }

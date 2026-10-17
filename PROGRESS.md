@@ -1,7 +1,7 @@
 # Supplier Risk Radar · seguimiento
 
 ## Estado actual · 17-10-2026
-- Publicado por push autorizado a `origin/main`: **8477e5b5411e892b2436923fbc195e821859c904**. Repositorio Mvr09/MAVERICKS-G12-mv; Railway peaceful-harmony / production. No hay acceso directo al panel.
+- Publicado por push autorizado a `origin/main`: **e9e0213af2d8a0bc6a1827e8403cabd6a5a7b395** (hito RSS, aplicación del lote en 8477e5b). Repositorio Mvr09/MAVERICKS-G12-mv; Railway peaceful-harmony / production. No hay acceso directo al panel.
 - URL real: https://mavericks-g12-mv-production.up.railway.app. Comprobación 20:39:01 UTC: /, /healthz, /readyz, catálogo, fuentes, config y cuatro assets **HTTP 200**; SHA coincide, esquema **0003**, **40 proveedores**, **20 materiales**, **6 fuentes**. Catálogo conservado después del autodeploy.
 - RSS remoto confirmado: **worker conectado**, seis fuentes consultadas realmente desde Railway (200/304, sin errores actuales), **37 artículos** persistidos. Lote autorizado completado: 10 artículos (1 done, 9 review), 27 pendientes.
 - Cupo adicional autorizado por el usuario: **10 noticias RSS / máximo 60 peticiones JEV**, reintentos incluidos. Grant `rss-demo-20261017-10`, límite persistente, vencimiento de seguridad 19-10-2026 00:00 UTC. Verificado remoto: **0 disponibles, 10 reservados/consumidos, 10 peticiones RSS nuevas**, sin caché ni reintentos; modelo jev-1.13.0. **6,964 s** medidos desde solicitud hasta trabajos terminados. Inferencia periódica **false**.
@@ -38,7 +38,18 @@
 - Evidencia: reports/rss-railway-execution.json, public-deployment-after-rss-jev.json, railway-rss-ui-real.json y capturas railway-rss-*-real.png. Script reproducible nuevo sin valores de credenciales.
 
 ## Pendiente / siguiente acción
-1. Registrar hito probado y verificar conservación de resultados/cupo tras el autodeploy del script/informes, sin volver a iniciar análisis.
+1. Hito registrado y publicado: e9e0213. Smoke posterior 20:58:39 UTC confirma SHA, todos los endpoints/assets 200, 40 proveedores, seis fuentes y worker online. Persisten 37 artículos y 10 resultados (9 review/1 done); cupo 10/10 agotado, peticiones siguen en 10. Ningún análisis adicional durante el redeploy. Evidencia local public-deployment-e9e0213.json y rss-persistence-after-redeploy.json.
 2. Usuario puede revisar Noticias → Noticias reales, filtros Fuente y Estado de análisis. No ejecutar limpieza desde el agente.
 3. Consumo adicional requiere nueva autorización concreta. Training inicial y RSS 10/60 agotados; no ejecutar evaluación retenida, test ni LiveDay.
 4. Auditoría A01–A20: pendientes evaluación retenida/final, exportación final/LiveDay 14 ≤300 s, audibilidad corregida y dispositivo físico. Este lote de 10 RSS no acredita rendimiento de LiveDay ni aceptación completa.
+
+## Continuación autorizada: evaluación y ensayo final
+- Usuario autoriza **hasta 200 llamadas JEV adicionales** y consultas RSS conforme a límites. Sustituye la propuesta pendiente de 44/264 y la antigua de 83/498. Presupuesto compartido persistente `demo-final-200-20261017`; ventana de 45 min desde primera llamada, sin renovación. Prioridad validación 10 → test 20 → LiveDay 14; después RSS dentro del saldo/cupo diario. Inferencia periódica sigue false.
+- Implementados reserva HTTP transaccional y registro de budget por intento; cupo compartido entre grants, etapas y workers, incluidos reintentos. Se exige heartbeat de todos los workers recientes en la misma revisión para impedir que una versión anterior procese trabajos sin este límite.
+- Migración 0004 no destructiva: presupuesto, vínculo a intentos/grants, versión de worker y filas privadas de importación para conservar columnas de test. Migración desde base nueva pasa, 20 tablas; no se cambia la política ni las preguntas congeladas.
+- Corregidos borradores: usan evidencia validada de la última noticia por fecha de publicación, no una explicación inexistente en assessment ni el último orden de recepción. Resolución manual desactiva sonido de alertas asociadas. Test exporta columnas originales más decisiones, sin etiquetas de evaluación.
+- Runner `scripts.final_rehearsal`: fases secuenciales, verificación de hash/manifiesto/congelación, importaciones explícitas, medición hasta Excel recibido, validación de IDs/orden/Y-N/delimitador, métricas privadas y uso API. Artefactos en reports/private y .runtime/final, nunca públicos ni Git.
+- Autorización física de audio: solicitados dispositivo/navegador y activar→probar→silenciar→probar; respuesta pendiente. Móvil físico omitido por decisión previa del usuario, no se marca ejecutado.
+- Pruebas en curso antes de publicar; consumo de esta autorización todavía 0. Siguiente: terminar regresión/E2E, publicar correcciones y ejecutar ensayo real sin reajustar con resultados retenidos.
+
+- Gate de publicación: **60 pruebas backend/runner pasan**, **13 E2E pasan**, build TS/Vite y paquete permitido pasan; migración desde base nueva y predeploy completo pasan (0004, 20 tablas). Preguntas/política siguen con hashes congelados. Se prepara push autorizado; todavía 0 llamadas nuevas del cupo 200.

@@ -2,7 +2,7 @@ import hashlib, io, json, re, zipfile, math
 from datetime import datetime, date, timezone
 from openpyxl import load_workbook, Workbook
 from sqlalchemy import select
-from app.models import Supplier, Material, Article, Batch, EvaluationLabel
+from app.models import Supplier, Material, Article, Batch, EvaluationLabel, ImportRow
 from app.settings import settings
 
 LABELS = {"Is_Risk", "Urgent", "Affected_Supplier_IDs", "Event_Type", "Explanation"}
@@ -107,6 +107,32 @@ def import_excel(db, data: bytes, filename: str):
     file_hash = hashlib.sha256(data).hexdigest()
     existing = db.scalar(select(Batch).where(Batch.file_hash == file_hash))
     if existing:
+        if existing.split == "test" and not existing.export_headers:
+            # Upgrade metadata from an explicitly uploaded, identical original.
+            workbook = load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+            try:
+                rows = table(workbook["News_Test"])
+                existing.export_headers = [str(k) for k in rows[0] if k not in LABELS]
+                articles = {
+                    a.news_id: a
+                    for a in db.scalars(
+                        select(Article).where(Article.batch_id == existing.id)
+                    )
+                }
+                for row in rows:
+                    a = articles[str(row["News_ID"])]
+                    db.merge(
+                        ImportRow(
+                            article_id=a.id,
+                            data={
+                                str(k): iso(v) if isinstance(v, (datetime, date)) else v
+                                for k, v in row.items()
+                                if k not in LABELS
+                            },
+                        )
+                    )
+            finally:
+                workbook.close()
         return existing, {"idempotent": True, "rows": existing.count}
     try:
         with zipfile.ZipFile(io.BytesIO(data)) as z:
@@ -222,6 +248,7 @@ def import_excel(db, data: bytes, filename: str):
         split=SHEETS[name],
         count=len(rows),
         logical_date=max(a["published_date"] for a in normalized),
+        export_headers=[str(k) for k in rows[0] if k not in LABELS],
     )
     db.add(batch)
     db.flush()
@@ -237,6 +264,16 @@ def import_excel(db, data: bytes, filename: str):
         )
         db.add(art)
         db.flush()
+        db.add(
+            ImportRow(
+                article_id=art.id,
+                data={
+                    str(k): iso(v) if isinstance(v, (datetime, date)) else v
+                    for k, v in r.items()
+                    if k not in LABELS
+                },
+            )
+        )
         labels = {k: r[k] for k in LABELS if k in r and r[k] is not None}
         if labels:
             db.add(EvaluationLabel(article_id=art.id, data=labels))
@@ -261,7 +298,18 @@ def export_batch(db, batch_id):
     w = Workbook()
     s = w.active
     s.title = "Resultados"
-    s.append(["News_ID", "Is_Risk", "Urgent", "Affected_Supplier_IDs"])
+    batch = db.get(Batch, batch_id)
+    originals = (
+        batch.export_headers
+        if batch and batch.split == "test" and batch.export_headers
+        else ["News_ID"]
+    )
+    headers = list(
+        dict.fromkeys(
+            [*originals, "News_ID", "Is_Risk", "Urgent", "Affected_Supplier_IDs"]
+        )
+    )
+    s.append(headers)
     for a in articles:
         result = db.scalar(
             select(Analysis)
@@ -277,11 +325,17 @@ def export_batch(db, batch_id):
                 "Exportación bloqueada: quedan filas pendientes o con error"
             )
         r = result.result
+        original = db.get(ImportRow, a.id)
+        values_by_header = {
+            **(original.data if original else {}),
+            "News_ID": a.news_id,
+            "Is_Risk": r["is_risk"],
+            "Urgent": r["urgent"],
+            "Affected_Supplier_IDs": "; ".join(sorted(set(r["affected_supplier_ids"]))),
+        }
         values = [
-            a.news_id,
-            r["is_risk"],
-            r["urgent"],
-            "; ".join(sorted(set(r["affected_supplier_ids"]))),
+            str(values_by_header.get(h) if values_by_header.get(h) is not None else "")
+            for h in headers
         ]
         s.append(values)
         for c in s[s.max_row]:

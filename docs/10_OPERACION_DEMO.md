@@ -47,3 +47,17 @@ La implementación no ejecuta esta limpieza automáticamente ni el agente la eje
 ## Audio
 
 **Activar sonido** requiere un gesto. **Silenciar** bloquea tanto avisos automáticos como **Probar alarma**; para volver a probar, activar de nuevo. El aviso visual se conserva. La prueba del navegador no certifica audibilidad en un dispositivo físico.
+
+## Evaluación y ensayo final: presupuesto nuevo de 200 llamadas
+
+El usuario autoriza hasta 200 llamadas JEV adicionales compartidas entre validación, test, LiveDay y RSS. El presupuesto se reserva transaccionalmente antes de cada intento HTTP, incluye reintentos, persiste al desplegar y cierra su ventana 45 minutos después de la primera llamada. Nunca se renueva automáticamente. El cupo anterior de training y RSS permanece agotado.
+
+Se ejecuta primero validación (10), después test (20) y LiveDay (14), con preguntas/política ya congeladas. El ensayo mide desde la solicitud de análisis hasta recibir el Excel exportable; no extrapola tiempos de RSS. La exportación de test conserva las columnas de entrada y añade las decisiones calculadas, sin copiar etiquetas de evaluación.
+
+Comprobación reproducible desde el workspace autorizado:
+
+```bash
+.venv/bin/python -m scripts.final_rehearsal --start --rss-after
+```
+
+Sin `--start`, el script solo revisa estado. `--rss-after` procesa noticias RSS pendientes al terminar las tres fases, respetando el saldo compartido, la ventana y el cupo diario. No ejecutarlo para crear una nueva autorización. Los resultados completos y métricas están en `reports/private/final-rehearsal.json`; Excel en `.runtime/final/`. Estos directorios no se publican. `GET /api/admin/budgets` y `/api/batches/{id}/execution` requieren presentador y permiten consultar límites, intentos, modelo y uso numérico reportado por la API.

@@ -2,11 +2,18 @@ from app.models import Supplier
 
 
 def make_draft(db, supplier, incident, kind):
+    from app.views import current
+
     s = supplier.data
-    assessments = [h["assessment"] for h in incident.history if "assessment" in h]
-    if not assessments or assessments[-1].get("needs_review"):
+    entry = current(incident)
+    assessment = entry.get("assessment")
+    if not assessment or assessment.get("needs_review"):
         raise ValueError("Revisa primero las evidencias y los datos del incidente")
-    facts = assessments[-1].get("explanation", "")
+    facts = entry.get("explanation", "").strip()
+    if not facts:
+        raise ValueError("Falta evidencia validada para redactar la consulta")
+    if entry.get("published_date"):
+        facts += f" (Noticia publicada el {entry['published_date']})."
     if kind == "alternate":
         alt = db.get(Supplier, s["alternate_id"]) if s["alternate_id"] else None
         if not alt:

@@ -18,10 +18,10 @@ with psycopg.connect(
     autocommit=True,
 ) as c:
     if not c.execute(
-        "SELECT 1 FROM pg_database WHERE datname='radar_migration_test_v1'"
+        "SELECT 1 FROM pg_database WHERE datname='radar_migration_test_v2'"
     ).fetchone():
-        c.execute("CREATE DATABASE radar_migration_test_v1")
-target = url.set(database="radar_migration_test_v1")
+        c.execute("CREATE DATABASE radar_migration_test_v2")
+target = url.set(database="radar_migration_test_v2")
 env = dict(os.environ)
 env["DATABASE_URL"] = target.render_as_string(hide_password=False)
 subprocess.run(
@@ -35,9 +35,9 @@ print(
     json.dumps(
         {
             "migrations": "passes",
-            "database": "radar_migration_test_v1",
+            "database": "radar_migration_test_v2",
             "tables": len(Base.metadata.tables),
-            "revision": "0003",
+            "revision": "0004",
         }
     )
 )

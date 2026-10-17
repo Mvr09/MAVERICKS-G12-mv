@@ -1,17 +1,17 @@
 {
   "url": "https://mavericks-g12-mv-production.up.railway.app",
-  "checked_at": "2026-10-17T20:56:31.649971+00:00",
-  "revision": "8477e5b5411e892b2436923fbc195e821859c904",
+  "checked_at": "2026-10-17T20:58:35.191536+00:00",
+  "revision": "e9e0213af2d8a0bc6a1827e8403cabd6a5a7b395",
   "worker": {
     "online": true,
-    "last_seen_at": "2026-10-17T20:56:02.920518+00:00"
+    "last_seen_at": "2026-10-17T20:58:05.122026+00:00"
   },
   "sources": [
     {
       "id": "biopharma_dive",
       "status": "unchanged",
-      "last_attempt_at": "2026-10-17T20:51:44.450165+00:00",
-      "last_success_at": "2026-10-17T20:51:44.586637+00:00",
+      "last_attempt_at": "2026-10-17T20:56:45.448121+00:00",
+      "last_success_at": "2026-10-17T20:56:45.508513+00:00",
       "http_status": 304,
       "received_count": 4,
       "duplicates": 0,
@@ -21,19 +21,19 @@
     {
       "id": "el_pais",
       "status": "ok",
-      "last_attempt_at": "2026-10-17T20:51:44.693641+00:00",
-      "last_success_at": "2026-10-17T20:51:44.834352+00:00",
+      "last_attempt_at": "2026-10-17T20:56:44.841648+00:00",
+      "last_success_at": "2026-10-17T20:56:44.954158+00:00",
       "http_status": 200,
-      "received_count": 20,
-      "duplicates": 10,
+      "received_count": 30,
+      "duplicates": 20,
       "error": null,
       "job_state": "done"
     },
     {
       "id": "ema",
       "status": "unchanged",
-      "last_attempt_at": "2026-10-17T20:51:44.449071+00:00",
-      "last_success_at": "2026-10-17T20:51:44.581801+00:00",
+      "last_attempt_at": "2026-10-17T20:56:44.929736+00:00",
+      "last_success_at": "2026-10-17T20:56:44.980512+00:00",
       "http_status": 304,
       "received_count": 1,
       "duplicates": 0,
@@ -42,20 +42,20 @@
     },
     {
       "id": "gdacs",
-      "status": "unchanged",
-      "last_attempt_at": "2026-10-17T20:51:44.700453+00:00",
-      "last_success_at": "2026-10-17T20:51:45.225400+00:00",
-      "http_status": 304,
-      "received_count": 10,
-      "duplicates": 0,
+      "status": "ok",
+      "last_attempt_at": "2026-10-17T20:56:44.891553+00:00",
+      "last_success_at": "2026-10-17T20:56:48.174836+00:00",
+      "http_status": 200,
+      "received_count": 20,
+      "duplicates": 10,
       "error": null,
       "job_state": "done"
     },
     {
       "id": "supply_chain_dive",
       "status": "unchanged",
-      "last_attempt_at": "2026-10-17T20:51:44.449569+00:00",
-      "last_success_at": "2026-10-17T20:51:44.603497+00:00",
+      "last_attempt_at": "2026-10-17T20:56:45.466797+00:00",
+      "last_success_at": "2026-10-17T20:56:45.535295+00:00",
       "http_status": 304,
       "received_count": 3,
       "duplicates": 0,
@@ -65,11 +65,11 @@
     {
       "id": "the_loadstar",
       "status": "ok",
-      "last_attempt_at": "2026-10-17T20:51:44.448520+00:00",
-      "last_success_at": "2026-10-17T20:51:44.891663+00:00",
+      "last_attempt_at": "2026-10-17T20:56:44.862035+00:00",
+      "last_success_at": "2026-10-17T20:56:45.251587+00:00",
       "http_status": 200,
-      "received_count": 18,
-      "duplicates": 9,
+      "received_count": 27,
+      "duplicates": 18,
       "error": null,
       "job_state": "done"
     }

@@ -1,4 +1,4 @@
-import time, threading, logging
+import time, threading, logging, os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 from uuid import uuid4
@@ -14,7 +14,13 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s
 
 def pulse(worker_id):
     with Session() as db:
-        db.merge(WorkerPresence(id=worker_id, heartbeat=now()))
+        db.merge(
+            WorkerPresence(
+                id=worker_id,
+                heartbeat=now(),
+                revision=os.environ.get("RAILWAY_GIT_COMMIT_SHA") or "local",
+            )
+        )
         db.commit()
 
 
@@ -86,7 +92,7 @@ def main():
                 revision = db.execute(
                     text("select version_num from alembic_version")
                 ).scalar_one()
-                if revision == "0003":
+                if revision == "0004":
                     break
         except Exception:
             pass
