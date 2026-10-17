@@ -42,6 +42,7 @@ export interface Analysis {
   review_reasons: string[];
 }
 export interface Article {
+  generation?: number;
   split?: string;
   id: string;
   headline: string;

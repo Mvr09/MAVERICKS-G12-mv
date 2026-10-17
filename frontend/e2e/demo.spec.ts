@@ -204,4 +204,138 @@ test("contraste triple muestra desacuerdo sin retirar revisión (mocks identific
       "El análisis vigente, su prioridad, sus alarmas y las exportaciones se conservan.",
     ),
   ).toBeVisible();
+  await expect(
+    page
+      .getByText("Sin riesgo detectado · No urgente", { exact: false })
+      .first(),
+  ).toBeVisible();
+  await expect(page.getByText(/Riesgo [YN]|Urgencia [YN]/)).toHaveCount(0);
+});
+
+test("reanálisis actualiza el historial abierto sin recargar y usa palabras en las decisiones", async ({
+  page,
+}) => {
+  let phase: "initial" | "pending" | "done" = "initial";
+  const timestamp = new Date().toISOString();
+  const original = {
+    analysis_status: "done",
+    is_risk: "Y",
+    urgent: "N",
+    affected_supplier_ids: ["S032"],
+    event_type: "fire_incident",
+    evidence: [],
+    review_reasons: [],
+    model_id: "MOCK",
+    assessments: [
+      {
+        supplier_id: "S032",
+        p_link: 0.98,
+        is_risk: "Y",
+        urgent: "N",
+        priority: 72,
+        needs_review: false,
+        review_reasons: [],
+        evidence_ids: [],
+      },
+    ],
+  };
+  const updated = {
+    ...original,
+    urgent: "Y",
+    assessments: [{ ...original.assessments[0], urgent: "Y" }],
+  };
+  await page.route("**/api/session", (r) =>
+    r.fulfill({ json: { presenter: true, csrf: "MOCK-CSRF" } }),
+  );
+  await page.route("**/api/articles/MOCK-AUTO", (r) =>
+    r.fulfill({
+      json: {
+        id: "MOCK-AUTO",
+        split: "training",
+        headline: "MOCK reanálisis automático",
+        summary: "MOCK evidencia",
+        source: "MOCK",
+        published_date: timestamp,
+        version: 1,
+        cached: false,
+        generation: phase === "initial" ? 0 : 1,
+        state: phase === "pending" ? "pending" : "done",
+        analysis:
+          phase === "pending" ? null : phase === "done" ? updated : original,
+      },
+    }),
+  );
+  await page.route("**/api/articles/MOCK-AUTO/runs", (r) =>
+    r.fulfill({
+      json: [
+        ...(phase === "done"
+          ? [{ generation: 1, created_at: timestamp, result: updated }]
+          : []),
+        { generation: 0, created_at: timestamp, result: original },
+      ],
+    }),
+  );
+  await page.route("**/api/demo/options", (r) => r.fulfill({ json: [] }));
+  await page.route("**/api/demo/preview", (r) =>
+    r.fulfill({
+      json: {
+        mode: "rerun",
+        token: "MOCK-SIGNED",
+        blocked: null,
+        maximum_requests: 6,
+        counts: {
+          batches: 0,
+          articles: 1,
+          analyses: 1,
+          incidents: 0,
+          alerts: 0,
+          drafts: 0,
+        },
+      },
+    }),
+  );
+  await page.route("**/api/demo/cleanup", (r) => {
+    phase = "pending";
+    return r.fulfill({
+      json: { deleted: { mode: "rerun", job_ids: ["MOCK-JOB"] } },
+    });
+  });
+  await page.goto("/noticias/MOCK-AUTO");
+  await expect(page.locator(".assessment")).toContainText(
+    "Riesgo detectado · No urgente",
+  );
+  await page.getByText("Historial de análisis", { exact: true }).click();
+  const history = page.locator("details.comparison-panel");
+  await history.getByText(/Análisis 1 ·/).click();
+  const oldEntry = history
+    .locator("details")
+    .filter({ has: page.getByText(/Análisis 1 ·/) });
+  await expect(oldEntry).toHaveAttribute("open", "");
+  await page
+    .getByRole("button", { name: "Reanalizar noticia", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Revisar alcance", exact: true })
+    .click();
+  await page.getByLabel("Escribe REANALIZAR para confirmar").fill("REANALIZAR");
+  await page
+    .getByRole("button", { name: "Encolar nuevo análisis", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(
+    page.getByText(
+      "Análisis pendiente. No se ha emitido una decisión de riesgo.",
+    ),
+  ).toBeVisible();
+  phase = "done";
+  await expect(history.getByText(/Análisis 2 ·/)).toBeVisible({
+    timeout: 10000,
+  });
+  await expect(oldEntry).toHaveAttribute("open", "");
+  await history.getByText(/Análisis 2 ·/).click();
+  await expect(history).toContainText("Riesgo detectado · Urgente");
+  await expect(page.locator(".assessment")).toContainText(
+    "Riesgo detectado · Urgente",
+  );
+  await expect(page.getByText(/Riesgo [YN]|Urgencia [YN]/)).toHaveCount(0);
 });

@@ -116,6 +116,18 @@ Object.assign(names, {
   event_state_confidence_low: "Estado del evento incierto",
 });
 const label = (s: string) => names[s] || s;
+const riskLabel = (value?: string | null) =>
+  value === "Y"
+    ? "Riesgo detectado"
+    : value === "N"
+      ? "Sin riesgo detectado"
+      : "Riesgo sin determinar";
+const urgencyLabel = (value?: string | null) =>
+  value === "Y"
+    ? "Urgente"
+    : value === "N"
+      ? "No urgente"
+      : "Urgencia sin determinar";
 const reviewLabel = (s: string) => {
   const [key, id] = s.split(":");
   return (names[key] || "Revisar decisión del motor") + (id ? " · " + id : "");
@@ -1431,8 +1443,8 @@ function ArticleDetail({ context, presenter, action }: any) {
               <Link to={"/proveedores/" + s.supplier_id}>{s.supplier_id}</Link>
               <Score value={s.priority} />
               <span>
-                Vínculo {number(s.p_link * 100)}% · Riesgo {s.is_risk} ·
-                Urgencia {s.urgent}
+                Vínculo {number(s.p_link * 100)}% · {riskLabel(s.is_risk)} ·{" "}
+                {urgencyLabel(s.urgent)}
               </span>
               {s.needs_review && (
                 <Badge tone="warning">Requiere revisión</Badge>
@@ -2898,8 +2910,8 @@ function ComparisonControl({ article }: { article: Article }) {
                 <strong>
                   Evaluación {index + 1}: {label(b.analysis_status)}
                 </strong>{" "}
-                · Riesgo {b.is_risk ?? "Sin decisión"} · Urgencia{" "}
-                {b.urgent ?? "Sin decisión"} · Proveedores{" "}
+                · {riskLabel(b.is_risk)} · {urgencyLabel(b.urgent)} ·
+                Proveedores{" "}
                 {b.affected_supplier_ids.join(", ") || "sin vínculo"} ·{" "}
                 {label(b.event_type || "other")}
                 {b.error && <p className="error-text">{b.error}</p>}
@@ -2982,20 +2994,38 @@ function ComparisonControl({ article }: { article: Article }) {
 
 function AnalysisHistory({ article }: { article: Article }) {
   const [rows, setRows] = useState<any[]>([]),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [open, setOpen] = useState(false),
+    [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    let active = true;
+    setLoading(true);
+    setError("");
+    api("/articles/" + article.id + "/runs")
+      .then((values) => {
+        if (active) setRows(values);
+      })
+      .catch((e) => {
+        if (active) setError(e.message);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [open, article.id, article.generation, article.state]);
   return (
     <details
       className="comparison-panel"
-      onToggle={async (e) => {
-        if (!(e.target as HTMLDetailsElement).open) return;
-        try {
-          setRows(await api("/articles/" + article.id + "/runs"));
-        } catch (e) {
-          setError((e as Error).message);
-        }
+      aria-busy={open && loading}
+      onToggle={(e) => {
+        if (e.target === e.currentTarget) setOpen(e.currentTarget.open);
       }}
     >
       <summary>Historial de análisis</summary>
+      {loading && <p role="status">Actualizando historial…</p>}
       {error && <p role="alert">{error}</p>}
       {rows.map((r: any) => (
         <details key={r.generation}>
@@ -3004,8 +3034,8 @@ function AnalysisHistory({ article }: { article: Article }) {
             {label(r.result.analysis_status)}
           </summary>
           <p>
-            Riesgo {r.result.is_risk ?? "Sin decisión"} · Urgencia{" "}
-            {r.result.urgent ?? "Sin decisión"} · Proveedores{" "}
+            {riskLabel(r.result.is_risk)} · {urgencyLabel(r.result.urgent)} ·
+            Proveedores{" "}
             {r.result.affected_supplier_ids.join(", ") || "sin vínculo"}
           </p>
           {r.result.evidence.map((e: any) => (

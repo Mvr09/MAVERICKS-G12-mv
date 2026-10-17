@@ -54,9 +54,11 @@ El catálogo solo puede borrarse si también se seleccionan todas las noticias q
 
 Un trabajo en ejecución bloquea la operación. Una vista previa caduca a los 15 minutos o al cambiar los datos; no se ejecuta un borrado parcial. No se borran ni se devuelven consumos: ApiCall, caché, contadores y registro diario RSS sobreviven al borrado/recarga.
 
-**Reanalizar** conserva la noticia y archiva la generación anterior de resultados. Crea un trabajo nuevo con consultas JEV nuevas, sin reiniciar los intentos antiguos. Los reintentos y la caché quedan separados por generación; reclamar el mismo trabajo no duplica consultas. Hasta finalizar, la exportación del lote queda pendiente. **Historial de análisis** en la noticia permite consultar versiones previas; las exportaciones y el ranking usan únicamente la generación vigente. No utilizar reanálisis para ajustar preguntas o reglas a respuestas retenidas.
+**Reanalizar** conserva la noticia y archiva la generación anterior de resultados. Crea un trabajo nuevo con consultas JEV nuevas, sin reiniciar los intentos antiguos. Los reintentos y la caché quedan separados por generación; reclamar el mismo trabajo no duplica consultas. Hasta finalizar, la exportación del lote queda pendiente. **Historial de análisis** en la noticia permite consultar versiones previas y, si está abierto, se actualiza automáticamente al cambiar la generación o terminar el análisis, sin recargar la página; las exportaciones y el ranking usan únicamente la generación vigente. No utilizar reanálisis para ajustar preguntas o reglas a respuestas retenidas.
 
 La implementación no borra datos ni reanaliza lotes automáticamente como parte del despliegue.
+
+La ficha, el historial y los votos presentan decisiones con palabras: **Riesgo detectado / Sin riesgo detectado** y **Urgente / No urgente**. Una decisión ausente se muestra como **sin determinar**.
 
 ## Contraste RSS con tres evaluaciones JEV
 
