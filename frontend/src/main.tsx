@@ -1549,7 +1549,8 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     <small>{date(i.event_date)}</small>
                   </div>
                   <h4>
-                    {i.history.findLast((h) => h.headline)?.headline ||
+                    {i.current_headline ||
+                      i.history.findLast((h) => h.headline)?.headline ||
                       label(i.event_type)}
                   </h4>
                   {i.history

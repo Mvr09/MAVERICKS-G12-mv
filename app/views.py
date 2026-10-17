@@ -97,6 +97,7 @@ def suppliers_view(db, context="exercise"):
                 "event_date": i.event_date,
                 "revision": i.revision,
                 "history": i.history,
+                "current_headline": current(i).get("headline"),
                 "stale": (
                     now().date().isoformat() > i.event_date[:10]
                     and (now().date() - date.fromisoformat(i.event_date[:10])).days > 7

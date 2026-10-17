@@ -2,7 +2,7 @@
 
 Aplicación en español con React/TypeScript/Vite/Tailwind, FastAPI, SQLAlchemy/Alembic y PostgreSQL. Web y worker comparten imagen; solo la web tiene dominio público. Los datos de Helixa representan una cartera ficticia.
 
-**Estado:** publicado en https://mavericks-g12-mv-production.up.railway.app (commit e9e0213). Web, assets y readiness HTTP 200; esquema 0003, catálogo persistente con 40 proveedores y 20 materiales. Worker conectado, seis RSS consultados desde Railway y 37 noticias recibidas. Lote autorizado completado: 10 artículos en 6,964 s, 10 peticiones JEV; 9 requieren revisión y 27 siguen pendientes. Cupo RSS agotado; inferencia periódica desactivada. Evaluación final, LiveDay en 300 s y audibilidad corregida pendientes. Consulta [PROGRESS.md](PROGRESS.md) y [auditoría](reports/AUDITORIA.md).
+**Estado:** desplegado en https://mavericks-g12-mv-production.up.railway.app, web/worker/PostgreSQL operativos, esquema 0004. Ensayo real: test 20 en 5,763 s y LiveDay 14 + Excel en 5,753 s; 37 RSS procesados. Presupuesto nuevo 100/200 llamadas consumidas, inferencia periódica desactivada. Validación n=10: recall de riesgo 60 %, F1 0,75 y proveedores exactos 8/10. **Aceptación incompleta:** A06 falla en un caso múltiple y A14 requiere ensayo auditivo físico. [Informe de entrega](reports/INFORME_FINAL.md), [auditoría](reports/AUDITORIA.md) y [seguimiento](PROGRESS.md).
 
 ## Arranque local con Docker Compose
 

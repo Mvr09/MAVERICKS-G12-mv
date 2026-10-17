@@ -1,48 +1,39 @@
 # Auditoría A01–A20 · 17-10-2026
 
-Revisión de la aplicación conforme a `prompts/03_AUDITORIA_Y_ENTREGA.md`. Los resultados de mocks no se presentan como exactitud de JEV ni como aceptación de Railway. No se abrió ni buscó el answer key. No se ejecutó inferencia de validación, test o LiveDay.
+Ejecutada conforme a `prompts/03_AUDITORIA_Y_ENTREGA.md` y `docs/07_ACEPTACION_Y_DEMO.md`. Ejecución real final con código **4a3645a**, modelo **jev-1.13.0**, preguntas/política **1.0.0** congeladas. No se abrió el answer key ni se reajustó con resultados retenidos.
 
 | ID | Estado | Evidencia y límite |
 | --- | --- | --- |
-| A01 | pasa | PostgreSQL: 40 Suppliers, 20 Materials, 6 productos; prueba del payload efectivo con 40 preguntas Noul. |
-| A02 | pasa | Importaciones explícitas News/News_Validation/News_Test/News_Feed: 30/10/20/14 filas; hash/idempotencia y diagnósticos probados. Originales intactos. |
-| A03 | pasa | `test_effective_payload_label_isolation_and_multisupplier` inspecciona el cuerpo HTTP enviado al transporte simulado: sin las cinco etiquetas ni centinela. |
-| A04 | no ejecutado | Caso de homónimo cubierto con mock e ingreso por los 40 candidatos; falta evaluación real retenida autorizada. No se afirma precisión semántica. |
-| A05 | no ejecutado | Test integrado positivo conserva ID y fuerza N/N/0 con mock. Pendiente comprobar la clasificación real del conjunto retenido. |
-| A06 | no ejecutado | Selección múltiple y etapa B agrupada probadas con mocks. La exactitud del alcance regional real requiere evaluación autorizada. |
-| A07 | pasa | Prueba integrada de duplicado y evento distinto: historial compartido, dos incidentes cuando corresponde y ranking por máximo. Agrupación conservadora; ambiguos a revisión. |
-| A08 | pasa | Recuperación compatible posterior cierra solo su incidente, retiene máximo histórico y una noticia anterior recibida tarde no lo reabre (integración con mock). |
-| A09 | pasa | Null físico → revisión; servicio no aplicable omite buffer; cero real → presión máxima. Pruebas propias y de referencia. |
-| A10 | pasa | Motor usa `reference/scoring.py`, política 1.0.0 y redondeo half-up; 16 tests de referencia y pruebas de integración. Confianza separada de gravedad. |
-| A11 | pasa | Seis fuentes consultadas realmente desde Railway (200/304); 37 artículos. Lote RSS JEV autorizado: 10 procesados, 10 peticiones, modelo jev-1.13.0, 6,964 s; 9 revisión y 27 pendientes. Evidencia rss-railway-execution.json. No se atribuye precisión retenida. |
-| A12 | pasa | RSS repetido, edición del mismo GUID, versiones, 304 y XML peligroso probados con transporte simulado; nunca se fabrican artículos en el flujo real. |
-| A13 | pasa | Mocks 400/401/422: un intento y error/null; 429/529/503: hasta tres intentos; contrato/distribuciones/modelo incorrectos rechazados; exportación bloqueada ante error. |
-| A14 | no ejecutado | E2E pasa gesto, prueba, historial silencioso, una emisión, cooldown 30 s, foco, mute, título y bloqueo. Falta audibilidad en dispositivo físico. |
-| A15 | pasa | E2E con mocks identificados: consulta al alternativo, edición, guardado, copia y TXT. Texto declara stock sin confirmar y no constituye pedido. Sin integración externa de envío. |
-| A16 | no ejecutado | Exportación XLSX sintética probada: una fila por entrada, IDs ordenados con `; `, tipos texto y bloqueo por error; falta exportación de test/LiveDay con inferencia final autorizada. |
-| A17 | pasa | Redeploy real e9e0213: conserva 40 proveedores, 37 artículos RSS y 10 resultados; worker online, cupo RSS sigue agotado 10/10 y diez peticiones totales. Claim concurrente y lease vencida probados en PostgreSQL aislado. Evidencia rss-persistence-after-redeploy.json. |
-| A18 | pasa | Lectura pública, CSRF, permisos y bloqueo de originales/secretos probados localmente; empaquetado permite solo archivos revisados. HTTPS real, /readyz, catálogo, fuentes y assets HTTP 200; autenticación real de presentador 200, sesión cerrada al terminar el ensayo. |
-| A19 | pasa | Chrome/Playwright, emulación 360/390/768/1440 px; sin overflow, filtros con teclado y foco de diálogo. Capturas en reports. Pendiente móvil físico; no se presenta emulación como dispositivo real. |
-| A20 | no ejecutado | LiveDay sin inferencia. No hay tiempo medido del lote de 14 en Railway. Los 1,476 s de la comprobación de tres artículos no se extrapolan. |
+| A01 | pasa | 40 proveedores, 20 materiales y seis productos; los 40 candidatos Noul verificados en el payload efectivo. |
+| A02 | pasa | Cuatro esquemas importados idempotentemente; validación 10, test 20 y LiveDay 14 cargados en Railway sin editar originales. |
+| A03 | pasa | Test inspecciona el cuerpo HTTP real del adaptador con transporte mock: excluye las cinco etiquetas y centinela; filas de origen y etiquetas en tablas privadas separadas. |
+| A04 | pasa | Caso retenido negativo con solapamiento de nombre: 1/1 sin vínculo ni riesgo/urgencia; tres negativos sin vínculo correctos. Mock confirma que no existe atajo por keyword. Muestra pequeña, sin generalizar precisión. |
+| A05 | pasa | Dos noticias positivas de validación conservan exactamente los proveedores y N/N; también cubierto por integración mock. |
+| A06 | falla | Dos casos retenidos con múltiples proveedores: solo 1/2 conjuntos exactos. El pipeline admite selección múltiple pero falla cobertura en un caso real. No se ajusta con validación/test/LiveDay. |
+| A07 | pasa | Integración: duplicados no suman score, eventos distintos separados y máximo por proveedor. RSS repetido real conserva 37 artículos sin duplicar análisis por sondeo. |
+| A08 | pasa | Integración con mocks: recuperación compatible posterior cierra solo su incidente; noticia antigua tardía no lo reabre; historial conservado. Resolución manual desactiva sonido asociado. |
+| A09 | pasa | Pruebas: físico desconocido lleva a revisión, servicio no aplicable no se vuelve cero y cero físico conserva su significado. |
+| A10 | pasa | 16 tests de referencia y suite propia; política 1.0.0 congelada, score 0–100, single source una sola vez y confianza independiente de gravedad. |
+| A11 | pasa | Seis feeds consultados desde Railway, HTTP 200/304 y errores visibles. 37 noticias analizadas con jev-1.13.0: 23 revisión, 14 completadas; no fixtures. |
+| A12 | pasa | Mocks RSS/Atom: 304, duplicado, edición de GUID, versiones y XML peligroso. Sondeo real repetido conserva contador/deduplicación y fecha correcta. |
+| A13 | pasa | Mocks 401/429/529 y límites; caso real detuvo validación, bloqueó exportación y exigió diagnóstico. Adaptador alineado con SDK oficial, sin alterar Score ni política. Reintentos/errores conservados dentro de 100/200 llamadas. |
+| A14 | no ejecutado | Lógica E2E pasa gesto, historial silencioso, emisión única, cooldown, foco, mute y bloqueo. Usuario confirmó tono previo; faltan dispositivo/navegador y audibilidad de la versión corregida. No se atribuye sonido físico a Playwright. |
+| A15 | pasa | Railway sin mocks: consulta al alternativo con fragmento validado, edición/guardado, copia y TXT sin envío ni stock inventado. Proveedor directo cubierto con integración. |
+| A16 | pasa | Exportaciones reales val/test/LiveDay: 10/20/14 filas, IDs únicos y orden original, Y/N e IDs ordenados separados por ; . Test conserva columnas de entrada. RSS/fixtures/etiquetas excluidos; errores bloquearon antes de resolver. |
+| A17 | pasa | Redeploy real anterior conserva catálogo/RSS/cupo; claim concurrente y recuperación de leases probados en PostgreSQL. Se comprobará también conservación final de 44 resultados y 100 peticiones tras el último push. |
+| A18 | pasa | HTTPS real y lectura pública; autenticación real, endpoint privado 401 tras logout, CSRF/origen y originales/secretos bloqueados. Bundle/paquete revisados sin secretos. |
+| A19 | pasa | Navegador real sin mocks: 360/390/768/1440 px sin overflow ni errores JS; teclado/diálogo en E2E. Emulación no equivale a móvil físico, omitido por el usuario. |
+| A20 | pasa | LiveDay 14 artículos y Excel recibido en **5,753 s** medidos en Railway desde solicitud de análisis. Incluye cola, inferencia y descarga; no es extrapolación ni replay cacheado. |
 
-## Pruebas realizadas
+## Pruebas
 
-- 51 pruebas propias unitarias/integración sobre PostgreSQL dedicado `radar_test`, con mocks identificados.
-- 16 tests de referencia, sin llamadas externas.
-- 13 E2E sobre servidor separado con banner de mocks: catálogo/ficha en cuatro anchuras, teclado, borradores/carga/exportación y lógica de audio.
-- Build TypeScript/Vite correcto; dependencias frontend fijadas y última instalación sin vulnerabilidades reportadas por npm.
-- JEV autenticado local: N001/N002/N005; cuatro HTTP 200, cero reintentos, modelo devuelto `jev-1.13.0`. Solo se registra metadato de ejecución, no respuestas protegidas.
-- RSS real local: seis HTTP 200; estados/fallos aislados, últimas consultas y artículos pendientes persistidos. No se acredita disponibilidad desde Railway.
-- Migraciones desde una base independiente nueva, sesión tras reinicio real y worker sin consumo de JEV adicional.
+- **62 pruebas propias** backend/runner pasan; **16 referencia** pasan; **13 E2E con mocks identificados** pasan. Una advertencia de deprecación Anyio externa.
+- Build TS/Vite pasa. Migración 0004 desde base nueva y predeploy completo pasan (20 tablas). Build de imagen realizado por Railway; Docker local no disponible.
+- UI real y borrador: `reports/final-ui-real.json`. Capturas reales final-railway-390/1440.
+- Ejecución pública agregada: `reports/final-execution-summary.json` e `INFORME_FINAL.md`. Resultados detallados y Excel en reports/private y .runtime/final, excluidos de Git y del frontend.
+- Validación n=10: riesgo precisión 1,00, recall 0,60, F1 0,75; urgencia precisión/recall/F1 1,00 (2 positivos); proveedores conjuntos exactos 8/10. Dos falsos negativos de riesgo; 8/10 en revisión. No hay métricas inventadas de test/LiveDay.
+- Presupuesto nuevo usado **100/200** (71 ejercicio, 29 RSS); incluye los fallos/reintentos. Se mantienen los cupos anteriores agotados. Inferencia periódica RSS false. Una respuesta fallida inicial no conservó uso de tokens; no se estima ese dato ni coste.
 
-## Pendientes bloqueantes para aceptación completa
+## Resultado
 
-Grants concretos para evaluación y fase final; RSS manual 10/60 autorizado y ya ejecutado; lote LiveDay completo medido ≤300 s; audibilidad y uso en dispositivo real. No se declara aceptación completa.
-
-## Ampliación operativa
-
-Materiales y progreso RSS comprobados con mocks de navegador; nueva presencia de worker y migración 0003. Limpieza de Entrenamiento/LiveDay probada solo en base aislada, con conservación de cartera/RSS/evaluación y consumo; bloquea operaciones en curso, incidentes compartidos y confirmaciones obsoletas. La limpieza no se ejecuta en Railway. Autorización RSS adicional: 10 artículos y 60 peticiones como máximo; análisis periódico false. Los resultados externos de este lote se documentarán por separado cuando se ejecuten.
-
-### RSS real desde Railway
-
-Worker online y seis fuentes consultadas. Diez artículos procesados con jev-1.13.0 en 6,964 s, diez peticiones nuevas, sin caché ni reintentos. Nueve requieren revisión, uno completado; no es una métrica de precisión ni el lote LiveDay. Cupo RSS 10/10 agotado e inferencia periódica false. UI pública sin mocks comprobada con filtro de revisión y fuente, sin errores de página. reports/rss-railway-execution.json y railway-rss-ui-real.json.
+**18 pasa, 1 falla (A06), 1 no ejecutado (A14). No hay aceptación completa.** La mejora de matching debe desarrollarse con entrenamiento y evaluarse sin ajustar sobre las respuestas retenidas ya obtenidas. La prueba auditiva requiere colaboración del usuario y no puede certificarse con un navegador automatizado.

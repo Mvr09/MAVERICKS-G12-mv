@@ -25,6 +25,7 @@ parser.add_argument(
 args = parser.parse_args()
 path = Path("reports/rss-railway-execution.json")
 report = json.loads(path.read_text()) if path.exists() else {"url": BASE}
+was_finished = bool(report.get("execution_finished_at"))
 report["checked_at"] = datetime.now(timezone.utc).isoformat()
 report.pop("check_error", None)
 
@@ -131,7 +132,12 @@ try:
             articles = read(client, "/api/articles?context=rss")
             report["article_states"] = dict(Counter(a["state"] for a in articles))
             report["total_rss_articles"] = len(articles)
-            report["processed_articles"] = [
+            scope_ids = {
+                j.get("article_id")
+                for j in report.get("jobs", [])
+                if j.get("article_id")
+            }
+            processed = [
                 {
                     "id": a["id"],
                     "source": a["source"],
@@ -147,14 +153,27 @@ try:
                     "cache_stages": a.get("cache_stages"),
                 }
                 for a in articles
-                if a.get("analysis")
+                if a.get("analysis") and (not scope_ids or a["id"] in scope_ids)
             ]
-            report["budget_after"] = read(client, "/api/analysis/budget")
+            if not was_finished or not report.get("processed_articles"):
+                report["processed_articles"] = processed
+            latest_budget = read(client, "/api/analysis/budget")
+            report["latest_budget_observation"] = latest_budget
+            if not was_finished:
+                report["budget_after"] = latest_budget
             if "budget_before" in report:
-                report["new_network_requests"] = (
-                    report["budget_after"]["network_requests"]
-                    - report["budget_before"]["network_requests"]
-                )
+                scoped = report.get("jobs", [])
+                if scoped and all(
+                    j.get("network_requests") is not None for j in scoped
+                ):
+                    report["new_network_requests"] = sum(
+                        j["network_requests"] for j in scoped
+                    )
+                elif not was_finished:
+                    report["new_network_requests"] = (
+                        report["budget_after"]["network_requests"]
+                        - report["budget_before"]["network_requests"]
+                    )
                 report["within_authorized_limit"] = (
                     report["new_network_requests"] <= 60
                     and report.get("articles_queued", 0) <= 10

@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-10-17T21:33:57.991Z",
+  "mocked": false,
+  "viewport_checks": [
+    {
+      "width": 360,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 768,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "horizontal_overflow": false
+    }
+  ],
+  "draft": {
+    "created": true,
+    "kind": "alternate",
+    "validated_fragment": true,
+    "edited_and_saved": true,
+    "txt_download": true,
+    "copied": true,
+    "external_send": false
+  },
+  "private_budget_without_session_http": 401,
+  "page_errors": []
+}

@@ -59,6 +59,7 @@ export interface Article {
   news_id: string;
 }
 export interface Incident {
+  current_headline?: string;
   id: string;
   state: string;
   priority: number;

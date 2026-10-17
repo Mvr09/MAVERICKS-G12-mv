@@ -425,6 +425,14 @@ def job(jid: str, db: Session = Depends(get_db)):
         "heartbeat": j.heartbeat,
         "error": j.error,
         "source_id": j.payload.get("source_id"),
+        "article_id": j.payload.get("article_id"),
+        "network_requests": db.scalar(
+            select(func.count())
+            .select_from(ApiCall)
+            .where(ApiCall.article_id == j.payload["article_id"])
+        )
+        if j.kind == "analysis" and j.payload.get("article_id")
+        else None,
     }
 
 

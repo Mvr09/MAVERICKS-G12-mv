@@ -1,0 +1,113 @@
+{
+  "executed_at": "2026-10-17T21:28:25.435504+00:00",
+  "execution_revision": "4a3645ae1a51084f2134762f41c0210efbe48668",
+  "question_version": "1.0.0",
+  "policy_version": "1.0.0",
+  "phases": {
+    "validation": {
+      "articles": 10,
+      "elapsed_to_export_seconds": 670.043,
+      "registered_requests": 18,
+      "within_300_seconds": null,
+      "export_checks": {
+        "rows": 10,
+        "ids_unique": true,
+        "order_preserved": true,
+        "required_columns": true,
+        "original_columns_preserved": false,
+        "rss_excluded": true
+      }
+    },
+    "test": {
+      "articles": 20,
+      "elapsed_to_export_seconds": 5.763,
+      "registered_requests": 30,
+      "within_300_seconds": null,
+      "export_checks": {
+        "rows": 20,
+        "ids_unique": true,
+        "order_preserved": true,
+        "required_columns": true,
+        "original_columns_preserved": true,
+        "rss_excluded": true
+      }
+    },
+    "liveday": {
+      "articles": 14,
+      "elapsed_to_export_seconds": 5.753,
+      "registered_requests": 23,
+      "within_300_seconds": true,
+      "export_checks": {
+        "rows": 14,
+        "ids_unique": true,
+        "order_preserved": true,
+        "required_columns": true,
+        "original_columns_preserved": false,
+        "rss_excluded": true
+      }
+    }
+  },
+  "validation_metrics": {
+    "split": "validation",
+    "n": 10,
+    "risk": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 2,
+      "tn": 5,
+      "precision": 1.0,
+      "recall": 0.6,
+      "f1": 0.7499999999999999,
+      "n": 10
+    },
+    "urgent": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "tn": 8,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n": 10
+    },
+    "suppliers": {
+      "exact": 8,
+      "n": 10,
+      "precision": 1.0,
+      "recall": 0.7,
+      "exact_set_accuracy": 0.8,
+      "tp": 7,
+      "fp": 0,
+      "fn": 3,
+      "f1": 0.8235294117647058
+    },
+    "review_count": 8,
+    "question_version": "1.0.0"
+  },
+  "shared_budget": {
+    "id": "demo-final-200-20261017",
+    "request_limit": 200,
+    "requests_used": 100,
+    "remaining_requests": 100,
+    "started_at": "2026-10-17T21:16:52.203758+00:00",
+    "closes_at": "2026-10-17T22:01:52.203758+00:00"
+  },
+  "rss_states": {
+    "review": 23,
+    "done": 14
+  },
+  "limitations": [
+    "La validación incluye pausa y reintentos de diagnóstico de contrato; no se reajustaron preguntas ni política.",
+    "Dos riesgos no detectados de cinco positivos en validación; muestra total 10.",
+    "Un caso multproveedor retenido no se vinculó completamente (1/2 conjuntos exactos).",
+    "Audibilidad en dispositivo real pendiente de navegador/dispositivo/resultados.",
+    "Móvil físico omitido por el usuario; emulación comprobada."
+  ],
+  "usage": {
+    "exercise_requests": 71,
+    "with_input_token_usage": 70,
+    "input_tokens_reported": 565556,
+    "output_tokens_reported": 51686,
+    "note": "Una respuesta fallida anterior al diagnóstico no conservó uso; no se estima ese dato ni el coste."
+  }
+}

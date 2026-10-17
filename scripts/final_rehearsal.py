@@ -145,6 +145,11 @@ try:
         )
         client.headers["X-CSRF-Token"] = response.json()["csrf"]
         try:
+            report.setdefault(
+                "execution_revision",
+                report.get("revision")
+                or checked(client.get("/healthz")).json()["revision"],
+            )
             report["budget_before"] = report.get("budget_before") or budget(client)
             if report["budget_before"]["request_limit"] != 200:
                 raise RuntimeError("BUDGET_LIMIT_MISMATCH")
@@ -322,6 +327,7 @@ try:
             if report["budget_after"]["requests_used"] > 200:
                 raise RuntimeError("BUDGET_INVARIANT_VIOLATION")
             report["revision"] = checked(client.get("/healthz")).json()["revision"]
+            report["verified_revision"] = report["revision"]
             save()
             emit(
                 {
