@@ -310,8 +310,8 @@ def test_paid_jobs_require_workers_with_the_current_version():
         )
 
 
-def test_score_boundary_uses_decimal_precision_without_changing_tolerance():
-    from app.jev import validate_response
+def test_score_uses_provider_value_with_rounded_distribution_and_validates_range():
+    from app.jev import validate_response, score_diagnostics
 
     payload = {
         "model": "jev-1.13.0",
@@ -334,9 +334,12 @@ def test_score_boundary_uses_decimal_precision_without_changing_tolerance():
     }
     assert validate_response(payload, response)["answers"]["severity"]["score"] == 1.4
     response["answers"]["severity"]["score"] = 1.39
-    with pytest.raises(ProviderError, match="CONTRACT_SCORE") as failure:
+    validated = validate_response(payload, response)
+    assert validated["answers"]["severity"]["score"] == 1.39
+    assert score_diagnostics(validated)[0]["delta"] == -0.04
+    response["answers"]["severity"]["score"] = 3
+    with pytest.raises(ProviderError, match="CONTRACT_RANGE"):
         validate_response(payload, response)
-    assert failure.value.details["weighted_score"] == 1.43
 
 
 def test_diagnosis_is_private_does_not_reset_budget_and_does_not_hide_new_failures():

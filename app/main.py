@@ -436,6 +436,7 @@ class DiagnosticRetry(BaseModel):
     "/api/articles/{aid}/retry", status_code=202, dependencies=[Depends(presenter)]
 )
 def retry_article(aid: str, body: DiagnosticRetry, db: Session = Depends(get_db)):
+    require_current_worker(db)
     a = db.get(Article, aid)
     job = db.scalar(select(Job).where(Job.key == "analysis:" + aid).with_for_update())
     if not a or not job or a.state != "error" or job.state != "error":
@@ -643,6 +644,7 @@ def batch_execution(bid: str, db: Session = Depends(get_db)):
                 "budget_id": c.budget_id,
                 "error": c.usage.get("_error"),
                 "contract_diagnostic": c.usage.get("_contract"),
+                "score_diagnostics": c.usage.get("_score_diagnostics", []),
                 "usage": {
                     k: v
                     for k, v in c.usage.items()

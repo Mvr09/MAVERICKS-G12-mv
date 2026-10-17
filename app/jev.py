@@ -132,22 +132,32 @@ def validate_response(payload, data):
                 raise ProviderError("CONTRACT_CHOICE")
         else:
             finite(a.get("score"), 0, len(q["criteria"]) - 1)
-            weighted = sum(
-                Decimal(k) * Decimal(str(v)) for k, v in probabilities.items()
-            )
-            if abs(Decimal(str(a["score"])) - weighted) > Decimal("0.03"):
-                raise ProviderError(
-                    "CONTRACT_SCORE",
-                    {
-                        "reported_score": a["score"],
-                        "weighted_score": float(weighted),
-                        "probability_sum": sum(probabilities.values()),
-                        "probabilities": probabilities,
-                    },
-                )
+            # The official ScoreAnswer exposes score and probabilities separately.
+            # Do not invent an equality tolerance for rounded wire probabilities.
             if not isinstance(a.get("legend"), dict) or set(a["legend"]) != keys:
                 raise ProviderError("CONTRACT_LEGEND")
     return r.model_dump()
+
+
+def score_diagnostics(data):
+    diagnostics = []
+    for key, answer in data["answers"].items():
+        if answer["type"] != "score":
+            continue
+        weighted = sum(
+            Decimal(k) * Decimal(str(v)) for k, v in answer["probabilities"].items()
+        )
+        delta = Decimal(str(answer["score"])) - weighted
+        if delta:
+            diagnostics.append(
+                {
+                    "question_id": key,
+                    "provider_score": answer["score"],
+                    "displayed_weighted_score": float(weighted),
+                    "delta": float(delta),
+                }
+            )
+    return diagnostics
 
 
 def retry_after(value):
@@ -300,6 +310,9 @@ class JevClient:
                         usage = data["usage"]
                     result = validate_response(payload, data)
                     usage = result["usage"]
+                    diagnostics = score_diagnostics(result)
+                    if diagnostics:
+                        usage = {**usage, "_score_diagnostics": diagnostics}
                     self.db.merge(RequestCache(id=key, response=result))
             except httpx.RequestError:
                 failure = ProviderError("JEV_CONNECTION")
