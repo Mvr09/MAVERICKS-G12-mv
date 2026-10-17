@@ -60,7 +60,7 @@ La implementación no borra datos ni reanaliza lotes automáticamente como parte
 
 ## Contraste RSS con tres evaluaciones JEV
 
-En una noticia RSS ya analizada, el presentador puede pulsar **Contrastar con 3 JEV** y confirmar **Iniciar contraste**. Se encolan tres evaluaciones nuevas del mismo modelo jev-1.13.0, con la política y preguntas existentes, sin reutilizar el resultado del análisis original. Máximo 18 peticiones por contraste incluidos reintentos (hasta seis por evaluación); la segunda etapa se omite si no hay candidatos. Cada voto se guarda antes de continuar y la UI muestra progreso, motivos, decisiones, acuerdo y consumo de ese contraste.
+En una noticia RSS ya analizada, el presentador puede pulsar **Contrastar con 3 JEV** y confirmar **Iniciar contraste**. Se encolan tres evaluaciones nuevas del mismo modelo jev-1.13.0, con la política y preguntas existentes, sin reutilizar el resultado del análisis original. Máximo 18 peticiones por contraste incluidos reintentos (hasta seis por evaluación); la segunda etapa se omite si no hay candidatos. Cada voto se guarda antes de continuar y la UI muestra progreso, motivos, decisiones, acuerdo y consumo de ese contraste. Las consultas nuevas usan el permiso ilimitado vigente; una reserva antigua no evita registrar el consumo ni el cupo del día actual. Al reanalizar una fuente se eligen sus versiones vigentes.
 
 El resultado es **auxiliar**: no altera el análisis vigente, prioridad, alarmas ni exportaciones del reto. Dos votos coincidentes no se convierten en una confianza del 100 %. Los fallos no cuentan como N ni como un voto «sin revisión»; detienen el contraste y exigen diagnóstico cuando corresponde. La revisión por falta de datos, evidencia o ambigüedad sigue visible.
 

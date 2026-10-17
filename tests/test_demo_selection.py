@@ -241,6 +241,10 @@ def test_three_votes_are_fresh_persistent_and_do_not_change_original_or_exports(
         )  # Original + tres consultas nuevas; nunca tres lecturas de caché.
         assert result.summary["review_votes"] == 3 and result.summary["done_votes"] == 0
         assert result.summary["advisory_only"]
+        from app.models import ConsumptionBudget
+
+        assert db.get(ConsumptionBudget, "manual-unlimited-20261017").requests_used == 3
+        assert db.get(GrantArticle, a.id).grant_id == "manual-unlimited-rss-20261017"
         assert a.state == "review" and article_view(db, a)["analysis"] == original
         assert article_view(db, a)["analysis"] == original_view["analysis"]
         assert (
@@ -321,3 +325,21 @@ def test_new_management_endpoints_require_presenter_and_mode_bound_confirmation(
         )
         with Session() as db:
             assert db.get(Batch, bid) is not None
+
+
+def test_previous_day_rss_reservation_cannot_bypass_new_day_limit(monkeypatch):
+    import app.queue as queue
+    from app.settings import RSS
+
+    with Session() as db:
+        seed(db)
+        a = synthetic(db)
+        a.context = "rss"
+        assert reserve(db, a, "rss", manual_rss=True)
+        db.commit()
+        tomorrow = now() + timedelta(days=1)
+        monkeypatch.setattr(queue, "now", lambda: tomorrow)
+        for n in range(RSS["daily_analysis_budget"]):
+            db.add(RssDailyUsage(id=f"MOCK-NEXT-DAY-{n}", reserved_at=tomorrow))
+        db.commit()
+        assert not reserve(db, a, "rss", manual_rss=True)

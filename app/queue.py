@@ -34,19 +34,11 @@ def enqueue(db, key, kind, payload, priority=10):
     return job
 
 
-def reserve(db, article, split, manual_rss=False):
+def reserve(db, article, split, manual_rss=False, fresh=False):
     db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     if split == "rss" and not settings.rss_analysis_enabled and not manual_rss:
         return False
     existing = db.get(GrantArticle, article.id)
-    if existing:
-        old_grant = db.get(Grant, existing.grant_id)
-        if (
-            old_grant
-            and (not old_grant.expires_at or old_grant.expires_at > now())
-            and (not old_grant.budget_id or budget_available(db, old_grant.budget_id))
-        ):
-            return True
     daily_key = None
     if split == "rss":
         from app.importer import digest
@@ -68,6 +60,17 @@ def reserve(db, article, split, manual_rss=False):
             and daily >= RSS["daily_analysis_budget"]
         ):
             return False
+    if existing and not fresh:
+        old_grant = db.get(Grant, existing.grant_id)
+        if (
+            old_grant
+            and (not old_grant.expires_at or old_grant.expires_at > now())
+            and (not old_grant.budget_id or budget_available(db, old_grant.budget_id))
+        ):
+            if daily_key and not db.get(RssDailyUsage, daily_key):
+                db.add(RssDailyUsage(id=daily_key))
+                db.flush()
+            return True
     grants = db.scalars(
         select(Grant)
         .where(
@@ -75,7 +78,7 @@ def reserve(db, article, split, manual_rss=False):
             or_(Grant.article_limit == None, Grant.used < Grant.article_limit),
             or_(Grant.expires_at == None, Grant.expires_at > now()),
         )
-        .order_by(Grant.id)
+        .order_by(Grant.article_limit.is_not(None) if fresh else Grant.id, Grant.id)
         .with_for_update()
     ).all()
     grants = [g for g in grants if not g.budget_id or budget_available(db, g.budget_id)]

@@ -66,7 +66,7 @@ def enqueue_comparison(db, aid):
     old = db.get(GrantArticle, aid)
     if old and grant_requires_diagnosis(db, old.grant_id):
         raise ValueError("El proveedor requiere diagnóstico antes de otra consulta.")
-    if not reserve(db, article, "rss", manual_rss=True):
+    if not reserve(db, article, "rss", manual_rss=True, fresh=True):
         raise ValueError("Sin autorización de consumo disponible.")
     comparison = Comparison(article_id=aid)
     db.add(comparison)

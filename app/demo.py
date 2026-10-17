@@ -100,6 +100,15 @@ def scope(db, selection=None, mode="delete"):
         or a.id in individual
         or (a.context == "rss" and a.source_id in sources)
     ]
+    if mode == "rerun":
+        latest = {}
+        for a in all_articles:
+            latest[a.origin_key] = max(latest.get(a.origin_key, 0), a.version)
+        articles = [
+            a
+            for a in articles
+            if a.version == latest[a.origin_key] and a.state != "superseded"
+        ]
     aids = {a.id for a in articles}
     jobs = [
         j
@@ -306,7 +315,7 @@ def cleanup(db, token):
             if old and grant_requires_diagnosis(db, old.grant_id):
                 raise ValueError("Hay un error de proveedor pendiente de diagnóstico.")
             split = db.get(Batch, a.batch_id).split if a.batch_id else "rss"
-            if not reserve(db, a, split, manual_rss=True):
+            if not reserve(db, a, split, manual_rss=True, fresh=True):
                 raise ValueError(
                     "No hay autorización disponible para toda la selección."
                 )

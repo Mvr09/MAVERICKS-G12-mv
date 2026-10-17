@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-10-17T22:15:22.096Z",
+  "mocked": false,
+  "checks": [
+    {
+      "width": 360,
+      "options": 9,
+      "default_selection_empty": true,
+      "delete_preview_http": 200,
+      "rerun_preview_http": 200,
+      "cancelled": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "options": 9,
+      "default_selection_empty": true,
+      "delete_preview_http": 200,
+      "rerun_preview_http": 200,
+      "cancelled": true,
+      "horizontal_overflow": false
+    }
+  ],
+  "deleted": false,
+  "rerun": false,
+  "page_errors": [],
+  "batch_data_unchanged": true,
+  "real_comparison_three_votes_visible": true,
+  "original_review_visible": true
+}
