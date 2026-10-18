@@ -164,7 +164,9 @@ class Draft(Base):
     __tablename__ = "drafts"
     id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
     supplier_id: Mapped[str] = mapped_column(ForeignKey("suppliers.id"))
-    incident_id: Mapped[str] = mapped_column(ForeignKey("incidents.id"))
+    incident_id: Mapped[str | None] = mapped_column(ForeignKey("incidents.id"), nullable=True)
+    article_id: Mapped[str | None] = mapped_column(ForeignKey("articles.id"), nullable=True)
+    evidence_snapshot: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     kind: Mapped[str] = mapped_column(String)
     text: Mapped[str] = mapped_column(Text)
     context_hash: Mapped[str] = mapped_column(String)

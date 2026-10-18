@@ -127,14 +127,12 @@ def budget_available(db, budget_id):
     )
 
 
-def enqueue_rss_analysis(db, limit=None):
+def enqueue_rss_analysis(db, limit=None, article_ids=None):
     db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
-    articles = db.scalars(
-        select(Article)
-        .where(Article.context == "rss", Article.state == "pending")
-        .order_by(Article.fetched_at.desc(), Article.id)
-        .with_for_update(skip_locked=True)
-    ).all()
+    query = select(Article).where(Article.context == "rss", Article.state == "pending")
+    if article_ids is not None:
+        query = query.where(Article.id.in_(article_ids))
+    articles = db.scalars(query.order_by(Article.fetched_at.desc(), Article.id).with_for_update(skip_locked=True)).all()
     jobs = []
     for a in articles:
         if limit is not None and len(jobs) >= limit:

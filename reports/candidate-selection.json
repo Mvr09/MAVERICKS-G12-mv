@@ -1,0 +1,521 @@
+{
+  "scope": "30 identical training references, every prediction including review",
+  "independent_evaluation": false,
+  "metrics": {
+    "1.0.0": {
+      "n": 30,
+      "risk": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 4,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7142857142857143,
+        "f1": 0.8333333333333334,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 3,
+        "fn": 0,
+        "tn": 22,
+        "precision": 0.625,
+        "recall": 1.0,
+        "f1": 0.7692307692307693,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 25,
+        "n": 30,
+        "precision": 0.9285714285714286,
+        "recall": 0.5909090909090909,
+        "exact_set_accuracy": 0.8333333333333334,
+        "tp": 13,
+        "fp": 1,
+        "fn": 9,
+        "f1": 0.7222222222222222
+      },
+      "review_count": 16,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.4666666666666667,
+      "automatic": {
+        "n": 14,
+        "risk": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 2,
+          "tn": 10,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "n": 14,
+          "positives": 4
+        },
+        "urgent": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 12,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 14,
+          "positives": 2
+        },
+        "suppliers": {
+          "exact": 12,
+          "n": 14,
+          "precision": 1.0,
+          "recall": 0.625,
+          "exact_set_accuracy": 0.8571428571428571,
+          "tp": 5,
+          "fp": 0,
+          "fn": 3,
+          "f1": 0.7692307692307693
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 2,
+      "automatic_joint_error_rate": 0.14285714285714285,
+      "automatic_positive_risk_cases": 4
+    },
+    "link-2.2.0": {
+      "n": 30,
+      "risk": {
+        "tp": 12,
+        "fp": 0,
+        "fn": 2,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.8571428571428571,
+        "f1": 0.9230769230769231,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 0,
+        "fn": 0,
+        "tn": 25,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 26,
+        "n": 30,
+        "precision": 1.0,
+        "recall": 0.7727272727272727,
+        "exact_set_accuracy": 0.8666666666666667,
+        "tp": 17,
+        "fp": 0,
+        "fn": 5,
+        "f1": 0.8717948717948718
+      },
+      "review_count": 22,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.26666666666666666,
+      "automatic": {
+        "n": 8,
+        "risk": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 8,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 8,
+          "positives": 0
+        },
+        "urgent": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 8,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 8,
+          "positives": 0
+        },
+        "suppliers": {
+          "exact": 8,
+          "n": 8,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0,
+      "automatic_positive_risk_cases": 0
+    },
+    "link-3.0.0-dev": {
+      "n": 30,
+      "risk": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 3,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7857142857142857,
+        "f1": 0.88,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 0,
+        "tn": 24,
+        "precision": 0.8333333333333334,
+        "recall": 1.0,
+        "f1": 0.9090909090909091,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 28,
+        "n": 30,
+        "precision": 0.9130434782608695,
+        "recall": 0.9545454545454546,
+        "exact_set_accuracy": 0.9333333333333333,
+        "tp": 21,
+        "fp": 2,
+        "fn": 1,
+        "f1": 0.9333333333333333
+      },
+      "review_count": 23,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.23333333333333334,
+      "automatic": {
+        "n": 7,
+        "risk": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 7,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 7,
+          "positives": 0
+        },
+        "urgent": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 7,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 7,
+          "positives": 0
+        },
+        "suppliers": {
+          "exact": 7,
+          "n": 7,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0,
+      "automatic_positive_risk_cases": 0
+    },
+    "link-4.0.1-dev": {
+      "n": 30,
+      "risk": {
+        "tp": 12,
+        "fp": 0,
+        "fn": 2,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.8571428571428571,
+        "f1": 0.9230769230769231,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 0,
+        "fn": 0,
+        "tn": 25,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 27,
+        "n": 30,
+        "precision": 0.8947368421052632,
+        "recall": 0.7727272727272727,
+        "exact_set_accuracy": 0.9,
+        "tp": 17,
+        "fp": 2,
+        "fn": 5,
+        "f1": 0.8292682926829268
+      },
+      "review_count": 20,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.3333333333333333,
+      "automatic": {
+        "n": 10,
+        "risk": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 7,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 10,
+          "positives": 3
+        },
+        "urgent": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 7,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 10,
+          "positives": 3
+        },
+        "suppliers": {
+          "exact": 10,
+          "n": 10,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    }
+  },
+  "new_requests": 0,
+  "comparability": "Stored2.2 predates duration-1.1.0; baseline and3.0 here use duration-1.1.0. Same reference set/model/policy, different questions and input snapshots. Descriptive comparison, not isolated causal estimate.",
+  "sources": [
+    "private/link-3-development.json",
+    "private/link-training-comparison.json"
+  ],
+  "operational_strata": {
+    "1.0.0": {
+      "fn": 9,
+      "fn_high": 2,
+      "fn_single_source": 1,
+      "fp": 1,
+      "fp_high": 1,
+      "fp_single_source": 0
+    },
+    "link-2.2.0": {
+      "fn": 5,
+      "fn_high": 1,
+      "fn_single_source": 1,
+      "fp": 0,
+      "fp_high": 0,
+      "fp_single_source": 0
+    },
+    "link-3.0.0-dev": {
+      "fn": 1,
+      "fn_high": 0,
+      "fn_single_source": 0,
+      "fp": 2,
+      "fp_high": 1,
+      "fp_single_source": 0
+    },
+    "link-4.0.1-dev": {
+      "fn": 5,
+      "fn_high": 0,
+      "fn_single_source": 1,
+      "fp": 2,
+      "fp_high": 2,
+      "fp_single_source": 0
+    }
+  },
+  "selected_for": "supervised discovery/recall, not automatic mitigation or default inference",
+  "preferred_candidate": "link-3.0.0-dev",
+  "precision_reference": "link-2.2.0",
+  "default_profile": "1.0.0",
+  "promoted_default": false,
+  "selection_reason": "3.0 misses no High or single-source associations in training; two extra associations are reviewed, one without risk. Its missing declared sea service is operationally relevant.2.2 has fewer false links but misses oneHigh and oneSingle-source.4.0.1 restores synthetic scope but misses five associations including oneSingle-source and adds twoHigh FP. No independent evidence to promote default.",
+  "development_requests": {
+    "total": 137,
+    "profile4_0": 68,
+    "profile4_0_1": 69,
+    "http400": 1,
+    "retry_attempts": 0,
+    "counter_before": 381,
+    "counter_after": 518,
+    "maximum": 228
+  },
+  "synthetic4_0_1": [
+    {
+      "case": "multi_location",
+      "prediction": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "affected_supplier_ids": [
+          "S002",
+          "S006",
+          "S014"
+        ],
+        "analysis_status": "review"
+      },
+      "expected": {
+        "suppliers": [
+          "S002",
+          "S006",
+          "S014"
+        ],
+        "risk": "Y",
+        "urgent": "Y",
+        "require_review": null
+      }
+    },
+    {
+      "case": "alias_irrelevant",
+      "prediction": {
+        "is_risk": "N",
+        "urgent": "N",
+        "affected_supplier_ids": [],
+        "analysis_status": "review"
+      },
+      "expected": {
+        "suppliers": [],
+        "risk": "N",
+        "urgent": "N",
+        "require_review": null
+      }
+    },
+    {
+      "case": "alias_harmless",
+      "prediction": {
+        "is_risk": "N",
+        "urgent": "N",
+        "affected_supplier_ids": [],
+        "analysis_status": "review"
+      },
+      "expected": {
+        "suppliers": [],
+        "risk": "N",
+        "urgent": "N",
+        "require_review": null
+      }
+    },
+    {
+      "case": "partial_interruption",
+      "prediction": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "affected_supplier_ids": [
+          "S024"
+        ],
+        "analysis_status": "review"
+      },
+      "expected": {
+        "suppliers": [
+          "S024"
+        ],
+        "risk": "Y",
+        "urgent": "N",
+        "require_review": null
+      }
+    },
+    {
+      "case": "ambiguous_city",
+      "prediction": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "affected_supplier_ids": [
+          "S003"
+        ],
+        "analysis_status": "review"
+      },
+      "expected": {
+        "suppliers": null,
+        "risk": null,
+        "urgent": null,
+        "require_review": true
+      }
+    },
+    {
+      "case": "namesake_geography",
+      "prediction": {
+        "is_risk": "N",
+        "urgent": "N",
+        "affected_supplier_ids": [],
+        "analysis_status": "review"
+      },
+      "expected": {
+        "suppliers": [],
+        "risk": "N",
+        "urgent": "N",
+        "require_review": null
+      }
+    },
+    {
+      "case": "sea_route_only",
+      "prediction": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "affected_supplier_ids": [
+          "S032"
+        ],
+        "analysis_status": "review"
+      },
+      "expected": {
+        "suppliers": [
+          "S032"
+        ],
+        "risk": "Y",
+        "urgent": null,
+        "require_review": null
+      }
+    },
+    {
+      "case": "rail_route_only",
+      "prediction": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "affected_supplier_ids": [
+          "S033"
+        ],
+        "analysis_status": "review"
+      },
+      "expected": {
+        "suppliers": [
+          "S033"
+        ],
+        "risk": "Y",
+        "urgent": null,
+        "require_review": null
+      }
+    }
+  ]
+}

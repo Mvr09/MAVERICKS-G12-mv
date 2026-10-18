@@ -1,0 +1,26 @@
+{
+  "version": "link-4.0.0-dev",
+  "files": {
+    "app/link_service_candidate.py": "497fa12df1795a8aca0b55cb67dc2e2256582f3f524ecf5a73bcaf589c07b3b6",
+    "app/link_candidate.py": "eaafebb059b7c52119b4be9664c45d2a7ffe643a2c28f1fdf38bf504cd7e44ac",
+    "app/link_questions.py": "2bb2ba0b9216e42c4bacb69ccd4cf9f100f027cdb1b4544e928ff4eb1f27b9a6",
+    "app/link_analysis.py": "571ae51ae985fae85e2a40ed0e9e6ab32b3add7a9b531ddce0f6d8f65fab9766",
+    "app/duration.py": "e538570b253edc7f8ed340f7475e022b000b8bdb9f2a44deefd4d4b558a2b8d1",
+    "app/geography.py": "fa4a580bc0e8acda6b69567223f06175372d271735dff3d34daf5865e3aafe0e",
+    "config/geography.json": "9806c25134760d92c57e03039b4a3d85bc21bc6d47710c128a4486f291265f94",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c",
+    "reference/jev_requests.py": "0152f231cac1fe8e08c0ea4000076f17e6e008781155d10fe01925ddd59a1de9",
+    "reference/scoring.py": "50f9c7f9e62a3231b10461217c18947a00d250adcc3c99372366cfbbe6fe316a"
+  },
+  "training": 30,
+  "synthetic": 8,
+  "maximum_requests": 228,
+  "hypothesis": "Separate site and declared-service exposure; use2.2 risk/urgency wording and conditional factual support. No isolated causal claim.",
+  "promotion_guards": [
+    "Compare missing High/single-source separately; no new automatic risky false associations/urgencies",
+    "Route/mode controls and ambiguous geography must remain honest",
+    "Balance restored corridor, relevant FN, false links and review workload against2.2 and3.0; no promotion on F1 alone",
+    "Automatic positive risk support must be demonstrated before automation promotion; retrospective development evidence is not independent held-out accuracy"
+  ],
+  "held_out": "validation retrospective, LiveDay already used, remaining test untouched; no holdout in this run"
+}

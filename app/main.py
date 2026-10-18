@@ -134,7 +134,7 @@ def ready(db: Session = Depends(get_db)):
         revision = db.execute(
             text("select version_num from alembic_version")
         ).scalar_one()
-        if revision != "0007":
+        if revision != "0008":
             raise ValueError()
     except Exception:
         raise HTTPException(503, "Base de datos o esquema no disponible")
@@ -775,6 +775,7 @@ def batch_execution(bid: str, db: Session = Depends(get_db)):
 
 class ManualRssAnalysis(BaseModel):
     limit: int | None = Field(default=None, ge=1)
+    article_ids: list[str] | None = Field(default=None, min_length=1, max_length=6)
 
 
 @app.post("/api/analysis/rss", status_code=202, dependencies=[Depends(presenter)])
@@ -784,7 +785,7 @@ def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
     require_current_worker(db)
     if db.scalar(select(func.count()).select_from(Supplier)) != 40:
         raise HTTPException(409, "Importa primero las 40 identidades de la cartera.")
-    jobs = enqueue_rss_analysis(db, body.limit)
+    jobs = enqueue_rss_analysis(db, body.limit, article_ids=body.article_ids)
     if not jobs:
         db.rollback()
         raise HTTPException(
@@ -1014,6 +1015,56 @@ def draft(body: DraftInput, db: Session = Depends(get_db)):
     db.add(d)
     db.commit()
     return {"id": d.id, "text": d.text}
+
+
+@app.get("/api/model/candidates", dependencies=[Depends(presenter)])
+def model_candidates():
+    return json.loads((ROOT / "app/model_candidates.json").read_text())
+
+
+class VerificationInput(BaseModel):
+    article_id: str
+    supplier_id: str = Field(pattern=r"^S\d{3}$")
+    generation: int = Field(ge=0)
+    version: int = Field(ge=1)
+    evidence_ids: list[str] = Field(min_length=1, max_length=3)
+    note: str = Field(min_length=12, max_length=500)
+    acknowledged: Literal[True]
+
+
+@app.post("/api/verification-drafts", status_code=201, dependencies=[Depends(presenter)])
+def verification_draft(body: VerificationInput, db: Session = Depends(get_db)):
+    from app.verification import prepare
+    article = db.scalar(select(Article).where(Article.id == body.article_id).with_for_update())
+    supplier = db.get(Supplier, body.supplier_id)
+    if not article or not supplier:
+        raise HTTPException(404, "Noticia o proveedor no encontrado")
+    if article.generation != body.generation or article.version != body.version:
+        raise HTTPException(409, "La noticia cambió; revisa los fragmentos antes de crear otra consulta.")
+    analysis = db.scalar(select(Analysis).where(Analysis.article_id == article.id, Analysis.generation == article.generation).order_by(Analysis.created_at.desc()))
+    if not analysis or article.state not in ("done", "review"):
+        raise HTTPException(409, "Espera a que termine el análisis de esta noticia.")
+    try:
+        content, snapshot, context_hash = prepare(article, supplier, analysis.result, body.evidence_ids, body.note)
+    except ValueError as exc:
+        raise HTTPException(409, str(exc))
+    draft = Draft(supplier_id=supplier.id, incident_id=None, article_id=article.id, kind="verification", text=content, evidence_snapshot=snapshot, context_hash=context_hash)
+    db.add(draft)
+    db.commit()
+    return {"id": draft.id, "text": draft.text, "kind": "verification", "exposure_status": "potential_unconfirmed"}
+
+
+@app.get("/api/articles/{aid}/drafts", dependencies=[Depends(presenter)])
+def article_drafts(aid: str, db: Session = Depends(get_db)):
+    return [{"id": d.id, "supplier_id": d.supplier_id, "kind": d.kind} for d in db.scalars(select(Draft).where(Draft.article_id == aid))]
+
+
+@app.get("/api/drafts/{did}", dependencies=[Depends(presenter)])
+def read_draft(did: str, db: Session = Depends(get_db)):
+    d = db.get(Draft, did)
+    if not d:
+        raise HTTPException(404, "Borrador no encontrado")
+    return {"id": d.id, "text": d.text, "kind": d.kind, "supplier_id": d.supplier_id, "evidence_snapshot": d.evidence_snapshot}
 
 
 @app.patch("/api/drafts/{did}", dependencies=[Depends(presenter)])

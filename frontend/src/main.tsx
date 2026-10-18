@@ -1,3 +1,4 @@
+import { VerificationDraft, RssArticleAnalysis } from "./VerificationDraft";
 import { ProcessingPulse } from "./ProcessingPulse";
 import { AttentionDesk, ProcurementBrief } from "./Procurement";
 import React, { useEffect, useState, useRef } from "react";
@@ -219,7 +220,11 @@ function App() {
   const [origin, setOrigin] = useState("");
   const effectiveOrigin =
     location.pathname === "/" && !origin.startsWith("context:") ? origin : "";
-  const [context, setContext] = useState("exercise"),
+  const [context, setContext] = useState(
+      new URLSearchParams(window.location.search).get("context") === "rss"
+        ? "rss"
+        : "exercise",
+    ),
     [overview, setOverview] = useState<any>(null),
     [suppliers, setSuppliers] = useState<Supplier[]>([]),
     [articles, setArticles] = useState<Article[]>([]),
@@ -253,6 +258,16 @@ function App() {
     file = useRef<HTMLInputElement>(null),
     activeContext = useRef(context),
     configRef = useRef<any>({});
+  useEffect(() => {
+    const requested = new URLSearchParams(location.search).get("context");
+    if (
+      (requested === "rss" || requested === "exercise") &&
+      requested !== context
+    ) {
+      setOrigin("");
+      setContext(requested);
+    }
+  }, [location.pathname, location.search]);
   useEffect(() => {
     api("/session")
       .then((s) => {
@@ -1684,6 +1699,8 @@ function ArticleDetail({ context, presenter, action }: any) {
           />
         </div>
       )}
+      {presenter && a.split === "rss" && <RssArticleAnalysis article={a} />}
+      {presenter && a.split === "rss" && <VerificationDraft article={a} />}
       {a.state === "error" && presenter && (
         <RetryAnalysis article={a} action={action} />
       )}

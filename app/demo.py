@@ -1,7 +1,7 @@
 from app.profiles import DEFAULT_PROFILE, EXERCISE_PROFILES
 """Selección explícita, vista previa firmada y operaciones transaccionales de demo."""
 
-from sqlalchemy import select, delete, text
+from sqlalchemy import select, delete, text, or_
 from app.models import (
     Batch,
     Article,
@@ -150,7 +150,7 @@ def scope(db, selection=None, mode="delete"):
         blocked = "Para borrar el catálogo selecciona también todas las noticias; hay resultados que lo necesitan."
     iids = [i.id for i in incidents]
     alerts = db.scalars(select(Alert).where(Alert.incident_id.in_(iids))).all()
-    drafts = db.scalars(select(Draft).where(Draft.incident_id.in_(iids))).all()
+    drafts = db.scalars(select(Draft).where(or_(Draft.incident_id.in_(iids), Draft.article_id.in_(aids) if mode == "delete" else False))).all()
     analyses = db.scalars(select(Analysis).where(Analysis.article_id.in_(aids))).all()
     comparisons = db.scalars(
         select(Comparison).where(Comparison.article_id.in_(aids))
@@ -360,6 +360,7 @@ def cleanup(db, token):
     db.execute(
         delete(Job).where(Job.id.in_([j.id for j in plan["jobs"] if j.kind != "rss"]))
     )
+    db.execute(delete(Draft).where(Draft.article_id.in_(aids)))
     for model in (Comparison, EvaluationLabel, Analysis, GrantArticle, ImportRow):
         db.execute(delete(model).where(model.article_id.in_(aids)))
     db.execute(delete(Article).where(Article.id.in_(aids)))

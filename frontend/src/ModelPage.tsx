@@ -1,3 +1,4 @@
+import { CandidateComparison } from "./CandidateComparison";
 import React, { useEffect, useState } from "react";
 import { api, date, number } from "./api";
 import type { Batch, Source } from "./types";
@@ -180,6 +181,7 @@ export function ModelPage({
         </section>
       ) : (
         <>
+          <CandidateComparison />
           {error && (
             <div className="notice error" role="alert">
               {error}{" "}
