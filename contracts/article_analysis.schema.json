@@ -399,6 +399,31 @@
           ]
         }
       }
+    },
+    "event_classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "category",
+        "confidence",
+        "taxonomy_version"
+      ],
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "taxonomy_version": {
+          "type": "string"
+        },
+        "label_es": {
+          "type": "string"
+        }
+      }
     }
   },
   "allOf": [

@@ -21,6 +21,12 @@ export interface Assessment {
   impact_status: string;
 }
 export interface Analysis {
+  event_classification?: {
+    category: string;
+    confidence: number;
+    taxonomy_version: string;
+    label_es?: string;
+  };
   context_notes?: string[];
   source_reading?: {
     status: string;
@@ -53,6 +59,7 @@ export interface Analysis {
 export interface Article {
   origin?: string;
   origin_label?: string;
+  event_type_confidence?: number;
   enrichment?: { status: string; checked_at?: string; reason?: string };
   generation?: number;
   split?: string;

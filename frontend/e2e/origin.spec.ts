@@ -81,14 +81,12 @@ for (const width of [360, 1440]) {
     });
     await page.goto("/");
     await page.getByLabel("Contexto", { exact: true }).selectOption("rss");
-    await page
-      .getByLabel("Archivo Excel")
-      .setInputFiles({
-        name: "MOCK-LiveDay.xlsx",
-        mimeType:
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        buffer: Buffer.from("MOCK: importer HTTP stub"),
-      });
+    await page.getByLabel("Archivo Excel").setInputFiles({
+      name: "MOCK-LiveDay.xlsx",
+      mimeType:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      buffer: Buffer.from("MOCK: importer HTTP stub"),
+    });
     await expect(page.getByLabel("Contexto", { exact: true })).toHaveValue(
       "exercise",
     );
@@ -125,6 +123,22 @@ for (const width of [360, 1440]) {
     await expect(
       page.getByRole("link", { name: "MOCK: señal de RSS seleccionado" }),
     ).toBeVisible();
+    await page.getByLabel("Origen de los datos").selectOption("context:rss");
+    await expect(page.getByLabel("Contexto", { exact: true })).toHaveValue(
+      "rss",
+    );
+    await expect(page.getByLabel("Origen de los datos")).toHaveValue(
+      "context:rss",
+    );
+    await page
+      .getByLabel("Origen de los datos")
+      .selectOption("context:exercise");
+    await expect(page.getByLabel("Contexto", { exact: true })).toHaveValue(
+      "exercise",
+    );
+    await expect(page.getByLabel("Origen de los datos")).toHaveValue(
+      "context:exercise",
+    );
     await page.getByLabel("Origen de los datos").focus();
     expect(
       await page.evaluate(

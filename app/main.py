@@ -12,6 +12,7 @@ from sqlalchemy.exc import OperationalError, ProgrammingError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.db import get_db, DatabaseConfigurationError
 from app.settings import settings, ROOT, POLICY, RSS
+from app.rss_questions import VERSION as RSS_QUESTION_VERSION
 from app.models import *
 from app.auth import presenter, identity, login, codec
 from app.importer import import_excel, export_batch, digest
@@ -184,7 +185,7 @@ def config():
         "model": settings.jev_model,
         "policy_version": POLICY["version"],
         "question_version": POLICY["question_version"],
-        "rss_question_version": "rss-2.0.0",
+        "rss_question_version": RSS_QUESTION_VERSION,
         "engine_configured": bool(settings.typesafe_api_key.get_secret_value()),
         "bands": POLICY["bands"],
         "cooldown_seconds": POLICY["audio"]["cooldown_seconds"],
@@ -209,7 +210,34 @@ def overview(
     articles = articles_view(db, context, origin=origin)
     sources = sources_view(db)
     processed = [a for a in articles if a["state"] in ("done", "review")]
+    from collections import Counter
+
+    review_reasons = Counter()
+    reading = Counter()
+    for article in processed:
+        result = article["analysis"]
+        if article["state"] == "review":
+            reasons = set(result["review_reasons"]) | {
+                r
+                for assessment in result["assessments"]
+                for r in assessment["review_reasons"]
+            }
+            review_reasons.update(reasons)
+        if context == "rss":
+            reading.update(
+                [(result.get("source_reading") or {}).get("status", "unrecorded")]
+            )
     return {
+        "review_rate": sum(a["state"] == "review" for a in processed) / len(processed)
+        if processed
+        else None,
+        "automatic_rate": sum(a["state"] == "done" for a in processed) / len(processed)
+        if processed
+        else None,
+        "review_reasons": [
+            {"reason": k, "articles": v} for k, v in review_reasons.most_common()
+        ],
+        "reading_coverage": dict(reading),
         "supplier_count": len(suppliers),
         "urgent_suppliers": sum(s["urgent"] for s in suppliers),
         "active_incidents": sum(s["incident_count"] for s in suppliers),
@@ -355,7 +383,11 @@ def articles(
         and (
             not event_type
             or a["analysis"]
-            and a["analysis"]["event_type"] == event_type
+            and event_type
+            in (
+                a["analysis"]["event_type"],
+                (a["analysis"].get("event_classification") or {}).get("category"),
+            )
         )
         and (not date_from or a["published_date"] >= date_from)
         and (not date_to or a["published_date"][:10] <= date_to)
@@ -969,6 +1001,17 @@ def edit_draft(did: str, body: DraftEdit, db: Session = Depends(get_db)):
     d.text = body.text
     db.commit()
     return {"id": d.id, "text": d.text}
+
+
+@app.get("/api/model/metrics", dependencies=[Depends(presenter)])
+def model_metrics(
+    context: Literal["exercise", "rss"] = "exercise",
+    origin: str = "",
+    db: Session = Depends(get_db),
+):
+    from app.model_metrics import model_metrics as calculate
+
+    return calculate(db, context, origin)
 
 
 @app.post("/api/evaluations/{bid}", dependencies=[Depends(presenter)])

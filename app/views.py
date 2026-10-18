@@ -63,6 +63,12 @@ def article_view(db, a):
         "source_id": a.source_id,
         **a.data,
         "analysis": result.result if result else None,
+        "event_type_confidence": result.raw.get("a", {})
+        .get("answers", {})
+        .get("event_type", {})
+        .get("confidence")
+        if result
+        else None,
         "cached": result.cached if result else False,
         "cache_stages": result.raw.get("_cache_stages", []) if result else [],
         "new_requests": result.raw.get("_new_requests") if result else None,

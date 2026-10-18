@@ -14,6 +14,7 @@ import {
   Activity,
   LayoutDashboard,
   Building2,
+  BrainCircuit,
   Package,
   Newspaper,
   Bell,
@@ -58,6 +59,7 @@ import type {
 import { audio } from "./audio";
 import { setBands, getBands, bandFor } from "./policy";
 import "./style.css";
+import { ModelPage } from "./ModelPage";
 
 const names: Record<string, string> = {
   training: "Entrenamiento",
@@ -80,6 +82,7 @@ const names: Record<string, string> = {
   Low: "Baja",
 };
 Object.assign(names, {
+  wildfire: "Incendio forestal",
   fire_incident: "Incendio o explosión",
   natural_disaster: "Desastre natural",
   labour_strike: "Huelga",
@@ -216,7 +219,8 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const [origin, setOrigin] = useState("");
-  const effectiveOrigin = location.pathname === "/" ? origin : "";
+  const effectiveOrigin =
+    location.pathname === "/" && !origin.startsWith("context:") ? origin : "";
   const [context, setContext] = useState("exercise"),
     [overview, setOverview] = useState<any>(null),
     [suppliers, setSuppliers] = useState<Supplier[]>([]),
@@ -378,6 +382,7 @@ function App() {
     { to: "/alertas", icon: Bell, text: "Alertas" },
     { to: "/fuentes", icon: Radio, text: "Fuentes" },
     { to: "/analitica", icon: Activity, text: "Analítica" },
+    { to: "/modelo", icon: BrainCircuit, text: "Modelo" },
   ];
   return (
     <div className="app">
@@ -620,7 +625,10 @@ function App() {
                           setOrigin(value);
                           if (value)
                             setContext(
-                              value.startsWith("rss:") ? "rss" : "exercise",
+                              value === "context:rss" ||
+                                value.startsWith("rss:")
+                                ? "rss"
+                                : "exercise",
                             );
                         }}
                       >
@@ -628,6 +636,14 @@ function App() {
                           Todos ·{" "}
                           {context === "rss" ? "Noticias reales" : "Ejercicio"}
                         </option>
+                        <optgroup label="Grupos de datos">
+                          <option value="context:rss">
+                            Solo noticias reales · todos los RSS
+                          </option>
+                          <option value="context:exercise">
+                            Solo datos base · todos los Excel
+                          </option>
+                        </optgroup>
                         <optgroup label="Archivos del ejercicio">
                           {batches.map((b) => (
                             <option key={b.id} value={"batch:" + b.id}>
@@ -892,6 +908,18 @@ function App() {
                 }
               />
               <Route
+                path="/modelo"
+                element={
+                  <ModelPage
+                    presenter={presenter}
+                    context={context}
+                    config={config}
+                    batches={batches}
+                    sources={sources}
+                  />
+                }
+              />
+              <Route
                 path="/analitica"
                 element={
                   <Analytics
@@ -940,7 +968,13 @@ function App() {
         <div className="more-menu">
           {navigation
             .filter((n) =>
-              ["/proveedores", "/fuentes", "/analitica"].includes(n.to),
+              [
+                "/proveedores",
+                "/materiales",
+                "/fuentes",
+                "/analitica",
+                "/modelo",
+              ].includes(n.to),
             )
             .map((n) => (
               <Link key={n.to} to={n.to} onClick={() => setMore(false)}>
@@ -1379,7 +1413,12 @@ function NewsPage({ articles }: { articles: Article[] }) {
             {[
               ...new Set(
                 articles.flatMap((a) =>
-                  a.analysis?.event_type ? [a.analysis.event_type] : [],
+                  a.analysis?.event_type
+                    ? [
+                        a.analysis.event_classification?.category ||
+                          a.analysis.event_type,
+                      ]
+                    : [],
                 ),
               ),
             ].map((v) => (
@@ -1425,7 +1464,9 @@ function NewsPage({ articles }: { articles: Article[] }) {
             (!split || a.split === split) &&
             (!from || a.published_date >= from) &&
             (!to || a.published_date.slice(0, 10) <= to) &&
-            (!event || a.analysis?.event_type === event) &&
+            (!event ||
+              a.analysis?.event_type === event ||
+              a.analysis?.event_classification?.category === event) &&
             (!relevant || Boolean(a.analysis?.affected_supplier_ids.length)),
         )}
       />
@@ -1553,6 +1594,28 @@ function ArticleDetail({ context, presenter, action }: any) {
               {reviewLabel(r)}
             </p>
           ))}
+          <div className="event-classification">
+            <strong>
+              Tipo de evento:{" "}
+              {a.analysis.event_classification?.label_es ||
+                label(a.analysis.event_type || "other")}
+            </strong>
+            <span>
+              Confianza de clasificación:{" "}
+              {a.analysis.event_classification?.confidence != null ||
+              a.event_type_confidence != null
+                ? number(
+                    (a.analysis.event_classification?.confidence ??
+                      a.event_type_confidence!) * 100,
+                  ) + "%"
+                : "no registrada"}
+            </span>
+            <small>
+              La categoría describe el suceso; no demuestra riesgo, urgencia ni
+              exposición de un proveedor. Una confianza baja indica duda entre
+              categorías.
+            </small>
+          </div>
           <h3>Evidencia literal</h3>
           {a.analysis.evidence
             .filter((e) =>
@@ -2172,7 +2235,14 @@ function Batches({ batches, presenter, action }: any) {
     </section>
   );
 }
-function Analytics({ overview, suppliers, sources, batches, ...shared }: any) {
+function Analytics({
+  overview,
+  suppliers,
+  sources,
+  batches,
+  context,
+  ...shared
+}: any) {
   const data = sources.map((s: Source) => ({
     name: s.name,
     recibidas: s.received_count,
@@ -2270,11 +2340,60 @@ function Analytics({ overview, suppliers, sources, batches, ...shared }: any) {
             </p>
           </div>
         </div>
+        <div className="analytics-stats">
+          <div>
+            <small>Requiere revisión</small>
+            <strong>
+              {overview?.review_rate != null
+                ? number(overview.review_rate * 100) + "%"
+                : "—"}
+            </strong>
+          </div>
+          <div>
+            <small>Cobertura automática</small>
+            <strong>
+              {overview?.automatic_rate != null
+                ? number(overview.automatic_rate * 100) + "%"
+                : "—"}
+            </strong>
+          </div>
+        </div>
         <p>
-          Latencia p50: {number(overview?.latencies?.p50)} s · p95:{" "}
-          {number(overview?.latencies?.p95)} s · muestra n=
-          {overview?.latencies?.n || 0}. Una muestra pequeña no establece
-          rendimiento general.
+          Ambos porcentajes usan {overview?.processed || 0} noticias procesadas.
+          La tasa de revisión no mide precisión.
+        </p>
+        {context === "rss" && (
+          <div className="analytics-stats">
+            {[
+              ["Texto público ampliado", "public_text"],
+              ["Texto parcial", "partial"],
+              ["Solo resumen", "summary_only"],
+              ["Lectura sin registro", "unrecorded"],
+            ].map(([title, key]) => (
+              <div key={key}>
+                <small>{title}</small>
+                <strong>{overview?.reading_coverage?.[key] || 0}</strong>
+              </div>
+            ))}
+          </div>
+        )}
+        <h3>Motivos de revisión</h3>
+        {overview?.review_reasons?.length ? (
+          <ul className="reason-counts">
+            {overview.review_reasons.slice(0, 12).map((r: any) => (
+              <li key={r.reason}>
+                <span>{reviewLabel(r.reason)}</span>
+                <strong>{r.articles} noticias</strong>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No hay motivos de revisión registrados para este contexto.</p>
+        )}
+        <p className="small-note">
+          Una noticia puede tener varios motivos; cada motivo se cuenta una vez
+          por noticia. Telemetría JEV y evaluación supervisada en{" "}
+          <Link to="/modelo">Modelo</Link>.
         </p>
       </section>
       <Batches batches={batches} {...shared} />
@@ -3081,7 +3200,8 @@ function ComparisonControl({ article }: { article: Article }) {
                 · {riskLabel(b.is_risk)} · {urgencyLabel(b.urgent)} ·
                 Proveedores{" "}
                 {b.affected_supplier_ids.join(", ") || "sin vínculo"} ·{" "}
-                {label(b.event_type || "other")}
+                {b.event_classification?.label_es ||
+                  label(b.event_type || "other")}
                 {b.error && <p className="error-text">{b.error}</p>}
                 {b.review_reasons.map((r: string) => (
                   <p key={r}>{reviewLabel(r)}</p>

@@ -165,13 +165,25 @@ def normalize(article, suppliers, a, b, candidates):
         "question_version": POLICY["question_version"],
         "policy_version": POLICY["version"],
         "error": None,
-        "event_type": aa["event_type"]["choice"],
+        "event_type": rss_questions.canonical_event(aa["event_type"]["choice"])
+        if rss
+        else aa["event_type"]["choice"],
         "evidence": evidence,
         "review_reasons": sorted(set(reasons)),
     }
     if rss:
         result["question_version"] = rss_questions.VERSION
         result["context_notes"] = sorted(set(notes))
+        category = aa["event_type"]["choice"]
+        result["event_classification"] = {
+            "category": category,
+            "confidence": aa["event_type"]["confidence"],
+            "taxonomy_version": rss_questions.TAXONOMY_VERSION,
+        }
+        if category in rss_questions.EVENT_LABELS:
+            result["event_classification"]["label_es"] = rss_questions.EVENT_LABELS[
+                category
+            ]
         result["source_reading"] = {
             k: v
             for k, v in article.data.get(
@@ -238,7 +250,7 @@ def process_article(
     build_a = rss_questions.stage_a if rss else stage_a
     build_b = rss_questions.stage_b if rss else stage_b
     question_version = rss_questions.VERSION if rss else POLICY["question_version"]
-    start = time.monotonic()
+    deadline = time.monotonic() + 60
     pa = build_a(a.data, suppliers, settings.jev_model)
     request_hash = digest(
         {
@@ -261,7 +273,7 @@ def process_article(
         db.commit()
         return previous.result
     try:
-        raw["a"] = client.ask(pa, "a", start + 60)
+        raw["a"] = client.ask(pa, "a", deadline)
         if rss:
             rss_questions.linked_answers(raw["a"], suppliers)
         candidates = [
@@ -286,7 +298,7 @@ def process_article(
             client.ask(
                 build_b(a.data, candidates, duration_candidates, settings.jev_model),
                 "b",
-                start + 60,
+                deadline,
             )
             if candidates
             else None

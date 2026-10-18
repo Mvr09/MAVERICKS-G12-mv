@@ -62,6 +62,13 @@ class SourceReading(StrictModel):
     method: str | None = None
 
 
+class EventClassification(StrictModel):
+    category: str
+    confidence: float = Field(ge=0, le=1)
+    taxonomy_version: str
+    label_es: str | None = None
+
+
 class NormalizedAnalysis(StrictModel):
     article_id: str
     news_id: str
@@ -80,6 +87,7 @@ class NormalizedAnalysis(StrictModel):
     review_reasons: list[str]
     context_notes: list[str] = Field(default_factory=list)
     source_reading: SourceReading | None = None
+    event_classification: EventClassification | None = None
 
     @model_validator(mode="after")
     def consistency(self):

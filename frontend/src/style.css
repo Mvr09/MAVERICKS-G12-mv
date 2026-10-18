@@ -2003,3 +2003,138 @@ dialog header {
 .origin-filter small {
   color: var(--muted);
 }
+
+.model-page {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+.model-page .detail-card {
+  min-width: 0;
+}
+.model-selector {
+  display: grid;
+  gap: 0.5rem;
+  margin-block: 1rem;
+  font-weight: 600;
+}
+.model-selector select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.metric-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-block: 1rem;
+}
+.model-page table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.model-page th,
+.model-page td {
+  padding: 0.65rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7f3;
+  overflow-wrap: anywhere;
+}
+.model-page caption {
+  text-align: left;
+  color: #58657d;
+  padding-bottom: 0.5rem;
+}
+.model-page th {
+  color: #263456;
+}
+.model-page td small {
+  display: block;
+  color: #58657d;
+  font-size: 0.7rem;
+}
+.metric-warning {
+  background: #fff3e3;
+}
+.confusion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-block: 1rem;
+}
+.confusion {
+  min-width: 0;
+}
+.event-classification {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f5f2ff;
+  margin-block: 1rem;
+}
+.reason-counts {
+  list-style: none;
+  padding: 0;
+}
+.reason-counts li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid #e5e7f3;
+}
+.reason-counts strong {
+  flex-shrink: 0;
+}
+@media (max-width: 767px) {
+  .confusion-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .model-page th,
+  .model-page td {
+    padding: 0.5rem 0.35rem;
+    font-size: 0.75rem;
+  }
+  .model-page .analytics-stats strong {
+    font-size: 1.35rem;
+  }
+}
+
+.metric-cards {
+  display: none;
+}
+@media (max-width: 640px) {
+  .model-page .metric-table-wrap {
+    display: none;
+  }
+  .metric-cards {
+    display: grid;
+    gap: 0.75rem;
+    margin-block: 1rem;
+  }
+  .metric-cards section {
+    padding: 0.75rem;
+    border: 1px solid #e5e7f3;
+    border-radius: 12px;
+    background: #faf9ff;
+  }
+  .metric-cards h4 {
+    margin: 0 0 0.6rem;
+  }
+  .metric-cards dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin: 0;
+  }
+  .metric-cards dt {
+    color: #58657d;
+    font-size: 0.75rem;
+  }
+  .metric-cards dd {
+    font-weight: 650;
+    margin: 0.2rem 0 0;
+    font-size: 0.9rem;
+  }
+}
