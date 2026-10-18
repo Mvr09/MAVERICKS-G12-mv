@@ -1,0 +1,25 @@
+{
+  "measured_commit": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
+  "elapsed_seconds": 7.888295967,
+  "rows": 14,
+  "new_requests": 23,
+  "cached_stages": 0,
+  "repeated": false,
+  "inherited": true,
+  "unchanged_dependencies": {
+    "app/analysis.py": true,
+    "app/worker.py": true,
+    "app/queue.py": true,
+    "app/jev.py": true,
+    "app/duration.py": true,
+    "app/incidents.py": true,
+    "app/importer.py": true,
+    "app/demo.py": true,
+    "app/evaluation.py": true,
+    "app/profiles.py": true,
+    "reference/jev_requests.py": true,
+    "reference/scoring.py": true,
+    "config/risk_policy.json": true
+  },
+  "api_change": "Optional origin filter only on supplier GET; no export/analysis route change. UI polling does not enqueue work. Candidate module is not imported by production pipeline."
+}

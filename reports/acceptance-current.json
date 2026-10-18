@@ -4,9 +4,9 @@
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
   "counts": {
-    "pasa": 18,
+    "pasa": 19,
     "falla": 1,
-    "no ejecutado": 1
+    "no ejecutado": 0
   },
   "checks": [
     {
@@ -37,7 +37,7 @@
     {
       "id": "A06",
       "status": "falla",
-      "evidence_and_limit": "Capacidad funcional de cuarentaNoul y selección múltiple comprobada. Modelo: enriquecimiento aislado no recupera la exposición respaldada; la puertaA sigue rechazándola. Datos: otra identidad mantiene provincia desconocida y posible exposición pendiente. Training:0asociaciones recuperadas/2correctas perdidas/1falsa eliminada/0falsas nuevas, por lo que la variante no pasa a estable. Caso retenido/regresiones por noticia en privado; GEOGRAFIA_AISLADA.md agregado. No se fuerza una etiqueta ni se exige precisión perfecta en todas las noticias."
+      "evidence_and_limit": "Capacidad funcional de cuarentaNoul y selección múltiple comprobada. Modelo: enriquecimiento aislado no recupera la exposición respaldada; la puertaA sigue rechazándola. Datos: otra identidad mantiene provincia desconocida y posible exposición pendiente. Training:0asociaciones recuperadas/2correctas perdidas/1falsa eliminada/0falsas nuevas, por lo que la variante no pasa a estable. Caso retenido/regresiones por noticia en privado; GEOGRAFIA_AISLADA.md agregado. No se fuerza una etiqueta ni se exige precisión perfecta en todas las noticias. Candidato3.0dev recupera9asociaciones y pierde1, elimina1falsa y añade2: no promovido. Riesgo2regresiones emparejadas. A06no cerrado; LINK_3_DESARROLLO.md."
     },
     {
       "id": "A07",
@@ -76,8 +76,8 @@
     },
     {
       "id": "A14",
-      "status": "no ejecutado",
-      "evidence_and_limit": "Ordenador/Firefox: Probar alarma audible confirmado. Nuevo controlQA publicado y comprobado con backend/navegador reales: programación diferida→sondeo→audio.notify→una emisión de oscilador,0JEV. Mismos mute/cooldown/seen, sin botón directo play ni noticias ficticias presentadas como reales. Usuario responde «Todavía no la he probado»: audibilidad automática física pendiente. AUDIO_VERIFICACION.md."
+      "status": "pasa",
+      "evidence_and_limit": "Usuario confirma ordenador/Firefox: Activar sonido → QA5s → una sola alerta automática audible, sin Probar alarma. Complementa lógica acreditada de mute/cooldown/historial/revisión/foco/bloqueo y prueba Railway real del mismo audio.notify. EscenarioQA separado del clasificador. SO/versión no indicados."
     },
     {
       "id": "A15",
@@ -107,10 +107,25 @@
     {
       "id": "A20",
       "status": "pasa",
-      "evidence_and_limit": "Medición final única18-10-2026, commitb4d697b, perfil1.0.0/modelojev-1.13.0/extractorduration-1.1.0:14filas y Excel recibido en7.888s con relojmonotónico desdePOST, incluidos cola/reintentos/descarga.23HTTP200 nuevas/0reintentos/0etapas cacheadas/0artículos íntegramente cacheados; historial/orden/IDs conservados. a20-current-results.json. No mide precisión ni se usa para ajustes."
+      "evidence_and_limit": "Medición final única18-10-2026, commitb4d697b, perfil1.0.0/modelojev-1.13.0/extractorduration-1.1.0:14filas y Excel recibido en7.888s con relojmonotónico desdePOST, incluidos cola/reintentos/descarga.23HTTP200 nuevas/0reintentos/0etapas cacheadas/0artículos íntegramente cacheados; historial/orden/IDs conservados. a20-current-results.json. No mide precisión ni se usa para ajustes. Heredado para entregaUI:13dependencias sin cambios, filtroGET de ficha y candidato sin dispatch no cambian análisis/exportación. No repetido."
     }
   ],
   "a14_physical_auto": "Todavía no la he probado: usuario",
   "a20": "a20-current-results.json",
-  "new_jev_requests_this_delivery": 85
+  "new_jev_requests_this_delivery": 85,
+  "audio_physical_confirmation": {
+    "device": "ordenador",
+    "browser": "Firefox",
+    "path": "Activar sonido → Programar alerta QA (5 s)",
+    "automatic_once": true,
+    "test_button_used": false,
+    "recorded_on": "2026-10-18"
+  },
+  "new_delivery": {
+    "jev_requests": 66,
+    "candidate": "link-3.0.0-dev",
+    "promoted": false,
+    "a20": "inherited from b4d697b; analysis/export dependencies unchanged; no new LiveDay execution",
+    "audio": "physical automatic QA confirmed by user: computer/Firefox; one emission without Test alarm"
+  }
 }

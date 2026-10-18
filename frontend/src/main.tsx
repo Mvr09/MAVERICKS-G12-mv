@@ -1,3 +1,5 @@
+import { ProcessingPulse } from "./ProcessingPulse";
+import { AttentionDesk, ProcurementBrief } from "./Procurement";
 import React, { useEffect, useState, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -627,44 +629,49 @@ function App() {
             </div>
           </div>
           {presenter && (
-            <section
-              className="notice"
-              aria-label="Prueba controlada de alerta automática"
-            >
-              <div>
-                <strong>QA · Alerta automática controlada</strong>
-                <p>
-                  Activa el sonido y espera 30 segundos desde la última alerta
-                  automática. Esta prueba programa una señal elegible para el
-                  próximo sondeo después de 5 segundos. No usa JEV ni crea
-                  noticias, incidentes o alertas de cartera. Solo existe en esta
-                  pestaña.
-                </p>
-                <button
-                  className="button"
-                  disabled={qaBusy || loading}
-                  onClick={async () => {
-                    setQaBusy(true);
-                    try {
-                      const signal = await api("/qa/audio", { method: "POST" });
-                      qaPending.current = {
-                        signal,
-                        dueAt: Date.now() + signal.delay_seconds * 1000,
-                      };
-                      setQaStatus(
-                        "QA programada. Mantén esta pestaña abierta; el sondeo automático la recogerá.",
-                      );
-                    } catch (e) {
-                      setQaBusy(false);
-                      setError((e as Error).message);
-                    }
-                  }}
-                >
-                  Programar alerta QA (5 s)
-                </button>
-                {qaStatus && <p role="status">{qaStatus}</p>}
-              </div>
-            </section>
+            <details className="qa-control">
+              <summary>Prueba de aviso automático · presentador</summary>
+              <section
+                className="notice"
+                aria-label="Prueba controlada de alerta automática"
+              >
+                <div>
+                  <strong>QA · Alerta automática controlada</strong>
+                  <p>
+                    Activa el sonido y espera 30 segundos desde la última alerta
+                    automática. Esta prueba programa una señal elegible para el
+                    próximo sondeo después de 5 segundos. No usa JEV ni crea
+                    noticias, incidentes o alertas de cartera. Solo existe en
+                    esta pestaña.
+                  </p>
+                  <button
+                    className="button"
+                    disabled={qaBusy || loading}
+                    onClick={async () => {
+                      setQaBusy(true);
+                      try {
+                        const signal = await api("/qa/audio", {
+                          method: "POST",
+                        });
+                        qaPending.current = {
+                          signal,
+                          dueAt: Date.now() + signal.delay_seconds * 1000,
+                        };
+                        setQaStatus(
+                          "QA programada. Mantén esta pestaña abierta; el sondeo automático la recogerá.",
+                        );
+                      } catch (e) {
+                        setQaBusy(false);
+                        setError((e as Error).message);
+                      }
+                    }}
+                  >
+                    Programar alerta QA (5 s)
+                  </button>
+                  {qaStatus && <p role="status">{qaStatus}</p>}
+                </div>
+              </section>
+            </details>
           )}
           {loading && !overview ? (
             <div className="loading" role="status">
@@ -727,6 +734,11 @@ function App() {
                         Los incidentes recuperados permanecen cerrados.
                       </small>
                     </section>
+                    <AttentionDesk
+                      suppliers={suppliers}
+                      context={context}
+                      origin={effectiveOrigin}
+                    />
                     <div className="kpis">
                       <Kpi
                         label="Proveedores urgentes"
@@ -757,6 +769,7 @@ function App() {
                         tone="green"
                       />
                     </div>
+                    <ProcessingPulse key={scope} articles={articles} />
                     <div className="dashboard-grid">
                       <section className="card ranking-panel">
                         <div className="section-heading">
@@ -766,7 +779,11 @@ function App() {
                           </div>
                           <Badge>{suppliers.length} proveedores</Badge>
                         </div>
-                        <Ranking suppliers={suppliers} context={context} />
+                        <Ranking
+                          suppliers={suppliers}
+                          context={context}
+                          origin={effectiveOrigin}
+                        />
                         <Link className="card-footer-link" to="/proveedores">
                           Explorar la cartera completa{" "}
                           <ChevronRight size={16} />
@@ -847,7 +864,7 @@ function App() {
               <Route path="/materiales/:id" element={<MaterialDetail />} />
               <Route
                 path="/noticias"
-                element={<NewsPage articles={articles} />}
+                element={<NewsPage key={scope} articles={articles} />}
               />
               <Route
                 path="/noticias/:id"
@@ -930,6 +947,20 @@ function App() {
                                   ? "Elegible para sonido"
                                   : "Solo aviso visual"}
                               </small>
+                              {suppliers.find(
+                                (s) => s.supplier_id === a.supplier_id,
+                              ) && (
+                                <ProcurementBrief
+                                  supplier={
+                                    suppliers.find(
+                                      (s) => s.supplier_id === a.supplier_id,
+                                    )!
+                                  }
+                                  context={context}
+                                  incidentId={a.incident_id}
+                                  compact
+                                />
+                              )}
                               <div className="inline">
                                 <button
                                   className="button small"
@@ -1121,10 +1152,12 @@ function Ranking({
   suppliers,
   context,
   full = false,
+  origin = "",
 }: {
   suppliers: Supplier[];
   context: string;
   full?: boolean;
+  origin?: string;
 }) {
   const [q, setQ] = useState(""),
     [filters, setFilters] = useState(false),
@@ -1274,7 +1307,11 @@ function Ranking({
           rows.slice(0, full ? 100 : 8).map((s) => (
             <Link
               key={s.supplier_id}
-              to={"/proveedores/" + s.supplier_id}
+              to={
+                "/proveedores/" +
+                s.supplier_id +
+                (origin ? "?origen=" + encodeURIComponent(origin) : "")
+              }
               className="supplier-row"
             >
               <div className="supplier-identity">
@@ -1290,6 +1327,7 @@ function Ranking({
                   <p>
                     {s.country} <span>·</span> {s.material}
                   </p>
+                  <p className="ranking-reason">{s.reason}</p>
                   <small>
                     {s.latest_evidence
                       ? `Evidencia: ${date(s.latest_evidence)}`
@@ -1401,6 +1439,7 @@ function NewsPage({ articles }: { articles: Article[] }) {
         </div>
         <Badge>{articles.length} recibidas</Badge>
       </div>
+      <ProcessingPulse articles={articles} />
       <div className="ranking-toolbar">
         <div className="search">
           <Search size={18} />
@@ -1842,6 +1881,8 @@ function RetryAnalysis({ article, action }: any) {
   );
 }
 function SupplierDetail({ context, presenter, action, refresh }: any) {
+  const detailLocation = useLocation();
+  const origin = new URLSearchParams(detailLocation.search).get("origen") || "";
   const { id } = useParams();
   const [s, setS] = useState<Supplier | null>(null),
     [draft, setDraft] = useState<{ id: string; text: string } | null>(null),
@@ -1849,10 +1890,42 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
     [resolution, setResolution] = useState<string | null>(null),
     [reason, setReason] = useState("");
   useEffect(() => {
-    api("/suppliers/" + id + "?context=" + context)
-      .then(setS)
-      .catch((e) => setError(e.message));
-  }, [id, context]);
+    let active = true,
+      inFlight = false;
+    setS(null);
+    setError("");
+    async function load() {
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const next = await api(
+          "/suppliers/" +
+            id +
+            "?context=" +
+            context +
+            (origin ? "&origin=" + encodeURIComponent(origin) : ""),
+        );
+        if (active) {
+          setS(next);
+          setError("");
+        }
+      } catch (e) {
+        if (active) setError((e as Error).message);
+      } finally {
+        inFlight = false;
+      }
+    }
+    void load();
+    const timer = setInterval(() => {
+      if (!document.hidden) void load();
+    }, 5000);
+    window.addEventListener("focus", load);
+    return () => {
+      active = false;
+      clearInterval(timer);
+      window.removeEventListener("focus", load);
+    };
+  }, [id, context, origin]);
   async function create(kind: string, iid: string) {
     try {
       setDraft(
@@ -1895,6 +1968,13 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
           </div>
         </div>
         {error && <div className="notice error">{error}</div>}
+        <section
+          className="procurement-detail"
+          aria-label="Decisión de suministro"
+        >
+          <h3>Impacto y siguiente acción</h3>
+          <ProcurementBrief supplier={s} context={context} />
+        </section>
         <div className="detail-grid">
           <div>
             <h3>Qué ocurrió y qué sabemos</h3>

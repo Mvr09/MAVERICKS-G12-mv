@@ -322,10 +322,11 @@ def suppliers(
 def supplier(
     sid: str,
     context: Literal["exercise", "rss"] = "exercise",
+    origin: str = "",
     db: Session = Depends(get_db),
 ):
     row = next(
-        (s for s in suppliers_view(db, context) if s["supplier_id"] == sid), None
+        (s for s in suppliers_view(db, context, origin=origin) if s["supplier_id"] == sid), None
     )
     if not row:
         raise HTTPException(404, "Proveedor no encontrado")
@@ -335,7 +336,7 @@ def supplier(
         "alternate": alt.data if alt else None,
         "articles": [
             a
-            for a in articles_view(db, context)
+            for a in articles_view(db, context, origin=origin)
             if a["analysis"]
             and sid in [x["supplier_id"] for x in a["analysis"]["assessments"]]
         ],
