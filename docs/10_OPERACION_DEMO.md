@@ -92,7 +92,7 @@ En **Resumen → Origen de los datos** se puede seleccionar cualquier archivo im
 
 Una carga correcta abre Resumen, cambia a Ejercicio y selecciona el lote cargado. **Analizar** encola los pendientes y muestra Encolando/Analizando; los contadores se actualizan cada tres segundos. **Exportar** se habilita cuando termina el lote sin errores. Un lote completo ofrece **Reanalizar lote**, con revisión del alcance y confirmación; conserva el historial y efectúa consultas nuevas. LiveDay está habilitado y usa las preguntas congeladas del ejercicio.
 
-Se guarda el nombre del archivo a partir de esta versión. Para lotes anteriores sin ese dato se muestra el tipo y un identificador: no se inventa el nombre original. Volver a cargar el mismo archivo completa ese metadato sin duplicar noticias ni ejecutar análisis automáticamente.
+Se guarda el nombre del archivo a partir de esta versión. Los lotes anteriores que coinciden exactamente con el contenido de una entrada declarada del kit recuperan su nombre conocido durante la inicialización, sin reanalizar noticias. Los demás muestran «nombre de archivo no registrado», sin identificadores internos; se conservan siempre los nombres ya guardados por el usuario. Volver a cargar el mismo archivo completa ese metadato sin duplicar noticias ni ejecutar análisis automáticamente.
 
 ## Perfil RSS `rss-2.0.0`
 

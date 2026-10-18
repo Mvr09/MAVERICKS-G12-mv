@@ -1,4 +1,5 @@
 from datetime import date
+from app.provenance import KNOWN_INPUT_FILENAMES
 from sqlalchemy import select, func, and_
 from app.models import (
     Supplier,
@@ -30,7 +31,8 @@ def batch_label(batch):
     }
     return (
         batch.filename
-        or labels.get(batch.split, batch.split) + " · archivo anterior " + batch.id[:8]
+        or KNOWN_INPUT_FILENAMES.get(batch.file_hash)
+        or labels.get(batch.split, batch.split) + " · nombre de archivo no registrado"
     )
 
 

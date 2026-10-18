@@ -2,15 +2,27 @@
 
 import argparse, json
 from pathlib import Path
-from sqlalchemy import select, text
+from sqlalchemy import select, text, update, or_
 from app.db import Session
-from app.models import Source, Grant, ConsumptionBudget
+from app.models import Source, Grant, ConsumptionBudget, Batch
+from app.provenance import KNOWN_INPUT_FILENAMES
 from app.settings import ROOT, RSS, settings
 from app.importer import import_excel
 
 
 def seed(db):
     db.execute(text("SELECT pg_advisory_xact_lock(72642, 2)"))
+    # Recuperar únicamente nombres ausentes de archivos reconocidos por contenido.
+    # Predeploy y worker llaman a seed; se conserva cualquier nombre ya registrado.
+    for file_hash, filename in KNOWN_INPUT_FILENAMES.items():
+        db.execute(
+            update(Batch)
+            .where(
+                Batch.file_hash == file_hash,
+                or_(Batch.filename.is_(None), Batch.filename == ""),
+            )
+            .values(filename=filename)
+        )
     authorization = json.loads((ROOT / "config/authorization.json").read_text())
     for budget in authorization.get("request_budgets", []):
         if not db.get(ConsumptionBudget, budget["id"]):
