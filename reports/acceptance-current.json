@@ -1,5 +1,5 @@
 {
-  "revision": "5b17ef2ade0db935fee5e61ddd912c2ab13bf9d1",
+  "revision": "97a9c2ced260db280c58da9bc97e42ca9198605e",
   "default_profile": "1.0.0",
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
@@ -128,5 +128,16 @@
     "a20": "inherited from b4d697b; analysis/export dependencies unchanged; no new LiveDay execution",
     "audio": "physical automatic QA confirmed by user: computer/Firefox; one emission without Test alarm"
   },
-  "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711"
+  "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
+  "final_verification": {
+    "http": "procurement-final-verification.json",
+    "ui": "procurement-ui-final-railway.json",
+    "draft_inherited_from": "procurement-ui-railway.json",
+    "real_rss_sync_commit": "5b17ef2",
+    "real_rss_statuses": {
+      "200": 3,
+      "304": 3
+    },
+    "new_model_requests_after_ui_deployment": 0
+  }
 }

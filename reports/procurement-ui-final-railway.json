@@ -1,0 +1,55 @@
+{
+  "revision": "97a9c2ced260db280c58da9bc97e42ca9198605e",
+  "mocked": false,
+  "viewports": [
+    {
+      "width": 360,
+      "summary": true,
+      "detail": true,
+      "origin_in_navigation": true,
+      "keyboard_focus": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "summary": true,
+      "detail": true,
+      "origin_in_navigation": true,
+      "keyboard_focus": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 768,
+      "summary": true,
+      "detail": true,
+      "origin_in_navigation": true,
+      "keyboard_focus": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "summary": true,
+      "detail": true,
+      "origin_in_navigation": true,
+      "keyboard_focus": true,
+      "horizontal_overflow": false
+    }
+  ],
+  "errors": [],
+  "mutating_requests": [],
+  "origin_preserved_api": true,
+  "existing_batch_split": "validation",
+  "purpose": "UI rehearsal of stored normalized predictions only; no model development, labels or new evaluation",
+  "draft_proof_inherited": "procurement-ui-railway.json",
+  "new_drafts": 0,
+  "existing_export": {
+    "http": 200,
+    "batch_rows_metadata": 14,
+    "xlsx_signature_valid": true,
+    "new_analysis": false
+  },
+  "new_jev_requests": 0,
+  "paid_rss_periodic": false,
+  "checked_at": "2026-10-18T18:13:56.279Z",
+  "passed": true
+}

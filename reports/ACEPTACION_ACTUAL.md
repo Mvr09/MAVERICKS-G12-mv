@@ -2,7 +2,7 @@
 
 ## Versión y criterio de lectura
 
-Aplicación de procurement publicada y comprobada: **5b17ef2ade0db935fee5e61ddd912c2ab13bf9d1**. La mediciónA20 pertenece ab4d697b y se hereda con las dependencias justificadas. Los commits posteriores de esta sesión son documentación, sin cambios funcionales. Predeterminado **1.0.0**; **link-2.2.0** experimental. Modelo jev-1.13.0; política1.0.0. Factorial aplazado. Esta entrega realizó66llamadas de desarrollo; la consolidación documental no añade llamadas.
+Aplicación de procurement publicada y comprobada: **97a9c2ced260db280c58da9bc97e42ca9198605e**. La mediciónA20 pertenece ab4d697b y se hereda con las dependencias justificadas. Los commits posteriores de esta sesión son documentación, sin cambios funcionales. Predeterminado **1.0.0**; **link-2.2.0** experimental. Modelo jev-1.13.0; política1.0.0. Factorial aplazado. Esta entrega realizó66llamadas de desarrollo; la consolidación documental no añade llamadas.
 
 `AUDITORIA.md` conserva la auditoría y ampliaciones históricas. Esta matriz distingue pruebas actuales, herencia justificada y ejecución no realizada para la versión actual. «Pasa heredado» conserva una prueba funcional del componente sin cambios; no convierte un ensayo antiguo en uno recién ejecutado. A20 se volvió a ejecutar una sola vez con la entrega congelada: el tiempo anterior se conserva como histórico y no sustituye la medición nueva.
 
@@ -73,3 +73,9 @@ La nueva mesa/ficha/alertas conectan prioridad, evidencia, material/productos y 
 Candidato link-3.0.0-dev: desarrollo30training+6sintéticos,66HTTP200/0reintentos; TP/FP/FN y métricas en LINK_3_DESARROLLO.md y link-3-results.json. No promoción: mejora recall pero introduce asociaciones falsas y regresiones emparejadas. A06 continúa fallido por calidad de vínculo/decisión, separada de la capacidad funcional y de la provinciaS003 desconocida. No se consultaron conjuntos retenidos para este desarrollo.
 
 A20heredado de medición única enb4d697b(14filas/7,888s/23nuevas/0caché). procurement-a20-inheritance.json acredita13dependencias intactas: motor estable, duración, política, cola, exportación y perfil. El único cambioAPI es filtro opcional enGET de ficha; no se modifica el recorrido medido ni se lanza otroLiveDay. No se atribuye un nuevo tiempo a la entregaUI.
+
+### Verificación pública final
+
+97a9c2c confirma salud/readiness, esquema0007, cuatroassets, catálogo40, ficha/ruta profunda y worker compatible. UIreal360/390/768/1440: etiquetas retrospectivas, prioridad/evidencia del mismo origen y foco correctos, sin overflow/JS. En esta comprobación solo lectura y exportación existente;0JEV/0borradores nuevos. La prueba de borrador real de5b17ef2 se hereda: el pulido posterior solo cambia tres textos. Audio físico original hereda notificador sin cambios.
+
+La consulta real de los seisRSS se hizo en5b17ef2:3HTTP200/3HTTP304, seisjobs done y contador48→48. En97a9c2c solo se consultó el estado persistido; no se presenta como una nueva sincronización. Evidencias procurement-final-verification.json y procurement-ui-final-railway.json. No hay paso pendiente en el panelRailway para lo verificado.
