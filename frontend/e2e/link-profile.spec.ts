@@ -115,6 +115,15 @@ for (const width of [360, 390, 768, 1440]) {
     await expect(
       page.getByText("Asociación final: Por confirmar", { exact: false }),
     ).toBeVisible();
+    await expect(
+      page.getByText("Compatibilidad de exposición: 81%", { exact: false }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "no confirma afectación individual ni embarques de Helixa",
+        { exact: false },
+      ),
+    ).toBeVisible();
     await page
       .getByText("Revisión por campo y relevancia", { exact: true })
       .click();

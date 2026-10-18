@@ -1682,18 +1682,21 @@ function ArticleDetail({ context, presenter, action }: any) {
                   Candidatura inicial: {number(s.p_candidate * 100)}% ·
                   Asociación final:{" "}
                   {s.association_status === "confirmed"
-                    ? "Confirmada"
+                    ? "Sustentada"
                     : s.association_status === "excluded"
-                      ? "Excluida"
+                      ? "Exclusión sustentada"
                       : "Por confirmar"}{" "}
                   · {s.geography_version}
                 </small>
               )}
               {s.p_identity != null && (
                 <small>
-                  Identidad explícita: {number(s.p_identity * 100)}% ·
-                  Exposición potencial: {number((s.p_exposure || 0) * 100)}%.
-                  Cartera simulada; no confirma embarques de Helixa.
+                  Señal de identidad: {number(s.p_identity * 100)}% ·
+                  Compatibilidad de exposición:{" "}
+                  {number((s.p_exposure || 0) * 100)}%. La asociación puede
+                  indicar identidad o exposición potencial; no confirma
+                  afectación individual ni embarques de Helixa. Cartera
+                  simulada.
                 </small>
               )}
               {s.needs_review && (

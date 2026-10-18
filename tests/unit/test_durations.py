@@ -49,3 +49,42 @@ def test_candidate_reaches_effective_payload_but_is_not_selected_automatically()
         "text": "at least two days", "days": 2.}
     assert "unknown" in payload["questions"]["duration_QA001"]["criteria"]
     assert "numbers about another event" in payload["questions"]["duration_QA001"]["instructions"]
+
+
+def test_duration_fix_is_reexported_and_changes_effective_cache_key():
+    from app.analysis import durations as exported
+    from app.importer import digest
+    assert exported is durations
+    article = {"headline": "MOCK factories reduce output for two days"}
+    suppliers = [{"supplier_id": "QA001", "name": "MOCK supplier"}]
+    old = stage_b(article, suppliers, [])
+    new = stage_b(article, suppliers, durations(article))
+    assert digest(old) != digest(new)
+
+
+def test_directed_plan_is_ready_without_calls_or_evaluation_labels():
+    import json
+    from pathlib import Path
+    from app.link_questions import stage_a, stage_b as experimental_b, select_candidates
+    plan = json.loads(Path("reports/duration-directed-check.json").read_text())
+    suppliers = [{"supplier_id": f"QA{i:03}", "name": f"MOCK supplier {i}",
+        "city": "Hangzhou" if i == 24 else "Basel",
+        "country": "China" if i == 24 else "Switzerland",
+        "category": "Secondary packaging", "material": "MOCK leaflets",
+        "criticality": "Low", "single_source": "N", "alternate_id": None,
+        "lead_days": 25, "inventory_days": 30, "share_category_pct": 1} for i in range(1, 41)]
+    assert plan["status"] == "prepared_not_executed"
+    assert len(plan["cases"]) == 6
+    assert plan["maximum_requests_including_retries"] == len(plan["cases"]) * 2 * 3
+    for case in plan["cases"]:
+        article = case["article"]
+        candidates = durations(article)
+        assert candidates == [{"id": "d1", **case["expected_candidate"]}]
+        a = stage_a(article, suppliers, plan["model"])
+        assert len([k for k in a["questions"] if k.startswith("candidate_")]) == 40
+        mock_a = {"answers": {"candidate_" + s["supplier_id"]: {"noul": .9 if s["supplier_id"] == "QA024" else .02} for s in suppliers}}
+        selected = select_candidates(article, suppliers, mock_a)
+        assert [s["supplier_id"] for s in selected] == ["QA024"]
+        b = experimental_b(article, selected, candidates, plan["model"])
+        assert b["state"]["duration_candidates"][0]["lower_bound"] == case["expected_candidate"]["lower_bound"]
+        assert not {"Is_Risk", "Urgent", "Affected_Supplier_IDs", "Event_Type", "Explanation", "expected_candidate"} & b["state"]["article"].keys()

@@ -1,5 +1,7 @@
 # Diagnóstico de revisión y ensayo propuesto
 
+**Estado: ensayo factorial aplazado por indicación del usuario.** La auditoría acotada y la comprobación de duraciones vigente están en [AUDITORIA_SOPORTE.md](AUDITORIA_SOPORTE.md). El diseño siguiente se conserva como propuesta histórica, sin ejecución.
+
 ## Estado y alcance
 
 1.0.0 sigue predeterminado y link-2.2.0 experimental. Este diagnóstico reutiliza los 30 resultados actuales de training, los seis sintéticos y sus respuestas A/B cacheadas. No cambia preguntas, umbrales, catálogo, código ni predicciones. Cero llamadas nuevas a JEV; contador local conservado en 241. Validation no interviene en este diagnóstico ni en la selección del ensayo; sigue siendo una comparación retrospectiva. Test/LiveDay no se consultaron. RSS periódico de pago continúa desactivado.

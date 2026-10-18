@@ -1,0 +1,127 @@
+{
+  "status": "prepared_not_executed",
+  "profile": "link-2.2.0",
+  "model": "jev-1.13.0",
+  "extractor": "duration-1.1.0",
+  "maximum_initial_requests": 12,
+  "maximum_requests_including_retries": 36,
+  "cases": [
+    {
+      "case": "en_words",
+      "article": {
+        "news_id": "SYN-DURATION-en_words",
+        "published_date": "2026-10-18T00:00:00+00:00",
+        "source": "SINTÉTICO · QA duraciones",
+        "headline": "Brief power rationing affects Hangzhou factories",
+        "summary": "Factories in Hangzhou reduce electricity consumption by 20 percent for two days. Production continues at reduced capacity; no stock has been destroyed.",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "expected_candidate": {
+        "text": "two days",
+        "days": 2.0,
+        "lower_bound": false
+      }
+    },
+    {
+      "case": "en_digits",
+      "article": {
+        "news_id": "SYN-DURATION-en_digits",
+        "published_date": "2026-10-18T00:00:00+00:00",
+        "source": "SINTÉTICO · QA duraciones",
+        "headline": "Brief power rationing affects Hangzhou factories",
+        "summary": "Factories in Hangzhou reduce electricity consumption by 20 percent for 2 days. Production continues at reduced capacity; no stock has been destroyed.",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "expected_candidate": {
+        "text": "2 days",
+        "days": 2.0,
+        "lower_bound": false
+      }
+    },
+    {
+      "case": "es_words",
+      "article": {
+        "news_id": "SYN-DURATION-es_words",
+        "published_date": "2026-10-18T00:00:00+00:00",
+        "source": "SINTÉTICO · QA duraciones",
+        "headline": "Racionamiento eléctrico breve en fábricas de Hangzhou",
+        "summary": "Las fábricas de Hangzhou reducen el consumo eléctrico un 20 por ciento durante dos días. La producción continúa con capacidad reducida; no se han destruido existencias.",
+        "language": "es",
+        "context_id": "exercise"
+      },
+      "expected_candidate": {
+        "text": "dos días",
+        "days": 2.0,
+        "lower_bound": false
+      }
+    },
+    {
+      "case": "es_digits",
+      "article": {
+        "news_id": "SYN-DURATION-es_digits",
+        "published_date": "2026-10-18T00:00:00+00:00",
+        "source": "SINTÉTICO · QA duraciones",
+        "headline": "Racionamiento eléctrico breve en fábricas de Hangzhou",
+        "summary": "Las fábricas de Hangzhou reducen el consumo eléctrico un 20 por ciento durante 2 días. La producción continúa con capacidad reducida; no se han destruido existencias.",
+        "language": "es",
+        "context_id": "exercise"
+      },
+      "expected_candidate": {
+        "text": "2 días",
+        "days": 2.0,
+        "lower_bound": false
+      }
+    },
+    {
+      "case": "en_min_words",
+      "article": {
+        "news_id": "SYN-DURATION-en_min_words",
+        "published_date": "2026-10-18T00:00:00+00:00",
+        "source": "SINTÉTICO · QA duraciones",
+        "headline": "Brief power rationing affects Hangzhou factories",
+        "summary": "Factories in Hangzhou reduce electricity consumption by 20 percent for at least two days. Production continues at reduced capacity; no stock has been destroyed.",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "expected_candidate": {
+        "text": "at least two days",
+        "days": 2.0,
+        "lower_bound": true
+      }
+    },
+    {
+      "case": "en_min_digits",
+      "article": {
+        "news_id": "SYN-DURATION-en_min_digits",
+        "published_date": "2026-10-18T00:00:00+00:00",
+        "source": "SINTÉTICO · QA duraciones",
+        "headline": "Brief power rationing affects Hangzhou factories",
+        "summary": "Factories in Hangzhou reduce electricity consumption by 20 percent for at least 2 days. Production continues at reduced capacity; no stock has been destroyed.",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "expected_candidate": {
+        "text": "at least 2 days",
+        "days": 2.0,
+        "lower_bound": true
+      }
+    }
+  ],
+  "pairs": [
+    [
+      "en_words",
+      "en_digits"
+    ],
+    [
+      "es_words",
+      "es_digits"
+    ],
+    [
+      "en_min_words",
+      "en_min_digits"
+    ]
+  ],
+  "review_policy": "unchanged; no forced association, risk or duration selection"
+}
