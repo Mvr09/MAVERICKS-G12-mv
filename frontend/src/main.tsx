@@ -84,6 +84,16 @@ const names: Record<string, string> = {
 };
 Object.assign(names, {
   ...eventNames,
+  link_evidence_confidence_low: "Selección de cita de asociación incierta",
+  association_support_insufficient: "Soporte insuficiente de la asociación",
+  scope_coverage_unconfirmed: "Cobertura del alcance sin confirmar",
+  geography_requires_review: "Ubicación ambigua: exposición por confirmar",
+  geography_not_resolved: "Ubicación con alternativas o sin resolver",
+  risk_ambiguous: "Decisión de riesgo ambigua",
+  risk_evidence_insufficient:
+    "Evidencia insuficiente para la decisión de riesgo",
+  urgency_ambiguous: "Decisión de urgencia ambigua",
+  risk_impact_contradiction: "Riesgo y estado del impacto contradictorios",
   inventory_missing: "Inventario físico no informado",
   criticality_missing: "Criticidad no informada",
   risk_without_operational_evidence:
@@ -1608,6 +1618,46 @@ function ArticleDetail({ context, presenter, action }: any) {
               categorías.
             </small>
           </div>
+          {!!a.analysis.review_details?.length && (
+            <details>
+              <summary>Revisión por campo y relevancia</summary>
+              {a.analysis.review_details.map((d, index) => (
+                <div className="diagnostic-cause" key={index}>
+                  <strong>
+                    {reviewLabel(
+                      d.code + (d.supplier_id ? ":" + d.supplier_id : ""),
+                    )}
+                  </strong>
+                  <p>
+                    {d.requires_review
+                      ? "Requiere revisión"
+                      : "Observación auxiliar · no bloquea la decisión"}{" "}
+                    ·{" "}
+                    {
+                      (
+                        {
+                          association: "Asociación",
+                          risk: "Riesgo",
+                          urgency: "Urgencia",
+                          priority: "Prioridad",
+                          auxiliary: "Campo auxiliar",
+                        } as Record<string, string>
+                      )[d.relevance]
+                    }
+                  </p>
+                  <small>
+                    Campo: {d.field} · Valor:{" "}
+                    {typeof d.value === "number"
+                      ? d.value.toLocaleString("es-ES", {
+                          maximumFractionDigits: 3,
+                        })
+                      : (d.value ?? "No disponible")}
+                    {d.threshold != null ? " · Umbral: " + d.threshold : ""}
+                  </small>
+                </div>
+              ))}
+            </details>
+          )}
           <h3>Evidencia literal</h3>
           {a.analysis.evidence
             .filter((e) =>
@@ -1627,6 +1677,18 @@ function ArticleDetail({ context, presenter, action }: any) {
                 Vínculo {number(s.p_link * 100)}% · {riskLabel(s.is_risk)} ·{" "}
                 {urgencyLabel(s.urgent)}
               </span>
+              {s.p_candidate != null && (
+                <small>
+                  Candidatura inicial: {number(s.p_candidate * 100)}% ·
+                  Asociación final:{" "}
+                  {s.association_status === "confirmed"
+                    ? "Confirmada"
+                    : s.association_status === "excluded"
+                      ? "Excluida"
+                      : "Por confirmar"}{" "}
+                  · {s.geography_version}
+                </small>
+              )}
               {s.p_identity != null && (
                 <small>
                   Identidad explícita: {number(s.p_identity * 100)}% ·
@@ -1903,6 +1965,32 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
               </p>
             </div>
             <div className="fact-box">
+              {s.geography && (
+                <details>
+                  <summary>Geografía con procedencia</summary>
+                  <p>
+                    {s.geography.version} ·{" "}
+                    {s.geography.status === "ambiguous"
+                      ? "Varias coincidencias del lugar"
+                      : s.geography.status === "matched"
+                        ? "Lugar encontrado"
+                        : "Ubicación sin resolver"}
+                  </p>
+                  {s.geography.places.map((p, i) => (
+                    <p key={i}>
+                      <a href={p.source_url} target="_blank" rel="noreferrer">
+                        {p.name}
+                        {p.admin1 ? " · " + p.admin1.name : ""} · GeoNames ↗
+                      </a>
+                    </p>
+                  ))}
+                  <small>
+                    Coincidencias de la ciudad del catálogo, no plantas
+                    verificadas ni ubicaciones adicionales del proveedor. No se
+                    elige una alternativa por población.
+                  </small>
+                </details>
+              )}
               <h3>Materiales mapeados</h3>
               {s.materials.length ? (
                 s.materials.map((m) => (
@@ -2848,6 +2936,7 @@ function DemoControl({
     [options, setOptions] = useState<any[]>([]),
     [selection, setSelection] = useState<string[]>([]),
     [mode, setMode] = useState<"delete" | "rerun">(initialMode),
+    [analysisProfile, setAnalysisProfile] = useState("1.0.0"),
     [preview, setPreview] = useState<any>(null),
     [confirmation, setConfirmation] = useState(""),
     [busy, setBusy] = useState(false),
@@ -2864,6 +2953,7 @@ function DemoControl({
     invalidate();
     setLoading(true);
     setMode(initialMode);
+    setAnalysisProfile("1.0.0");
     setSelection(initialSelection);
     try {
       const rows = await api("/demo/options");
@@ -2997,6 +3087,30 @@ function DemoControl({
                 </span>
               </label>
             </fieldset>
+            {mode === "rerun" && (
+              <label>
+                Perfil del ejercicio
+                <select
+                  aria-label="Perfil del ejercicio"
+                  value={analysisProfile}
+                  onChange={(e) => {
+                    invalidate();
+                    setAnalysisProfile(e.target.value);
+                  }}
+                  disabled={busy}
+                >
+                  <option value="1.0.0">1.0.0 · versión anterior</option>
+                  <option value="link-2.2.0">
+                    link-2.2.0 · vínculo y revisión experimental
+                  </option>
+                </select>
+                <small>
+                  Conserva versiones anteriores. Solo afecta al ejercicio; RSS
+                  mantiene su perfil. Validación inspeccionada: comparación
+                  retrospectiva. No ejecutar Test/LiveDay como desarrollo.
+                </small>
+              </label>
+            )}
             <p>
               El consumo y los registros de llamadas JEV se conservan. Los
               incidentes compartidos se recalculan con las evidencias restantes.
@@ -3010,13 +3124,25 @@ function DemoControl({
                 setBusy(true);
                 setError("");
                 setConfirmation("");
+                setPreview(null);
                 try {
-                  setPreview(
-                    await api("/demo/preview", {
-                      method: "POST",
-                      body: JSON.stringify({ selection, mode }),
+                  const result = await api("/demo/preview", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      selection,
+                      mode,
+                      analysis_profile: analysisProfile,
                     }),
-                  );
+                  });
+                  if (
+                    mode === "rerun" &&
+                    analysisProfile !== "1.0.0" &&
+                    result.analysis_profile !== analysisProfile
+                  )
+                    throw new Error(
+                      "El servidor no confirmó el perfil elegido. Actualiza la página antes de continuar.",
+                    );
+                  setPreview(result);
                 } catch (e) {
                   setError((e as Error).message);
                 } finally {
@@ -3039,6 +3165,13 @@ function DemoControl({
                   {preview.counts.alerts} alertas · {preview.counts.drafts}{" "}
                   borradores asociados
                 </p>
+                {mode === "rerun" && (
+                  <p>
+                    Perfil del ejercicio confirmado:{" "}
+                    <strong>{preview.analysis_profile || "1.0.0"}</strong>. RSS
+                    conserva su propio perfil.
+                  </p>
+                )}
                 {preview.counts.suppliers > 0 && (
                   <p>
                     Catálogo: {preview.counts.suppliers} proveedores y{" "}

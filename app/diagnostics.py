@@ -17,6 +17,16 @@ def review_trace(result, raw):
     Scope is diagnostic relevance, not permission to remove a review. Discarded
     identity candidates may still need review; no decisions are recomputed.
     """
+    if result.get("question_version") == "link-2.2.0":
+        assessed = {s["supplier_id"]: s for s in result["assessments"]}
+        trace = []
+        auxiliary = []
+        for detail in result.get("review_details", []):
+            sid = detail["supplier_id"]
+            scope = "auxiliary" if not detail["requires_review"] else "discarded_candidate" if sid and detail["relevance"] == "association" and assessed[sid]["p_link"] < POLICY["thresholds"]["link"] else "decision"
+            item = {"code": detail["code"], "supplier_id": sid, "scope": scope, "origin": "field", "details": detail}
+            (trace if detail["requires_review"] else auxiliary).append(item)
+        return {"causes": trace, "auxiliary_notes": auxiliary, "decision_gates": [], "root_scopes": sorted({d["scope"] for d in trace}), "inherited": [], "raw_available": bool(raw.get("b") or raw.get("a")), "status_explained": result["analysis_status"] != "review" or bool(trace)}
     t = POLICY["thresholds"]
     aa = raw.get("a", {}).get("answers", {})
     bb = (raw.get("b") or {}).get("answers", {})
@@ -119,13 +129,13 @@ def diagnose_batch(db, bid):
         assessments = {a["supplier_id"]: a for a in result["assessments"]}
         supplier_gates = []
         for sid in sorted(set(expected) | set(actual)):
-            p = aa.get("linked_" + sid, {}).get("noul")
             assessment = assessments.get(sid)
+            p = assessment["p_link"] if assessment and result["question_version"] == "link-2.2.0" else aa.get("linked_" + sid, {}).get("noul")
             supplier_gates.append({"supplier_id": sid, "expected": sid in expected, "predicted": sid in actual,
-                "p_link": p, "stage_b_evaluated": bool(assessment),
+                "p_link": p, "p_candidate": aa.get("candidate_" + sid, {}).get("noul"), "p_identity": assessment.get("p_identity") if assessment else None, "p_exposure": assessment.get("p_exposure") if assessment else None, "stage_b_evaluated": bool(assessment),
                 "p_risk": assessment["p_risk"] if assessment else None,
                 "p_urgent": assessment["p_urgent"] if assessment else None,
-                "gate": "raw_unavailable" if p is None else "excluded_before_stage_b" if p < t["review_low"] else "below_link_threshold" if p < t["link"] else "below_risk_threshold" if assessment and assessment["p_risk"] < t["risk"] else "risk_accepted" if assessment else "assessment_unavailable"})
+                "gate": "excluded_before_stage_b" if result["question_version"] == "link-2.2.0" and not assessment else "raw_unavailable" if p is None else "excluded_before_stage_b" if p < t["review_low"] else "below_link_threshold" if p < t["link"] else "below_risk_threshold" if assessment and assessment["p_risk"] < t["risk"] else "risk_accepted" if assessment else "assessment_unavailable"})
         rows.append({"article_id": article.id, "news_id": article.news_id, "headline": article.data["headline"], "summary": article.data["summary"], "row_order": article.row_order,
             "reference": {"is_risk": label["Is_Risk"], "urgent": label["Urgent"], "affected_supplier_ids": expected, "explanation": label.get("Explanation"), "event_type": label.get("Event_Type")},
             "prediction": {k: result[k] for k in ("is_risk", "urgent", "affected_supplier_ids", "analysis_status", "review_reasons")},

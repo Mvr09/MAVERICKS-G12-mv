@@ -19,6 +19,9 @@ class Evidence(StrictModel):
 class Assessment(StrictModel):
     supplier_id: str
     p_link: float = Field(ge=0, le=1)
+    p_candidate: float | None = Field(default=None, ge=0, le=1)
+    association_status: Literal["confirmed", "review", "excluded"] | None = None
+    geography_version: str | None = None
     p_identity: float | None = Field(default=None, ge=0, le=1)
     p_exposure: float | None = Field(default=None, ge=0, le=1)
     p_risk: float = Field(ge=0, le=1)
@@ -69,6 +72,16 @@ class EventClassification(StrictModel):
     label_es: str | None = None
 
 
+class ReviewDetail(StrictModel):
+    code: str
+    field: str
+    supplier_id: str | None
+    relevance: Literal["association", "risk", "urgency", "priority", "auxiliary"]
+    requires_review: bool
+    value: float | str | None
+    threshold: float | None
+
+
 class NormalizedAnalysis(StrictModel):
     article_id: str
     news_id: str
@@ -86,6 +99,7 @@ class NormalizedAnalysis(StrictModel):
     evidence: list[Evidence]
     review_reasons: list[str]
     context_notes: list[str] = Field(default_factory=list)
+    review_details: list[ReviewDetail] = Field(default_factory=list)
     source_reading: SourceReading | None = None
     event_classification: EventClassification | None = None
 

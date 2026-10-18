@@ -12,7 +12,7 @@ COPY requirements.lock ./
 RUN pip install --no-cache-dir -r requirements.lock && useradd --create-home --uid 10001 radar
 COPY app/ ./app/
 COPY reference/jev_requests.py reference/scoring.py ./reference/
-COPY config/risk_policy.json config/rss_sources.json config/authorization.json ./config/
+COPY config/risk_policy.json config/rss_sources.json config/authorization.json config/geography.json ./config/
 COPY contracts/ ./contracts/
 COPY migrations/ ./migrations/
 COPY alembic.ini ./

@@ -1,6 +1,7 @@
 from datetime import date
 from app.provenance import KNOWN_INPUT_FILENAMES
 from app.event_tags import event_tag
+from app.geography import payload_location
 from sqlalchemy import select, func, and_
 from app.models import (
     Supplier,
@@ -203,6 +204,7 @@ def suppliers_view(db, context="exercise", origin=""):
         out.append(
             {
                 **s.data,
+                "geography": payload_location({}, s.data),
                 "products": products,
                 "products_mapped": bool(products),
                 "materials": [

@@ -59,6 +59,7 @@ def run_job(jid):
                     db,
                     j.payload["article_id"],
                     diagnostic_ack_at=j.payload.get("diagnostic_ack_at"),
+                    profile=j.payload.get("analysis_profile", "1.0.0"),
                 )
                 j = db.get(Job, jid)
                 j.state = "error" if r["analysis_status"] == "error" else "done"

@@ -208,16 +208,20 @@ def scope(db, selection=None, mode="delete"):
     }
 
 
-def preview(db, selection=None, mode="delete"):
+def preview(db, selection=None, mode="delete", analysis_profile="1.0.0"):
+    if analysis_profile not in ("1.0.0", "link-2.2.0"):
+        raise ValueError("Perfil de análisis desconocido")
     plan = scope(db, selection, mode)
     return {
         "counts": plan["counts"],
         "blocked": plan["blocked"],
         "mode": mode,
+        "analysis_profile": analysis_profile,
         "maximum_requests": len(plan["aids"]) * 6 if mode == "rerun" else 0,
         "token": codec().dumps(
             {
                 "purpose": "demo-cleanup",
+                "analysis_profile": analysis_profile,
                 "selection": None if plan["legacy"] else plan["selection"],
                 "mode": mode,
                 "snapshot": digest(plan["snapshot"]),
@@ -342,7 +346,7 @@ def cleanup(db, token):
                     db,
                     f"analysis:{a.id}:g{a.generation}",
                     "analysis",
-                    {"article_id": a.id, "generation": a.generation},
+                    {"article_id": a.id, "generation": a.generation, "analysis_profile": approved.get("analysis_profile", "1.0.0")},
                     100,
                 ).id
             )

@@ -225,6 +225,28 @@
             "type": "number",
             "minimum": 0,
             "maximum": 1
+          },
+          "p_candidate": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "association_status": {
+            "enum": [
+              "confirmed",
+              "review",
+              "excluded",
+              null
+            ]
+          },
+          "geography_version": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "allOf": [
@@ -422,6 +444,61 @@
         },
         "label_es": {
           "type": "string"
+        }
+      }
+    },
+    "review_details": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "field",
+          "supplier_id",
+          "relevance",
+          "requires_review",
+          "value",
+          "threshold"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "supplier_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "relevance": {
+            "enum": [
+              "association",
+              "risk",
+              "urgency",
+              "priority",
+              "auxiliary"
+            ]
+          },
+          "requires_review": {
+            "type": "boolean"
+          },
+          "value": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "threshold": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
         }
       }
     }

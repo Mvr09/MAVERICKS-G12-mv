@@ -58,7 +58,11 @@ for (const width of [360, 1440]) {
     ).toBeDisabled();
     await page.getByRole("checkbox", { name: "MOCK EMA" }).check();
     await page.getByRole("button", { name: "Revisar alcance" }).click();
-    expect(selected).toEqual({ selection: ["rss:ema"], mode: "delete" });
+    expect(selected).toEqual({
+      selection: ["rss:ema"],
+      mode: "delete",
+      analysis_profile: "1.0.0",
+    });
     await page
       .getByRole("radio", { name: "Volver a ejecutar el análisis" })
       .check();
@@ -66,7 +70,11 @@ for (const width of [360, 1440]) {
       page.getByLabel("Escribe LIMPIAR DEMO para confirmar"),
     ).toHaveCount(0);
     await page.getByRole("button", { name: "Revisar alcance" }).click();
-    expect(selected).toEqual({ selection: ["rss:ema"], mode: "rerun" });
+    expect(selected).toEqual({
+      selection: ["rss:ema"],
+      mode: "rerun",
+      analysis_profile: "1.0.0",
+    });
     await expect(
       page.getByRole("checkbox", { name: "Catálogo" }),
     ).toBeDisabled();
@@ -85,7 +93,7 @@ for (const width of [360, 1440]) {
       ),
     ).toBe(true);
     await page.screenshot({
-      path: `../reports/demo-selection-${width}.png`,
+      path: `../reports/demo-profile-${width}.png`,
       fullPage: true,
     });
     await page.getByRole("button", { name: "Encolar nuevo análisis" }).click();

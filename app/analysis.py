@@ -214,7 +214,7 @@ def normalize(article, suppliers, a, b, candidates):
 
 
 def process_article(
-    db, article_id, transport=None, diagnostic_ack_at=None, run_key=None, publish=True
+    db, article_id, transport=None, diagnostic_ack_at=None, run_key=None, publish=True, profile="1.0.0"
 ):
     a = db.get(Article, article_id)
     suppliers = [s.data for s in db.scalars(select(Supplier).order_by(Supplier.id))]
@@ -247,9 +247,17 @@ def process_article(
             "full_text": a.data.get("full_text", ""),
             "enrichment": a.data.get("enrichment", {}),
         }
-    build_a = rss_questions.stage_a if rss else stage_a
-    build_b = rss_questions.stage_b if rss else stage_b
-    question_version = rss_questions.VERSION if rss else POLICY["question_version"]
+    from app import link_questions
+    modern = not rss and profile == link_questions.VERSION
+    if profile not in ("1.0.0", link_questions.VERSION):
+        raise ProviderError("UNKNOWN_ANALYSIS_PROFILE")
+    if modern:
+        raw["_profile"] = profile
+        from app.geography import location
+        raw["_geography_snapshot"] = {s["supplier_id"]: location(s) for s in suppliers}
+    build_a = rss_questions.stage_a if rss else link_questions.stage_a if modern else stage_a
+    build_b = rss_questions.stage_b if rss else link_questions.stage_b if modern else stage_b
+    question_version = rss_questions.VERSION if rss else link_questions.VERSION if modern else POLICY["question_version"]
     deadline = time.monotonic() + 60
     pa = build_a(a.data, suppliers, settings.jev_model)
     request_hash = digest(
@@ -276,7 +284,7 @@ def process_article(
         raw["a"] = client.ask(pa, "a", deadline)
         if rss:
             rss_questions.linked_answers(raw["a"], suppliers)
-        candidates = [
+        candidates = link_questions.select_candidates(a.data, suppliers, raw["a"]) if modern else [
             s
             for s in suppliers
             if raw["a"]["answers"]["linked_" + s["supplier_id"]]["noul"]
@@ -303,7 +311,13 @@ def process_article(
             if candidates
             else None
         )
-        result = normalize(a, suppliers, raw["a"], raw["b"], duration_candidates)
+        if modern:
+            from app.link_analysis import normalize as normalize_link
+            result = normalize_link(a, suppliers, raw["a"], raw["b"], duration_candidates)
+            NormalizedAnalysis.model_validate(result)
+            validate(result, SCHEMA)
+        else:
+            result = normalize(a, suppliers, raw["a"], raw["b"], duration_candidates)
         from app.incidents import reconcile
 
         if publish:

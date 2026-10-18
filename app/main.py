@@ -187,6 +187,7 @@ def config():
         "policy_version": POLICY["version"],
         "question_version": POLICY["question_version"],
         "rss_question_version": RSS_QUESTION_VERSION,
+        "exercise_profiles": ["1.0.0", "link-2.2.0"],
         "engine_configured": bool(settings.typesafe_api_key.get_secret_value()),
         "bands": POLICY["bands"],
         "cooldown_seconds": POLICY["audio"]["cooldown_seconds"],
@@ -794,6 +795,7 @@ def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
 class DemoSelection(BaseModel):
     selection: list[str] = Field(max_length=500)
     mode: Literal["delete", "rerun"] = "delete"
+    analysis_profile: Literal["1.0.0", "link-2.2.0"] = "1.0.0"
 
 
 @app.get("/api/demo/options", dependencies=[Depends(presenter)])
@@ -808,7 +810,7 @@ def selected_demo_preview(body: DemoSelection, db: Session = Depends(get_db)):
     from app.demo import preview
 
     try:
-        return preview(db, body.selection, body.mode)
+        return preview(db, body.selection, body.mode, body.analysis_profile)
     except ValueError as exc:
         raise HTTPException(409, str(exc))
 

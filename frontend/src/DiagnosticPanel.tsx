@@ -25,6 +25,10 @@ const reasons: Record<string, string> = {
 };
 const decisions = (value: string) =>
   value === "Y" ? "Sí" : value === "N" ? "No" : "Sin determinar";
+const probability = (value: number | null) =>
+  value == null
+    ? "No evaluada"
+    : value.toLocaleString("es-ES", { maximumFractionDigits: 3 });
 const ids = (value: string[]) => value.join(", ") || "Ninguno";
 
 export function DiagnosticPanel({ bid }: { bid: string }) {
@@ -197,9 +201,19 @@ export function DiagnosticPanel({ bid }: { bid: string }) {
                 <summary>Puertas de decisión por proveedor</summary>
                 {row.supplier_gates.map((s: any) => (
                   <p key={s.supplier_id}>
-                    <strong>{s.supplier_id}</strong>: vínculo {number(s.p_link)}
-                    , riesgo {number(s.p_risk)}, urgencia {number(s.p_urgent)} ·
-                    etapa B {s.stage_b_evaluated ? "evaluada" : "no evaluada"} ·{" "}
+                    <strong>{s.supplier_id}</strong>
+                    {s.p_candidate != null && (
+                      <span>
+                        {" "}
+                        · Candidatura {probability(s.p_candidate)} · Identidad{" "}
+                        {probability(s.p_identity)} · Exposición{" "}
+                        {probability(s.p_exposure)}
+                      </span>
+                    )}
+                    : vínculo {probability(s.p_link)}, riesgo{" "}
+                    {probability(s.p_risk)}, urgencia {probability(s.p_urgent)}{" "}
+                    · etapa B {s.stage_b_evaluated ? "evaluada" : "no evaluada"}{" "}
+                    ·{" "}
                     {
                       (
                         {

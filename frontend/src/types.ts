@@ -1,6 +1,9 @@
 export interface Assessment {
   supplier_id: string;
   p_link: number;
+  p_candidate?: number;
+  association_status?: "confirmed" | "review" | "excluded";
+  geography_version?: string;
   p_identity?: number;
   p_exposure?: number;
   p_risk: number;
@@ -21,6 +24,15 @@ export interface Assessment {
   impact_status: string;
 }
 export interface Analysis {
+  review_details?: {
+    code: string;
+    field: string;
+    supplier_id: string | null;
+    relevance: string;
+    requires_review: boolean;
+    value: string | number | null;
+    threshold: number | null;
+  }[];
   event_classification?: {
     category: string;
     confidence: number;
@@ -120,6 +132,15 @@ export interface Material {
   alternate?: Supplier | null;
 }
 export interface Supplier {
+  geography?: {
+    version: string;
+    status: string;
+    places: {
+      name: string;
+      admin1?: { name: string } | null;
+      source_url: string;
+    }[];
+  };
   materials: Material[];
   supplier_id: string;
   name: string;

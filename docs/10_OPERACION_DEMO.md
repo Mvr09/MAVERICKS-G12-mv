@@ -140,3 +140,37 @@ Las raíces distinguen **Decisión relevante**, **Candidato no aceptado** y **Ca
 El endpoint `GET /api/model/diagnostics/{batch_id}` exige sesión, no permite Test/LiveDay/RSS, bloquea lotes incompletos o con versiones mezcladas y no expone cuerpos de peticiones JEV. No modifica preguntas, umbrales, resultados, métricas ni trabajos. Si falta la respuesta original, indica la limitación. La política histórica debe coincidir con la disponible.
 
 Inspeccionar validación es diagnóstico retrospectivo. No desarrollar ni seleccionar correcciones con sus filas; usar entrenamiento, versionar y congelar cualquier cambio. Una repetición sobre validación inspeccionada se informa como comparación retrospectiva, nunca como una nueva evaluación independiente. El diagnóstico conserva las predicciones originales.
+
+## Propuesta de vínculo link-2.2.0
+
+El perfil **1.0.0 sigue siendo el predeterminado**. Para probar la propuesta: Preparar demo → seleccionar un lote de ejercicio → Volver a ejecutar el análisis → **Perfil del ejercicio: link-2.2.0** → revisar alcance y confirmar REANALIZAR. El perfil queda firmado en la vista previa y fijado en cada trabajo persistente; cambiar de selección/perfil invalida la vista previa. Se conservan generaciones anteriores. Los RSS continúan usando su propio perfil y el análisis periódico de pago sigue desactivado. No usar Test/LiveDay para desarrollar ni para seleccionar versiones.
+
+- A evalúa las 40 identidades de cartera como posibles candidatos. Las pistas de nombre, ciudad, región, país o alias amplían la recuperación, sin confirmar asociación.
+- B vuelve a evaluar identidad, compatibilidad del área y compatibilidad operativa con el contexto completo. El indicador de exposición es el mínimo de esas dos compatibilidades y el vínculo final el máximo entre identidad y exposición. Son composiciones conservadoras de indicadores, no probabilidades calibradas ni suposiciones de independencia. El riesgo condicionado nunca confirma un vínculo ni el resultado A limita el valor final de B.
+- Riesgo y urgencia son juicios separados. La urgencia pide necesidad de coordinación inmediata, no certeza de desabastecimiento; una interrupción limitada puede ser riesgo sin urgencia.
+- `review_details` distingue asociación, riesgo, urgencia, prioridad y observaciones auxiliares. La categoría o selección de cita inciertas siguen visibles. Para dejar un caso sin revisión se exige soporte de asociación/exclusión y, para proveedores asociados, soporte de la decisión de riesgo. Las dudas de campos de un candidato claramente excluido no se propagan como severidad o urgencia a otros proveedores.
+- Se mantienen los umbrales de la política 1.0.0. La versión experimental NO está promovida a predeterminada: presenta regresiones y una abstención mayor. Una revisión no convierte en correcta una predicción ni elimina su error de las métricas.
+
+### Procedencia geográfica
+
+`config/geography.json` deriva de los archivos oficiales `cities15000.zip`, `admin1CodesASCII.txt` y `countryInfo.txt` de [GeoNames](https://download.geonames.org/export/dump/readme.txt), CC BY 4.0. Conserva fecha de descarga, hashes, identificadores y URL por lugar. Las coincidencias del catálogo son información sobre lugares, no verificación de empresas ni plantas adicionales. Taizhou y Lancaster tienen alternativas de distintas regiones; Shanghai y Kaohsiung incluyen alias de distritos. No se elige por población. El gazetteer no es exhaustivo; los alias pueden ser transliteraciones o nombres históricos.
+
+El payload incluye todas las alternativas de lugar, sus regiones y únicamente los alias que coinciden con el artículo. El resto se conserva en el snapshot auditable, evitando contexto irrelevante. La ficha del proveedor muestra las coincidencias y enlaces de procedencia.
+
+Para reconstruir sin sobreescribir el snapshot congelado, descargar los cuatro archivos indicados (`readme.txt` incluido) en `.runtime/geonames` y ejecutar:
+
+```bash
+.venv/bin/python -m scripts.build_geography --geonames-dir .runtime/geonames --output reports/private/geography-rebuild.json
+```
+
+### Reproducir la comparación
+
+Usar una base local dedicada `radar_link_development`, nunca producción. Las credenciales existentes se cargan en ejecución. Los scripts exigen explícitamente ese nombre de base y crean tablas sin eliminar datos. Conservar el estado para reutilizar caché y contadores. Training solo lee `inputs/supplier_training.xlsx`. La comparación retrospectiva lee únicamente la validación declarada, después de verificar el congelado.
+
+```bash
+DATABASE_URL='postgresql+psycopg://usuario:ejemplo@localhost:5432/radar_link_development' .venv/bin/python -m scripts.compare_link_profiles --execute
+DATABASE_URL='postgresql+psycopg://usuario:ejemplo@localhost:5432/radar_link_development' .venv/bin/python -m scripts.check_link_synthetic
+DATABASE_URL='postgresql+psycopg://usuario:ejemplo@localhost:5432/radar_link_development' .venv/bin/python -m scripts.compare_link_profiles --execute --phase retrospective --historical-baseline reports/private/diagnostic-validation.json
+```
+
+Los resultados por noticia, etiquetas y registros de consumo se guardan en `reports/private`, excluido de Git/Docker. Los presupuestos de ensayo persisten: training360, retrospectiva120 y sintéticos36 peticiones máximas con reintentos. No son límites nuevos de la demo. Los errores de contrato paran el experimento; no reanudar sin diagnóstico registrado. `--new-iteration` archiva resultados experimentales cuando cambia el perfil; nunca modifica la referencia. `--acknowledge-diagnosed-errors` solo debe usarse después de resolver y registrar el diagnóstico. El informe público agregado y `reports/link-v2-freeze.json` distinguen desarrollo, retrospectiva y pruebas sintéticas; no constituyen validación independiente.

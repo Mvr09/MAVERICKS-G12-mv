@@ -206,6 +206,24 @@ def global_slot(deadline):
             )
 
 
+def safe_http_diagnostic(response):
+    """Keep recognized machine codes only, never echoed credentials or input."""
+    try:
+        body = response.json()
+    except ValueError:
+        return {"code": "non_json_error"}
+    if not isinstance(body, dict):
+        return {"code": "unstructured_error"}
+    error = body.get("error", body)
+    if not isinstance(error, dict):
+        error = {"message": error}
+    # Free-text provider messages may echo a credential fragment or user data.
+    # Persist only a recognized machine code; never headers or echoed content.
+    allowed = {"max_tokens_exceeded", "input_too_long", "invalid_request", "invalid_api_key", "validation_error", "rate_limit_exceeded", "context_length_exceeded", "model_not_found"}
+    code = error.get("code")
+    return {"code": code if isinstance(code, str) and code in allowed else "provider_error"}
+
+
 class JevClient:
     def __init__(
         self,
@@ -326,6 +344,7 @@ class JevClient:
                     )
                     status = response.status_code
                     if status != 200:
+                        usage["_provider_error"] = safe_http_diagnostic(response)
                         raise ProviderError(f"JEV_HTTP_{status}")
                     try:
                         data = response.json()

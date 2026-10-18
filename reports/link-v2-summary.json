@@ -1,0 +1,191 @@
+{
+  "training": {
+    "1.0.0": {
+      "processed": 30,
+      "metrics": {
+        "n": 30,
+        "risk": {
+          "tp": 10,
+          "fp": 0,
+          "fn": 4,
+          "tn": 16,
+          "precision": 1.0,
+          "recall": 0.7142857142857143,
+          "f1": 0.8333333333333334,
+          "n": 30,
+          "positives": 14
+        },
+        "urgent": {
+          "tp": 5,
+          "fp": 3,
+          "fn": 0,
+          "tn": 22,
+          "precision": 0.625,
+          "recall": 1.0,
+          "f1": 0.7692307692307693,
+          "n": 30,
+          "positives": 5
+        },
+        "suppliers": {
+          "exact": 25,
+          "n": 30,
+          "precision": 0.9285714285714286,
+          "recall": 0.5909090909090909,
+          "exact_set_accuracy": 0.8333333333333334,
+          "tp": 13,
+          "fp": 1,
+          "fn": 9,
+          "f1": 0.7222222222222222
+        },
+        "review_count": 16
+      }
+    },
+    "link-2.2.0": {
+      "processed": 30,
+      "metrics": {
+        "n": 30,
+        "risk": {
+          "tp": 12,
+          "fp": 0,
+          "fn": 2,
+          "tn": 16,
+          "precision": 1.0,
+          "recall": 0.8571428571428571,
+          "f1": 0.9230769230769231,
+          "n": 30,
+          "positives": 14
+        },
+        "urgent": {
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "tn": 25,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 30,
+          "positives": 5
+        },
+        "suppliers": {
+          "exact": 26,
+          "n": 30,
+          "precision": 1.0,
+          "recall": 0.7727272727272727,
+          "exact_set_accuracy": 0.8666666666666667,
+          "tp": 17,
+          "fp": 0,
+          "fn": 5,
+          "f1": 0.8717948717948718
+        },
+        "review_count": 22
+      }
+    }
+  },
+  "retrospective": {
+    "1.0.0": {
+      "processed": 10,
+      "metrics": {
+        "n": 10,
+        "risk": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 2,
+          "tn": 5,
+          "precision": 1.0,
+          "recall": 0.6,
+          "f1": 0.75,
+          "n": 10,
+          "positives": 5
+        },
+        "urgent": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 8,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 10,
+          "positives": 2
+        },
+        "suppliers": {
+          "exact": 8,
+          "n": 10,
+          "precision": 1.0,
+          "recall": 0.7,
+          "exact_set_accuracy": 0.8,
+          "tp": 7,
+          "fp": 0,
+          "fn": 3,
+          "f1": 0.8235294117647058
+        },
+        "review_count": 8
+      }
+    },
+    "link-2.2.0": {
+      "processed": 10,
+      "metrics": {
+        "n": 10,
+        "risk": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 1,
+          "tn": 5,
+          "precision": 1.0,
+          "recall": 0.8,
+          "f1": 0.8888888888888888,
+          "n": 10,
+          "positives": 5
+        },
+        "urgent": {
+          "tp": 2,
+          "fp": 1,
+          "fn": 0,
+          "tn": 7,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "n": 10,
+          "positives": 2
+        },
+        "suppliers": {
+          "exact": 8,
+          "n": 10,
+          "precision": 1.0,
+          "recall": 0.8,
+          "exact_set_accuracy": 0.8,
+          "tp": 8,
+          "fp": 0,
+          "fn": 2,
+          "f1": 0.8888888888888888
+        },
+        "review_count": 9
+      }
+    }
+  },
+  "synthetic": {
+    "multi_location": true,
+    "alias_irrelevant": true,
+    "alias_harmless": true,
+    "partial_interruption": false,
+    "ambiguous_city": true,
+    "namesake_geography": true
+  },
+  "requests": 241,
+  "http_status": {
+    "200": 237,
+    "400": 4
+  },
+  "models": [
+    "jev-1.13.0"
+  ],
+  "usage_reported": {
+    "input_tokens": 3384358,
+    "output_tokens": 209959,
+    "total_tokens": 0
+  },
+  "independent_evaluation": false,
+  "default_profile": "1.0.0",
+  "candidate_profile": "link-2.2.0",
+  "railway_data_reanalyzed": false
+}
