@@ -1,0 +1,44 @@
+{
+  "checked_at": "2026-10-18T15:22:06.801Z",
+  "revision": "12c4dff59252acca6a122341ae36479c81041b0c",
+  "mocked": false,
+  "viewports": [
+    {
+      "width": 360,
+      "supplier_detail": true,
+      "rss_article_detail": true,
+      "potential_exposure_visible": true,
+      "keyboard_context_focus": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "supplier_detail": true,
+      "rss_article_detail": true,
+      "potential_exposure_visible": true,
+      "keyboard_context_focus": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 768,
+      "supplier_detail": true,
+      "rss_article_detail": true,
+      "potential_exposure_visible": true,
+      "keyboard_context_focus": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "supplier_detail": true,
+      "rss_article_detail": true,
+      "potential_exposure_visible": true,
+      "keyboard_context_focus": true,
+      "horizontal_overflow": false
+    }
+  ],
+  "js_errors": [],
+  "mutating_requests": [],
+  "deployed_experimental_wording_verified_in_assets": true,
+  "note": "Ficha y noticia RSS existentes verificadas en vivo. Captura móvil real a360px revisada visualmente: señal de identidad, compatibilidad de exposición y aclaración de no afectación individual renderizadas con un resultado RSS previo. Sin crear análisis nuevos.",
+  "live_exposure_copy_visually_verified_at": 360
+}
