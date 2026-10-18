@@ -22,6 +22,7 @@ def review_trace(result, raw):
     bb = (raw.get("b") or {}).get("answers", {})
     trace = []
     inherited = []
+    decision_gates = []
     for reason in result["review_reasons"]:
         code, _, sid = reason.partition(":")
         if code == "link_ambiguous":
@@ -42,6 +43,22 @@ def review_trace(result, raw):
         accepted = assessment["p_link"] >= t["link"]
         risk = accepted and assessment["p_risk"] >= t["risk"]
         scope = "discarded_candidate" if not accepted else "decision" if risk else "auxiliary"
+        # decisions() can flag a numerical ambiguity even when normalize()
+        # stores only an earlier auxiliary reason. Trace those gates as well;
+        # they are NOT additional stored reason codes or changed decisions.
+        values = [("p_link", assessment["p_link"])]
+        if accepted:
+            values.append(("p_risk", assessment["p_risk"]))
+        if risk:
+            values.append(("p_urgent", assessment["p_urgent"]))
+        for field, value in values:
+            if t["review_low"] <= value <= t["review_high"]:
+                decision_gates.append({"supplier_id": sid, "field": field, "value": value,
+                    "scope": "discarded_candidate" if not accepted else "decision",
+                    "rule": "review_low <= value <= review_high"})
+        if assessment["impact_status"] == "unclear" or risk and assessment["impact_status"] in {"resolved", "positive", "unrelated"}:
+            decision_gates.append({"supplier_id": sid, "field": "impact_status", "value": assessment["impact_status"], "scope": scope,
+                "rule": "unclear or risk/impact contradiction"})
         for code in assessment["review_reasons"]:
             item = {"code": code, "supplier_id": sid, "scope": scope, "origin": "assessment", "details": {}}
             if code == "decision_ambiguous_or_contradictory":
@@ -79,8 +96,9 @@ def review_trace(result, raw):
     roots = set()
     for item in trace:
         roots.update(item.get("root_scopes", [item["scope"]]))
+    roots.update(g["scope"] for g in decision_gates)
     roots.discard("inherited")
-    return {"causes": trace, "root_scopes": sorted(roots), "inherited": inherited,
+    return {"causes": trace, "decision_gates": decision_gates, "root_scopes": sorted(roots), "inherited": inherited,
             "raw_available": bool(aa), "status_explained": result["analysis_status"] != "review" or bool(trace)}
 
 

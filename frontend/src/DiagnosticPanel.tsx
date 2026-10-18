@@ -172,6 +172,21 @@ export function DiagnosticPanel({ bid }: { bid: string }) {
                   .map((s: string) => scopes[s])
                   .join(" · ") || "Ninguna"}
               </p>
+              {row.review.decision_gates?.length > 0 && (
+                <details>
+                  <summary>
+                    Puertas de decisión que también generan revisión
+                  </summary>
+                  <p>
+                    Valores que activan la regla de revisión aunque el motivo
+                    genérico no se haya guardado por existir otro motivo previo.
+                    No son nuevas decisiones ni motivos almacenados adicionales.
+                  </p>
+                  <pre className="diagnostic-gates">
+                    {JSON.stringify(row.review.decision_gates, null, 2)}
+                  </pre>
+                </details>
+              )}
               {row.reference.explanation && (
                 <details>
                   <summary>Justificación de referencia</summary>

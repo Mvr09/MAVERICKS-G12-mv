@@ -112,6 +112,15 @@ for (const width of [360, 390, 768, 1440]) {
               ],
               review: {
                 root_scopes: ["discarded_candidate"],
+                decision_gates: [
+                  {
+                    supplier_id: "S001",
+                    field: "p_link",
+                    value: 0.42,
+                    scope: "discarded_candidate",
+                    rule: "review_low <= value <= review_high",
+                  },
+                ],
                 raw_available: true,
                 causes: [
                   {
@@ -147,6 +156,14 @@ for (const width of [360, 390, 768, 1440]) {
     ).toBeVisible();
     await expect(
       page.getByText("Validación ya inspeccionada.", { exact: false }),
+    ).toBeVisible();
+    await page
+      .getByText("Puertas de decisión que también generan revisión", {
+        exact: true,
+      })
+      .click();
+    await expect(
+      page.getByText("Valores que activan la regla", { exact: false }),
     ).toBeVisible();
     await page
       .getByText("Motivos exactos de revisión (2)", { exact: true })

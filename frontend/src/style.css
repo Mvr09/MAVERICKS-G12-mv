@@ -2170,6 +2170,7 @@ dialog header {
   background: #f5f7fb;
   border-radius: 8px;
 }
+.diagnostic-gates,
 .diagnostic-cause pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;

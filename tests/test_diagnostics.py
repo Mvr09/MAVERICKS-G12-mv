@@ -85,3 +85,19 @@ def test_risk_gate_omission_before_stage_b_and_auxiliary_negative_review():
         assert row["supplier_gates"][0]["gate"]=="excluded_before_stage_b"
         assert not row["supplier_gates"][0]["stage_b_evaluated"]
         assert row["prediction"]["analysis_status"]=="done"
+
+
+def test_direct_urgency_ambiguity_remains_visible_when_other_reason_masks_generic_code():
+    with Session() as db:
+        a = synthetic(db, "MOCK masked decision gate")
+        def fetch(r):
+            out = answer(json.loads(r.content), linked=("S001",), risk=0.9, urgent=0.47)
+            if "evidence_S001" in out["answers"]:
+                out["answers"]["evidence_S001"]["confidence"] = 0.4
+            return httpx.Response(200, json=out)
+        result = process_article(db, a.id, httpx.MockTransport(fetch))
+        run = db.scalar(select(Analysis).where(Analysis.article_id == a.id))
+        assert result["assessments"][0]["review_reasons"] == ["evidence_confidence_low"]
+        trace = review_trace(result, run.raw)
+        assert trace["decision_gates"] == [{"supplier_id":"S001", "field":"p_urgent", "value":0.47, "scope":"decision", "rule":"review_low <= value <= review_high"}]
+        assert trace["root_scopes"] == ["decision"]
