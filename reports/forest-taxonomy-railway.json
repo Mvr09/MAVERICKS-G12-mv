@@ -1,0 +1,195 @@
+{
+  "started_at_local": "2026-10-18T00:15:48.405517+00:00",
+  "revision": "605deffbed32000b72f0e2212f05c7daf48f7a9c",
+  "model": "jev-1.13.0",
+  "profile": "rss-2.1.0",
+  "taxonomy": "rss-events-1.1.0",
+  "article_count": 7,
+  "maximum_requests_including_retries": 42,
+  "started_monotonic": 37013.374413833,
+  "before": [
+    {
+      "id": "0d869f05-e156-44a0-8664-0b7758069f7b",
+      "generation": 0,
+      "category": "natural_disaster",
+      "type_uncertain": true
+    },
+    {
+      "id": "6e3854a1-76a2-429f-bc46-ee398673984b",
+      "generation": 0,
+      "category": "fire_incident",
+      "type_uncertain": true
+    },
+    {
+      "id": "b1a3a905-b003-4bd6-936c-cc6fdff04623",
+      "generation": 0,
+      "category": "natural_disaster",
+      "type_uncertain": true
+    },
+    {
+      "id": "af6dd1e0-212f-49a0-b85e-0bdc27b92337",
+      "generation": 0,
+      "category": "natural_disaster",
+      "type_uncertain": true
+    },
+    {
+      "id": "96fa7a7d-d0a2-4b3f-8e5a-6ac17dbb85e8",
+      "generation": 0,
+      "category": "fire_incident",
+      "type_uncertain": true
+    },
+    {
+      "id": "475ad4ae-8749-48fa-b128-ed9a4762c2c4",
+      "generation": 0,
+      "category": "natural_disaster",
+      "type_uncertain": true
+    },
+    {
+      "id": "010550a5-c039-46d9-9663-d6a911a9db34",
+      "generation": 0,
+      "category": "natural_disaster",
+      "type_uncertain": true
+    }
+  ],
+  "preview_counts": {
+    "batches": 0,
+    "articles": 7,
+    "analyses": 7,
+    "incidents": 0,
+    "alerts": 0,
+    "drafts": 0,
+    "comparisons": 2,
+    "suppliers": 0,
+    "materials": 0
+  },
+  "exercise_reanalyzed": false,
+  "job_ids": [
+    "0f999ecf-9334-42cb-abee-ade0d98cedb4",
+    "f75bc7b3-2a72-4a3e-b148-903b1681b94f",
+    "b6767ad2-c7b2-4904-863c-9af3c6b0904a",
+    "ef7eab9d-04b2-4a4d-9d15-15ccf053c373",
+    "e49ae308-809f-4ae7-8526-46fe14901c2e",
+    "5715f17e-4a8b-448f-b617-d24d5489e4c4",
+    "232cc0f8-33f6-4222-9ba8-6c83e88d2cd9"
+  ],
+  "after": [
+    {
+      "id": "0d869f05-e156-44a0-8664-0b7758069f7b",
+      "generation": 1,
+      "analysis_status": "done",
+      "category": "wildfire",
+      "confidence": 1.0,
+      "canonical_type": "natural_disaster",
+      "model": "jev-1.13.0",
+      "profile": "rss-2.1.0",
+      "new_requests": 1,
+      "cached": false,
+      "event_type_uncertain": false,
+      "review_reasons": [],
+      "assessment_review_reasons": [],
+      "history_preserved": true
+    },
+    {
+      "id": "6e3854a1-76a2-429f-bc46-ee398673984b",
+      "generation": 1,
+      "analysis_status": "done",
+      "category": "wildfire",
+      "confidence": 1.0,
+      "canonical_type": "natural_disaster",
+      "model": "jev-1.13.0",
+      "profile": "rss-2.1.0",
+      "new_requests": 1,
+      "cached": false,
+      "event_type_uncertain": false,
+      "review_reasons": [],
+      "assessment_review_reasons": [],
+      "history_preserved": true
+    },
+    {
+      "id": "b1a3a905-b003-4bd6-936c-cc6fdff04623",
+      "generation": 1,
+      "analysis_status": "done",
+      "category": "wildfire",
+      "confidence": 1.0,
+      "canonical_type": "natural_disaster",
+      "model": "jev-1.13.0",
+      "profile": "rss-2.1.0",
+      "new_requests": 1,
+      "cached": false,
+      "event_type_uncertain": false,
+      "review_reasons": [],
+      "assessment_review_reasons": [],
+      "history_preserved": true
+    },
+    {
+      "id": "af6dd1e0-212f-49a0-b85e-0bdc27b92337",
+      "generation": 1,
+      "analysis_status": "done",
+      "category": "wildfire",
+      "confidence": 1.0,
+      "canonical_type": "natural_disaster",
+      "model": "jev-1.13.0",
+      "profile": "rss-2.1.0",
+      "new_requests": 1,
+      "cached": false,
+      "event_type_uncertain": false,
+      "review_reasons": [],
+      "assessment_review_reasons": [],
+      "history_preserved": true
+    },
+    {
+      "id": "96fa7a7d-d0a2-4b3f-8e5a-6ac17dbb85e8",
+      "generation": 1,
+      "analysis_status": "done",
+      "category": "wildfire",
+      "confidence": 1.0,
+      "canonical_type": "natural_disaster",
+      "model": "jev-1.13.0",
+      "profile": "rss-2.1.0",
+      "new_requests": 1,
+      "cached": false,
+      "event_type_uncertain": false,
+      "review_reasons": [],
+      "assessment_review_reasons": [],
+      "history_preserved": true
+    },
+    {
+      "id": "475ad4ae-8749-48fa-b128-ed9a4762c2c4",
+      "generation": 1,
+      "analysis_status": "done",
+      "category": "wildfire",
+      "confidence": 1.0,
+      "canonical_type": "natural_disaster",
+      "model": "jev-1.13.0",
+      "profile": "rss-2.1.0",
+      "new_requests": 1,
+      "cached": false,
+      "event_type_uncertain": false,
+      "review_reasons": [],
+      "assessment_review_reasons": [],
+      "history_preserved": true
+    },
+    {
+      "id": "010550a5-c039-46d9-9663-d6a911a9db34",
+      "generation": 1,
+      "analysis_status": "done",
+      "category": "wildfire",
+      "confidence": 1.0,
+      "canonical_type": "natural_disaster",
+      "model": "jev-1.13.0",
+      "profile": "rss-2.1.0",
+      "new_requests": 1,
+      "cached": false,
+      "event_type_uncertain": false,
+      "review_reasons": [],
+      "assessment_review_reasons": [],
+      "history_preserved": true
+    }
+  ],
+  "completed_at_local": "2026-10-18T00:15:55.203877+00:00",
+  "elapsed_seconds": 6.798,
+  "new_requests": 7,
+  "wildfire_count": 7,
+  "type_uncertain_count": 0,
+  "error_count": 0
+}

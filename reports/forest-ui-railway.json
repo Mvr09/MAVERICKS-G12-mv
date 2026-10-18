@@ -1,0 +1,13 @@
+{
+  "checked_at_local": "2026-10-18T00:17:07.668Z",
+  "mocked": false,
+  "viewport": 390,
+  "forest_filter_count": 7,
+  "api_forest_filter_count": 7,
+  "explicit_category_visible": true,
+  "confidence_visible": true,
+  "type_uncertain_visible": false,
+  "horizontal_overflow": false,
+  "page_errors": [],
+  "jev_requests_initiated": 0
+}

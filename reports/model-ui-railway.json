@@ -1,0 +1,185 @@
+{
+  "checked_at_local": "2026-10-18T00:15:56.296Z",
+  "revision": "605deffbed32000b72f0e2212f05c7daf48f7a9c",
+  "mocked": false,
+  "jev_requests_initiated": 0,
+  "viewports": [
+    {
+      "width": 360,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "metric_reads": 2,
+      "paid_actions": 0,
+      "groups_work": true,
+      "analytics_without_jev_latency": true
+    },
+    {
+      "width": 390,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "metric_reads": 2,
+      "paid_actions": 0,
+      "groups_work": true,
+      "analytics_without_jev_latency": true
+    },
+    {
+      "width": 768,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "metric_reads": 2,
+      "paid_actions": 0,
+      "groups_work": true,
+      "analytics_without_jev_latency": true
+    },
+    {
+      "width": 1440,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "metric_reads": 2,
+      "paid_actions": 0,
+      "groups_work": true,
+      "analytics_without_jev_latency": true
+    }
+  ],
+  "worker": {
+    "online": true,
+    "compatible": true,
+    "revision": "605deffbed32000b72f0e2212f05c7daf48f7a9c",
+    "expected_revision": "605deffbed32000b72f0e2212f05c7daf48f7a9c",
+    "last_seen_at": "2026-10-18T00:15:26.656490+00:00"
+  },
+  "validation": {
+    "n": 10,
+    "risk": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 2,
+      "tn": 5,
+      "precision": 1,
+      "recall": 0.6,
+      "f1": 0.75,
+      "n": 10,
+      "positives": 5
+    },
+    "urgent": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "tn": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "n": 10,
+      "positives": 2
+    },
+    "suppliers": {
+      "exact": 8,
+      "n": 10,
+      "precision": 1,
+      "recall": 0.7,
+      "exact_set_accuracy": 0.8,
+      "tp": 7,
+      "fp": 0,
+      "fn": 3,
+      "f1": 0.8235294117647058
+    },
+    "review_count": 8,
+    "split": "validation",
+    "model_id": "jev-1.13.0",
+    "question_version": "1.0.0",
+    "policy_version": "1.0.0",
+    "automatic": {
+      "n": 2,
+      "risk": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 2,
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "n": 2,
+        "positives": 0
+      },
+      "urgent": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 2,
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "n": 2,
+        "positives": 0
+      },
+      "suppliers": {
+        "exact": 2,
+        "n": 2,
+        "precision": 1,
+        "recall": 1,
+        "exact_set_accuracy": 1,
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1
+      },
+      "review_count": 0
+    },
+    "under_review": {
+      "n": 8,
+      "risk": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 2,
+        "tn": 3,
+        "precision": 1,
+        "recall": 0.6,
+        "f1": 0.75,
+        "n": 8,
+        "positives": 5
+      },
+      "urgent": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "tn": 6,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1,
+        "n": 8,
+        "positives": 2
+      },
+      "suppliers": {
+        "exact": 6,
+        "n": 8,
+        "precision": 1,
+        "recall": 0.625,
+        "exact_set_accuracy": 0.75,
+        "tp": 5,
+        "fp": 0,
+        "fn": 3,
+        "f1": 0.7692307692307693
+      },
+      "review_count": 8
+    },
+    "review_rate": 0.8,
+    "automatic_coverage": 0.2,
+    "includes_review_predictions": true
+  },
+  "unlabelled": [
+    {
+      "split": "test",
+      "status": "unlabelled",
+      "metrics": null
+    },
+    {
+      "split": "liveday",
+      "status": "unlabelled",
+      "metrics": null
+    }
+  ],
+  "exercise_requests_before": 50,
+  "exercise_requests_after": 50,
+  "periodic_paid_analysis": false,
+  "public_metrics_http": 401
+}
