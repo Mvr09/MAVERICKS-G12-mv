@@ -1,3 +1,5 @@
+> Nueva medición final autorizada del18-10-2026, después de congelar desarrollo: commitb4d697b/perfil1.0.0,14filas,7,888s monotónicos,23HTTP nuevas/0caché. Evidencia separada en a20-current-results.json. El texto siguiente conserva el registro histórico anterior y sus límites.
+
 # A20 · medición histórica y separación de LiveDay
 
 ## Qué se ejecutó y cuándo

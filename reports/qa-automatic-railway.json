@@ -1,0 +1,38 @@
+{
+  "checked_at": "2026-10-18T17:14:57.552Z",
+  "revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
+  "mocked": false,
+  "source": "existing supplier RSS context",
+  "qa_programmed": 1,
+  "automatic_oscillator_events": 1,
+  "direct_button_play": false,
+  "emission_once": true,
+  "viewports": [
+    {
+      "width": 360,
+      "horizontal_overflow": false,
+      "qa_visible": true
+    },
+    {
+      "width": 390,
+      "horizontal_overflow": false,
+      "qa_visible": true
+    },
+    {
+      "width": 768,
+      "horizontal_overflow": false,
+      "qa_visible": true
+    },
+    {
+      "width": 1440,
+      "horizontal_overflow": false,
+      "qa_visible": true
+    }
+  ],
+  "js_errors": [],
+  "post_requests": [
+    "/api/qa/audio"
+  ],
+  "new_jev_requests": 0,
+  "physical_audibility": "not asserted; user Firefox test pending"
+}

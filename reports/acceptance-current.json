@@ -1,12 +1,12 @@
 {
-  "revision": "12c4dff59252acca6a122341ae36479c81041b0c",
+  "revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
   "default_profile": "1.0.0",
   "experimental_profile": "link-2.2.0",
-  "new_jev_requests": 0,
+  "rejected_proposal": "geo-1.0.1",
   "counts": {
-    "pasa": 17,
+    "pasa": 18,
     "falla": 1,
-    "no ejecutado": 2
+    "no ejecutado": 1
   },
   "checks": [
     {
@@ -37,7 +37,7 @@
     {
       "id": "A06",
       "status": "falla",
-      "evidence_and_limit": "Caso regional concreto sigue fallando en el predeterminado. Se reconstruyó del diagnóstico ya existente, sin ajustar con validación. Corrección general parcial ya desarrollada en training/sintéticos permanece experimental. Falta confirmar provincia/ubicación operativa de una identidad ambigua; además persiste limitación de interpretación del default para otra identidad con geografía resoluble. Detalle protegido en reports/private/A06_CIERRE.md. No se eleva a requisito de precisión perfecta ni se rebaja el caso para aprobarlo."
+      "evidence_and_limit": "Capacidad funcional de cuarentaNoul y selección múltiple comprobada. Modelo: enriquecimiento aislado no recupera la exposición respaldada; la puertaA sigue rechazándola. Datos: otra identidad mantiene provincia desconocida y posible exposición pendiente. Training:0asociaciones recuperadas/2correctas perdidas/1falsa eliminada/0falsas nuevas, por lo que la variante no pasa a estable. Caso retenido/regresiones por noticia en privado; GEOGRAFIA_AISLADA.md agregado. No se fuerza una etiqueta ni se exige precisión perfecta en todas las noticias."
     },
     {
       "id": "A07",
@@ -72,12 +72,12 @@
     {
       "id": "A13",
       "status": "pasa",
-      "evidence_and_limit": "Reintentos401/429/529 y error no convertido enN heredados; adaptador sin cambios desde0d.126campos de soporte cacheados auditados y19unit de contrato pasan. Ensayo nuevo6sintéticos:12HTTP200,0reintentos; no se simula que haya ocurrido un error externo nuevo."
+      "evidence_and_limit": "Adaptador/reintentos heredados; nuevas pruebas de dispatch/caché con MockTransport y catálogo sintético. Ensayo geográfico real62HTTP200 y final23HTTP200, sin reintentos; errores no se convierten enN. Contadores históricos/cachés conservados. No se afirma que haya ocurrido un fallo externo nuevo."
     },
     {
       "id": "A14",
       "status": "no ejecutado",
-      "evidence_and_limit": "Ordenador+Firefox: el usuario confirma sonido mediante **Probar alarma**; aclara expresamente que solo usó ese botón. Audibilidad de una **alerta elegible nueva automática**, no confirmada. Gesto/mute/cooldown/emisión única/historial/foco/bloqueo heredan E2E con mocks, códigoaudio intacto; no acreditan sonido físico automático. Registro en AUDIO_VERIFICACION.md."
+      "evidence_and_limit": "Ordenador/Firefox: Probar alarma audible confirmado. Nuevo controlQA publicado y comprobado con backend/navegador reales: programación diferida→sondeo→audio.notify→una emisión de oscilador,0JEV. Mismos mute/cooldown/seen, sin botón directo play ni noticias ficticias presentadas como reales. Usuario responde «Todavía no la he probado»: audibilidad automática física pendiente. AUDIO_VERIFICACION.md."
     },
     {
       "id": "A15",
@@ -92,29 +92,25 @@
     {
       "id": "A17",
       "status": "pasa",
-      "evidence_and_limit": "Persistencia de resultados/exportaciones comprobada tras redeploy histórico; esquema0007, catálogo y fuentes/trabajos observados tras redeploy12c4dff. ModeloDB/migraciones/leases sin cambios; reclamación concurrente y recuperación de lease heredan integración."
+      "evidence_and_limit": "Esquema0007 y worker compatibles después del redeploy. A20 conserva generaciones previas y verifica hashes de todos sus resultados históricos; nuevas14filas/exportación200. Cola/leases/concurrencia heredan integración sin cambios. No se borró historial ni se reiniciaron contadores."
     },
     {
       "id": "A18",
       "status": "pasa",
-      "evidence_and_limit": "HTTPS/assets/catálogo/ficha actuales200; lectura pública y sincronización con sesión real comprobadas. Auth/origen/CSRF heredados sin cambios; bundle/paquete71archivos y17archivos del push revisados sin secretos ni originales nuevos."
+      "evidence_and_limit": "HTTPS, cuatroassets, catálogo40 y ficha200 enb4d697b. QA anónimo401 y presentador202 real; sesión/CSRF heredados.31archivos del push/paquete74 revisados sin secretos ni originales/cambios ajenos. SeñalQA temporal de pestaña aislada de registros de cartera."
     },
     {
       "id": "A19",
       "status": "pasa",
-      "evidence_and_limit": "UI pública real12c4dff a360/390/768/1440, ficha y noticiaRSS, foco contexto, sin overflow/erroresJS. Captura360 revisada visualmente con texto de exposición. Guardia de perfil/revisión heredada de4E2E locales del mismo cambio. No equivale a móvil físico, omitido por el usuario."
+      "evidence_and_limit": "Perfil/revisión4E2E y nuevoQA dirigido pasan. UIQA pública real360/390/768/1440 sin overflow/erroresJS, contextoRSS/ficha y una entrega automática. Emulación Chrome no equivale a Firefox físico ni móvil físico; se conserva ese límite."
     },
     {
       "id": "A20",
-      "status": "no ejecutado",
-      "evidence_and_limit": "**Históricamente pasa:**17-10-2026, commit4a3645a, perfil/política1.0.0,14filas,5,753s hasta Excel.23HTTP nuevas, no replay íntegro. Parser de duración cambió después y puede cambiar B: no extrapolar ese tiempo a12c4dff ni a2.2.0. Repetición únicamente en fase final autorizada, sin desarrollar con LiveDay. Detalle en A20_HISTORICO.md."
+      "status": "pasa",
+      "evidence_and_limit": "Medición final única18-10-2026, commitb4d697b, perfil1.0.0/modelojev-1.13.0/extractorduration-1.1.0:14filas y Excel recibido en7.888s con relojmonotónico desdePOST, incluidos cola/reintentos/descarga.23HTTP200 nuevas/0reintentos/0etapas cacheadas/0artículos íntegramente cacheados; historial/orden/IDs conservados. a20-current-results.json. No mide precisión ni se usa para ajustes."
     }
   ],
-  "audio": {
-    "device": "ordenador",
-    "browser": "Firefox",
-    "manual_test_audible": "confirmado por el usuario",
-    "automatic_eligible_alert_audible": "no ejecutado según el usuario"
-  },
-  "a20_metadata": "a20-historical-evidence.json"
+  "a14_physical_auto": "Todavía no la he probado: usuario",
+  "a20": "a20-current-results.json",
+  "new_jev_requests_this_delivery": 85
 }

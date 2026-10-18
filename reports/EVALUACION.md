@@ -19,3 +19,9 @@ El ensayo dirigido de duración posterior usó solo seis sintéticos:6/6duracion
 LiveDay se ejecutó **el17-10-2026**, no durante el desarrollo posterior del18-10. [A20_HISTORICO.md](A20_HISTORICO.md) registra14filas,5,753s, commit4a3645a,23peticiones HTTP nuevas y límites de caché/reloj. No se reabre ni ejecuta LiveDay para corregirA06. El tiempo histórico no certifica12c4dff: A20actual queda no ejecutado, con antecedente aprobado.
 
 RSS conserva datos reales y exposición potencial de una cartera simulada; no modifica exportaciones del ejercicio. Consultas del worker en12c4dff:seis trabajos completados,2HTTP200/4HTTP304, sin llamadas JEV adicionales. Inferencia periódica de pago=false. No existe evaluación RSS independiente etiquetada con la que afirmar precisión/recall. Mocks y acuerdo entre ejecuciones no sustituyen esas etiquetas.
+
+## Entrega posterior congelada y A20 nuevo
+
+Geografía aislada a preguntas originales:30training+6sintéticos,62HTTP nuevas con44etapas previas reutilizadas, una comparación retrospectiva después de congelar. No se promociona por regresiones (GEOGRAFIA_AISLADA.md). Default1.0.0 y2.2.0experimental permanecen.
+
+Tras acabar ese desarrollo, el18-10-2026 se ejecutó una sola medición final LiveDay autorizada enb4d697b:14filas,7,888s monotónicos,23HTTP nuevas/0caché, historial íntegro. No se calcula exactitud ni se ajusta con sus salidas. El antecedente17-10 sigue separado y ninguna descripción previa de «A20actual no ejecutado» representa el estado después de esta nueva fase final.
