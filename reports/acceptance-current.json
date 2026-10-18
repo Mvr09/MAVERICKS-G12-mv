@@ -1,5 +1,5 @@
 {
-  "revision": "97a9c2ced260db280c58da9bc97e42ca9198605e",
+  "revision": "701f2b0bf8c40388a03592877be4cb63ba2f8ed1",
   "default_profile": "1.0.0",
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
@@ -12,7 +12,7 @@
     {
       "id": "A01",
       "status": "pasa",
-      "evidence_and_limit": "Catálogo40 comprobado nuevamente enb4d697b;20materiales/6productos y40Noul heredados de auditoría inicial/integración120. Constructor y catálogo sin cambios por el arreglo de duración."
+      "evidence_and_limit": "Actual: catálogo40 y ficha/ruta200 en701f2b0. Se heredan20materiales/6productos y40Noul porque catálogo/importador/base no cambian. No se releen originales."
     },
     {
       "id": "A02",
@@ -27,7 +27,7 @@
     {
       "id": "A04",
       "status": "pasa",
-      "evidence_and_limit": "Homónimos/geografía inocua cubiertos en unitarias e integración y sintéticos almacenados; sin nuevo atajo por keywords. Matching/normalizadores sin cambios en12c4dff. Muestra histórica limitada, no precisión perfecta."
+      "evidence_and_limit": "Se heredan negativos geográficos/homónimos del motor predeterminado sin cambios. Nuevos controles de desarrollo3.1/4.0.1 incluyen multiubicación, alias inocuos y mar/rail; sus errores no se ocultan ni se promueven al estable."
     },
     {
       "id": "A05",
@@ -37,7 +37,7 @@
     {
       "id": "A06",
       "status": "falla",
-      "evidence_and_limit": "Candidato3.0dev:9asociaciones recuperadas/1perdida/2falsas nuevas,2regresiones de riesgo emparejadas; no promovido.  Capacidad funcional de cuarentaNoul y selección múltiple comprobada. Modelo: enriquecimiento aislado no recupera la exposición respaldada; la puertaA sigue rechazándola. Datos: otra identidad mantiene provincia desconocida y posible exposición pendiente. Training:0asociaciones recuperadas/2correctas perdidas/1falsa eliminada/0falsas nuevas, por lo que la variante no pasa a estable. Caso retenido/regresiones por noticia en privado; GEOGRAFIA_AISLADA.md agregado. No se fuerza una etiqueta ni se exige precisión perfecta en todas las noticias."
+      "evidence_and_limit": "Falla en predeterminado1.0.0: enriquecimiento no resuelve por sí solo exposición respaldada. Capacidad multiselección40Noul acreditada.3.0 reduce omisiones críticas/únicas pero pierde un servicio declarado y añade2FP;3.1 recupera ese vínculo y todas22asociacionestraining, añade2FP no disruptivos y mantiene problemas de riesgo/urgencia sintéticos. No promovidos; ver SELECCION_OPERATIVA.md. S003provincia desconocida sigue siendo limitación de datos; no se inventa ni se fuerza por referencia. Sin ajuste con validation/test/LiveDay."
     },
     {
       "id": "A07",
@@ -62,7 +62,7 @@
     {
       "id": "A11",
       "status": "pasa",
-      "evidence_and_limit": "Ingesta/análisisRSS real previo conservado. Enb4d697b, seis trabajos de consulta reales done,2HTTP200/4HTTP304 y fechas actualizadas;304 son respuestas condicionales, no cuerpos nuevos. Pago periódico false; contadorJEVRSS48→48 en esta comprobación."
+      "evidence_and_limit": "Actual Railway: seis consultasRSS finalizadas,2HTTP200/4HTTP304. Un artículo realLoadstar analizado conJEV1.13/rss2.2,1HTTPnuevo/0caché,jobdone. ResultadoN/N/sinproveedores conservado; consulta manual es hipótesis separada. rss-flow-evidence.json. Periódico de pago false."
     },
     {
       "id": "A12",
@@ -72,47 +72,53 @@
     {
       "id": "A13",
       "status": "pasa",
-      "evidence_and_limit": "Adaptador/reintentos heredados; nuevas pruebas de dispatch/caché con MockTransport y catálogo sintético. Ensayo geográfico real62HTTP200 y final23HTTP200, sin reintentos; errores no se convierten enN. Contadores históricos/cachés conservados. No se afirma que haya ocurrido un fallo externo nuevo."
+      "evidence_and_limit": "Adaptador estable/reintentos heredados; desarrollo150HTTP(149éxito/1HTTP400diagnosticado),0reintentos, contador381→531 compartido228.3.1reutiliza57etapas porhash. RSSmanualRailway1HTTP/0caché,contador48→49. Unit/integración sintética83pasan; no se atribuyen métricas retenidas a estos experimentos."
     },
     {
       "id": "A14",
       "status": "pasa",
-      "evidence_and_limit": "Usuario confirma ordenador/Firefox: Activar sonido → QA5s → una sola alerta automática audible, sin Probar alarma. Complementa lógica acreditada de mute/cooldown/historial/revisión/foco/bloqueo y prueba Railway real del mismo audio.notify. EscenarioQA separado del clasificador. SO/versión no indicados."
+      "evidence_and_limit": "Pasa físico confirmado por usuario: ordenador/Firefox, Activar sonido→programarQA5s→una sola emisión automática audible sinProbaralarma. Misma lógica elegibilidad/notificador; no acredita calidadJEV. Códigoaudio intacto yQAautomatizado heredado; no nueva prueba física móvil."
     },
     {
       "id": "A15",
       "status": "pasa",
-      "evidence_and_limit": "Borrador alternativo real editado, guardado, copiado y TXT descargado; proveedor directo probado en integración. Generador y persistencia sin cambios. No se repite una mutación real sin necesidad ni se inventa capacidad del alternativo."
+      "evidence_and_limit": "ActualRSS: consulta con proveedor/cita literal/hipótesis/confirmación explícitas; snapshot fuente/gen/versión, edición, guardado, TXT y reconexión real. Copia con readback real en4anchos. Se hereda borrador proveedor/alternativo previo; nueva consulta no crea análisis/incidente/alerta ni envío. APIs y persistencia sintéticas probadas."
     },
     {
       "id": "A16",
       "status": "pasa",
-      "evidence_and_limit": "Formato/orden/IDs/Y-N/exportaciones históricas heredados; exportador sin cambios. La medición final autorizada añade una exportación LiveDay de14filas con contrato y orden comprobados, sin evaluar precisión ni ajustar con sus respuestas."
+      "evidence_and_limit": "Exportador estable sin cambios; comprobación701f2b0 descarga exportación existenteHTTP200/zipválido,14filas segúnmetadatos, sin leer resultados para ajustar. Se heredan orden/IDs/Y-N y bloqueo de errores anteriores. No nuevoLiveDay."
     },
     {
       "id": "A17",
       "status": "pasa",
-      "evidence_and_limit": "Esquema0007 y worker compatibles después del redeploy. A20 conserva generaciones previas y verifica hashes de todos sus resultados históricos; nuevas14filas/exportación200. Cola/leases/concurrencia heredan integración sin cambios. No se borró historial ni se reiniciaron contadores."
+      "evidence_and_limit": "Actual esquema0008 web/worker compatibles. Migración aditiva probada enPGdedicada conserva borradorantiguo y reconecta snapshot nuevo; borradorRSSreal recuperado tras redeploy. Cola/lease/heartbeat herdados sin cambio AST; no se ensayó caída forzada en producción."
     },
     {
       "id": "A18",
       "status": "pasa",
-      "evidence_and_limit": "HTTPS, cuatroassets, catálogo40 y ficha200 enb4d697b. QA anónimo401 y presentador202 real; sesión/CSRF heredados.31archivos del push/paquete74 revisados sin secretos ni originales/cambios ajenos. SeñalQA temporal de pestaña aislada de registros de cartera."
+      "evidence_and_limit": "Actual701f2b0 HTTPS,/,healthz/readyz200,4assets200,catálogo40,ficha/rutaprofunda200; endpoints administrativos nuevos401anónimo y operacionespresentador probadas. AllowlistDocker85archivos sinsecretos/originales; sesiones/permisos heredados más testsnuevos."
     },
     {
       "id": "A19",
       "status": "pasa",
-      "evidence_and_limit": "Procurement:4E2E y UIreal360/390/768/1440, origen conservado, filtro/foco/lectura y borrador tras sondeo; sin overflow/erroresJS.  Perfil/revisión4E2E y nuevoQA dirigido pasan. UIQA pública real360/390/768/1440 sin overflow/erroresJS, contextoRSS/ficha y una entrega automática. Emulación Chrome no equivale a Firefox físico ni móvil físico; se conserva ese límite."
+      "evidence_and_limit": "RealHTTPS701f2b0 en360/390/768/1440: sin overflow/JS, dialogcentrado,foco yconsulta guardada separados de matchingJEV. Ensayo4min escritorio1440 y móvil390emulado con pausaslectura en6290, luego pulido+revisiónreal701.4E2ERSS yQA pasan; capturasrss-final-*. No estudio de comprensión con compradores ni móvilfísico."
     },
     {
       "id": "A20",
       "status": "pasa",
-      "evidence_and_limit": "Medición final única18-10-2026, commitb4d697b, perfil1.0.0/modelojev-1.13.0/extractorduration-1.1.0:14filas y Excel recibido en7.888s con relojmonotónico desdePOST, incluidos cola/reintentos/descarga.23HTTP200 nuevas/0reintentos/0etapas cacheadas/0artículos íntegramente cacheados; historial/orden/IDs conservados. a20-current-results.json. No mide precisión ni se usa para ajustes."
+      "evidence_and_limit": "Pasa heredado: b4d697b,18-10-2026,1.0.0/jev1.13/duration1.1,14LiveDay,7.888295967s hasta exportación,23HTTPnuevos/0caché/0reintentos. rss-a20-inheritance.json:10dependencias intactas y4funciones de ejecución/cola ASTidénticas; gateesquema actualizado0008. No se repiteLiveDay ni se extrapola al candidato o a los4min de lectura."
     }
   ],
   "a14_physical_auto": "Todavía no la he probado: usuario",
   "a20": "a20-current-results.json",
-  "new_jev_requests_this_delivery": 85,
+  "new_jev_requests_this_delivery": {
+    "development": 150,
+    "rss_railway": 1,
+    "total": 151,
+    "retries": 0,
+    "development_http400": 1
+  },
   "audio_physical_confirmation": {
     "device": "ordenador",
     "browser": "Firefox",
@@ -122,22 +128,14 @@
     "recorded_on": "2026-10-18"
   },
   "new_delivery": {
-    "jev_requests": 66,
-    "candidate": "link-3.0.0-dev",
-    "promoted": false,
-    "a20": "inherited from b4d697b; analysis/export dependencies unchanged; no new LiveDay execution",
-    "audio": "physical automatic QA confirmed by user: computer/Firefox; one emission without Test alarm"
+    "comparison": "candidate-selection.json",
+    "real_rss": "rss-flow-evidence.json",
+    "final_public": "rss-final-verification.json",
+    "final_ui": "rss-final-ui.json",
+    "a20_inheritance": "rss-a20-inheritance.json",
+    "calls_are_cumulative_not_reset": true
   },
   "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
-  "final_verification": {
-    "http": "procurement-final-verification.json",
-    "ui": "procurement-ui-final-railway.json",
-    "draft_inherited_from": "procurement-ui-railway.json",
-    "real_rss_sync_commit": "5b17ef2",
-    "real_rss_statuses": {
-      "200": 3,
-      "304": 3
-    },
-    "new_model_requests_after_ui_deployment": 0
-  }
+  "final_verification": "rss-final-verification.json",
+  "evidence_revision_note": "Versión funcional comprobada701f2b0; entrega posterior añade informe/candidato interno y comparación administrativa, sin activar otro motor."
 }

@@ -1,81 +1,36 @@
-# Aceptación consolidada · 18-10-2026
+# Aceptación consolidada · entrega RSS y matching
 
-## Versión y criterio de lectura
+Versión funcional comprobada: **701f2b0**. Predeterminado **1.0.0**, **link-2.2.0** experimental;3.0/3.1/4.0.1 internos sin promoción. Política empresarial intacta. **19pasa/1falla(A06)**. A14físico cerrado; A20histórico vigente, sin repetirLiveDay.
 
-Aplicación de procurement publicada y comprobada: **97a9c2ced260db280c58da9bc97e42ca9198605e**. La mediciónA20 pertenece ab4d697b y se hereda con las dependencias justificadas. Los commits posteriores de esta sesión son documentación, sin cambios funcionales. Predeterminado **1.0.0**; **link-2.2.0** experimental. Modelo jev-1.13.0; política1.0.0. Factorial aplazado. Esta entrega realizó66llamadas de desarrollo; la consolidación documental no añade llamadas.
+Esta matriz reemplaza el resumen anterior; el historial permanece en Git y AUDITORIA.md. «Heredado» significa componente y recorrido pertinentes sin cambios, no una ejecución nueva. Detalles por noticia y referencias permanecen en reports/private, fuera de Git/Docker/APIpública.
 
-`AUDITORIA.md` conserva la auditoría y ampliaciones históricas. Esta matriz distingue pruebas actuales, herencia justificada y ejecución no realizada para la versión actual. «Pasa heredado» conserva una prueba funcional del componente sin cambios; no convierte un ensayo antiguo en uno recién ejecutado. A20 se volvió a ejecutar una sola vez con la entrega congelada: el tiempo anterior se conserva como histórico y no sustituye la medición nueva.
-
-La fuente final pertinente quedó fijada antes de LiveDay en final-candidate-freeze.json(64archivos). Estable1.0.0, preguntas/puertas originales y2.2.0experimental intactos. Se preparó geo-1.0.1 con los mismos juicios y enriquecimiento aislado: regresa en training y no se promociona ni se expone como opción pública. La entrega añade controlQA de aviso automático, y la clave de caché de análisis incluye versión del extractor.70unit/integración sintética y5E2E dirigidos pasan; se comprueban web/worker/QA reales después del despliegue. No se ejecuta la suite antigua con los cuatro Excel para desarrollar.
-
-## Matriz A01–A20
-
-| ID | Estado actual | Evidencia, herencia y límite |
+| ID | Estado | Evidencia, herencia y límite |
 |---|---|---|
-| A01 | pasa | Catálogo40 comprobado nuevamente enb4d697b;20materiales/6productos y40Noul heredados de auditoría inicial/integración120. Constructor y catálogo sin cambios por el arreglo de duración. |
-| A02 | pasa | Importación idempotente de los cuatro esquemas heredada; ampliaciones posteriores verificaron News_Feed y LiveDay habilitado. Importador sin cambios desde la integración amplia. No se reabrieron los originales para esta tarea. |
-| A03 | pasa | Exclusión de cinco etiquetas en payload HTTP probada previamente; whitelists intactas. Nuevas pruebas unitarias de preparación de duración conservan la separación. Se hereda la prueba con centinela; no se envían etiquetas a JEV. |
-| A04 | pasa | Homónimos/geografía inocua cubiertos en unitarias e integración y sintéticos almacenados; sin nuevo atajo por keywords. Matching/normalizadores sin cambios en12c4dff. Muestra histórica limitada, no precisión perfecta. |
-| A05 | pasa | Positivas con identidad y riesgo/urgencia negativos cubiertas por integración; soporte negativo verificado en19unit de contrato. Puertas y polaridad intactas. |
-| A06 | **falla** | Candidato3.0dev:9asociaciones recuperadas/1perdida/2falsas nuevas,2regresiones de riesgo emparejadas; no promovido.  Capacidad funcional de cuarentaNoul y selección múltiple comprobada. Modelo: enriquecimiento aislado no recupera la exposición respaldada; la puertaA sigue rechazándola. Datos: otra identidad mantiene provincia desconocida y posible exposición pendiente. Training:0asociaciones recuperadas/2correctas perdidas/1falsa eliminada/0falsas nuevas, por lo que la variante no pasa a estable. Caso retenido/regresiones por noticia en privado; GEOGRAFIA_AISLADA.md agregado. No se fuerza una etiqueta ni se exige precisión perfecta en todas las noticias. |
-| A07 | pasa | Agrupación de titulares e incidentes/máximo por proveedor heredada de integración y sondeos reales. Incidentes y deduplicación sin cambios; no se suma la nueva duración al score como factor independiente. |
-| A08 | pasa | Recuperación compatible, historial y recepción tardía cubiertos por integración. Código de reconciliación y cierre intacto; evidencia heredada, sin cerrar incidentes reales para probar otra vez. |
-| A09 | pasa | Inventario físico desconocido/no aplicable/cero probado previamente; scoring intacto. El extractor no inventa stock o lead time. Pruebas nuevas conservan duración desconocida cuando no es utilizable. |
-| A10 | pasa | Fórmula y referencia congeladas, severidad y confianza separadas; hereda suite de referencia/integración.42pruebas originales de duración +2de preparación/caché pasan;6sintéticos JEV verifican dos días exactos/mínimos sin alterar pesos ni puertas. |
-| A11 | pasa | Ingesta/análisisRSS real previo conservado. Enb4d697b, seis trabajos de consulta reales done,2HTTP200/4HTTP304 y fechas actualizadas;304 son respuestas condicionales, no cuerpos nuevos. Pago periódico false; contadorJEVRSS48→48 en esta comprobación. |
-| A12 | pasa | RSS/Atom,304, GUID actualizado, versiones, duplicados y XML peligroso heredados de integración. ParserRSS/versionado sin cambios. Consulta del worker actual confirma operación, sin presentar ese sondeo como nuevo ensayo de todos los casos negativos. |
-| A13 | pasa | Adaptador/reintentos heredados; nuevas pruebas de dispatch/caché con MockTransport y catálogo sintético. Ensayo geográfico real62HTTP200 y final23HTTP200, sin reintentos; errores no se convierten enN. Contadores históricos/cachés conservados. No se afirma que haya ocurrido un fallo externo nuevo. |
-| A14 | pasa | Usuario confirma ordenador/Firefox: Activar sonido → QA5s → una sola alerta automática audible, sin Probar alarma. Complementa lógica acreditada de mute/cooldown/historial/revisión/foco/bloqueo y prueba Railway real del mismo audio.notify. EscenarioQA separado del clasificador. SO/versión no indicados. |
-| A15 | pasa | Borrador alternativo real editado, guardado, copiado y TXT descargado; proveedor directo probado en integración. Generador y persistencia sin cambios. No se repite una mutación real sin necesidad ni se inventa capacidad del alternativo. |
-| A16 | pasa | Formato/orden/IDs/Y-N/exportaciones históricas heredados; exportador sin cambios. La medición final autorizada añade una exportación LiveDay de14filas con contrato y orden comprobados, sin evaluar precisión ni ajustar con sus respuestas. |
-| A17 | pasa | Esquema0007 y worker compatibles después del redeploy. A20 conserva generaciones previas y verifica hashes de todos sus resultados históricos; nuevas14filas/exportación200. Cola/leases/concurrencia heredan integración sin cambios. No se borró historial ni se reiniciaron contadores. |
-| A18 | pasa | HTTPS, cuatroassets, catálogo40 y ficha200 enb4d697b. QA anónimo401 y presentador202 real; sesión/CSRF heredados.31archivos del push/paquete74 revisados sin secretos ni originales/cambios ajenos. SeñalQA temporal de pestaña aislada de registros de cartera. |
-| A19 | pasa | Procurement:4E2E y UIreal360/390/768/1440, origen conservado, filtro/foco/lectura y borrador tras sondeo; sin overflow/erroresJS.  Perfil/revisión4E2E y nuevoQA dirigido pasan. UIQA pública real360/390/768/1440 sin overflow/erroresJS, contextoRSS/ficha y una entrega automática. Emulación Chrome no equivale a Firefox físico ni móvil físico; se conserva ese límite. |
-| A20 | pasa | Medición final única18-10-2026, commitb4d697b, perfil1.0.0/modelojev-1.13.0/extractorduration-1.1.0:14filas y Excel recibido en7.888s con relojmonotónico desdePOST, incluidos cola/reintentos/descarga.23HTTP200 nuevas/0reintentos/0etapas cacheadas/0artículos íntegramente cacheados; historial/orden/IDs conservados. a20-current-results.json. No mide precisión ni se usa para ajustes. |
+|A01|pasa|Actual: catálogo40 y ficha/ruta200 en701f2b0. Se heredan20materiales/6productos y40Noul porque catálogo/importador/base no cambian. No se releen originales.|
+|A02|pasa|Importación idempotente de los cuatro esquemas heredada; ampliaciones posteriores verificaron News_Feed y LiveDay habilitado. Importador sin cambios desde la integración amplia. No se reabrieron los originales para esta tarea.|
+|A03|pasa|Exclusión de cinco etiquetas en payload HTTP probada previamente; whitelists intactas. Nuevas pruebas unitarias de preparación de duración conservan la separación. Se hereda la prueba con centinela; no se envían etiquetas a JEV.|
+|A04|pasa|Se heredan negativos geográficos/homónimos del motor predeterminado sin cambios. Nuevos controles de desarrollo3.1/4.0.1 incluyen multiubicación, alias inocuos y mar/rail; sus errores no se ocultan ni se promueven al estable.|
+|A05|pasa|Positivas con identidad y riesgo/urgencia negativos cubiertas por integración; soporte negativo verificado en19unit de contrato. Puertas y polaridad intactas.|
+|A06|falla|Falla en predeterminado1.0.0: enriquecimiento no resuelve por sí solo exposición respaldada. Capacidad multiselección40Noul acreditada.3.0 reduce omisiones críticas/únicas pero pierde un servicio declarado y añade2FP;3.1 recupera ese vínculo y todas22asociacionestraining, añade2FP no disruptivos y mantiene problemas de riesgo/urgencia sintéticos. No promovidos; ver SELECCION_OPERATIVA.md. S003provincia desconocida sigue siendo limitación de datos; no se inventa ni se fuerza por referencia. Sin ajuste con validation/test/LiveDay.|
+|A07|pasa|Agrupación de titulares e incidentes/máximo por proveedor heredada de integración y sondeos reales. Incidentes y deduplicación sin cambios; no se suma la nueva duración al score como factor independiente.|
+|A08|pasa|Recuperación compatible, historial y recepción tardía cubiertos por integración. Código de reconciliación y cierre intacto; evidencia heredada, sin cerrar incidentes reales para probar otra vez.|
+|A09|pasa|Inventario físico desconocido/no aplicable/cero probado previamente; scoring intacto. El extractor no inventa stock o lead time. Pruebas nuevas conservan duración desconocida cuando no es utilizable.|
+|A10|pasa|Fórmula y referencia congeladas, severidad y confianza separadas; hereda suite de referencia/integración.42pruebas originales de duración +2de preparación/caché pasan;6sintéticos JEV verifican dos días exactos/mínimos sin alterar pesos ni puertas.|
+|A11|pasa|Actual Railway: seis consultasRSS finalizadas,2HTTP200/4HTTP304. Un artículo realLoadstar analizado conJEV1.13/rss2.2,1HTTPnuevo/0caché,jobdone. ResultadoN/N/sinproveedores conservado; consulta manual es hipótesis separada. rss-flow-evidence.json. Periódico de pago false.|
+|A12|pasa|RSS/Atom,304, GUID actualizado, versiones, duplicados y XML peligroso heredados de integración. ParserRSS/versionado sin cambios. Consulta del worker actual confirma operación, sin presentar ese sondeo como nuevo ensayo de todos los casos negativos.|
+|A13|pasa|Adaptador estable/reintentos heredados; desarrollo150HTTP(149éxito/1HTTP400diagnosticado),0reintentos, contador381→531 compartido228.3.1reutiliza57etapas porhash. RSSmanualRailway1HTTP/0caché,contador48→49. Unit/integración sintética83pasan; no se atribuyen métricas retenidas a estos experimentos.|
+|A14|pasa|Pasa físico confirmado por usuario: ordenador/Firefox, Activar sonido→programarQA5s→una sola emisión automática audible sinProbaralarma. Misma lógica elegibilidad/notificador; no acredita calidadJEV. Códigoaudio intacto yQAautomatizado heredado; no nueva prueba física móvil.|
+|A15|pasa|ActualRSS: consulta con proveedor/cita literal/hipótesis/confirmación explícitas; snapshot fuente/gen/versión, edición, guardado, TXT y reconexión real. Copia con readback real en4anchos. Se hereda borrador proveedor/alternativo previo; nueva consulta no crea análisis/incidente/alerta ni envío. APIs y persistencia sintéticas probadas.|
+|A16|pasa|Exportador estable sin cambios; comprobación701f2b0 descarga exportación existenteHTTP200/zipválido,14filas segúnmetadatos, sin leer resultados para ajustar. Se heredan orden/IDs/Y-N y bloqueo de errores anteriores. No nuevoLiveDay.|
+|A17|pasa|Actual esquema0008 web/worker compatibles. Migración aditiva probada enPGdedicada conserva borradorantiguo y reconecta snapshot nuevo; borradorRSSreal recuperado tras redeploy. Cola/lease/heartbeat herdados sin cambio AST; no se ensayó caída forzada en producción.|
+|A18|pasa|Actual701f2b0 HTTPS,/,healthz/readyz200,4assets200,catálogo40,ficha/rutaprofunda200; endpoints administrativos nuevos401anónimo y operacionespresentador probadas. AllowlistDocker85archivos sinsecretos/originales; sesiones/permisos heredados más testsnuevos.|
+|A19|pasa|RealHTTPS701f2b0 en360/390/768/1440: sin overflow/JS, dialogcentrado,foco yconsulta guardada separados de matchingJEV. Ensayo4min escritorio1440 y móvil390emulado con pausaslectura en6290, luego pulido+revisiónreal701.4E2ERSS yQA pasan; capturasrss-final-*. No estudio de comprensión con compradores ni móvilfísico.|
+|A20|pasa|Pasa heredado: b4d697b,18-10-2026,1.0.0/jev1.13/duration1.1,14LiveDay,7.888295967s hasta exportación,23HTTPnuevos/0caché/0reintentos. rss-a20-inheritance.json:10dependencias intactas y4funciones de ejecución/cola ASTidénticas; gateesquema actualizado0008. No se repiteLiveDay ni se extrapola al candidato o a los4min de lectura.|
 
-**Balance actual:19 pasa (incluida herencia explícita),1 falla(A06),0 pendientes. No hay aceptación completa.** A20 ya tiene medición nueva de esta entrega; su antecedente histórico continúa separado.
+## Límites de la entrega
 
-## Cierre acotado de A06
+A06 separa capacidad funcional, errores conocidos del modelo y datos ausentes. No se exige precisión perfecta, pero tampoco se declara arreglado el motor de producción mediante un candidato interno. SELECCION_OPERATIVA.md compara todas las predicciones, incluidas las revisadas y los errores entre automáticas; baja revisión no equivale a mejor clasificación.
 
-La selección múltiple existe y no está implementada con una Choice de proveedor único: hay cuarentaNoul y B procesa varios candidatos. El caso fallido concreto se conserva en privado con noticia, texto, referencia, predicción y puertas. El candidato experimental recupera una asociación con región verificable, pero no puede determinar la provincia de la ubicación ambigua a partir del resultado esperado.
+El RSS real de este ensayo no identifica proveedor. El recorrido conserva ese resultado y demuestra una consulta de verificación manual con hipótesis explícita, no un vínculo validado por JEV ni una alerta de riesgo artificial. A14 es la prueba controlada física independiente; no se hace pasar como alarma de esta noticia. Se consulta y exporta el loteLiveDay ya existente sin reanalizarlo ni ajustar preguntas.
 
-**Dato concreto necesario del propietario:** para S003, confirmar ubicación operativa de Taizhou: provincia Jiangsu o Zhejiang (o dirección/coordenadas y fuente de confirmación). El gazetteer ofrece alternativas, no plantas ni decisiones empresariales. Este dato es necesario, pero no garantiza por sí solo que el default acierte: hay que propagarlo de forma versionada al contexto efectivo y comprobar el comportamiento con training/sintéticos. La referencia no se modifica para declarar éxito.
-
-La otra omisión del default tiene geografía resoluble con datos ya disponibles: el enriquecimiento y la confirmación independiente ya existen en2.2.0 y fueron desarrollados con training. No se copia silenciosamente ese perfil al default ni se ignoran sus regresiones. Sin un defecto nuevo determinista demostrado, no se añade una excepción o un parche de decisión ajustado al caso retenido.
-
-No hace falta que todo el training tenga precisión perfecta para demostrar selección múltiple. Sí hace falta resolver y comprobar el alcance de este caso antes de declarar A06 aprobado. El factorial no es condición de cierre y continúa aplazado.
-
-## Comprobaciones históricas de la consolidación previa (12c4dff)
-
-Este apartado conserva la fase anterior: los contadores y la ausencia de nuevas llamadas descritos aquí no corresponden al ensayo final posterior.
-
-- Atribución offline de la omisión desde el diagnóstico guardado, no nueva inferencia/evaluación de validation.
-- Verificación de la ambigüedad de provincia en el snapshot existente y correspondencia única de la otra ciudad.
-- Controles training y sintético multproveedor reutilizados: el experimental conserva los tres IDs esperados. Se conservan sus errores y regresiones ya documentados; no se recalculan métricas retenidas para escoger cambios.
-- Revisión del delta de producto y hashes de preguntas/política; ninguna modificación funcional nueva, por lo que no se repitieron ingestión, mutaciones, evaluación retenida ni suites con Excel.
-- MetadatosA20 extraídos del informe histórico: filas/fechas/commit/perfil y llamadas, sin leer celdas o respuestas LiveDay. No se abrió answer key.
-- Cero nuevas peticionesJEV; cupo dirigido de duración conserva12/36, contador local253 registrado. No se reutiliza ese cupo específico para otros artículos. RSS de pago periódico false.
-
-## Actualización final de esta entrega
-
-La geografía aislada se comprobó sin cambiar preguntas/umbrales y no supera la regresión: no se activa en estable. La capacidad funcional de múltiples asociaciones se distingue de los errores de interpretación del modelo y de la provincia desconocida. N044 solo retrospectiva posterior a congelación; no se modificó código de inferencia después de sus resultados.
-
-LiveDay se ejecutó de nuevo únicamente al terminar desarrollo y congelar la entrega, por autorización explícita: una medición de14filas, no una segunda evaluación independiente. Se inspeccionaron formato, metadatos y conservación de historial, no referencias para corregir el modelo.0nuevas ejecuciones de test/validation completas.
-
-Comprobaciones reales posteriores al push: final-qa-railway-verification.json(6trabajosRSS done,2HTTP200/4HTTP304,0JEVRSS),qa-automatic-railway.json(backend real/sondeo/oscilador, no audibilidad física) y a20-current-results.json. Datos protegidos y Excel permanecen fuera de Git/Docker. Factorial aplazado.
-
-## Entrega procurement y candidato semántico
-
-A14pasa tras la confirmación física explícita: ordenador/Firefox, activar sonido→QA5s→una emisión automática audible sin Probar alarma. El control sigue el mismo notificador y se ha plegado bajo herramientas de presentador; no se modificó audio.ts. El balance es19pasa/1falla(A06).
-
-La nueva mesa/ficha/alertas conectan prioridad, evidencia, material/productos y siguiente acción. La ficha conserva el origen seleccionado por URL y consulta con ese origen: no mezcla la prioridad filtrada con el máximo global. El carril de novedades reserva espacio para no desplazar filtros. El borrador permanece al actualizar la ficha. No se inventan capacidad alternativa, cobertura de una interrupción ni afectación confirmada.
-
-Candidato link-3.0.0-dev: desarrollo30training+6sintéticos,66HTTP200/0reintentos; TP/FP/FN y métricas en LINK_3_DESARROLLO.md y link-3-results.json. No promoción: mejora recall pero introduce asociaciones falsas y regresiones emparejadas. A06 continúa fallido por calidad de vínculo/decisión, separada de la capacidad funcional y de la provinciaS003 desconocida. No se consultaron conjuntos retenidos para este desarrollo.
-
-A20heredado de medición única enb4d697b(14filas/7,888s/23nuevas/0caché). procurement-a20-inheritance.json acredita13dependencias intactas: motor estable, duración, política, cola, exportación y perfil. El único cambioAPI es filtro opcional enGET de ficha; no se modifica el recorrido medido ni se lanza otroLiveDay. No se atribuye un nuevo tiempo a la entregaUI.
-
-### Verificación pública final
-
-97a9c2c confirma salud/readiness, esquema0007, cuatroassets, catálogo40, ficha/ruta profunda y worker compatible. UIreal360/390/768/1440: etiquetas retrospectivas, prioridad/evidencia del mismo origen y foco correctos, sin overflow/JS. En esta comprobación solo lectura y exportación existente;0JEV/0borradores nuevos. La prueba de borrador real de5b17ef2 se hereda: el pulido posterior solo cambia tres textos. Audio físico original hereda notificador sin cambios.
-
-La consulta real de los seisRSS se hizo en5b17ef2:3HTTP200/3HTTP304, seisjobs done y contador48→48. En97a9c2c solo se consultó el estado persistido; no se presenta como una nueva sincronización. Evidencias procurement-final-verification.json y procurement-ui-final-railway.json. No hay paso pendiente en el panelRailway para lo verificado.
+Pruebas actuales:83unit/integraciónsintética,4E2ERSSen4anchos,QAautomatizado,build,paquete,PGmigraciónpreservación,HTTPSweb/worker/catálogo yUIreal. Persistencia de la consulta acreditada tras redeploy. No ensayo destructivo de cola enRailway, acceso alpanel ni nueva audibilidad física requeridos para estos cambios. Móvil es emulaciónPlaywright; claridad de guion es revisión heurística, no estudio de usuarios.

@@ -1,0 +1,114 @@
+{
+  "expected_commit": "701f2b0bf8c40388a03592877be4cb63ba2f8ed1",
+  "requests": [
+    {
+      "path": "/healthz",
+      "http": 200
+    },
+    {
+      "path": "/readyz",
+      "http": 200
+    },
+    {
+      "path": "/",
+      "http": 200
+    },
+    {
+      "path": "/assets/icons-h47_nvdG.js",
+      "http": 200
+    },
+    {
+      "path": "/assets/index-oMOWxzX0.css",
+      "http": 200
+    },
+    {
+      "path": "/assets/index-xpipYaKB.js",
+      "http": 200
+    },
+    {
+      "path": "/assets/charts-Vo4fhvfv.js",
+      "http": 200
+    },
+    {
+      "path": "/api/config",
+      "http": 200
+    },
+    {
+      "path": "/api/suppliers?context=rss",
+      "http": 200
+    },
+    {
+      "path": "/api/suppliers/S024?context=rss",
+      "http": 200
+    },
+    {
+      "path": "/proveedores/S024",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/sources",
+      "http": 200
+    }
+  ],
+  "errors": [],
+  "new_analysis": false,
+  "rss_new_sync": false,
+  "prior_real_rss_evidence": "rss-flow-evidence.json",
+  "observed_commit": "701f2b0bf8c40388a03592877be4cb63ba2f8ed1",
+  "schema": "0008",
+  "assets": 4,
+  "final_copy": true,
+  "new_read_endpoints_denied_anonymous": true,
+  "default_profile": "1.0.0",
+  "rss_paid_periodic": false,
+  "catalog_count": 40,
+  "worker": {
+    "online": true,
+    "compatible": true,
+    "revision": "701f2b0bf8c40388a03592877be4cb63ba2f8ed1"
+  },
+  "rss_latest_recorded": [
+    {
+      "id": "biopharma_dive",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-18T19:33:23.294572+00:00",
+      "status": "unchanged"
+    },
+    {
+      "id": "el_pais",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-18T19:33:23.314158+00:00",
+      "status": "ok"
+    },
+    {
+      "id": "ema",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-18T19:33:23.305657+00:00",
+      "status": "unchanged"
+    },
+    {
+      "id": "gdacs",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-18T19:33:23.303768+00:00",
+      "status": "unchanged"
+    },
+    {
+      "id": "supply_chain_dive",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-18T19:33:23.302608+00:00",
+      "status": "unchanged"
+    },
+    {
+      "id": "the_loadstar",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-18T19:33:23.304705+00:00",
+      "status": "ok"
+    }
+  ],
+  "checked_at": "2026-10-18T19:34:47.099216+00:00",
+  "passed": true
+}

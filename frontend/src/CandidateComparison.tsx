@@ -76,7 +76,9 @@ export function CandidateComparison() {
         3.0 recupera más exposición crítica, pero conserva falsos vínculos en
         revisión y pierde un servicio marítimo declarado. 2.2 es la referencia
         de precisión. 4.0.1 resuelve los controles de ruta y modo, pero no
-        mejora el balance de errores de la cartera.
+        mejora el balance de errores de la cartera. 3.1 recupera el vínculo
+        marítimo, pero añade dos asociaciones sin interrupción demostrada;
+        conserva revisión y no se promueve.
       </p>
       <small>
         La comparación histórica de2.2 precede al extractor duration-1.1.0; no

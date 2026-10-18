@@ -14,6 +14,9 @@ def main():
     rows=[r for r in v3['results'].values() if r['group']=='training'];four=[r for r in v4['results'].values() if r['group']=='training']
     report['metrics']['link-4.0.1-dev']=report_metrics(four)
     groups={'1.0.0':[{**r,'prediction':r['baseline']} for r in rows], 'link-2.2.0':[r for r in v2['results'].values() if r['prediction']['question_version']=='link-2.2.0'],'link-3.0.0-dev':rows,'link-4.0.1-dev':four}
+    assisted=json.loads((ROOT/'reports/private/link-3-1-development.json').read_text())
+    groups['link-3.1.0-assist']=[r for r in assisted['results'].values() if r['group']=='training']
+    report['metrics']['link-3.1.0-assist']=report_metrics(groups['link-3.1.0-assist'])
     report['operational_strata']={};details=[]
     with Session() as db:
         db.execute(text('SET TRANSACTION READ ONLY'));ss={s.id:s.data for s in db.scalars(select(Supplier))};materials=[m.data for m in db.scalars(select(Material))]
@@ -35,7 +38,8 @@ def main():
     report['selected_for']='supervised discovery/recall, not automatic mitigation or default inference'
     report['preferred_candidate']='link-3.0.0-dev';report['precision_reference']='link-2.2.0';report['default_profile']='1.0.0';report['promoted_default']=False
     report['selection_reason']='3.0 misses no High or single-source associations in training; two extra associations are reviewed, one without risk. Its missing declared sea service is operationally relevant.2.2 has fewer false links but misses oneHigh and oneSingle-source.4.0.1 restores synthetic scope but misses five associations including oneSingle-source and adds twoHigh FP. No independent evidence to promote default.'
-    report['development_requests']={'total':v4['requests'],'profile4_0':v4['previous_protocol_requests'],'profile4_0_1':v4['requests_this_profile'],'http400':1,'retry_attempts':sum(c['attempt']>1 for c in v4['calls']),'counter_before':381,'counter_after':v4['global_calls_after'],'maximum':228}
+    report['development_requests']={'total':assisted['requests'],'profile4_0':v4['previous_protocol_requests'],'profile4_0_1':v4['requests_this_profile'],'profile3_1':assisted['requests_this_profile'],'valid_cached_stages3_1':sum(len(r.get('cached_stages',[])) for r in assisted['results'].values()),'http400':1,'retry_attempts':sum(c['attempt']>1 for c in assisted['calls']),'counter_before':381,'counter_after':assisted['global_calls_after'],'maximum':228}
+    report['assisted_candidate_decision']='3.1 recovers the declared maritime association and has no supplier FN, but adds a High and a Medium non-disruptive false scope. Both are reviewed/riskN. The partial-interruption synthetic remains riskN and sea diversion urgentY. Keep3.0 as development starting point; do not promote3.1 for unconfirmed scope or automatic mitigation. Next isolate affected service from commercial/geographic compatibility, with explicit factual support; no new calls in this delivery.'
     report['synthetic4_0_1']=[{'case':r['case'],'prediction':{k:r['prediction'][k] for k in ('is_risk','urgent','affected_supplier_ids','analysis_status')},'expected':{k:r['expected'].get(k) for k in ('suppliers','risk','urgent','require_review')}} for r in v4['results'].values() if r['group']=='synthetic']
     (ROOT/'reports/candidate-selection.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     (ROOT/'app/model_candidates.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
