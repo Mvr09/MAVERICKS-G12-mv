@@ -1,0 +1,53 @@
+{
+  "checked_at_local": "2026-10-18T13:27:36.685Z",
+  "revision": "0d6631e628978b231546fcc0878c79cc8d0076b2",
+  "mocked": false,
+  "worker_compatible": true,
+  "viewports": [
+    {
+      "width": 360,
+      "geography_sources": true,
+      "ambiguous_regions_visible": true,
+      "default_profile": "1.0.0",
+      "preview_profile": "link-2.2.0",
+      "confirmation_required": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "geography_sources": true,
+      "ambiguous_regions_visible": true,
+      "default_profile": "1.0.0",
+      "preview_profile": "link-2.2.0",
+      "confirmation_required": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 768,
+      "geography_sources": true,
+      "ambiguous_regions_visible": true,
+      "default_profile": "1.0.0",
+      "preview_profile": "link-2.2.0",
+      "confirmation_required": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "geography_sources": true,
+      "ambiguous_regions_visible": true,
+      "default_profile": "1.0.0",
+      "preview_profile": "link-2.2.0",
+      "confirmation_required": true,
+      "horizontal_overflow": false
+    }
+  ],
+  "page_errors": [],
+  "preview_requests": 4,
+  "analysis_or_cleanup_requests": 0,
+  "jev_requests_before": 52,
+  "jev_requests_after": 52,
+  "jev_requests_initiated": 0,
+  "production_predictions_unchanged": true,
+  "production_batches_unchanged": true,
+  "rss_paid_analysis": false
+}
