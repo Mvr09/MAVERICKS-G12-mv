@@ -1,10 +1,12 @@
 # A14 · registro de sonido
 
-## Confirmación del usuario
+**Estado actual: pasa.** El usuario confirmó una única alerta automática audible en ordenador/Firefox medianteQA5s, sin Probar alarma. La secuencia histórica y las pruebas complementarias se conservan debajo.
+
+## Confirmación inicial del usuario
 
 - Dispositivo: **ordenador**. Sistema operativo y modelo no indicados; no se inventan.
 - Navegador: **Firefox**. Versión no indicada.
-- Prueba confirmada en esta conversación: **solo «Probar alarma»**. Sonido audible confirmado por el usuario.
+- Prueba confirmada inicialmente en esta conversación: **solo «Probar alarma»**. Sonido audible confirmado por el usuario.
 - La declaración previa «funciona perfecto» respondía al guion Activar sonido → Probar alarma → Silenciar → Probar alarma. Se conserva como confirmación previa de sonido/silencio; no se transforma en prueba de disparo automático.
 - Fecha exacta y commit en el momento de la prueba física no indicados. Se registra la declaración del usuario en18-10-2026, sin atribuir a una revisión concreta una prueba que no se fechó.
 

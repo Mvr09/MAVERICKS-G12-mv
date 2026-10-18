@@ -1,0 +1,378 @@
+{
+  "url": "https://mavericks-g12-mv-production.up.railway.app",
+  "expected_commit": "5b17ef2ade0db935fee5e61ddd912c2ab13bf9d1",
+  "requests": [
+    {
+      "path": "/",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:45.984911+00:00"
+    },
+    {
+      "path": "/healthz",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:46.156226+00:00"
+    },
+    {
+      "path": "/readyz",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:46.340727+00:00"
+    },
+    {
+      "path": "/assets/charts-Vo4fhvfv.js",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:46.601880+00:00"
+    },
+    {
+      "path": "/assets/icons-h47_nvdG.js",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:46.780197+00:00"
+    },
+    {
+      "path": "/assets/index-CjMB6dCY.css",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:46.956159+00:00"
+    },
+    {
+      "path": "/assets/index-DwJGMV2F.js",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:47.244294+00:00"
+    },
+    {
+      "path": "/api/suppliers?context=rss",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:47.687604+00:00"
+    },
+    {
+      "path": "/api/suppliers/S024?context=rss",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:48.108740+00:00"
+    },
+    {
+      "path": "/proveedores/S024",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:48.287693+00:00"
+    },
+    {
+      "path": "/api/config",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:48.459915+00:00"
+    },
+    {
+      "path": "/api/worker",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:48.653751+00:00"
+    },
+    {
+      "path": "/api/worker",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:53.977286+00:00"
+    },
+    {
+      "path": "/api/worker",
+      "http": 200,
+      "checked_at": "2026-10-18T18:05:59.267335+00:00"
+    },
+    {
+      "path": "/api/worker",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:04.575696+00:00"
+    },
+    {
+      "path": "/api/worker",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:09.889641+00:00"
+    },
+    {
+      "path": "/api/worker",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:15.195381+00:00"
+    },
+    {
+      "path": "/api/worker",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:20.503788+00:00"
+    },
+    {
+      "path": "/api/worker",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:25.806973+00:00"
+    },
+    {
+      "path": "/api/model/metrics?context=rss",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:26.408727+00:00"
+    },
+    {
+      "path": "/api/sources",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:26.607558+00:00"
+    },
+    {
+      "path": "/api/jobs/f60f2f4a-1ead-46fe-bc89-8bde8be7557e",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:27.176343+00:00"
+    },
+    {
+      "path": "/api/jobs/31ba2af4-a27a-4dc0-89e0-4884cdea605a",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:27.370795+00:00"
+    },
+    {
+      "path": "/api/jobs/178fde09-c6eb-4298-908e-97c523891dff",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:27.565250+00:00"
+    },
+    {
+      "path": "/api/jobs/b703339d-ef24-48b4-8927-68f825e770bf",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:27.766716+00:00"
+    },
+    {
+      "path": "/api/jobs/e361e893-6f04-444f-9eb9-47814e3514a3",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:27.949977+00:00"
+    },
+    {
+      "path": "/api/jobs/7dffb30b-e4b0-4d37-af94-7e9e4f6e3e36",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:28.132924+00:00"
+    },
+    {
+      "path": "/api/jobs/f60f2f4a-1ead-46fe-bc89-8bde8be7557e",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:31.316735+00:00"
+    },
+    {
+      "path": "/api/jobs/31ba2af4-a27a-4dc0-89e0-4884cdea605a",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:31.502390+00:00"
+    },
+    {
+      "path": "/api/jobs/178fde09-c6eb-4298-908e-97c523891dff",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:31.685250+00:00"
+    },
+    {
+      "path": "/api/jobs/b703339d-ef24-48b4-8927-68f825e770bf",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:31.867404+00:00"
+    },
+    {
+      "path": "/api/jobs/e361e893-6f04-444f-9eb9-47814e3514a3",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:32.050292+00:00"
+    },
+    {
+      "path": "/api/jobs/7dffb30b-e4b0-4d37-af94-7e9e4f6e3e36",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:32.231725+00:00"
+    },
+    {
+      "path": "/api/sources",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:32.425275+00:00"
+    },
+    {
+      "path": "/api/model/metrics?context=rss",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:32.744333+00:00"
+    },
+    {
+      "path": "/api/config",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:32.924052+00:00"
+    },
+    {
+      "path": "/api/articles?context=rss",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:33.332792+00:00"
+    },
+    {
+      "path": "/api/articles/702c5e7b-a566-456d-b186-69bdaf92cbe1",
+      "http": 200,
+      "checked_at": "2026-10-18T18:06:33.532482+00:00"
+    }
+  ],
+  "checks": {
+    "web_revision": true,
+    "readiness_schema": "0007",
+    "asset_count": 4,
+    "procurement_copy_deployed": true,
+    "deployed_exposure_copy": true,
+    "qa_control_in_assets": true,
+    "qa_anonymous_http": 401,
+    "catalog_count": 40,
+    "supplier_detail": {
+      "supplier_id": "S024",
+      "city": "Hangzhou",
+      "deep_route_http": 200
+    },
+    "configuration": {
+      "default_profile": "1.0.0",
+      "profiles": [
+        "1.0.0",
+        "link-2.2.0"
+      ],
+      "rss_paid_analysis": false
+    },
+    "worker": {
+      "online": true,
+      "compatible": true,
+      "revision": "5b17ef2ade0db935fee5e61ddd912c2ab13bf9d1",
+      "expected_revision": "5b17ef2ade0db935fee5e61ddd912c2ab13bf9d1",
+      "last_seen_at": "2026-10-18T18:05:58.274228+00:00"
+    },
+    "rss_article_for_ui": "702c5e7b-a566-456d-b186-69bdaf92cbe1"
+  },
+  "rss_sync": {
+    "started_at": "2026-10-18T18:06:26.607731+00:00",
+    "http": 202,
+    "job_ids": [
+      "f60f2f4a-1ead-46fe-bc89-8bde8be7557e",
+      "31ba2af4-a27a-4dc0-89e0-4884cdea605a",
+      "178fde09-c6eb-4298-908e-97c523891dff",
+      "b703339d-ef24-48b4-8927-68f825e770bf",
+      "e361e893-6f04-444f-9eb9-47814e3514a3",
+      "7dffb30b-e4b0-4d37-af94-7e9e4f6e3e36"
+    ],
+    "paid_requests_before": 48,
+    "jobs": [
+      {
+        "id": "f60f2f4a-1ead-46fe-bc89-8bde8be7557e",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T18:06:01.864074+00:00",
+        "error": null,
+        "source_id": "the_loadstar",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "31ba2af4-a27a-4dc0-89e0-4884cdea605a",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T18:06:01.879392+00:00",
+        "error": null,
+        "source_id": "el_pais",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "178fde09-c6eb-4298-908e-97c523891dff",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T18:06:01.899528+00:00",
+        "error": null,
+        "source_id": "ema",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "b703339d-ef24-48b4-8927-68f825e770bf",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T18:06:01.923108+00:00",
+        "error": null,
+        "source_id": "supply_chain_dive",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "e361e893-6f04-444f-9eb9-47814e3514a3",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T18:06:02.436966+00:00",
+        "error": null,
+        "source_id": "biopharma_dive",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "7dffb30b-e4b0-4d37-af94-7e9e4f6e3e36",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T18:06:02.461445+00:00",
+        "error": null,
+        "source_id": "gdacs",
+        "article_id": null,
+        "network_requests": null
+      }
+    ],
+    "sources": [
+      {
+        "id": "biopharma_dive",
+        "name": "BioPharma Dive",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-18T18:06:02.463377+00:00",
+        "last_success_at": "2026-10-18T18:06:02.539799+00:00",
+        "status": "unchanged",
+        "error": null,
+        "attempt_updated": true
+      },
+      {
+        "id": "el_pais",
+        "name": "EL PAIS Internacional",
+        "http_status": 200,
+        "last_attempt_at": "2026-10-18T18:06:01.903817+00:00",
+        "last_success_at": "2026-10-18T18:06:01.996147+00:00",
+        "status": "ok",
+        "error": null,
+        "attempt_updated": true
+      },
+      {
+        "id": "ema",
+        "name": "EMA",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-18T18:06:01.926777+00:00",
+        "last_success_at": "2026-10-18T18:06:01.988612+00:00",
+        "status": "unchanged",
+        "error": null,
+        "attempt_updated": true
+      },
+      {
+        "id": "gdacs",
+        "name": "GDACS",
+        "http_status": 200,
+        "last_attempt_at": "2026-10-18T18:06:02.476152+00:00",
+        "last_success_at": "2026-10-18T18:06:05.161542+00:00",
+        "status": "ok",
+        "error": null,
+        "attempt_updated": true
+      },
+      {
+        "id": "supply_chain_dive",
+        "name": "Supply Chain Dive",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-18T18:06:01.936159+00:00",
+        "last_success_at": "2026-10-18T18:06:02.001874+00:00",
+        "status": "unchanged",
+        "error": null,
+        "attempt_updated": true
+      },
+      {
+        "id": "the_loadstar",
+        "name": "The Loadstar",
+        "http_status": 200,
+        "last_attempt_at": "2026-10-18T18:06:01.881459+00:00",
+        "last_success_at": "2026-10-18T18:06:02.225978+00:00",
+        "status": "ok",
+        "error": null,
+        "attempt_updated": true
+      }
+    ],
+    "paid_requests_after": 48,
+    "paid_request_delta": 0,
+    "all_sources_attempted": true,
+    "all_jobs_done": true
+  },
+  "errors": [],
+  "observed_commit": "5b17ef2ade0db935fee5e61ddd912c2ab13bf9d1",
+  "passed": true,
+  "checked_at": "2026-10-18T18:06:33.719824+00:00"
+}

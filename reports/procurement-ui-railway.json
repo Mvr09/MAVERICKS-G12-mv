@@ -1,0 +1,66 @@
+{
+  "revision": "5b17ef2ade0db935fee5e61ddd912c2ab13bf9d1",
+  "mocked": false,
+  "viewports": [
+    {
+      "width": 360,
+      "summary": true,
+      "detail": true,
+      "origin_in_navigation": true,
+      "keyboard_focus": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "summary": true,
+      "detail": true,
+      "origin_in_navigation": true,
+      "keyboard_focus": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 768,
+      "summary": true,
+      "detail": true,
+      "origin_in_navigation": true,
+      "keyboard_focus": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "summary": true,
+      "detail": true,
+      "origin_in_navigation": true,
+      "keyboard_focus": true,
+      "horizontal_overflow": false
+    }
+  ],
+  "errors": [],
+  "mutating_requests": [
+    {
+      "path": "/api/drafts",
+      "method": "POST"
+    }
+  ],
+  "origin_preserved_api": true,
+  "existing_batch_split": "validation",
+  "purpose": "UI rehearsal of stored normalized predictions only; no model development, labels or new evaluation",
+  "draft": {
+    "created": true,
+    "editable": true,
+    "edit_survives_polling": true,
+    "focus_preserved": true,
+    "txt_download": true,
+    "external_send": false
+  },
+  "existing_export": {
+    "http": 200,
+    "batch_rows_metadata": 14,
+    "xlsx_signature_valid": true,
+    "new_analysis": false
+  },
+  "new_jev_requests": 0,
+  "paid_rss_periodic": false,
+  "checked_at": "2026-10-18T18:08:48.823Z",
+  "passed": true
+}

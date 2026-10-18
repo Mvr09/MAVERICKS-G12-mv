@@ -66,7 +66,7 @@ import { EventTag, eventNames } from "./EventTag";
 
 const names: Record<string, string> = {
   training: "Entrenamiento",
-  validation: "Validación retenida",
+  validation: "Validación · retrospectiva",
   test: "Test final",
   liveday: "LiveDay",
   pending: "Pendiente",

@@ -1,5 +1,5 @@
 {
-  "revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
+  "revision": "5b17ef2ade0db935fee5e61ddd912c2ab13bf9d1",
   "default_profile": "1.0.0",
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
@@ -12,7 +12,7 @@
     {
       "id": "A01",
       "status": "pasa",
-      "evidence_and_limit": "Catálogo40 comprobado en12c4dff;20materiales/6productos y40Noul heredados de auditoría inicial/integración120. Constructor y catálogo sin cambios por el arreglo de duración."
+      "evidence_and_limit": "Catálogo40 comprobado nuevamente enb4d697b;20materiales/6productos y40Noul heredados de auditoría inicial/integración120. Constructor y catálogo sin cambios por el arreglo de duración."
     },
     {
       "id": "A02",
@@ -37,7 +37,7 @@
     {
       "id": "A06",
       "status": "falla",
-      "evidence_and_limit": "Capacidad funcional de cuarentaNoul y selección múltiple comprobada. Modelo: enriquecimiento aislado no recupera la exposición respaldada; la puertaA sigue rechazándola. Datos: otra identidad mantiene provincia desconocida y posible exposición pendiente. Training:0asociaciones recuperadas/2correctas perdidas/1falsa eliminada/0falsas nuevas, por lo que la variante no pasa a estable. Caso retenido/regresiones por noticia en privado; GEOGRAFIA_AISLADA.md agregado. No se fuerza una etiqueta ni se exige precisión perfecta en todas las noticias. Candidato3.0dev recupera9asociaciones y pierde1, elimina1falsa y añade2: no promovido. Riesgo2regresiones emparejadas. A06no cerrado; LINK_3_DESARROLLO.md."
+      "evidence_and_limit": "Candidato3.0dev:9asociaciones recuperadas/1perdida/2falsas nuevas,2regresiones de riesgo emparejadas; no promovido.  Capacidad funcional de cuarentaNoul y selección múltiple comprobada. Modelo: enriquecimiento aislado no recupera la exposición respaldada; la puertaA sigue rechazándola. Datos: otra identidad mantiene provincia desconocida y posible exposición pendiente. Training:0asociaciones recuperadas/2correctas perdidas/1falsa eliminada/0falsas nuevas, por lo que la variante no pasa a estable. Caso retenido/regresiones por noticia en privado; GEOGRAFIA_AISLADA.md agregado. No se fuerza una etiqueta ni se exige precisión perfecta en todas las noticias."
     },
     {
       "id": "A07",
@@ -62,7 +62,7 @@
     {
       "id": "A11",
       "status": "pasa",
-      "evidence_and_limit": "Ingesta/análisisRSS real previo conservado. En12c4dff, seis trabajos de consulta reales done,2HTTP200/4HTTP304 y fechas actualizadas;304 son respuestas condicionales, no cuerpos nuevos. Pago periódico false; contadorJEVRSS48→48 en esta comprobación."
+      "evidence_and_limit": "Ingesta/análisisRSS real previo conservado. Enb4d697b, seis trabajos de consulta reales done,2HTTP200/4HTTP304 y fechas actualizadas;304 son respuestas condicionales, no cuerpos nuevos. Pago periódico false; contadorJEVRSS48→48 en esta comprobación."
     },
     {
       "id": "A12",
@@ -87,7 +87,7 @@
     {
       "id": "A16",
       "status": "pasa",
-      "evidence_and_limit": "Formato/orden/IDs/Y-N/exportaciones reales históricas comprobados; exportador sin cambios. No se afirma una nueva exportación de test/LiveDay ni se reevalúan sus respuestas. El arreglo de duración no cambia el contrato del archivo."
+      "evidence_and_limit": "Formato/orden/IDs/Y-N/exportaciones históricas heredados; exportador sin cambios. La medición final autorizada añade una exportación LiveDay de14filas con contrato y orden comprobados, sin evaluar precisión ni ajustar con sus respuestas."
     },
     {
       "id": "A17",
@@ -102,12 +102,12 @@
     {
       "id": "A19",
       "status": "pasa",
-      "evidence_and_limit": "Perfil/revisión4E2E y nuevoQA dirigido pasan. UIQA pública real360/390/768/1440 sin overflow/erroresJS, contextoRSS/ficha y una entrega automática. Emulación Chrome no equivale a Firefox físico ni móvil físico; se conserva ese límite."
+      "evidence_and_limit": "Procurement:4E2E y UIreal360/390/768/1440, origen conservado, filtro/foco/lectura y borrador tras sondeo; sin overflow/erroresJS.  Perfil/revisión4E2E y nuevoQA dirigido pasan. UIQA pública real360/390/768/1440 sin overflow/erroresJS, contextoRSS/ficha y una entrega automática. Emulación Chrome no equivale a Firefox físico ni móvil físico; se conserva ese límite."
     },
     {
       "id": "A20",
       "status": "pasa",
-      "evidence_and_limit": "Medición final única18-10-2026, commitb4d697b, perfil1.0.0/modelojev-1.13.0/extractorduration-1.1.0:14filas y Excel recibido en7.888s con relojmonotónico desdePOST, incluidos cola/reintentos/descarga.23HTTP200 nuevas/0reintentos/0etapas cacheadas/0artículos íntegramente cacheados; historial/orden/IDs conservados. a20-current-results.json. No mide precisión ni se usa para ajustes. Heredado para entregaUI:13dependencias sin cambios, filtroGET de ficha y candidato sin dispatch no cambian análisis/exportación. No repetido."
+      "evidence_and_limit": "Medición final única18-10-2026, commitb4d697b, perfil1.0.0/modelojev-1.13.0/extractorduration-1.1.0:14filas y Excel recibido en7.888s con relojmonotónico desdePOST, incluidos cola/reintentos/descarga.23HTTP200 nuevas/0reintentos/0etapas cacheadas/0artículos íntegramente cacheados; historial/orden/IDs conservados. a20-current-results.json. No mide precisión ni se usa para ajustes."
     }
   ],
   "a14_physical_auto": "Todavía no la he probado: usuario",
@@ -127,5 +127,6 @@
     "promoted": false,
     "a20": "inherited from b4d697b; analysis/export dependencies unchanged; no new LiveDay execution",
     "audio": "physical automatic QA confirmed by user: computer/Firefox; one emission without Test alarm"
-  }
+  },
+  "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711"
 }

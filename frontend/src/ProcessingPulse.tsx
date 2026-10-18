@@ -64,7 +64,7 @@ export function ProcessingPulse({ articles }: { articles: Article[] }) {
         </div>
         <span className="processing-new" role="status" aria-live="polite">
           {total
-            ? `${total} actualizaciones desde que abriste esta vista`
+            ? `${total} ${total === 1 ? "actualización" : "actualizaciones"} desde que abriste esta vista`
             : "Las novedades aparecerán aquí"}
         </span>
       </div>

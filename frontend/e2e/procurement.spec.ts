@@ -211,8 +211,8 @@ for (const width of [360, 390, 768, 1440])
     await expect(
       page
         .getByRole("status")
-        .filter({ hasText: "actualizaciones desde que abriste" }),
-    ).toContainText("1 actualizaciones", { timeout: 10000 });
+        .filter({ hasText: "actualización desde que abriste" }),
+    ).toContainText("1 actualización", { timeout: 10000 });
     await expect(search).toHaveValue("MOCK");
     await expect(search).toBeFocused();
     expect(Math.abs((await search.boundingBox())!.y - position)).toBeLessThan(

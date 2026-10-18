@@ -11,7 +11,7 @@ const score = (value: number | null | undefined) =>
     : value.toLocaleString("es-ES", { maximumFractionDigits: 3 });
 const splits: Record<string, string> = {
   training: "Entrenamiento · desarrollo",
-  validation: "Validación",
+  validation: "Validación · comparación retrospectiva",
   test: "Test sin etiquetas",
   liveday: "LiveDay sin etiquetas",
 };
