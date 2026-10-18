@@ -534,7 +534,15 @@
             "enum": [
               "independent_support_check",
               "factual_basis_check",
-              null
+              null,
+              "model_consistency_check",
+              "relational_scope_check"
+            ]
+          },
+          "resolution_hint": {
+            "type": [
+              "string",
+              "null"
             ]
           }
         }
@@ -551,6 +559,24 @@
         "string",
         "null"
       ]
+    },
+    "analysis_profile": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "matching_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "analysis_versions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
     }
   },
   "allOf": [

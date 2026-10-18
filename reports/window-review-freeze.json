@@ -1,0 +1,19 @@
+{
+  "run": "night-relational-review-01",
+  "review": "review-1.2.0",
+  "questions": "relational-exclusion-1.0.0",
+  "hypothesis": "An article can describe real normal activity unrelated to this supplier. Verify a different actual subject relative to catalog, not an abstract non-operational label. Require positive support, source passage and low final identity/link; retain unknown compatible routes and ambiguous scope.",
+  "cases": 42,
+  "max_attempts": 90,
+  "predictions_frozen": true,
+  "adoption": [
+    "More correct automatic cases, no added automatic error",
+    "Known omissions still reviewed",
+    "Positive named identities retained",
+    "Unknown route/partial-risk-negative/ambiguous-urgency still reviewed"
+  ],
+  "hashes": {
+    "app/candidate_review.py": "d1a1dadbe775f7dbd2c4836fe2d67e1e28117d8787755aa57d1214f4f0e480ce",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+  }
+}

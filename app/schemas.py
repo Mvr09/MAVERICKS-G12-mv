@@ -85,7 +85,8 @@ class ReviewDetail(StrictModel):
     value: float | str | None
     threshold: float | None
     original_requires_review: bool | None = None
-    resolution: Literal['independent_support_check', 'factual_basis_check'] | None = None
+    resolution: Literal['independent_support_check', 'factual_basis_check', 'model_consistency_check', 'relational_scope_check'] | None = None
+    resolution_hint: str | None = None
 
 
 class NormalizedAnalysis(StrictModel):
@@ -108,6 +109,9 @@ class NormalizedAnalysis(StrictModel):
     review_details: list[ReviewDetail] = Field(default_factory=list)
     review_policy_version: str | None = None
     verification_question_version: str | None = None
+    analysis_profile: str | None = None
+    matching_version: str | None = None
+    analysis_versions: dict[str, str] = Field(default_factory=dict)
     source_reading: SourceReading | None = None
     event_classification: EventClassification | None = None
 
