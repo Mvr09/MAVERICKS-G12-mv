@@ -1,9 +1,10 @@
-import json, re, time
+import json, time
 from sqlalchemy import select
 from jsonschema import validate
 from app.db import Session
 from app.models import Article, Analysis, Supplier, Batch, now
 from app.settings import ROOT, POLICY, settings
+from app.duration import durations
 from app.importer import digest
 from app.schemas import NormalizedAnalysis
 from app.jev import JevClient, ProviderError
@@ -12,31 +13,6 @@ from reference.scoring import priority, decisions
 
 SCHEMA = json.loads((ROOT / "contracts/article_analysis.schema.json").read_text())
 
-
-def durations(article):
-    text = article.get("headline", "") + " " + article.get("summary", "")
-    out = []
-    pattern = r"(?:(at least|more than|al menos|más de)\s+)?(\d+(?:\.\d+)?)\s*(days?|weeks?|months?|días?|semanas?|meses?)\b"
-    for m in re.finditer(pattern, text, re.I):
-        n = float(m[2])
-        u = m[3].lower()
-        days = n * (
-            7
-            if u.startswith(("week", "semana"))
-            else 30
-            if u.startswith(("month", "mes"))
-            else 1
-        )
-        if days > 0:
-            out.append(
-                {
-                    "id": f"d{len(out) + 1}",
-                    "text": m[0],
-                    "days": days,
-                    "lower_bound": bool(m[1]),
-                }
-            )
-    return out
 
 
 def normalize(article, suppliers, a, b, candidates):
