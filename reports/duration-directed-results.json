@@ -1,0 +1,196 @@
+{
+  "checked_at": "2026-10-18T15:17:26.722489+00:00",
+  "execution_environment": "PostgreSQL local; API JEV real autenticada",
+  "profile": "link-2.2.0",
+  "model": "jev-1.13.0",
+  "extractor": "duration-1.1.0",
+  "passed": true,
+  "cases": [
+    {
+      "case": "en_words",
+      "passed": true,
+      "source_fragment": "two days",
+      "duration_days": 2.0,
+      "lower_bound": false,
+      "duration_choice_confidence": 0.64,
+      "risk": "Y",
+      "urgent": "N",
+      "analysis_status": "review",
+      "supplier_ids": [
+        "S024"
+      ],
+      "p_link": 0.51,
+      "review_reasons": [
+        "association_support_insufficient:S003",
+        "association_support_insufficient:S024",
+        "impact_state_confidence_low:S024",
+        "link_ambiguous:S024",
+        "risk_ambiguous:S024",
+        "risk_evidence_insufficient:S024"
+      ]
+    },
+    {
+      "case": "en_digits",
+      "passed": true,
+      "source_fragment": "2 days",
+      "duration_days": 2.0,
+      "lower_bound": false,
+      "duration_choice_confidence": 0.62,
+      "risk": "Y",
+      "urgent": "N",
+      "analysis_status": "review",
+      "supplier_ids": [
+        "S024"
+      ],
+      "p_link": 0.52,
+      "review_reasons": [
+        "association_support_insufficient:S003",
+        "association_support_insufficient:S024",
+        "impact_state_confidence_low:S024",
+        "link_ambiguous:S024",
+        "risk_ambiguous:S024",
+        "risk_evidence_insufficient:S024"
+      ]
+    },
+    {
+      "case": "es_words",
+      "passed": true,
+      "source_fragment": "dos días",
+      "duration_days": 2.0,
+      "lower_bound": false,
+      "duration_choice_confidence": 0.52,
+      "risk": "N",
+      "urgent": "N",
+      "analysis_status": "review",
+      "supplier_ids": [],
+      "p_link": 0.46,
+      "review_reasons": [
+        "association_support_insufficient:S003",
+        "association_support_insufficient:S024",
+        "link_ambiguous:S024"
+      ]
+    },
+    {
+      "case": "es_digits",
+      "passed": true,
+      "source_fragment": "2 días",
+      "duration_days": 2.0,
+      "lower_bound": false,
+      "duration_choice_confidence": 0.42,
+      "risk": "N",
+      "urgent": "N",
+      "analysis_status": "review",
+      "supplier_ids": [],
+      "p_link": 0.41,
+      "review_reasons": [
+        "association_support_insufficient:S003",
+        "association_support_insufficient:S024",
+        "link_ambiguous:S024"
+      ]
+    },
+    {
+      "case": "en_min_words",
+      "passed": true,
+      "source_fragment": "at least two days",
+      "duration_days": 2.0,
+      "lower_bound": true,
+      "duration_choice_confidence": 0.62,
+      "risk": "Y",
+      "urgent": "N",
+      "analysis_status": "review",
+      "supplier_ids": [
+        "S024"
+      ],
+      "p_link": 0.57,
+      "review_reasons": [
+        "association_support_insufficient:S003",
+        "association_support_insufficient:S024",
+        "impact_state_confidence_low:S024",
+        "link_ambiguous:S024",
+        "risk_evidence_insufficient:S024"
+      ]
+    },
+    {
+      "case": "en_min_digits",
+      "passed": true,
+      "source_fragment": "at least 2 days",
+      "duration_days": 2.0,
+      "lower_bound": true,
+      "duration_choice_confidence": 0.5,
+      "risk": "Y",
+      "urgent": "N",
+      "analysis_status": "review",
+      "supplier_ids": [
+        "S024"
+      ],
+      "p_link": 0.55,
+      "review_reasons": [
+        "association_support_insufficient:S003",
+        "association_support_insufficient:S024",
+        "duration_confidence_low:S024",
+        "impact_state_confidence_low:S024",
+        "link_ambiguous:S024",
+        "risk_ambiguous:S024",
+        "risk_evidence_insufficient:S024"
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "cases": [
+        "en_words",
+        "en_digits"
+      ],
+      "risk_equal": true,
+      "urgent_equal": true,
+      "review_status_equal": true,
+      "review_reasons_equal": true
+    },
+    {
+      "cases": [
+        "es_words",
+        "es_digits"
+      ],
+      "risk_equal": true,
+      "urgent_equal": true,
+      "review_status_equal": true,
+      "review_reasons_equal": true
+    },
+    {
+      "cases": [
+        "en_min_words",
+        "en_min_digits"
+      ],
+      "risk_equal": true,
+      "urgent_equal": true,
+      "review_status_equal": true,
+      "review_reasons_equal": false
+    }
+  ],
+  "requests": 12,
+  "maximum_requests": 36,
+  "http_200": 12,
+  "retries": 0,
+  "global_calls_before": 241,
+  "global_calls_after": 253,
+  "invocations": [
+    {
+      "seconds": 5.598003922001226,
+      "new_requests": 12,
+      "reused_completed_cases": 0
+    },
+    {
+      "seconds": 0.0027816270012408495,
+      "new_requests": 0,
+      "reused_completed_cases": 6
+    }
+  ],
+  "usage": {
+    "input_tokens": 193674,
+    "output_tokens": 10654
+  },
+  "indefinite_check": "Offline únicamente; no se añadieron casos JEV al lote de seis autorizado",
+  "new_independent_accuracy_evaluation": false,
+  "default_profile": "1.0.0",
+  "rss_periodic_paid_analysis": false
+}
