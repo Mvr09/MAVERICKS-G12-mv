@@ -1,0 +1,48 @@
+{
+  "run": "night-risk-focus-01",
+  "hypothesis": "Independently linked partial output/delivery loss and adverse strategic instability are threats before stockout/urgency. A focused factual stage omits business buffers, cannot create links, lower thresholds, or modify urgency. Only strongly factual positive corrections are applied; other review remains.",
+  "sample": "30training+6synthetics+24previously inspected controlled cases, all development",
+  "risk_version": "risk-focus-1.0.0",
+  "questions": "decision-3.4.0",
+  "matching": "link-3.3.0",
+  "review": "review-1.2.0",
+  "max_attempts": 240,
+  "targets": {
+    "training:N014": [
+      "S017"
+    ],
+    "training:N018": [
+      "S020"
+    ],
+    "training:N025": [
+      "S030"
+    ],
+    "controlled:partial_leaflets": [
+      "S024"
+    ],
+    "controlled:partial_filters": [
+      "S027"
+    ],
+    "controlled:sea_not_rail": [
+      "S032"
+    ],
+    "controlled:lodz_alias": [
+      "S019"
+    ]
+  },
+  "adoption": [
+    "No new risk FP/FN or urgent FP/FN on development",
+    "All supplier predictions invariant",
+    "No new automatic joint errors",
+    "Concrete correctly automated risk or reduced omission",
+    "Unknown province/route and false links still reviewed",
+    "Fresh pre-referenced controlled sample before final selectable adoption; default unchanged"
+  ],
+  "files": {
+    "app/candidate_risk.py": "cceecde389c3f97b4fb160156238a58d4dcc497b8fdec5909b259aa22c83097f",
+    "app/candidate_engine.py": "9623eb871508511d827bc5f686b5287142261f40162e82068570d0ec6b367b1c",
+    "app/candidate_matching.py": "78f7432bd5c6ffe4b8238837b19ed973fcfd2ee6d2f0676bc370d43d25f31626",
+    "app/candidate_review.py": "d1a1dadbe775f7dbd2c4836fe2d67e1e28117d8787755aa57d1214f4f0e480ce",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+  }
+}

@@ -1,0 +1,539 @@
+{
+  "run": "night-risk-focus-01",
+  "protocol": {
+    "run": "night-risk-focus-01",
+    "hypothesis": "Independently linked partial output/delivery loss and adverse strategic instability are threats before stockout/urgency. A focused factual stage omits business buffers, cannot create links, lower thresholds, or modify urgency. Only strongly factual positive corrections are applied; other review remains.",
+    "sample": "30training+6synthetics+24previously inspected controlled cases, all development",
+    "risk_version": "risk-focus-1.0.0",
+    "questions": "decision-3.4.0",
+    "matching": "link-3.3.0",
+    "review": "review-1.2.0",
+    "max_attempts": 240,
+    "targets": {
+      "training:N014": [
+        "S017"
+      ],
+      "training:N018": [
+        "S020"
+      ],
+      "training:N025": [
+        "S030"
+      ],
+      "controlled:partial_leaflets": [
+        "S024"
+      ],
+      "controlled:partial_filters": [
+        "S027"
+      ],
+      "controlled:sea_not_rail": [
+        "S032"
+      ],
+      "controlled:lodz_alias": [
+        "S019"
+      ]
+    },
+    "adoption": [
+      "No new risk FP/FN or urgent FP/FN on development",
+      "All supplier predictions invariant",
+      "No new automatic joint errors",
+      "Concrete correctly automated risk or reduced omission",
+      "Unknown province/route and false links still reviewed",
+      "Fresh pre-referenced controlled sample before final selectable adoption; default unchanged"
+    ],
+    "files": {
+      "app/candidate_risk.py": "cceecde389c3f97b4fb160156238a58d4dcc497b8fdec5909b259aa22c83097f",
+      "app/candidate_engine.py": "9623eb871508511d827bc5f686b5287142261f40162e82068570d0ec6b367b1c",
+      "app/candidate_matching.py": "78f7432bd5c6ffe4b8238837b19ed973fcfd2ee6d2f0676bc370d43d25f31626",
+      "app/candidate_review.py": "d1a1dadbe775f7dbd2c4836fe2d67e1e28117d8787755aa57d1214f4f0e480ce",
+      "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+    }
+  },
+  "complete": true,
+  "requests": 6,
+  "retries": 0,
+  "global_counter": 908,
+  "window_reserved": 313,
+  "calls": [
+    {
+      "stage": "candidate_risk_focus",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.28654388200084213,
+      "at": "2026-10-19T01:53:41.396920+02:00",
+      "usage": {
+        "input_tokens": 1749,
+        "output_tokens": 299
+      }
+    },
+    {
+      "stage": "candidate_risk_focus",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.2927135670033749,
+      "at": "2026-10-19T01:53:45.702316+02:00",
+      "usage": {
+        "input_tokens": 1730,
+        "output_tokens": 293
+      }
+    },
+    {
+      "stage": "candidate_risk_focus",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.23515972300083376,
+      "at": "2026-10-19T01:53:46.172137+02:00",
+      "usage": {
+        "input_tokens": 1724,
+        "output_tokens": 291
+      }
+    },
+    {
+      "stage": "candidate_risk_focus",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.2715975960018113,
+      "at": "2026-10-19T01:53:46.726594+02:00",
+      "usage": {
+        "input_tokens": 1700,
+        "output_tokens": 299
+      }
+    },
+    {
+      "stage": "candidate_support",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.2994517729966901,
+      "at": "2026-10-19T01:53:47.043303+02:00",
+      "usage": {
+        "input_tokens": 11082,
+        "output_tokens": 1286
+      }
+    },
+    {
+      "stage": "candidate_risk_focus",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.23509979899972677,
+      "at": "2026-10-19T01:53:48.265158+02:00",
+      "usage": {
+        "input_tokens": 1744,
+        "output_tokens": 291
+      }
+    }
+  ],
+  "metrics": {
+    "synthetic": {
+      "old": {
+        "n": 0,
+        "risk": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 0,
+          "positives": 0
+        },
+        "urgent": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 0,
+          "positives": 0
+        },
+        "suppliers": {
+          "exact": 0,
+          "n": 0,
+          "precision": null,
+          "recall": null,
+          "exact_set_accuracy": null,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "f1": null
+        },
+        "review_count": 0,
+        "includes_review_predictions": true,
+        "automatic_coverage": null,
+        "automatic": null,
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": null
+      },
+      "prediction": {
+        "n": 0,
+        "risk": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 0,
+          "positives": 0
+        },
+        "urgent": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 0,
+          "positives": 0
+        },
+        "suppliers": {
+          "exact": 0,
+          "n": 0,
+          "precision": null,
+          "recall": null,
+          "exact_set_accuracy": null,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "f1": null
+        },
+        "review_count": 0,
+        "includes_review_predictions": true,
+        "automatic_coverage": null,
+        "automatic": null,
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": null
+      }
+    },
+    "training": {
+      "old": {
+        "n": 30,
+        "risk": {
+          "tp": 13,
+          "fp": 0,
+          "fn": 1,
+          "tn": 16,
+          "precision": 1.0,
+          "recall": 0.9285714285714286,
+          "f1": 0.9629629629629629,
+          "n": 30,
+          "positives": 14
+        },
+        "urgent": {
+          "tp": 5,
+          "fp": 2,
+          "fn": 0,
+          "tn": 23,
+          "precision": 0.7142857142857143,
+          "recall": 1.0,
+          "f1": 0.8333333333333334,
+          "n": 30,
+          "positives": 5
+        },
+        "suppliers": {
+          "exact": 29,
+          "n": 30,
+          "precision": 0.88,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9666666666666667,
+          "tp": 22,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.9361702127659575
+        },
+        "review_count": 14,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.5333333333333333,
+        "automatic": {
+          "n": 16,
+          "risk": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "urgent": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "suppliers": {
+            "exact": 16,
+            "n": 16,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      },
+      "prediction": {
+        "n": 30,
+        "risk": {
+          "tp": 13,
+          "fp": 0,
+          "fn": 1,
+          "tn": 16,
+          "precision": 1.0,
+          "recall": 0.9285714285714286,
+          "f1": 0.9629629629629629,
+          "n": 30,
+          "positives": 14
+        },
+        "urgent": {
+          "tp": 5,
+          "fp": 2,
+          "fn": 0,
+          "tn": 23,
+          "precision": 0.7142857142857143,
+          "recall": 1.0,
+          "f1": 0.8333333333333334,
+          "n": 30,
+          "positives": 5
+        },
+        "suppliers": {
+          "exact": 29,
+          "n": 30,
+          "precision": 0.88,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9666666666666667,
+          "tp": 22,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.9361702127659575
+        },
+        "review_count": 14,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.5333333333333333,
+        "automatic": {
+          "n": 16,
+          "risk": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "urgent": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "suppliers": {
+            "exact": 16,
+            "n": 16,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      }
+    },
+    "inspected_controls_development": {
+      "old": {
+        "n": 18,
+        "risk": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 2,
+          "tn": 8,
+          "precision": 1.0,
+          "recall": 0.8,
+          "f1": 0.8888888888888888,
+          "n": 18,
+          "positives": 10
+        },
+        "urgent": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 18,
+          "positives": 4
+        },
+        "suppliers": {
+          "exact": 17,
+          "n": 18,
+          "precision": 0.8125,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9444444444444444,
+          "tp": 13,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.896551724137931
+        },
+        "review_count": 6,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.6666666666666666,
+        "automatic": {
+          "n": 12,
+          "risk": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 12,
+            "positives": 4
+          },
+          "urgent": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 12,
+            "positives": 4
+          },
+          "suppliers": {
+            "exact": 12,
+            "n": 12,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 6,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      },
+      "prediction": {
+        "n": 18,
+        "risk": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 2,
+          "tn": 8,
+          "precision": 1.0,
+          "recall": 0.8,
+          "f1": 0.8888888888888888,
+          "n": 18,
+          "positives": 10
+        },
+        "urgent": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 18,
+          "positives": 4
+        },
+        "suppliers": {
+          "exact": 17,
+          "n": 18,
+          "precision": 0.8125,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9444444444444444,
+          "tp": 13,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.896551724137931
+        },
+        "review_count": 5,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.7222222222222222,
+        "automatic": {
+          "n": 13,
+          "risk": {
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 13,
+            "positives": 5
+          },
+          "urgent": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 9,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 13,
+            "positives": 4
+          },
+          "suppliers": {
+            "exact": 13,
+            "n": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 7,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      }
+    }
+  },
+  "controlled_cases_scorable": 18,
+  "unknown_controls": 6,
+  "synthetic_metrics_note": "Six original synthetic cases have no binary reference in this report; zero denominators do not mean perfect accuracy.",
+  "decision": "Not adopted. Training unchanged; one additional correctly automatic controlled risk; no risk omissions repaired. Original controls are development after inspection.",
+  "source_archive": "scripts/risk_engine_trial.py preserves the exact engine bytes hashed in this experiment, outside the operational entry point."
+}
