@@ -1,0 +1,16 @@
+{
+  "profile": "geo-1.0.1",
+  "risk_urgency_questions": "byte-identical to1.0.0",
+  "files": {
+    "app/stable_geography.py": "32ab9825bb20bf3d47d41c21454bf865b6f45cca121ab333628f93be12698129",
+    "app/analysis.py": "f33713c6b59185663e30fb3e36008246652902a8095c548d766832679efc893b",
+    "app/duration.py": "e538570b253edc7f8ed340f7475e022b000b8bdb9f2a44deefd4d4b558a2b8d1",
+    "app/geography.py": "fa4a580bc0e8acda6b69567223f06175372d271735dff3d34daf5865e3aafe0e",
+    "config/geography.json": "9806c25134760d92c57e03039b4a3d85bc21bc6d47710c128a4486f291265f94",
+    "reference/jev_requests.py": "0152f231cac1fe8e08c0ea4000076f17e6e008781155d10fe01925ddd59a1de9",
+    "reference/scoring.py": "50f9c7f9e62a3231b10461217c18947a00d250adcc3c99372366cfbbe6fe316a",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c",
+    "app/jev.py": "6d7e95c4110bf3c9148a4c116e33cf953ea2d161a29f4a32a1dda01cdfe3352d"
+  },
+  "maximum_requests_including_retries": 438
+}

@@ -1,3 +1,4 @@
+from app.profiles import DEFAULT_PROFILE, EXERCISE_PROFILES
 """Selección explícita, vista previa firmada y operaciones transaccionales de demo."""
 
 from sqlalchemy import select, delete, text
@@ -208,8 +209,8 @@ def scope(db, selection=None, mode="delete"):
     }
 
 
-def preview(db, selection=None, mode="delete", analysis_profile="1.0.0"):
-    if analysis_profile not in ("1.0.0", "link-2.2.0"):
+def preview(db, selection=None, mode="delete", analysis_profile=DEFAULT_PROFILE):
+    if analysis_profile not in EXERCISE_PROFILES:
         raise ValueError("Perfil de análisis desconocido")
     plan = scope(db, selection, mode)
     return {

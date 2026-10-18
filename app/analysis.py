@@ -4,7 +4,8 @@ from jsonschema import validate
 from app.db import Session
 from app.models import Article, Analysis, Supplier, Batch, now
 from app.settings import ROOT, POLICY, settings
-from app.duration import durations
+from app.duration import durations, VERSION as DURATION_VERSION
+from app.profiles import DEFAULT_PROFILE, EXERCISE_PROFILES
 from app.importer import digest
 from app.schemas import NormalizedAnalysis
 from app.jev import JevClient, ProviderError
@@ -190,7 +191,7 @@ def normalize(article, suppliers, a, b, candidates):
 
 
 def process_article(
-    db, article_id, transport=None, diagnostic_ack_at=None, run_key=None, publish=True, profile="1.0.0"
+    db, article_id, transport=None, diagnostic_ack_at=None, run_key=None, publish=True, profile=DEFAULT_PROFILE
 ):
     a = db.get(Article, article_id)
     suppliers = [s.data for s in db.scalars(select(Supplier).order_by(Supplier.id))]
@@ -223,17 +224,18 @@ def process_article(
             "full_text": a.data.get("full_text", ""),
             "enrichment": a.data.get("enrichment", {}),
         }
-    from app import link_questions
+    from app import link_questions, stable_geography
+    geographic = not rss and profile == stable_geography.VERSION
     modern = not rss and profile == link_questions.VERSION
-    if profile not in ("1.0.0", link_questions.VERSION):
+    if profile not in EXERCISE_PROFILES:
         raise ProviderError("UNKNOWN_ANALYSIS_PROFILE")
-    if modern:
+    if modern or geographic:
         raw["_profile"] = profile
         from app.geography import location
         raw["_geography_snapshot"] = {s["supplier_id"]: location(s) for s in suppliers}
-    build_a = rss_questions.stage_a if rss else link_questions.stage_a if modern else stage_a
-    build_b = rss_questions.stage_b if rss else link_questions.stage_b if modern else stage_b
-    question_version = rss_questions.VERSION if rss else link_questions.VERSION if modern else POLICY["question_version"]
+    build_a = rss_questions.stage_a if rss else link_questions.stage_a if modern else stable_geography.stage_a if geographic else stage_a
+    build_b = rss_questions.stage_b if rss else link_questions.stage_b if modern else stable_geography.stage_b if geographic else stage_b
+    question_version = rss_questions.VERSION if rss else link_questions.VERSION if modern else stable_geography.VERSION if geographic else POLICY["question_version"]
     deadline = time.monotonic() + 60
     pa = build_a(a.data, suppliers, settings.jev_model)
     request_hash = digest(
@@ -242,6 +244,7 @@ def process_article(
             "payload": pa,
             "policy": POLICY["version"],
             "questions": question_version,
+            "duration_parser": DURATION_VERSION,
         }
     )
     if run_key:
@@ -294,6 +297,10 @@ def process_article(
             validate(result, SCHEMA)
         else:
             result = normalize(a, suppliers, raw["a"], raw["b"], duration_candidates)
+            if geographic:
+                stable_geography.annotate(result, a, suppliers)
+                NormalizedAnalysis.model_validate(result)
+                validate(result, SCHEMA)
         from app.incidents import reconcile
 
         if publish:

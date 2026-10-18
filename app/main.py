@@ -13,6 +13,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.db import get_db, DatabaseConfigurationError
 from app.settings import settings, ROOT, POLICY, RSS
 from app.rss_questions import VERSION as RSS_QUESTION_VERSION
+from app.profiles import DEFAULT_PROFILE, PUBLIC_EXERCISE_PROFILES
 from app.models import *
 from app.auth import presenter, identity, login, codec
 from app.importer import import_excel, export_batch, digest
@@ -185,9 +186,9 @@ def config():
     return {
         "model": settings.jev_model,
         "policy_version": POLICY["version"],
-        "question_version": POLICY["question_version"],
+        "question_version": DEFAULT_PROFILE,
         "rss_question_version": RSS_QUESTION_VERSION,
-        "exercise_profiles": ["1.0.0", "link-2.2.0"],
+        "exercise_profiles": list(PUBLIC_EXERCISE_PROFILES),
         "engine_configured": bool(settings.typesafe_api_key.get_secret_value()),
         "bands": POLICY["bands"],
         "cooldown_seconds": POLICY["audio"]["cooldown_seconds"],
@@ -795,7 +796,7 @@ def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
 class DemoSelection(BaseModel):
     selection: list[str] = Field(max_length=500)
     mode: Literal["delete", "rerun"] = "delete"
-    analysis_profile: Literal["1.0.0", "link-2.2.0"] = "1.0.0"
+    analysis_profile: Literal["1.0.0", "link-2.2.0"] = DEFAULT_PROFILE
 
 
 @app.get("/api/demo/options", dependencies=[Depends(presenter)])
@@ -898,6 +899,12 @@ def demo_cleanup(body: DemoCleanup, db: Session = Depends(get_db)):
     except ValueError as exc:
         db.rollback()
         raise HTTPException(409, str(exc))
+
+
+@app.post("/api/qa/audio", status_code=202, dependencies=[Depends(presenter)])
+def qa_audio():
+    from app.qa_audio import sample
+    return sample()
 
 
 @app.get("/api/alerts")

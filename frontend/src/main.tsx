@@ -233,7 +233,18 @@ function App() {
     [loading, setLoading] = useState(true),
     [sound, setSound] = useState("Desactivado"),
     [more, setMore] = useState(false),
+    [qaStatus, setQaStatus] = useState(""),
+    [qaBusy, setQaBusy] = useState(false),
     [alertFilter, setAlertFilter] = useState("all");
+  const qaPending = useRef<{
+    signal: {
+      id: number;
+      revision: number;
+      sound_eligible: boolean;
+      acknowledged: boolean;
+    };
+    dueAt: number;
+  } | null>(null);
   const scope = context + "|" + effectiveOrigin;
   const activeScope = useRef(scope);
   const cursor = useRef<number | null>(null),
@@ -301,16 +312,32 @@ function App() {
       setAlerts(n.items);
       document.title =
         (n.unread ? `(${n.unread}) ` : "") + "Supplier Risk Radar · Helixa";
+      const qaDue =
+        cursor.current !== null &&
+        qaPending.current &&
+        Date.now() >= qaPending.current.dueAt
+          ? qaPending.current.signal
+          : null;
       if (
         cursor.current !== null &&
         configRef.current.cooldown_seconds !== undefined
       )
         await audio
           .notify(
-            n.items.filter((x: Alert) => x.id > cursor.current!),
+            [
+              ...n.items.filter((x: Alert) => x.id > cursor.current!),
+              ...(qaDue ? [qaDue] : []),
+            ],
             configRef.current.cooldown_seconds,
           )
           .catch(() => setSound("Bloqueado"));
+      if (qaDue) {
+        qaPending.current = null;
+        setQaBusy(false);
+        setQaStatus(
+          "QA entregada al aviso automático. Confirma la audibilidad en el dispositivo; este estado no demuestra que haya sonado.",
+        );
+      }
       cursor.current = n.cursor;
     } catch (e) {
       if (activeScope.current === scope) {
@@ -599,6 +626,46 @@ function App() {
               </button>
             </div>
           </div>
+          {presenter && (
+            <section
+              className="notice"
+              aria-label="Prueba controlada de alerta automática"
+            >
+              <div>
+                <strong>QA · Alerta automática controlada</strong>
+                <p>
+                  Activa el sonido y espera 30 segundos desde la última alerta
+                  automática. Esta prueba programa una señal elegible para el
+                  próximo sondeo después de 5 segundos. No usa JEV ni crea
+                  noticias, incidentes o alertas de cartera. Solo existe en esta
+                  pestaña.
+                </p>
+                <button
+                  className="button"
+                  disabled={qaBusy || loading}
+                  onClick={async () => {
+                    setQaBusy(true);
+                    try {
+                      const signal = await api("/qa/audio", { method: "POST" });
+                      qaPending.current = {
+                        signal,
+                        dueAt: Date.now() + signal.delay_seconds * 1000,
+                      };
+                      setQaStatus(
+                        "QA programada. Mantén esta pestaña abierta; el sondeo automático la recogerá.",
+                      );
+                    } catch (e) {
+                      setQaBusy(false);
+                      setError((e as Error).message);
+                    }
+                  }}
+                >
+                  Programar alerta QA (5 s)
+                </button>
+                {qaStatus && <p role="status">{qaStatus}</p>}
+              </div>
+            </section>
+          )}
           {loading && !overview ? (
             <div className="loading" role="status">
               Cargando datos del radar…

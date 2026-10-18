@@ -1,0 +1,99 @@
+{
+  "profile": "geo-1.0.1",
+  "status": "rejected_for_stable_promotion",
+  "default_profile": "1.0.0",
+  "experimental_profile": "link-2.2.0",
+  "isolated_change": "Geographic facts added in state; original question dictionaries/risk/urgency gates identical; geographic uncertainty adds review only",
+  "training_metrics": {
+    "1.0.0": {
+      "n": 30,
+      "risk": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 4,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7142857142857143,
+        "f1": 0.8333333333333334,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 3,
+        "fn": 0,
+        "tn": 22,
+        "precision": 0.625,
+        "recall": 1.0,
+        "f1": 0.7692307692307693,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 25,
+        "n": 30,
+        "precision": 0.9285714285714286,
+        "recall": 0.5909090909090909,
+        "exact_set_accuracy": 0.8333333333333334,
+        "tp": 13,
+        "fp": 1,
+        "fn": 9,
+        "f1": 0.7222222222222222
+      },
+      "review_count": 16
+    },
+    "geo-1.0.1": {
+      "n": 30,
+      "risk": {
+        "tp": 6,
+        "fp": 0,
+        "fn": 8,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.42857142857142855,
+        "f1": 0.6,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 1,
+        "tn": 25,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8888888888888888,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 24,
+        "n": 30,
+        "precision": 1.0,
+        "recall": 0.5,
+        "exact_set_accuracy": 0.8,
+        "tp": 11,
+        "fp": 0,
+        "fn": 11,
+        "f1": 0.6666666666666666
+      },
+      "review_count": 18
+    }
+  },
+  "associations": {
+    "recovered_correct_associations": 0,
+    "lost_correct_associations": 2,
+    "new_false_associations": 0,
+    "removed_false_associations": 1
+  },
+  "new_requests": 62,
+  "http_200": 62,
+  "retries": 0,
+  "reused_stage_responses": 44,
+  "local_calls_before": 253,
+  "local_calls_after": 315,
+  "maximum_requests": 438,
+  "independent_validation": false,
+  "retrospective_case_count": 1,
+  "factorial": "deferred"
+}
