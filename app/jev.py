@@ -216,12 +216,14 @@ def safe_http_diagnostic(response):
         return {"code": "unstructured_error"}
     error = body.get("error", body)
     if not isinstance(error, dict):
-        error = {"message": error}
+        error = {"code": error}
     # Free-text provider messages may echo a credential fragment or user data.
     # Persist only a recognized machine code; never headers or echoed content.
     allowed = {"max_tokens_exceeded", "input_too_long", "invalid_request", "invalid_api_key", "validation_error", "rate_limit_exceeded", "context_length_exceeded", "model_not_found"}
-    code = error.get("code")
-    return {"code": code if isinstance(code, str) and code in allowed else "provider_error"}
+    for code in (error.get("code"), error.get("type"), body.get("code"), body.get("type")):
+        if isinstance(code, str) and code in allowed:
+            return {"code": code}
+    return {"code": "provider_error"}
 
 
 class JevClient:
@@ -233,7 +235,9 @@ class JevClient:
         sleep=time.sleep,
         diagnostic_ack_at=None,
         run_key="",
+        request_ceiling=None,
     ):
+        self.request_ceiling = request_ceiling
         self.run_key = run_key
         self.diagnostic_ack_at = diagnostic_ack_at
         self.db = db
@@ -303,6 +307,12 @@ class JevClient:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise ProviderError("ARTICLE_DEADLINE")
+            if self.request_ceiling is not None:
+                # Serialize this generation's attempt count before reservation.
+                self.db.execute(text("SELECT pg_advisory_xact_lock(72643, hashtext(:key))"), {"key": self.article_id + ":" + self.run_key})
+                used = self.db.scalar(select(func.count()).select_from(ApiCall).where(ApiCall.article_id == self.article_id, ApiCall.run_key == self.run_key))
+                if used >= self.request_ceiling:
+                    raise ProviderError("ARTICLE_REQUEST_LIMIT")
             budget_id = reserve_request(self.db, grant)
             attempts += 1
             self.network_requests += 1

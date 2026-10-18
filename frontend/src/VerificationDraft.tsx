@@ -11,8 +11,49 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
     [error, setError] = useState(""),
     [profile, setProfile] = useState("1.0.0"),
     [ack, setAck] = useState(false);
+  const focusAfterRun = useRef(false);
+  const resultStatus = useRef<HTMLSpanElement>(null);
+  const analyzeButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    if (!job?.id) return;
+    if (a.analysis_job?.id) {
+      setJob((previous: any) =>
+        previous?.id === a.analysis_job?.id
+          ? previous.state === "done" && a.analysis_job?.state !== "done"
+            ? previous
+            : { ...previous, ...a.analysis_job }
+          : a.analysis_job,
+      );
+      if (a.analysis_job.analysis_profile)
+        setProfile(a.analysis_job.analysis_profile);
+    }
+  }, [a.id, a.analysis_job?.id, a.analysis_job?.state]);
+  useEffect(() => {
+    if (
+      job &&
+      ["done", "error", "cancelled"].includes(job.state) &&
+      focusAfterRun.current
+    ) {
+      focusAfterRun.current = false;
+      if (
+        document.activeElement === document.body ||
+        document.activeElement === analyzeButton.current
+      )
+        resultStatus.current?.focus({ preventScroll: true });
+    }
+  }, [job?.state]);
+  useEffect(() => {
+    const queued = (event: Event) => {
+      const detail = (event as CustomEvent).detail;
+      if (detail?.article_id === a.id && detail.job_id) {
+        focusAfterRun.current = true;
+        setJob({ id: detail.job_id, state: "queued" });
+      }
+    };
+    window.addEventListener("radar:analysis-queued", queued);
+    return () => window.removeEventListener("radar:analysis-queued", queued);
+  }, [a.id]);
+  useEffect(() => {
+    if (!job?.id || ["done", "error", "cancelled"].includes(job.state)) return;
     let active = true;
     const timer = setInterval(() => {
       api("/jobs/" + job.id)
@@ -31,7 +72,7 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
       active = false;
       clearInterval(timer);
     };
-  }, [job?.id]);
+  }, [job?.id, job?.state]);
   const activeJob =
     !!job && !["done", "error", "cancelled"].includes(job.state);
   const rerun = a.state !== "pending";
@@ -55,9 +96,11 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
         </label>
       )}
       <button
+        ref={analyzeButton}
         className="button primary"
         disabled={busy || activeJob || (rerun && !ack)}
         onClick={async () => {
+          focusAfterRun.current = true;
           setBusy(true);
           setError("");
           try {
@@ -81,6 +124,7 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
             setJob({ id: r.job_ids[0], state: "queued" });
             setAck(false);
           } catch (e) {
+            focusAfterRun.current = false;
             setError((e as Error).message);
           } finally {
             setBusy(false);
@@ -93,11 +137,13 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
             ? "Analizar esta noticia"
             : "Reanalizar con este perfil"}
       </button>
-      <span role="status">
+      <span role="status" ref={resultStatus} tabIndex={-1}>
         {job?.state === "queued"
           ? "En cola · esperando worker"
           : job?.state === "running"
-            ? "JEV está analizando esta noticia"
+            ? job.network_requests === 0
+              ? "Preparando lectura y contexto de la noticia"
+              : "JEV está analizando esta noticia"
             : job?.state === "done"
               ? "Trabajo completado · resultado actualizado"
               : job?.state === "error"

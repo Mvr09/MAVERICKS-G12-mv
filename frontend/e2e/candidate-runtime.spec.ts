@@ -153,6 +153,11 @@ for (const width of [360, 390, 768, 1440])
         exact: true,
       }),
     ).toBeVisible({ timeout: 12000 });
+    await expect(
+      page.getByText("Trabajo completado · resultado actualizado", {
+        exact: true,
+      }),
+    ).toBeFocused();
     await expect(history.getByText("Análisis 2", { exact: false })).toBeVisible(
       { timeout: 12000 },
     );

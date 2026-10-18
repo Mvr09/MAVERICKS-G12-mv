@@ -111,6 +111,10 @@ Object.assign(names, {
   risk_without_operational_evidence:
     "Riesgo propuesto sin evidencia operativa consistente",
   source_text_limited: "Lectura limitada al resumen o a un texto parcial",
+  potential_exposure_is_not_confirmed_damage:
+    "La exposición potencial no confirma daños ni entregas afectadas.",
+  model_check_same_source_not_independent_corroboration:
+    "La comprobación automatizada interpreta la misma fuente; no la corrobora externamente.",
   source_text_incomplete:
     "Resumen truncado: falta texto para descartar el impacto con seguridad",
   single_source_missing: "Fuente única no informada",
@@ -1743,14 +1747,18 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
       {a.analysis?.context_notes?.length ? (
         <details>
           <summary>
-            Observaciones del contexto ({a.analysis.context_notes.length})
+            Observaciones no bloqueantes ({a.analysis.context_notes.length})
           </summary>
           <p>
             Estas dudas descriptivas no cambian por sí solas la decisión ni
             autorizan una alarma.
           </p>
           {a.analysis.context_notes.map((r) => (
-            <p key={r}>{reviewLabel(r)}</p>
+            <p key={r}>
+              {names[r.split(":")[0]] ||
+                "Observación descriptiva; no bloquea por sí sola la decisión"}
+              {r.includes(":") ? " · " + r.split(":")[1] : ""}
+            </p>
           ))}
         </details>
       ) : null}
@@ -1962,15 +1970,23 @@ function RetryAnalysis({ article, action }: any) {
                   api("/articles/" + article.id + "/retry", {
                     method: "POST",
                     body: JSON.stringify({ reason }),
+                  }).then((r) => {
+                    window.dispatchEvent(
+                      new CustomEvent("radar:analysis-queued", {
+                        detail: { article_id: article.id, job_id: r.job_id },
+                      }),
+                    );
+                    return r;
                   }),
-                "Reintento encolado.",
+                "Diagnóstico registrado. Ejecución encolada con historial y consumo conservados.",
               );
               setOpen(false);
             }}
           >
             <p>
               Indica la corrección realizada sin incluir credenciales. Los
-              intentos agotados no se reinician.
+              intentos agotados no se reinician. Si el perfil se actualizó, se
+              crea una ejecución nueva y se conserva la anterior.
             </p>
             <label htmlFor="diagnostic">Diagnóstico y corrección</label>
             <textarea

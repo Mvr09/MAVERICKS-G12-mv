@@ -183,9 +183,9 @@ def logout(
 
 @app.get("/api/config")
 def config():
-    from app.candidate_engine import VERSIONS
+    from app.profiles import candidate_versions
     return {
-        "candidate_versions": dict(VERSIONS),
+        "candidate_versions": candidate_versions(),
         "model": settings.jev_model,
         "policy_version": POLICY["version"],
         "question_version": DEFAULT_PROFILE,
@@ -406,7 +406,9 @@ def article(aid: str, db: Session = Depends(get_db)):
     a = db.get(Article, aid)
     if not a:
         raise HTTPException(404, "Noticia no encontrada")
-    return article_view(db, a)
+    from app.queue import analysis_key
+    current_job = db.scalar(select(Job).where(Job.key == analysis_key(a)))
+    return {**article_view(db, a), "analysis_job": {"id": current_job.id, "state": current_job.state, "error": current_job.error, "analysis_profile": current_job.payload.get("analysis_profile", DEFAULT_PROFILE)} if current_job else None}
 
 
 @app.get("/api/sources")
@@ -508,7 +510,7 @@ def job(jid: str, db: Session = Depends(get_db)):
         "id": j.id,
         "kind": j.kind,
         "analysis_profile": j.payload.get("analysis_profile", DEFAULT_PROFILE),
-        "last_completed_step": steps.get(last.stage) if last else None,
+        "last_completed_step": (steps.get(last.stage.split(".part")[0], last.stage.split(".part")[0]) + (" · grupo " + last.stage.split(".part")[1] if ".part" in last.stage else "")) if last else None,
         "state": j.state,
         "attempts": j.attempts,
         "heartbeat": j.heartbeat,
@@ -523,6 +525,31 @@ class DiagnosticRetry(BaseModel):
     reason: str = Field(min_length=12, max_length=2000)
 
 
+@app.get("/api/articles/{aid}/execution", dependencies=[Depends(presenter)])
+def article_execution(aid: str, include_payloads: bool = False, db: Session = Depends(get_db)):
+    from app.execution_audit import view
+    article = db.get(Article, aid)
+    if not article:
+        raise HTTPException(404, "Noticia no encontrada")
+    return view(db, article, include_payloads)
+
+
+@app.post("/api/articles/{aid}/diagnose", dependencies=[Depends(presenter)])
+def diagnose_article(aid: str, body: DiagnosticRetry, db: Session = Depends(get_db)):
+    article = db.get(Article, aid)
+    if not article:
+        raise HTTPException(404, "Noticia no encontrada")
+    generation_key = f"{aid}:generation:{article.generation}" if article.generation else ""
+    ids = []
+    for call in db.scalars(select(ApiCall).where(ApiCall.article_id == aid, ApiCall.run_key == generation_key).with_for_update()):
+        error = call.usage.get("_error", "")
+        if not call.usage.get("_diagnosed_at") and (call.status in (400,401,403,422) or error.startswith("CONTRACT") or error == "MODEL_MISMATCH"):
+            call.usage = {**call.usage, "_diagnosed_at": now().isoformat(), "_diagnosis_reason": body.reason}
+            ids.append(call.id)
+    db.commit()
+    return {"diagnosed_calls": ids, "generation": article.generation, "counters_preserved": True}
+
+
 @app.post(
     "/api/articles/{aid}/retry", status_code=202, dependencies=[Depends(presenter)]
 )
@@ -535,6 +562,18 @@ def retry_article(aid: str, body: DiagnosticRetry, db: Session = Depends(get_db)
         raise HTTPException(
             409, "Solo se reintenta un error diagnosticado con trabajo existente"
         )
+    from app.profiles import CANDIDATE_PROFILE, candidate_versions
+    if job.payload.get("analysis_profile") == CANDIDATE_PROFILE and job.payload.get("analysis_versions") != candidate_versions():
+        # This is a new versioned execution, not a reset of the failed job.
+        diagnose_article(aid, body, db)
+        from app.reanalysis import enqueue_article
+        try:
+            replacement = enqueue_article(db, aid, CANDIDATE_PROFILE)
+            db.commit()
+        except ValueError as exc:
+            db.rollback()
+            raise HTTPException(409, str(exc))
+        return {"job_id": replacement.id, "state": "queued", "generation": a.generation, "profile_updated": True, "history_preserved": True}
     if job.attempts >= 3:
         raise HTTPException(
             409, "Agotados los intentos del trabajo; no se reinicia el presupuesto"

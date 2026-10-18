@@ -5,6 +5,7 @@ for (const width of [360, 390, 768, 1440])
   }) => {
     await page.setViewportSize({ width, height: 940 });
     let analyzed = false,
+      enqueued = false,
       polls = 0,
       draft: any = null,
       posts: string[] = [];
@@ -34,6 +35,13 @@ for (const width of [360, 390, 768, 1440])
       id: "RSS-MOCK",
       version: 3,
       generation: 2,
+      analysis_job: enqueued
+        ? {
+            id: "JOB-MOCK",
+            state: analyzed ? "done" : "running",
+            analysis_profile: "1.0.0",
+          }
+        : null,
       headline: evidence.text,
       summary: "MOCK explicit source.",
       source: "MOCK RSS",
@@ -61,6 +69,7 @@ for (const width of [360, 390, 768, 1440])
       if (method === "POST") {
         posts.push(path);
         if (path === "/analysis/rss") {
+          enqueued = true;
           expect(route.request().postDataJSON()).toEqual({
             limit: 1,
             article_ids: ["RSS-MOCK"],
@@ -124,6 +133,7 @@ for (const width of [360, 390, 768, 1440])
     await expect(
       page.getByText("JEV está analizando esta noticia", { exact: true }),
     ).toBeVisible();
+    if (width === 390) await page.reload(); // Resume the durable job, never enqueue another analysis.
     await expect(
       page.getByRole("button", {
         name: "Preparar consulta de verificación",

@@ -1,0 +1,14 @@
+{
+  "version": "fanout-1.0.0",
+  "request_json_budget_bytes": 60000,
+  "max_http_attempts_per_article": 36,
+  "max_choice_options": 255,
+  "max_score_levels": 10,
+  "provider_model": "jev-1.13.0",
+  "provider_context_tokens": {"per_request": 64000, "per_question": 32000},
+  "long_context_header_enabled": false,
+  "source": "https://docs.typesafe.ai/models",
+  "contract_source": "https://docs.typesafe.ai/api",
+  "verified_on": "2026-10-18",
+  "note": "Conservative JSON byte budget, not an exact tokenizer. Partition independent questions with identical complete state; never truncate source, criteria or supplier identities. Article deadline and retry rules remain in force."
+}

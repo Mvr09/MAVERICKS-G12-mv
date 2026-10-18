@@ -10,4 +10,13 @@ PUBLIC_EXERCISE_PROFILES = (LEGACY_PROFILE, EXPERIMENTAL_PROFILE, CANDIDATE_PROF
 
 def maximum_requests(profile):
     """Four conditional stages for the candidate, two for the stable paths."""
-    return 12 if profile == CANDIDATE_PROFILE else 6
+    if profile == CANDIDATE_PROFILE:
+        from app.jev_transport import CONFIG
+        return CONFIG["max_http_attempts_per_article"]
+    return 6
+
+
+def candidate_versions():
+    from app.candidate_engine import VERSIONS
+    from app.jev_transport import VERSION
+    return {**VERSIONS, "transport": VERSION}

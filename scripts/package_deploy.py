@@ -29,6 +29,7 @@ files = [
     "reference/scoring.py",
     "config/risk_policy.json",
     "config/geography.json",
+    "config/jev_transport.json",
     "config/rss_sources.json",
     "config/authorization.json",
 ]

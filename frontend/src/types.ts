@@ -95,6 +95,12 @@ export type EventInfo = Partial<
   >
 >;
 export interface Article {
+  analysis_job?: {
+    id: string;
+    state: string;
+    error?: string;
+    analysis_profile?: string;
+  } | null;
   origin?: string;
   origin_label?: string;
   event_type_confidence?: number;

@@ -13,108 +13,92 @@ from app.models import now
 from app.rss import FeedError, safe_url
 from app.settings import RSS
 
+VERSION = "editorial-scope-1.0.0"
 AGENT = "SupplierRiskRadar"
 MAX_BYTES = 2_000_000
 MAX_TEXT = 24_000
 
 
 class EditorialParser(HTMLParser):
+    """Choose one editorial container, never concatenate neighbouring stories."""
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.stack = []
-        self.paragraph = None
-        self.paragraphs = []
-        self.json_scripts = []
-        self.script = None
-        self.restricted = False
+        self.stack=[]
+        self.groups={}
+        self.paragraph=None
+        self.paragraph_scope={}
+        self.paragraphs=[]
+        self.json_scripts=[]
+        self.script=None
+        self.restricted=False
 
-    def handle_starttag(self, tag, attrs):
-        attrs = dict(attrs)
-        marker = (attrs.get("class", "") + " " + attrs.get("id", "")).lower()
-        blocked = tag in {
-            "aside",
-            "nav",
-            "footer",
-            "style",
-            "noscript",
-            "form",
-            "button",
-        } or any(
-            x in marker
-            for x in ("paywall", "subscription-wall", "related-post", "comments")
-        )
-        editorial = (
-            tag in {"article", "main"}
-            or attrs.get("itemprop") == "articleBody"
-            or any(
-                x in marker
-                for x in (
-                    "entry-content",
-                    "article-body",
-                    "post-content",
-                    "article__body",
-                )
-            )
-        )
-        if tag == "script":
-            if attrs.get("type") == "application/ld+json":
-                self.script = []
-            blocked = True
-        parent = self.stack[-1] if self.stack else ("", False, False)
-        if tag not in {"br", "hr", "img", "input", "meta", "link", "source", "wbr"}:
-            self.stack.append((tag, blocked or parent[1], editorial or parent[2]))
-        if (
-            tag in {"p", "h2", "h3", "li"}
-            and self.stack
-            and not self.stack[-1][1]
-            and self.stack[-1][2]
-        ):
-            self.paragraph = []
+    def handle_starttag(self,tag,attrs):
+        attrs=dict(attrs)
+        marker=(attrs.get('class','')+' '+attrs.get('id','')).lower()
+        blocked=tag in {'aside','nav','footer','style','noscript','form','button'} or any(x in marker for x in ('paywall','subscription-wall','related-post','comments','ad-box','deskone_ticker'))
+        parent=self.stack[-1] if self.stack else ('',False,{})
+        scope=dict(parent[2])
+        body_marker=attrs.get('itemprop')=='articleBody' or any(x in marker for x in ('entry-content','article-body','post-content','article__body','article-content'))
+        if tag=='script':
+            if attrs.get('type')=='application/ld+json':self.script=[]
+            blocked=True
+        if tag in {'article','main'} or body_marker:
+            kind='article' if tag=='article' else 'body' if body_marker else 'main'
+            group_id=len(self.groups)
+            if kind=='article':scope.pop('body',None)
+            self.groups[group_id]={'kind':kind,'article_id':scope.get('article'),'paragraphs':[]}
+            scope[kind]=group_id
+        if tag not in {'br','hr','img','input','meta','link','source','wbr'}:
+            self.stack.append((tag,blocked or parent[1],scope))
+        if tag in {'p','h2','h3','li'} and self.stack and not self.stack[-1][1] and self.stack[-1][2]:
+            self.paragraph=[];self.paragraph_scope=dict(self.stack[-1][2])
 
-    def handle_endtag(self, tag):
-        if tag == "script" and self.script is not None:
-            self.json_scripts.append("".join(self.script))
-            self.script = None
-        if tag in {"p", "h2", "h3", "li"} and self.paragraph is not None:
-            text = " ".join("".join(self.paragraph).split())
-            if text and text not in self.paragraphs:
-                self.paragraphs.append(text)
-            self.paragraph = None
-        for i in range(len(self.stack) - 1, -1, -1):
-            if self.stack[i][0] == tag:
-                del self.stack[i:]
-                break
+    def handle_endtag(self,tag):
+        if tag=='script' and self.script is not None:
+            self.json_scripts.append(''.join(self.script));self.script=None
+        if tag in {'p','h2','h3','li'} and self.paragraph is not None:
+            text=' '.join(''.join(self.paragraph).split())
+            if text:
+                if text not in self.paragraphs:self.paragraphs.append(text)
+                for gid in self.paragraph_scope.values():
+                    if text not in self.groups[gid]['paragraphs']:self.groups[gid]['paragraphs'].append(text)
+            self.paragraph=None
+        for i in range(len(self.stack)-1,-1,-1):
+            if self.stack[i][0]==tag:del self.stack[i:];break
 
-    def handle_data(self, data):
-        if self.script is not None:
-            self.script.append(data)
-        elif self.paragraph is not None and self.stack and not self.stack[-1][1]:
-            self.paragraph.append(data)
+    def handle_data(self,data):
+        if self.script is not None:self.script.append(data)
+        elif self.paragraph is not None and self.stack and not self.stack[-1][1]:self.paragraph.append(data)
 
     def extract(self):
         def walk(obj):
-            if isinstance(obj, list):
-                for x in obj:
-                    yield from walk(x)
-            elif isinstance(obj, dict):
+            if isinstance(obj,list):
+                for x in obj:yield from walk(x)
+            elif isinstance(obj,dict):
                 yield obj
-                if "@graph" in obj:
-                    yield from walk(obj["@graph"])
-
+                if '@graph'in obj:yield from walk(obj['@graph'])
         for script in self.json_scripts:
             try:
                 for obj in walk(json.loads(script)):
-                    if "Article" not in str(obj.get("@type", "")):
-                        continue
-                    if obj.get("isAccessibleForFree") in (False, "False", "false"):
-                        self.restricted = True
-                        return "", "restricted"
-                    body = obj.get("articleBody")
-                    if isinstance(body, str) and len(body) >= 200:
-                        return body.strip(), "jsonld_article_body"
-            except (ValueError, TypeError):
-                continue
-        return "\n\n".join(self.paragraphs), "editorial_paragraphs"
+                    if 'Article'not in str(obj.get('@type','')):continue
+                    if obj.get('isAccessibleForFree')in(False,'False','false'):
+                        self.restricted=True;return '', 'restricted'
+                    body=obj.get('articleBody')
+                    if isinstance(body,str)and len(body)>=200:return body.strip(),'jsonld_article_body'
+            except(ValueError,TypeError):continue
+        text=lambda g:'\n\n'.join(g['paragraphs'])
+        substantive=lambda kind:[(i,g)for i,g in self.groups.items()if g['kind']==kind and len(text(g))>=200]
+        articles=substantive('article')
+        if articles:
+            aid,article=max(articles,key=lambda item:len(text(item[1])))
+            bodies=[g for _,g in substantive('body')if g['article_id']==aid]
+            chosen=max(bodies,key=lambda g:len(text(g)),default=article)
+            return text(chosen),'editorial_article_container'
+        bodies=substantive('body')
+        if bodies:return text(max(bodies,key=lambda item:len(text(item[1])))[1]),'editorial_body_container'
+        mains=substantive('main')
+        if mains:return text(max(mains,key=lambda item:len(text(item[1])))[1]),'editorial_main_fallback'
+        return '', 'editorial_text_unavailable'
 
 
 def enrich(db, article, transport=None, check_dns=True):
@@ -126,11 +110,12 @@ def enrich(db, article, transport=None, check_dns=True):
     if old.get("checked_at"):
         from datetime import datetime
 
-        if (now() - datetime.fromisoformat(old["checked_at"])).total_seconds() < 3600:
+        if old.get("extractor_version") == VERSION and (now() - datetime.fromisoformat(old["checked_at"])).total_seconds() < 3600:
             return
     source = next((s for s in RSS["sources"] if s["id"] == article.source_id), None)
     metadata = {
         "status": "summary_only",
+        "extractor_version": VERSION,
         "checked_at": now().isoformat(),
         "http_status": None,
     }
@@ -228,7 +213,7 @@ def enrich(db, article, transport=None, check_dns=True):
             metadata.update(
                 status="partial" if truncated else "public_text",
                 source_url=final_url,
-                method=method,
+                method=method + "@" + VERSION,
                 text_hash=digest(text),
                 characters=len(text),
             )

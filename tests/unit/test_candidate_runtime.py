@@ -145,7 +145,7 @@ def test_presenter_opt_in_queue_and_mixed_batch_guard(monkeypatch):
                 assert client.post(url,json={'analysis_profile':'unknown'}).status_code==422
                 response=client.post(url,json={'analysis_profile':'radar-1.0.0-candidate'});assert response.status_code==202
                 j=db.get(Job,response.json()['job_ids'][0]);assert j.payload['analysis_profile']=='radar-1.0.0-candidate'
-                assert response.json()['maximum_requests']==12 and article.generation==0
+                assert response.json()['maximum_requests']==36 and article.generation==0
                 assert client.post(url,json={'analysis_profile':'radar-1.0.0-candidate'}).status_code==409
                 assert db.scalar(select(func.count()).select_from(ApiCall))==0
                 assert client.get('/api/model/operational-candidate').status_code==200
@@ -229,8 +229,10 @@ def test_job_progress_uses_its_generation_while_metrics_keep_consumption_history
         db.add(Analysis(article_id=article.id,generation=1,request_hash='MOCK-GEN-METRICS',result=result,raw={},duration=.1))
         for key,stage in [('','a'),('','b'),('','candidate_support'),(article.id+':generation:1','a'),(article.id+':generation:1','b')]:
             db.add(ApiCall(article_id=article.id,run_key=key,stage=stage,attempt=1,model='jev-1.13.0',status=200,usage={'input_tokens':1},duration=.01))
-        j=Job(key='MOCK-GEN-JOB',kind='analysis',state='running',payload={'article_id':article.id,'generation':1,'analysis_profile':'radar-1.0.0-candidate'});db.add(j);db.commit()
+        j=Job(key='analysis:'+article.id+':g1',kind='analysis',state='running',payload={'article_id':article.id,'generation':1,'analysis_profile':'radar-1.0.0-candidate'});db.add(j);db.commit()
         progress=job(j.id,db);assert progress['network_requests']==2 and progress['last_completed_step']=='Exposición, riesgo y urgencia'
+        from app.main import article as article_detail
+        assert article_detail(article.id,db)['analysis_job']['id']==j.id
         metrics=model_metrics(db,'exercise');assert metrics['execution']['requests']==5
         assert metrics['execution']['versions'][0]['review']=='review-1.2.0'
         rows=batches(db);assert not rows[0]['mixed_profiles'] and rows[0]['analysis_profiles'][0]['questions']=='link-3.3.0'

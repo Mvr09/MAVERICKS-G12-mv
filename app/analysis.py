@@ -206,16 +206,22 @@ def process_article(
     from app.payload_cache import PayloadCacheClient
     candidate = profile == CANDIDATE_PROFILE
     client_type = PayloadCacheClient if candidate else JevClient
+    client_options = {}
+    if candidate:
+        from app.jev_transport import CONFIG as TRANSPORT_CONFIG
+        client_options["request_ceiling"] = TRANSPORT_CONFIG["max_http_attempts_per_article"]
     client = client_type(
         db,
         a.id,
         transport=transport,
         diagnostic_ack_at=diagnostic_ack_at,
         run_key=run_key,
+        **client_options,
     )
     if candidate:
         from app.jev_audit import CapturingClient
-        client = CapturingClient(client)
+        from app.jev_transport import BoundedFanoutClient
+        client = BoundedFanoutClient(CapturingClient(client))
     raw = {}
     rss = a.context == "rss"
     if rss:
@@ -257,7 +263,8 @@ def process_article(
         }
     )
     if candidate:
-        request_hash = digest({"request": request_hash, "versions": candidate_engine.VERSIONS})
+        from app.profiles import candidate_versions
+        request_hash = digest({"request": request_hash, "versions": candidate_versions()})
     if run_key:
         request_hash = digest({"request": request_hash, "run_key": run_key})
     previous = (
@@ -274,6 +281,9 @@ def process_article(
         if candidate:
             result, candidate_raw = candidate_engine.run(client, a, suppliers, deadline)
             raw.update(candidate_raw)
+            from app.jev_transport import VERSION as transport_version
+            result["analysis_versions"] = {**candidate_engine.VERSIONS, **result.get("analysis_versions", {}), "transport": transport_version, "model": result["model_id"]}
+            raw["_versions"] = {**candidate_engine.VERSIONS, **raw.get("_versions", {}), "transport": transport_version}
             validate(result, SCHEMA)
         else:
             raw["a"] = client.ask(pa, "a", deadline)
@@ -357,11 +367,15 @@ def process_article(
         validate(result, SCHEMA)
     result.setdefault("analysis_profile", profile)
     if candidate:
-        result.setdefault("analysis_versions", {**candidate_engine.VERSIONS, "model": settings.jev_model})
+        from app.profiles import candidate_versions
+        result.setdefault("analysis_versions", {**candidate_versions(), "model": settings.jev_model})
     if not publish:
         return result
     if candidate:
+        from app.profiles import candidate_versions
+        raw.setdefault("_versions", candidate_versions())
         raw.update(client.audit())
+        raw["_transport"] = client.transport_records
     raw["_cache_stages"] = client.cached_stages
     raw["_new_requests"] = client.network_requests
     fully_cached = bool(client.cached_stages) and client.network_requests == 0

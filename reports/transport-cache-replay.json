@@ -1,0 +1,14 @@
+{
+  "transport": "fanout-1.0.0",
+  "cases": 60,
+  "training": 30,
+  "existing_synthetics": 6,
+  "fresh_controlled": 24,
+  "new_requests": 0,
+  "cached_stages": 141,
+  "retrieval_responses_reused_after_effective_payload_hash_check": 60,
+  "counter_before": 902,
+  "counter_after": 902,
+  "predictions_priorities_and_review_unchanged": true,
+  "limits": "Replays valid whole-request caches. New outbound partitioning separately conserves full state/questions by tests; no new independent classifier evaluation, no held-out challenge input."
+}

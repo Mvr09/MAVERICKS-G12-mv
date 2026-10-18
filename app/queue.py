@@ -28,8 +28,8 @@ def analysis_payload(article, profile="1.0.0"):
     from app.profiles import CANDIDATE_PROFILE
     data = {"article_id": article.id, "generation": article.generation, "analysis_profile": profile}
     if profile == CANDIDATE_PROFILE:
-        from app.candidate_engine import VERSIONS
-        data["analysis_versions"] = dict(VERSIONS)
+        from app.profiles import candidate_versions
+        data["analysis_versions"] = candidate_versions()
     return data
 
 
@@ -181,8 +181,8 @@ def enqueue_batch(db, bid, profile="1.0.0"):
                 continue
             same = old.result.get("analysis_profile", old.result.get("question_version")) == profile
             if same and profile == CANDIDATE_PROFILE:
-                from app.candidate_engine import VERSIONS
-                same = all(old.result.get("analysis_versions", {}).get(k) == v for k, v in VERSIONS.items())
+                from app.profiles import candidate_versions
+                same = all(old.result.get("analysis_versions", {}).get(k) == v for k, v in candidate_versions().items())
             if not same:
                 raise ValueError("Este lote contiene otro perfil o versión. Usa Reanalizar lote para una ejecución coherente, conservando el historial.")
     jobs = []
