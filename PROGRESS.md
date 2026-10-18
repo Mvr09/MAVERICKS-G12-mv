@@ -2,8 +2,8 @@
 
 ## Estado verificado · 18-10-2026 (Madrid)
 
-- Aplicación publicada: **605deffbed32000b72f0e2212f05c7daf48f7a9c** (Modelo, Analítica, grupos y RSS2.1), `origin/main`, Mvr09/MAVERICKS-G12-mv. Railway peaceful-harmony / production: web, worker y PostgreSQL; ambos despliegues GitHub success. Sin acceso directo al panel.
-- URL real: https://mavericks-g12-mv-production.up.railway.app. Smoke18-10 00:15:37UTC(local): /, /healthz, /readyz, catálogo, fuentes, configuración y cuatro assets **200**; esquema0007. Worker online/compatible en la misma revisión.
+- Aplicación publicada: **bf9812e21d83daff49bed7fc011b4fd98a8d2f23** (nombres de archivo recuperados en Modelo/Resumen) , `origin/main`, Mvr09/MAVERICKS-G12-mv. Railway peaceful-harmony / production: web, worker y PostgreSQL; ambos despliegues GitHub success. Sin acceso directo al panel.
+- URL real: https://mavericks-g12-mv-production.up.railway.app. Smoke18-10 00:43:45UTC(local): /, /healthz, /readyz, catálogo, fuentes, configuración y cuatro assets **200**; esquema0007. Worker online/compatible en la misma revisión.
 - Persistencia 22:20:35 UTC:40 proveedores,20 materiales; validation10/test20 procesados y Excel200 idénticos celda a celda tras redeploy. Training/LiveDay ya no están cargados: el agente no los borró ni reimportó. RSS37 procesados (23review/14done), seis fuentes saludables200/304. No se ejecutó borrado ni reanálisis remoto durante esta ampliación.
 - Interfaz/documentación en español. Materiales, dashboard/fichas, fuentes/stream, filtros, ingestión/exportación, permisos, audio y borradores operativos. Servidor0.0.0.0:8000, web/worker misma imagen, predeploy `python -m app.predeploy`.
 
@@ -102,3 +102,5 @@
 - Corrección solicitada: eliminar «archivo anterior + ID» como etiqueta. Los lotes históricos tenían filename nulo desde antes de0007. Se recuperan nombres exactos de entradas del kit mediante hashes del manifiesto y los nombres usados por CLI/ensayo, sin copiar datos originales ni deducir por split.
 - Seed/predeploy rellena solo nombres ausentes y coincidencias exactas; conserva cargas renombradas. Vistas comparten el nombre con Modelo/Resumen/noticias. Archivos desconocidos muestran nombre no registrado, nunca UUID. Sin migración, reanálisis ni JEV. Se verificará persistencia real tras autodeploy.
 -13pruebas dirigidas pasan4,42s: reparación idempotente, nombres propios preservados, desconocidos no inferidos y contadores de noticias/análisis/llamadas idénticos. Paquete62archivos sin originales/secretos pasa. Actualización de nombres condicionada enSQL para conservar también cambios concurrentes. La primera ejecución de pruebas tuvo timeout de revisión automática; reintento permitido completado.
+
+- Publicado y verificado **bf9812e** en Railway18-10 00:43UTC: healthz/readyz/catalogo/assets200, esquema0007, worker compatible. Chromium real390px confirma «Validación · supplier_validation.xlsx» y los tres nombres de archivo en filtros de ejecución, sin IDs ni erroresJS. Lotes conservan10/20/14 noticias procesadas; peticiones del ejercicio50→50,0JEV iniciadas y pago periódicoRSSfalse. Evidencia reports/filename-labels-railway.json y public-deployment-filenames.json. Informes posteriores en commit documental local, sin otro despliegue por metadatos.

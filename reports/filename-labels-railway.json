@@ -1,0 +1,40 @@
+{
+  "checked_at_local": "2026-10-18T00:43:43.067Z",
+  "revision": "bf9812e21d83daff49bed7fc011b4fd98a8d2f23",
+  "batches": [
+    {
+      "split": "validation",
+      "filename": "supplier_validation.xlsx",
+      "origin_label": "supplier_validation.xlsx",
+      "done": 10,
+      "count": 10
+    },
+    {
+      "split": "test",
+      "filename": "supplier_test.xlsx",
+      "origin_label": "supplier_test.xlsx",
+      "done": 20,
+      "count": 20
+    },
+    {
+      "split": "liveday",
+      "filename": "supplier_liveday.xlsx",
+      "origin_label": "supplier_liveday.xlsx",
+      "done": 14,
+      "count": 14
+    }
+  ],
+  "selected_evaluation_label": "Validación · supplier_validation.xlsx",
+  "execution_options": [
+    "Todo el contexto · Datos base",
+    "supplier_validation.xlsx",
+    "supplier_test.xlsx",
+    "supplier_liveday.xlsx"
+  ],
+  "jev_requests_initiated": 0,
+  "exercise_requests_before": 50,
+  "exercise_requests_after": 50,
+  "page_errors": [],
+  "worker_compatible": true,
+  "mocked": false
+}
