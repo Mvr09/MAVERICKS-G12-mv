@@ -1,0 +1,26 @@
+{
+  "checked_at": "2026-10-18T01:14:11.741961+00:00",
+  "revision": "4cca91d4dd311b74420bb83910fe9b919979e450",
+  "split": "validation",
+  "filename": "supplier_validation.xlsx",
+  "rows": 10,
+  "summary": {
+    "risk_false_negatives": 2,
+    "missing_supplier_associations": 3,
+    "reviewed_news": 8,
+    "review_scope_combinations": {
+      "decision": 3,
+      "auxiliary": 4,
+      "discarded_candidate": 1
+    }
+  },
+  "anonymous_http": 401,
+  "presenter_http": 200,
+  "no_store": true,
+  "predictions_unchanged": true,
+  "jev_requests_before": 50,
+  "jev_requests_after": 50,
+  "jev_requests_initiated": 0,
+  "protected_report": "reports/private/diagnostic-validation.json",
+  "mocked": false
+}
