@@ -2578,3 +2578,45 @@ dialog header {
   font-size: 12px;
   margin-top: 7px;
 }
+.article-decision {
+  margin: 18px 0;
+  padding: 16px 18px;
+  border: 1px solid #d8d2fb;
+  border-left: 4px solid #635bff;
+  border-radius: 10px;
+  background: #f8f6ff;
+}
+.article-decision strong {
+  font-size: 16px;
+}
+.article-decision p {
+  margin: 7px 0;
+  font-size: 14px;
+}
+.verification-saved-link {
+  padding: 14px 0;
+  border-top: 1px solid #dce3ee;
+}
+.verification-saved-link p {
+  font-size: 13px;
+  margin: 6px 0;
+}
+/* Tailwind's margin reset also affects native dialogs: center explicitly. */
+dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  overflow: auto;
+}
+dialog > header {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+.verification-body input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}

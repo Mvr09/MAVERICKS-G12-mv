@@ -405,3 +405,71 @@ export function VerificationDraft({ article: a }: { article: Article }) {
     </section>
   );
 }
+
+export function SupplierVerificationList({
+  supplierId,
+}: {
+  supplierId: string;
+}) {
+  const [items, setItems] = useState<any[]>([]),
+    [error, setError] = useState("");
+  useEffect(() => {
+    let active = true,
+      inFlight = false;
+    const load = async () => {
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const value = await api(
+          "/suppliers/" + supplierId + "/verification-drafts",
+        );
+        if (active) {
+          setItems(Array.isArray(value) ? value : []);
+          setError("");
+        }
+      } catch {
+        if (active)
+          setError("No se pudieron consultar los borradores de verificación.");
+      } finally {
+        inFlight = false;
+      }
+    };
+    void load();
+    const timer = setInterval(load, 10000);
+    window.addEventListener("focus", load);
+    return () => {
+      active = false;
+      clearInterval(timer);
+      window.removeEventListener("focus", load);
+    };
+  }, [supplierId]);
+  if (error) return <p role="alert">{error}</p>;
+  if (!items.length) return null;
+  return (
+    <section
+      className="fact-box"
+      aria-label="Consultas de exposición guardadas"
+    >
+      <h3>Consultas para confirmar exposición</h3>
+      <p>
+        Hipótesis de compras, separadas de los incidentes y de las decisiones
+        del modelo.
+      </p>
+      {items.map((item) => (
+        <article key={item.id} className="verification-saved-link">
+          <Link
+            className="text-link"
+            to={"/noticias/" + item.article_id + "?context=rss"}
+          >
+            {item.snapshot?.headline || "Fuente guardada"} →
+          </Link>
+          <p>{item.snapshot?.buyer_hypothesis}</p>
+          <small>
+            {item.snapshot?.source} · versión{item.snapshot?.version} · sin
+            afectación individual confirmada
+          </small>
+        </article>
+      ))}
+    </section>
+  );
+}

@@ -138,6 +138,8 @@ for (const width of [360, 390, 768, 1440])
       .click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
+    const box = (await dialog.boundingBox())!;
+    expect(Math.abs(box.x - (width - box.width) / 2)).toBeLessThan(2);
     await page
       .getByLabel("Proveedor al que consultar", { exact: true })
       .selectOption("S032");

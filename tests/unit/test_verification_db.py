@@ -3,7 +3,7 @@ from sqlalchemy import select,func
 from sqlalchemy.engine import make_url
 from fastapi.testclient import TestClient
 from app.db import Session,engine,get_db,Base
-from app.models import Article,Supplier,Analysis,Draft,ApiCall
+from app.models import Article,Supplier,Analysis,Draft,ApiCall,Incident,Alert
 from app.main import app
 from app.auth import presenter
 from app.importer import digest
@@ -21,6 +21,7 @@ def test_verification_persists_source_without_incident_or_classifier_override(mo
         result={'analysis_status':'review','question_version':'MOCK','is_risk':'N','evidence':[{'id':'e1','field':'headline','start':0,'end':len(data['headline']),'text':data['headline']}]}
         db.add(Analysis(article_id=a.id,generation=0,request_hash='MOCK-INQUIRY',result=result,raw={},duration=0));db.commit()
         before=db.scalar(select(func.count()).select_from(ApiCall))
+        domain_before=[db.scalar(select(func.count()).select_from(model)) for model in (Incident,Alert)]
         app.dependency_overrides[get_db]=lambda: db
         app.dependency_overrides[presenter]=lambda: object()
         payload={'article_id':a.id,'supplier_id':'S024','generation':0,'version':1,'evidence_ids':['e1'],'note':'Confirmar modo y ruta sin suponer exposición','acknowledged':True}
@@ -33,9 +34,11 @@ def test_verification_persists_source_without_incident_or_classifier_override(mo
                 did=response.json()['id'];row=db.get(Draft,did)
                 assert row.incident_id is None and row.article_id==a.id and row.evidence_snapshot['evidence']==result['evidence']
                 assert client.get('/api/articles/'+a.id+'/drafts').json()[0]['id']==did
+                assert client.get('/api/suppliers/S024/verification-drafts').json()[0]['id']==did
                 assert client.patch('/api/drafts/'+did,json={'text':response.json()['text']+'\nMOCK edit'}).status_code==200
                 assert client.get('/api/drafts/'+did).json()['text'].endswith('MOCK edit')
                 assert db.scalar(select(func.count()).select_from(ApiCall))==before
+                assert [db.scalar(select(func.count()).select_from(model)) for model in (Incident,Alert)]==domain_before
                 assert db.scalar(select(Analysis.result).where(Analysis.article_id==a.id))==result
         finally:
             app.dependency_overrides.pop(get_db,None);app.dependency_overrides.pop(presenter,None)

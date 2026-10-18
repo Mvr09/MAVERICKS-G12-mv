@@ -1056,7 +1056,12 @@ def verification_draft(body: VerificationInput, db: Session = Depends(get_db)):
 
 @app.get("/api/articles/{aid}/drafts", dependencies=[Depends(presenter)])
 def article_drafts(aid: str, db: Session = Depends(get_db)):
-    return [{"id": d.id, "supplier_id": d.supplier_id, "kind": d.kind} for d in db.scalars(select(Draft).where(Draft.article_id == aid))]
+    return [{"id": d.id, "supplier_id": d.supplier_id, "kind": d.kind} for d in db.scalars(select(Draft).where(Draft.article_id == aid).order_by(Draft.id))]
+
+
+@app.get("/api/suppliers/{sid}/verification-drafts", dependencies=[Depends(presenter)])
+def supplier_verification_drafts(sid: str, db: Session = Depends(get_db)):
+    return [{"id": d.id, "article_id": d.article_id, "snapshot": d.evidence_snapshot} for d in db.scalars(select(Draft).where(Draft.supplier_id == sid, Draft.kind == "verification").order_by(Draft.id))]
 
 
 @app.get("/api/drafts/{did}", dependencies=[Depends(presenter)])

@@ -1,4 +1,8 @@
-import { VerificationDraft, RssArticleAnalysis } from "./VerificationDraft";
+import {
+  VerificationDraft,
+  RssArticleAnalysis,
+  SupplierVerificationList,
+} from "./VerificationDraft";
 import { ProcessingPulse } from "./ProcessingPulse";
 import { AttentionDesk, ProcurementBrief } from "./Procurement";
 import React, { useEffect, useState, useRef } from "react";
@@ -1642,6 +1646,42 @@ function ArticleDetail({ context, presenter, action }: any) {
       <h2>{a.headline}</h2>
       <small>Origen: {a.origin_label || a.source}</small>
       <p className="article-summary">{a.summary}</p>
+      <section className="article-decision" aria-label="Lectura para compras">
+        <strong>
+          {!a.analysis
+            ? "Noticia pendiente de análisis"
+            : a.analysis.analysis_status === "error"
+              ? "Sin decisión disponible"
+              : a.analysis.analysis_status === "review"
+                ? "Exposición por revisar"
+                : a.analysis.is_risk === "Y"
+                  ? a.analysis.urgent === "Y"
+                    ? "Atención de compras inmediata"
+                    : "Seguimiento de continuidad"
+                  : a.analysis.affected_supplier_ids.length
+                    ? "Proveedor identificado · sin amenaza detectada"
+                    : "Sin vínculo sustentado con esta cartera"}
+        </strong>
+        <p>
+          {!a.analysis
+            ? "Completa el análisis antes de concluir sobre el riesgo de esta noticia."
+            : a.analysis.analysis_status === "error"
+              ? "El error no se convierte en una decisión sin riesgo. Revisa el diagnóstico antes de reintentar."
+              : a.analysis.analysis_status === "review"
+                ? "Revisa la evidencia y los datos que faltan antes de decidir medidas. Puedes preparar una consulta para confirmar exposición."
+                : a.analysis.is_risk === "Y"
+                  ? "Consulta alcance y plazos con el proveedor usando la evidencia; no presupongas entregas afectadas ni capacidad del alternativo."
+                  : a.analysis.affected_supplier_ids.length
+                    ? "Conserva la fuente y su fecha para seguimiento. La identificación de un proveedor no demuestra interrupción de suministro."
+                    : "El análisis no ha vinculado la noticia a un proveedor. Una consulta manual debe explicar por qué podría ser relevante y qué falta por confirmar."}
+        </p>
+        {a.split === "rss" && (
+          <small>
+            Noticias reales · exposición potencial de una cartera ficticia, sin
+            confirmación de afectación individual.
+          </small>
+        )}
+      </section>
       {a.split === "rss" && (
         <div className="notice">
           <span>
@@ -1781,7 +1821,9 @@ function ArticleDetail({ context, presenter, action }: any) {
               ))}
             </details>
           )}
-          <h3>Evidencia literal</h3>
+          {a.analysis.assessments.some((s) => s.evidence_ids.length > 0) && (
+            <h3>Evidencia literal</h3>
+          )}
           {a.analysis.evidence
             .filter((e) =>
               a.analysis!.assessments.some((s) =>
@@ -1791,7 +1833,9 @@ function ArticleDetail({ context, presenter, action }: any) {
             .map((e) => (
               <blockquote key={e.id}>{e.text}</blockquote>
             ))}
-          <h3>Evaluación por proveedor</h3>
+          {a.analysis.assessments.length > 0 && (
+            <h3>Evaluación por proveedor</h3>
+          )}
           {a.analysis.assessments.map((s) => (
             <div className="assessment" key={s.supplier_id}>
               <Link to={"/proveedores/" + s.supplier_id}>{s.supplier_id}</Link>
@@ -2100,11 +2144,15 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                 </article>
               ))
             ) : (
-              <Empty title="Sin incidentes analizados">
-                La ausencia de análisis no implica ausencia de riesgo.
+              <Empty title="Sin incidentes registrados">
+                Revisa las noticias disponibles y si existe evidencia de
+                exposición; no se presume afectación.
               </Empty>
             )}
-            <h3>Noticias relacionadas</h3>
+            {presenter && context === "rss" && (
+              <SupplierVerificationList supplierId={s.supplier_id} />
+            )}
+            <h3>Noticias relacionadas por el análisis</h3>
             <NewsList articles={s.articles || []} />
           </div>
           <aside>

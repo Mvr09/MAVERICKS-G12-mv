@@ -1,0 +1,393 @@
+{
+  "maximum_articles": 6,
+  "maximum_http_including_retries": 36,
+  "new_analysis_jobs": [
+    "2ac7e6b0-bf42-453e-85e1-16b0cb9d85a1"
+  ],
+  "sync": {
+    "at": "2026-10-18T19:10:53.459924+00:00",
+    "revision": "97a9c2ced260db280c58da9bc97e42ca9198605e",
+    "jobs": [
+      {
+        "id": "c8b77927-2175-462f-8a84-d14265575dc9",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T19:10:23.777484+00:00",
+        "error": null,
+        "source_id": "el_pais",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "20d97c54-d4df-407a-b809-a5db53569943",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T19:10:23.808664+00:00",
+        "error": null,
+        "source_id": "gdacs",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "89df9c5e-6830-4c2a-adc6-5d2b4a141f40",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T19:10:23.831446+00:00",
+        "error": null,
+        "source_id": "ema",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "31207def-8e70-418c-a951-e6a478e3bcc3",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T19:10:23.858560+00:00",
+        "error": null,
+        "source_id": "supply_chain_dive",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "de9afa26-e303-4737-b6c9-6dee15260beb",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T19:10:24.374513+00:00",
+        "error": null,
+        "source_id": "the_loadstar",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "5292bc4f-d0d4-4417-b881-eaa14c7af51d",
+        "kind": "rss",
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T19:10:24.399342+00:00",
+        "error": null,
+        "source_id": "biopharma_dive",
+        "article_id": null,
+        "network_requests": null
+      }
+    ],
+    "sources": [
+      {
+        "id": "biopharma_dive",
+        "http_status": 304,
+        "status": "unchanged",
+        "last_attempt_at": "2026-10-18T19:10:24.417946+00:00",
+        "item_count": 0
+      },
+      {
+        "id": "el_pais",
+        "http_status": 200,
+        "status": "ok",
+        "last_attempt_at": "2026-10-18T19:10:23.814618+00:00",
+        "item_count": 0
+      },
+      {
+        "id": "ema",
+        "http_status": 304,
+        "status": "unchanged",
+        "last_attempt_at": "2026-10-18T19:10:23.862090+00:00",
+        "item_count": 0
+      },
+      {
+        "id": "gdacs",
+        "http_status": 304,
+        "status": "unchanged",
+        "last_attempt_at": "2026-10-18T19:10:23.838857+00:00",
+        "item_count": 0
+      },
+      {
+        "id": "supply_chain_dive",
+        "http_status": 304,
+        "status": "unchanged",
+        "last_attempt_at": "2026-10-18T19:10:23.874429+00:00",
+        "item_count": 0
+      },
+      {
+        "id": "the_loadstar",
+        "http_status": 200,
+        "status": "ok",
+        "last_attempt_at": "2026-10-18T19:10:24.391927+00:00",
+        "item_count": 0
+      }
+    ]
+  },
+  "pending_candidates": [
+    {
+      "id": "80120a6e-49c8-46a6-bdea-ac50087fa060",
+      "headline": "Green forest fire notification in Mozambique",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032900",
+      "published_date": "2026-10-18T19:01:13+00:00",
+      "generation": 0,
+      "version": 1
+    },
+    {
+      "id": "732d40b2-322f-4c62-914e-4080cf4ff6ab",
+      "headline": "Green forest fire notification in Nigeria",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032899",
+      "published_date": "2026-10-18T19:00:49+00:00",
+      "generation": 0,
+      "version": 1
+    },
+    {
+      "id": "d6138eec-84bd-4959-bb9a-000fbd795fe3",
+      "headline": "Green forest fire notification in Namibia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032898",
+      "published_date": "2026-10-18T19:00:42+00:00",
+      "generation": 0,
+      "version": 1
+    },
+    {
+      "id": "3d549146-3383-40b0-8575-f10ca87b9b59",
+      "headline": "Macron acusa a la “extrema izquierda” de inflamar la calle",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/macron-acusa-a-la-extrema-izquierda-de-inflamar-la-calle.html",
+      "published_date": "2026-10-18T18:53:03+00:00",
+      "generation": 0,
+      "version": 2
+    },
+    {
+      "id": "2a2910e9-de2f-433b-a56b-8a7edfcc6283",
+      "headline": "Francia hace balance tras el mayor estallido de violencia en décadas: 2.000 detenidos y un millar de comercios saqueados",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/francia-hace-balance-tras-el-mayor-estallido-de-violencia-y-caos-en-decadas-1800-detenidos-y-un-millar-de-comercios-saqueados.html",
+      "published_date": "2026-10-18T15:08:40+00:00",
+      "generation": 0,
+      "version": 4
+    },
+    {
+      "id": "4eaf8384-4bb4-447d-b33e-cddfd765b559",
+      "headline": "Trump respalda a Netanyahu a nueve días de las elecciones israelíes: “Es un gran guerrero, fuerte, valiente y brillante”",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/trump-respalda-a-netanyahu-a-nueve-dias-de-las-elecciones-israelies-es-un-gran-guerrero-fuerte-valiente-y-brillante.html",
+      "published_date": "2026-10-18T17:26:37+00:00",
+      "generation": 0,
+      "version": 1
+    },
+    {
+      "id": "eab7048a-d548-4364-bfc2-c15f4f3791ef",
+      "headline": "Los disturbios vuelven al centro de París un día después de la gran revuelta",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/los-disturbios-vuelven-al-centro-de-paris-un-dia-despues-de-la-gran-revuelta.html",
+      "published_date": "2026-10-18T16:46:26+00:00",
+      "generation": 0,
+      "version": 1
+    },
+    {
+      "id": "a152f7bb-efcc-44be-affc-928cc6f3b9af",
+      "headline": "News in Brief Podcast | Week 41 2026 | Congestion, cyber threat, and capacity constraint",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/news-in-brief-podcast-week-41-2026-congestion-cyberthreat-and-capacity-constraint/",
+      "published_date": "2026-10-18T16:00:26+00:00",
+      "generation": 0,
+      "version": 2
+    },
+    {
+      "id": "7fb58d3a-d0d0-438e-9ed1-746a230aebbf",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032895",
+      "published_date": "2026-10-18T15:01:14+00:00",
+      "generation": 0,
+      "version": 1
+    },
+    {
+      "id": "9ce853a9-18ff-4194-b87f-77fa66112aa1",
+      "headline": "Ucrania lanza un intenso ataque sobre San Petersburgo y golpea una terminal petrolera, un centro de datos y un nodo logístico",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/ucrania-lanza-un-intenso-ataque-sobre-san-petersburgo-y-golpea-una-terminal-petrolera-un-centro-de-datos-y-un-centro-logistico.html",
+      "published_date": "2026-10-18T12:14:32+00:00",
+      "generation": 0,
+      "version": 5
+    },
+    {
+      "id": "f415e7fb-f966-4753-b46a-533eb0110b3a",
+      "headline": "Las izquierdas acarician un Gobierno en Berlín que nacionalizará fondos inmobiliarios para abaratar el alquiler",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/las-izquierdas-acarician-un-gobierno-en-berlin-que-nacionalizara-fondos-inmobiliarios-para-abaratar-el-alquiler.html",
+      "published_date": "2026-10-18T13:56:27+00:00",
+      "generation": 0,
+      "version": 1
+    }
+  ],
+  "rehearsal": {
+    "desktop": {
+      "width": 1440,
+      "automated": true,
+      "reading_pauses": true,
+      "steps": [
+        {
+          "name": "Noticia real y resultado normalizado; no se exige un resultado favorable",
+          "elapsed_seconds": 5.692
+        },
+        {
+          "name": "Proveedor y servicio declarado; inventario no aplicable, productos no mapeados",
+          "elapsed_seconds": 62.165
+        },
+        {
+          "name": "Consulta respaldada por cita e hipótesis, editable y TXT; sin envío",
+          "elapsed_seconds": 126.483
+        },
+        {
+          "name": "Persistencia y claridad de qué ocurre, por qué importa y siguiente pregunta",
+          "elapsed_seconds": 180.854
+        }
+      ],
+      "javascript_errors": [],
+      "new_analysis": true,
+      "progress_text": "En cola · esperando worker",
+      "procurement": {
+        "supplier_id": "S032",
+        "name": "Oceanbridge Shipping Agency",
+        "material": "Asia to Europe sea freight",
+        "criticality": "Medium",
+        "single_source": "N",
+        "inventory_days": null,
+        "lead_days": 35,
+        "products": [],
+        "alternate_id": "S033",
+        "exposure_confirmed": false
+      },
+      "txt_download": "consulta-exposicion.txt",
+      "saved_source_reloaded": true,
+      "truth_check": {
+        "what": "Congestión, amenaza cibernética y restricciones de capacidad descritas en un RSS real; no daño individual confirmado.",
+        "why": "Servicio marítimo Asia–Europa declarado, lead time35d y sin inventario físico aplicable. Productos no mapeados; no atribuir exposición a productos desconocidos.",
+        "next_action": "Consultar alcance y fechas; hipótesis explícita sin afirmar embarques ni capacidad alternativa."
+      },
+      "elapsed_seconds": 240.011,
+      "passed": true
+    },
+    "mobile": {
+      "width": 390,
+      "automated": true,
+      "reading_pauses": true,
+      "steps": [
+        {
+          "name": "Noticia real y resultado normalizado; no se exige un resultado favorable",
+          "elapsed_seconds": 2.101
+        },
+        {
+          "name": "Proveedor y servicio declarado; inventario no aplicable, productos no mapeados",
+          "elapsed_seconds": 62.163
+        },
+        {
+          "name": "Consulta respaldada por cita e hipótesis, editable y TXT; sin envío",
+          "elapsed_seconds": 126.015
+        },
+        {
+          "name": "Persistencia y claridad de qué ocurre, por qué importa y siguiente pregunta",
+          "elapsed_seconds": 180.692
+        }
+      ],
+      "javascript_errors": [],
+      "new_analysis": false,
+      "procurement": {
+        "supplier_id": "S032",
+        "name": "Oceanbridge Shipping Agency",
+        "material": "Asia to Europe sea freight",
+        "criticality": "Medium",
+        "single_source": "N",
+        "inventory_days": null,
+        "lead_days": 35,
+        "products": [],
+        "alternate_id": "S033",
+        "exposure_confirmed": false
+      },
+      "reused_saved_inquiry": true,
+      "txt_download": "consulta-exposicion.txt",
+      "saved_source_reloaded": true,
+      "truth_check": {
+        "what": "Congestión, amenaza cibernética y restricciones de capacidad descritas en un RSS real; no daño individual confirmado.",
+        "why": "Servicio marítimo Asia–Europa declarado, lead time35d y sin inventario físico aplicable. Productos no mapeados; no atribuir exposición a productos desconocidos.",
+        "next_action": "Consultar alcance y fechas; hipótesis explícita sin afirmar embarques ni capacidad alternativa."
+      },
+      "elapsed_seconds": 240.008,
+      "passed": true
+    }
+  },
+  "errors": [],
+  "paid_before": 48,
+  "analysis_article_ids": [
+    "a152f7bb-efcc-44be-affc-928cc6f3b9af"
+  ],
+  "analysis_started_at": "2026-10-18T19:22:13.677Z",
+  "maximum_for_enqueued_jobs": 6,
+  "analysis_jobs": [
+    {
+      "id": "2ac7e6b0-bf42-453e-85e1-16b0cb9d85a1",
+      "kind": "analysis",
+      "state": "done",
+      "attempts": 1,
+      "heartbeat": "2026-10-18T19:21:48.279605+00:00",
+      "error": null,
+      "source_id": null,
+      "article_id": "a152f7bb-efcc-44be-affc-928cc6f3b9af",
+      "network_requests": 1
+    }
+  ],
+  "actual_analysis": {
+    "article_id": "a152f7bb-efcc-44be-affc-928cc6f3b9af",
+    "version": 2,
+    "generation": 0,
+    "headline": "News in Brief Podcast | Week 41 2026 | Congestion, cyber threat, and capacity constraint",
+    "source": "The Loadstar",
+    "url": "https://theloadstar.com/news-in-brief-podcast-week-41-2026-congestion-cyberthreat-and-capacity-constraint/",
+    "published_date": "2026-10-18T16:00:26+00:00",
+    "state": "done",
+    "model": "jev-1.13.0",
+    "question_version": "rss-2.2.0",
+    "new_requests": 1,
+    "cache_stages": [],
+    "cached": false,
+    "is_risk": "N",
+    "urgent": "N",
+    "affected_suppliers": [],
+    "review_reasons": [],
+    "source_reading": {
+      "status": "public_text",
+      "checked_at": "2026-10-18T19:21:48.524696+00:00",
+      "http_status": 200,
+      "source_url": "https://theloadstar.com/news-in-brief-podcast-week-41-2026-congestion-cyberthreat-and-capacity-constraint/",
+      "method": "editorial_paragraphs",
+      "text_hash": "9bdb75de5b30c1dd8cd37497cff51b41990c948d9228e350893126a7cf65ce19",
+      "characters": 3305
+    }
+  },
+  "created_draft": "aeaa9478-186c-4c50-b192-c99b2649f72a",
+  "quoted_evidence": {
+    "id": "e1",
+    "text": "News in Brief Podcast | Week 41 2026 | Congestion, cyber threat, and capacity constraint",
+    "field": "headline"
+  },
+  "hypothesis": "Confirmar si las restricciones de capacidad descritas aplican al servicio marítimo Asia–Europa declarado en el catálogo; no asumimos exposición ni embarques afectados.",
+  "final_revision": "6290dc4c564226a55cf26f475fae2d79c63bbd5e",
+  "paid_after": 49,
+  "new_requests_for_flow": 1,
+  "counter_delta": 1,
+  "periodic_enabled": false,
+  "passed": true,
+  "finished_at": "2026-10-18T19:30:13.064Z"
+}

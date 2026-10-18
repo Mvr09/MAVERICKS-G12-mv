@@ -29,3 +29,16 @@ Abrir otra pestaña en Noticias reales/Fuentes. No activar análisis periódico 
 ## Contingencias
 
 Una fuente caída se muestra como tal y las demás continúan. Si no hay novedades, presentar «Sin cambios» y hora de consulta; no crear titulares. Si un análisis falla, mostrar el error/reintento; no convertirlo enN. Si no hay alerta nueva elegible, usar únicamente el escenarioQA identificado. El sonido no sustituye el aviso visual. Si falta relación material/producto o capacidad del alternativo, solicitar confirmación y mostrar el dato ausente.
+
+## Recorrido RSS real con consulta explícita (entrega siguiente)
+
+1. **Fuentes → Actualizar ahora.** Leer hora/HTTP de las seis fuentes. Una respuesta304 confirma una consulta sin contenido nuevo. No activar análisis periódico de pago.
+2. **Noticias reales → noticia pendiente → Analizar esta noticia.** La cola procesa únicamente eseID y muestra estado real. Si ya tiene análisis, mostrar su fecha/caché o seleccionar otra pendiente; no fingir reprocesamiento.
+3. **Leer «Lectura para compras» y evidencia.** Si no hay vínculo, decirlo. No exigir queJEV produzca un riesgo para completar la demo. Si lo hay, distinguir exposición potencial de daño/entregas confirmados.
+4. **Preparar consulta de verificación → elegir proveedor.** Ver material/servicio declarado, criticidad, fuente única, inventario yleadtime. Para Oceanbridge: servicio marítimo Asia–Europa, inventario no aplicable, productos no mapeados; no inventar productos afectados ni embarques. Abrir ficha y volver a la noticia.
+5. **Seleccionar una cita literal descriptiva y escribir hipótesis.** Preferir el fragmento que explica el hecho/alcance a un titular genérico. Confirmar lectura y crear borrador. La consulta pregunta si el servicio está expuesto, sin afirmar que lo esté. Es distinta de un borrador de continuidad validado y no modificaJEV, puntuación ni alertas.
+6. **Editar → guardar → descargarTXT → recargar → Consultas guardadas.** La fuente/versión/hipótesis permanecen enPostgreSQL. Desde ficha, las consultas manuales se muestran separadas de las noticias vinculadas por el análisis.
+
+Guion temporal:0–1min noticia/resultado;1–2min proveedor/material y datos ausentes;2–3min evidencia/hipótesis/borrador;3–4min persistencia y siguiente acción. Capturas y tiempos del ensayo real en rss-flow-evidence.json. Las pausas son de lectura, no procesamiento ficticio. No hay envíos externos ni estimaciones de ahorro. La comprobación automatizada/heurística no sustituye un estudio de comprensión con compradores humanos.
+
+Para la noticia real del ensayo (TheLoadstar, NewsinBriefPodcast/Week41),JEV devolvió sin riesgo/urgencia ni proveedores vinculados. La consulta a la cartera es una hipótesis humana explícita; no se presenta como matching automático exitoso. El texto editorial sobre congestión no confirma qué rutas individuales están afectadas. AudioQA/A14 ya acreditado por separado; no se fuerza alarma ante esta salida.

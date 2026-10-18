@@ -59,12 +59,12 @@ export function procurement(s: Supplier, context: string, incidentId?: string) {
           : s.status === "resolved"
             ? "Confirmar la normalización de entregas y conservar el historial."
             : s.status === "pending"
-              ? "Completar el análisis antes de concluir sobre exposición."
+              ? "Confirmar el vínculo con una noticia antes de concluir sobre exposición."
               : "Mantener seguimiento; sin riesgo activo detectado en las noticias procesadas.";
   const exposure = isResolved
     ? "Evento recuperado · cartera ficticia"
     : s.status === "pending"
-      ? "Exposición no evaluada"
+      ? "Exposición sin establecer"
       : context === "rss"
         ? "Exposición potencial · cartera simulada"
         : "Datos del ejercicio · cartera ficticia";
