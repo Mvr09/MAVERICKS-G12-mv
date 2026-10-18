@@ -2,6 +2,8 @@
 
 URL: https://mavericks-g12-mv-production.up.railway.app
 
+Publicado y verificado en web/worker: **88b3f45**. Evidencias posteriores al despliegue guardadas localmente.
+
 ## Cambios visibles
 
 - Noticias: «Analizar esta noticia» encola solo el artículo elegido y muestra progreso real; resultado explicado en lenguaje de compras.

@@ -1,5 +1,5 @@
 {
-  "revision": "701f2b0bf8c40388a03592877be4cb63ba2f8ed1",
+  "revision": "88b3f45b951daa564086f1347e6357a122a4c421",
   "mutating_page_requests": [],
   "errors": [],
   "viewports": [
@@ -43,6 +43,14 @@
   "new_analysis": false,
   "new_drafts": 0,
   "model_selection_visible": true,
+  "comparison_profiles": [
+    "1.0.0",
+    "link-2.2.0",
+    "link-3.0.0-dev",
+    "link-4.0.1-dev",
+    "link-3.1.0-assist"
+  ],
+  "default_model_unchanged": true,
   "existing_export": {
     "http": 200,
     "rows_in_metadata": 14,
@@ -50,5 +58,5 @@
   },
   "new_jev_requests": 0,
   "passed": true,
-  "checked_at": "2026-10-18T19:37:32.355Z"
+  "checked_at": "2026-10-18T19:54:29.258Z"
 }

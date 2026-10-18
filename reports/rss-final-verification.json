@@ -1,5 +1,5 @@
 {
-  "expected_commit": "701f2b0bf8c40388a03592877be4cb63ba2f8ed1",
+  "expected_commit": "88b3f45b951daa564086f1347e6357a122a4c421",
   "requests": [
     {
       "path": "/healthz",
@@ -14,7 +14,11 @@
       "http": 200
     },
     {
-      "path": "/assets/icons-h47_nvdG.js",
+      "path": "/assets/charts-Vo4fhvfv.js",
+      "http": 200
+    },
+    {
+      "path": "/assets/index-Cnsyu3BT.js",
       "http": 200
     },
     {
@@ -22,11 +26,7 @@
       "http": 200
     },
     {
-      "path": "/assets/index-xpipYaKB.js",
-      "http": 200
-    },
-    {
-      "path": "/assets/charts-Vo4fhvfv.js",
+      "path": "/assets/icons-h47_nvdG.js",
       "http": 200
     },
     {
@@ -50,6 +50,38 @@
       "http": 200
     },
     {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
       "path": "/api/sources",
       "http": 200
     }
@@ -58,7 +90,7 @@
   "new_analysis": false,
   "rss_new_sync": false,
   "prior_real_rss_evidence": "rss-flow-evidence.json",
-  "observed_commit": "701f2b0bf8c40388a03592877be4cb63ba2f8ed1",
+  "observed_commit": "88b3f45b951daa564086f1347e6357a122a4c421",
   "schema": "0008",
   "assets": 4,
   "final_copy": true,
@@ -69,46 +101,46 @@
   "worker": {
     "online": true,
     "compatible": true,
-    "revision": "701f2b0bf8c40388a03592877be4cb63ba2f8ed1"
+    "revision": "88b3f45b951daa564086f1347e6357a122a4c421"
   },
   "rss_latest_recorded": [
     {
       "id": "biopharma_dive",
       "http_status": 304,
-      "last_attempt_at": "2026-10-18T19:33:23.294572+00:00",
+      "last_attempt_at": "2026-10-18T19:52:52.085238+00:00",
       "status": "unchanged"
     },
     {
       "id": "el_pais",
       "http_status": 200,
-      "last_attempt_at": "2026-10-18T19:33:23.314158+00:00",
+      "last_attempt_at": "2026-10-18T19:52:52.085797+00:00",
       "status": "ok"
     },
     {
       "id": "ema",
       "http_status": 304,
-      "last_attempt_at": "2026-10-18T19:33:23.305657+00:00",
+      "last_attempt_at": "2026-10-18T19:52:52.086302+00:00",
       "status": "unchanged"
     },
     {
       "id": "gdacs",
       "http_status": 304,
-      "last_attempt_at": "2026-10-18T19:33:23.303768+00:00",
+      "last_attempt_at": "2026-10-18T19:52:52.357020+00:00",
       "status": "unchanged"
     },
     {
       "id": "supply_chain_dive",
       "http_status": 304,
-      "last_attempt_at": "2026-10-18T19:33:23.302608+00:00",
+      "last_attempt_at": "2026-10-18T19:52:52.084328+00:00",
       "status": "unchanged"
     },
     {
       "id": "the_loadstar",
       "http_status": 200,
-      "last_attempt_at": "2026-10-18T19:33:23.304705+00:00",
+      "last_attempt_at": "2026-10-18T19:52:52.365827+00:00",
       "status": "ok"
     }
   ],
-  "checked_at": "2026-10-18T19:34:47.099216+00:00",
+  "checked_at": "2026-10-18T19:54:02.914998+00:00",
   "passed": true
 }

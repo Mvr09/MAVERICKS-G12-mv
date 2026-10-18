@@ -1,6 +1,6 @@
 # Aceptación consolidada · entrega RSS y matching
 
-Versión funcional comprobada: **701f2b0**. Predeterminado **1.0.0**, **link-2.2.0** experimental;3.0/3.1/4.0.1 internos sin promoción. Política empresarial intacta. **19pasa/1falla(A06)**. A14físico cerrado; A20histórico vigente, sin repetirLiveDay.
+Versión funcional comprobada: **88b3f45**. Predeterminado **1.0.0**, **link-2.2.0** experimental;3.0/3.1/4.0.1 internos sin promoción. Política empresarial intacta. **19pasa/1falla(A06)**. A14físico cerrado; A20histórico vigente, sin repetirLiveDay.
 
 Esta matriz reemplaza el resumen anterior; el historial permanece en Git y AUDITORIA.md. «Heredado» significa componente y recorrido pertinentes sin cambios, no una ejecución nueva. Detalles por noticia y referencias permanecen en reports/private, fuera de Git/Docker/APIpública.
 
@@ -34,3 +34,5 @@ A06 separa capacidad funcional, errores conocidos del modelo y datos ausentes. N
 El RSS real de este ensayo no identifica proveedor. El recorrido conserva ese resultado y demuestra una consulta de verificación manual con hipótesis explícita, no un vínculo validado por JEV ni una alerta de riesgo artificial. A14 es la prueba controlada física independiente; no se hace pasar como alarma de esta noticia. Se consulta y exporta el loteLiveDay ya existente sin reanalizarlo ni ajustar preguntas.
 
 Pruebas actuales:83unit/integraciónsintética,4E2ERSSen4anchos,QAautomatizado,build,paquete,PGmigraciónpreservación,HTTPSweb/worker/catálogo yUIreal. Persistencia de la consulta acreditada tras redeploy. No ensayo destructivo de cola enRailway, acceso alpanel ni nueva audibilidad física requeridos para estos cambios. Móvil es emulaciónPlaywright; claridad de guion es revisión heurística, no estudio de usuarios.
+
+Comprobación posterior a la publicación88b3f45: web y worker muestran ese SHA, esquema0008; salud/readiness/assets/catálogo/ficha200, permisos401. Modelo contiene cinco candidatos y conserva1.0.0default. UIreal4anchos/copia/foco/exportaciónexistente pasa;0JEVnuevas/0borradoresnuevos. Las evidencias heredadas de701f2b0 siguen válidas: el delta funcional es comparación administrativa y candidato interno no ejecutado por producción. Dockerlocal y smokeopcional empaquetado no acreditados: ver PROGRESS.md; no sustituyen el build/servicio realRailway verificado.

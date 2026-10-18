@@ -1,5 +1,5 @@
 {
-  "revision": "701f2b0bf8c40388a03592877be4cb63ba2f8ed1",
+  "revision": "88b3f45b951daa564086f1347e6357a122a4c421",
   "default_profile": "1.0.0",
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
@@ -137,5 +137,5 @@
   },
   "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
   "final_verification": "rss-final-verification.json",
-  "evidence_revision_note": "Versión funcional comprobada701f2b0; entrega posterior añade informe/candidato interno y comparación administrativa, sin activar otro motor."
+  "evidence_revision_note": "Web/worker y revisión UI efectivamente comprobados en88b3f45. Motor predeterminado/exportación intactos; candidatos internos sin promoción."
 }
