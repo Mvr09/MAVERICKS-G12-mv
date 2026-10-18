@@ -73,12 +73,12 @@ export function CandidateComparison() {
         ))}
       </div>
       <p>
-        3.0 recupera más exposición crítica, pero conserva falsos vínculos en
-        revisión y pierde un servicio marítimo declarado. 2.2 es la referencia
-        de precisión. 4.0.1 resuelve los controles de ruta y modo, pero no
-        mejora el balance de errores de la cartera. 3.1 recupera el vínculo
-        marítimo, pero añade dos asociaciones sin interrupción demostrada;
-        conserva revisión y no se promueve.
+        3.3 / revisión1.2 es la candidata seleccionable para descubrimiento
+        asistido: recupera asociaciones omitidas y reconoce interrupciones
+        parciales, pero conserva falsos vínculos y urgencias en revisión. El
+        predeterminado sigue en1.0. La política1.2 sobre3.0 aísla la reducción
+        de revisión sin cambiar predicciones. Los demás perfiles se conservan
+        como historial experimental.
       </p>
       <small>
         La comparación histórica de2.2 precede al extractor duration-1.1.0; no

@@ -93,6 +93,9 @@ def reconcile(db, article, result):
         )
         entry = {
             "article_id": article.id,
+            "generation": article.generation,
+            "analysis_profile": result.get("analysis_profile", result.get("question_version")),
+            "analysis_versions": result.get("analysis_versions", {}),
             "event_tag": event_tag(result),
             "origin_key": article.origin_key,
             "headline": article.data["headline"],
@@ -111,7 +114,7 @@ def reconcile(db, article, result):
                 and re.search(EVENT_WORDS[i.event_type], text, re.I)
                 and published > i.event_date
             ]
-            active = [i for i in compatible if i.state != "resolved"]
+            active = [i for i in compatible if i.state in ("active", "monitoring")]
             if len(active) == 1 and not assessment["needs_review"]:
                 inc = active[0]
                 inc.state = "resolved"
@@ -162,12 +165,14 @@ def reconcile(db, article, result):
                     and any(
                         similarity(words, set(h.get("tokens", []))) >= 0.5
                         for h in i.history
-                        if h.get("assessment", {}).get("is_risk") == "Y"
+                        if h.get("assessment", {}).get("is_risk") == "Y" and not h.get("superseded")
                     )
                 )
             )
         ]
         if len(compatible) > 1:
+            assessment["needs_review"] = True
+            assessment["review_reasons"] = sorted(set(assessment["review_reasons"] + ["event_group_ambiguous"]))
             result["analysis_status"] = "review"
             result["review_reasons"] = sorted(
                 set(result["review_reasons"] + ["event_group_ambiguous"])
@@ -176,13 +181,16 @@ def reconcile(db, article, result):
         inc = compatible[0] if compatible else None
         if inc:
             # Retain late evidence but never reopen or replace a more recent state.
-            if any(h.get("article_id") == article.id for h in inc.history):
+            replacement = any(h.get("article_id") == article.id and h.get("superseded") and h.get("generation", 0) < article.generation for h in inc.history)
+            if any(h.get("article_id") == article.id and not h.get("superseded") for h in inc.history):
                 continue
-            if published <= inc.event_date:
+            if published < inc.event_date or (published == inc.event_date and not replacement):
                 inc.history = [*inc.history, entry]
                 continue
             inc.history = [*inc.history, entry]
             if inc.state == "resolved":
+                assessment["needs_review"] = True
+                assessment["review_reasons"] = sorted(set(assessment["review_reasons"] + ["resolved_event_requires_review"]))
                 result["analysis_status"] = "review"
                 result["review_reasons"] = sorted(
                     set(result["review_reasons"] + ["resolved_event_requires_review"])
@@ -194,8 +202,10 @@ def reconcile(db, article, result):
                 else "monitoring"
             )
             changed = (
-                inc.priority != assessment["priority"]
+                replacement
+                or inc.priority != assessment["priority"]
                 or inc.history[-2]["assessment"]["urgent"] != assessment["urgent"]
+                or inc.history[-2]["assessment"].get("needs_review") != assessment["needs_review"]
             )
             inc.priority = assessment["priority"]
             inc.historical_priority = max(inc.historical_priority, inc.priority)
@@ -250,6 +260,10 @@ def reconcile(db, article, result):
                         "state": inc.state,
                         "article_id": article.id,
                         "origin_key": article.origin_key,
+                        "generation": article.generation,
+                        "analysis_profile": result.get("analysis_profile", result.get("question_version")),
+                        "assessment": assessment,
+                        "explanation": explanation,
                     },
                 )
             )

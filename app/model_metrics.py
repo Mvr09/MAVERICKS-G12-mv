@@ -96,6 +96,7 @@ def model_metrics(db, context, origin=""):
             a.result.get("model_id"),
             a.result["question_version"],
             a.result["policy_version"],
+            a.result.get("analysis_versions", {}).get("review", a.result.get("review_policy_version", "no registrada")),
         )
         for a in latest.values()
     )
@@ -167,8 +168,8 @@ def model_metrics(db, context, origin=""):
             ],
             "jobs": dict(Counter(j.state for j in jobs)),
             "versions": [
-                {"model": m, "questions": q, "policy": p, "count": n}
-                for (m, q, p), n in sorted(versions.items(), key=lambda x: str(x[0]))
+                {"model": m, "questions": q, "policy": p, "review": r, "count": n}
+                for (m, q, p, r), n in sorted(versions.items(), key=lambda x: str(x[0]))
             ],
             "consistency": {
                 "articles": len(agreement),

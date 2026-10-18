@@ -5,7 +5,7 @@ from app.db import Session
 from app.models import Article, Analysis, Supplier, Batch, now
 from app.settings import ROOT, POLICY, settings
 from app.duration import durations, VERSION as DURATION_VERSION
-from app.profiles import DEFAULT_PROFILE, EXERCISE_PROFILES
+from app.profiles import DEFAULT_PROFILE, EXERCISE_PROFILES, CANDIDATE_PROFILE
 from app.importer import digest
 from app.schemas import NormalizedAnalysis
 from app.jev import JevClient, ProviderError
@@ -203,13 +203,19 @@ def process_article(
         if run_key is not None
         else (f"{a.id}:generation:{a.generation}" if a.generation else "")
     )
-    client = JevClient(
+    from app.payload_cache import PayloadCacheClient
+    candidate = profile == CANDIDATE_PROFILE
+    client_type = PayloadCacheClient if candidate else JevClient
+    client = client_type(
         db,
         a.id,
         transport=transport,
         diagnostic_ack_at=diagnostic_ack_at,
         run_key=run_key,
     )
+    if candidate:
+        from app.jev_audit import CapturingClient
+        client = CapturingClient(client)
     raw = {}
     rss = a.context == "rss"
     if rss:
@@ -233,11 +239,14 @@ def process_article(
         raw["_profile"] = profile
         from app.geography import location
         raw["_geography_snapshot"] = {s["supplier_id"]: location(s) for s in suppliers}
+    from app import candidate_engine, candidate_matching
     build_a = rss_questions.stage_a if rss else link_questions.stage_a if modern else stable_geography.stage_a if geographic else stage_a
     build_b = rss_questions.stage_b if rss else link_questions.stage_b if modern else stable_geography.stage_b if geographic else stage_b
     question_version = rss_questions.VERSION if rss else link_questions.VERSION if modern else stable_geography.VERSION if geographic else POLICY["question_version"]
+    if candidate:
+        question_version = candidate_matching.VERSION
     deadline = time.monotonic() + 60
-    pa = build_a(a.data, suppliers, settings.jev_model)
+    pa = candidate_matching.stage_a(a.data, suppliers, settings.jev_model, a.context) if candidate else build_a(a.data, suppliers, settings.jev_model)
     request_hash = digest(
         {
             "article": a.id,
@@ -247,6 +256,8 @@ def process_article(
             "duration_parser": DURATION_VERSION,
         }
     )
+    if candidate:
+        request_hash = digest({"request": request_hash, "versions": candidate_engine.VERSIONS})
     if run_key:
         request_hash = digest({"request": request_hash, "run_key": run_key})
     previous = (
@@ -260,51 +271,70 @@ def process_article(
         db.commit()
         return previous.result
     try:
-        raw["a"] = client.ask(pa, "a", deadline)
-        if rss:
-            rss_questions.linked_answers(raw["a"], suppliers)
-        candidates = link_questions.select_candidates(a.data, suppliers, raw["a"]) if modern else [
-            s
-            for s in suppliers
-            if raw["a"]["answers"]["linked_" + s["supplier_id"]]["noul"]
-            >= POLICY["thresholds"]["review_low"]
-        ]
-        duration_candidates = (
-            durations(
-                {
-                    **a.data,
-                    "summary": a.data.get("summary", "")
-                    + " "
-                    + a.data.get("full_text", ""),
-                }
-            )
-            if rss
-            else durations(a.data)
-        )
-        raw["b"] = (
-            client.ask(
-                build_b(a.data, candidates, duration_candidates, settings.jev_model),
-                "b",
-                deadline,
-            )
-            if candidates
-            else None
-        )
-        if modern:
-            from app.link_analysis import normalize as normalize_link
-            result = normalize_link(a, suppliers, raw["a"], raw["b"], duration_candidates)
-            NormalizedAnalysis.model_validate(result)
+        if candidate:
+            result, candidate_raw = candidate_engine.run(client, a, suppliers, deadline)
+            raw.update(candidate_raw)
             validate(result, SCHEMA)
         else:
-            result = normalize(a, suppliers, raw["a"], raw["b"], duration_candidates)
-            if geographic:
-                stable_geography.annotate(result, a, suppliers)
+            raw["a"] = client.ask(pa, "a", deadline)
+            if rss:
+                rss_questions.linked_answers(raw["a"], suppliers)
+            candidates = link_questions.select_candidates(a.data, suppliers, raw["a"]) if modern else [
+                s
+                for s in suppliers
+                if raw["a"]["answers"]["linked_" + s["supplier_id"]]["noul"]
+                >= POLICY["thresholds"]["review_low"]
+            ]
+            duration_candidates = (
+                durations(
+                    {
+                        **a.data,
+                        "summary": a.data.get("summary", "")
+                        + " "
+                        + a.data.get("full_text", ""),
+                    }
+                )
+                if rss
+                else durations(a.data)
+            )
+            raw["b"] = (
+                client.ask(
+                    build_b(a.data, candidates, duration_candidates, settings.jev_model),
+                    "b",
+                    deadline,
+                )
+                if candidates
+                else None
+            )
+            if modern:
+                from app.link_analysis import normalize as normalize_link
+                result = normalize_link(a, suppliers, raw["a"], raw["b"], duration_candidates)
                 NormalizedAnalysis.model_validate(result)
                 validate(result, SCHEMA)
+            else:
+                result = normalize(a, suppliers, raw["a"], raw["b"], duration_candidates)
+                if geographic:
+                    stable_geography.annotate(result, a, suppliers)
+                    NormalizedAnalysis.model_validate(result)
+                    validate(result, SCHEMA)
         from app.incidents import reconcile
 
+        result.setdefault("analysis_profile", profile)
+        result.setdefault("matching_version", question_version)
+        result.setdefault("analysis_versions", {
+            "profile": profile, "matching": question_version, "questions": question_version,
+            "review": "link-review-2.2.0" if modern else "legacy-review-1.0.0",
+            "duration": DURATION_VERSION, "policy": POLICY["version"], "model": result["model_id"],
+        })
         if publish:
-            reconcile(db, a, result)
+            if a.generation:
+                # A failed replacement rolls back its projection, not prior evidence.
+                with db.begin_nested():
+                    from app.reanalysis import retire_effects
+                    retire_effects(db, a, result)
+                    reconcile(db, a, result)
+            else:
+                reconcile(db, a, result)
     except (ProviderError, ValueError) as exc:
         code = exc.code if isinstance(exc, ProviderError) else "DATA_INVALID"
         result = {
@@ -325,8 +355,13 @@ def process_article(
             "review_reasons": [],
         }
         validate(result, SCHEMA)
+    result.setdefault("analysis_profile", profile)
+    if candidate:
+        result.setdefault("analysis_versions", {**candidate_engine.VERSIONS, "model": settings.jev_model})
     if not publish:
         return result
+    if candidate:
+        raw.update(client.audit())
     raw["_cache_stages"] = client.cached_stages
     raw["_new_requests"] = client.network_requests
     fully_cached = bool(client.cached_stages) and client.network_requests == 0

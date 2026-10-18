@@ -272,6 +272,19 @@
               "none",
               null
             ]
+          },
+          "exposure_kind": {
+            "enum": [
+              "reported",
+              "identity",
+              "potential",
+              "unknown",
+              "excluded",
+              null
+            ]
+          },
+          "requires_pathway_confirmation": {
+            "type": "boolean"
           }
         },
         "allOf": [

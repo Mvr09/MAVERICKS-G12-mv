@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { api, date } from "./api";
+import { AnalysisProfile, CANDIDATE } from "./AnalysisProfile";
 import { procurement } from "./procurement";
 import type { Article, Supplier } from "./types";
 
 export function RssArticleAnalysis({ article: a }: { article: Article }) {
   const [job, setJob] = useState<any>(null),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [profile, setProfile] = useState("1.0.0"),
+    [ack, setAck] = useState(false);
   useEffect(() => {
     if (!job?.id) return;
     let active = true;
@@ -29,20 +32,54 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
       clearInterval(timer);
     };
   }, [job?.id]);
+  const activeJob =
+    !!job && !["done", "error", "cancelled"].includes(job.state);
+  const rerun = a.state !== "pending";
   return (
     <div className="rss-single-analysis">
+      <AnalysisProfile
+        value={profile}
+        onChange={setProfile}
+        rss
+        disabled={busy || activeJob}
+      />
+      {rerun && (
+        <label className="inline">
+          <input
+            type="checkbox"
+            checked={ack}
+            onChange={(e) => setAck(e.target.checked)}
+          />
+          Confirmo una nueva ejecución. Se conservan los resultados y borradores
+          anteriores.
+        </label>
+      )}
       <button
         className="button primary"
-        disabled={busy || a.state !== "pending" || !!job}
+        disabled={busy || activeJob || (rerun && !ack)}
         onClick={async () => {
           setBusy(true);
           setError("");
           try {
-            const r = await api("/analysis/rss", {
-              method: "POST",
-              body: JSON.stringify({ limit: 1, article_ids: [a.id] }),
-            });
+            const r = await api(
+              rerun ? "/articles/" + a.id + "/analyze" : "/analysis/rss",
+              {
+                method: "POST",
+                body: JSON.stringify(
+                  rerun
+                    ? { analysis_profile: profile }
+                    : {
+                        limit: 1,
+                        article_ids: [a.id],
+                        ...(profile === CANDIDATE
+                          ? { analysis_profile: profile }
+                          : {}),
+                      },
+                ),
+              },
+            );
             setJob({ id: r.job_ids[0], state: "queued" });
+            setAck(false);
           } catch (e) {
             setError((e as Error).message);
           } finally {
@@ -54,7 +91,7 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
           ? "Encolando…"
           : a.state === "pending"
             ? "Analizar esta noticia"
-            : "Análisis disponible"}
+            : "Reanalizar con este perfil"}
       </button>
       <span role="status">
         {job?.state === "queued"
@@ -67,6 +104,12 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
                 ? "El análisis falló; revisa el diagnóstico"
                 : ""}
       </span>
+      {job?.state === "running" && job.last_completed_step && (
+        <small role="status">
+          Última etapa completada: {job.last_completed_step}.{" "}
+          {job.network_requests} peticiones nuevas en esta ejecución.
+        </small>
+      )}
       {error && <p role="alert">{error}</p>}
     </div>
   );

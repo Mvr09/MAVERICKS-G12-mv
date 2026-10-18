@@ -5,7 +5,7 @@ from fastapi import FastAPI, Depends, HTTPException, Request, Response, UploadFi
 from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from sqlalchemy import select, text, func
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError, ProgrammingError
@@ -183,7 +183,9 @@ def logout(
 
 @app.get("/api/config")
 def config():
+    from app.candidate_engine import VERSIONS
     return {
+        "candidate_versions": dict(VERSIONS),
         "model": settings.jev_model,
         "policy_version": POLICY["version"],
         "question_version": DEFAULT_PROFILE,
@@ -438,11 +440,20 @@ def batches(db: Session = Depends(get_db)):
 
         keys = [analysis_key(a) for a in rows]
         jobs = db.scalars(select(Job).where(Job.key.in_(keys))).all()
+        from collections import Counter
+        generations = {a.id: a.generation for a in rows}
+        latest_results = {}
+        for analysis in db.scalars(select(Analysis).where(Analysis.article_id.in_(generations)).order_by(Analysis.created_at.desc())):
+            if analysis.generation == generations[analysis.article_id]:
+                latest_results.setdefault(analysis.article_id, analysis.result)
+        profiles = Counter((r.get("analysis_profile", r.get("question_version", "no registrado")), r.get("question_version"), r.get("analysis_versions", {}).get("review", r.get("review_policy_version", "no registrada"))) for r in latest_results.values())
         out.append(
             {
                 "id": b.id,
                 "split": b.split,
                 "filename": b.filename,
+                "analysis_profiles": [{"profile": p, "questions": q, "review": v, "count": n} for (p,q,v),n in sorted(profiles.items(),key=lambda x:str(x[0]))],
+                "mixed_profiles": len(profiles) > 1,
                 "origin_label": batch_label(b),
                 "count": b.count,
                 "logical_date": b.logical_date,
@@ -462,15 +473,18 @@ def batches(db: Session = Depends(get_db)):
     return out
 
 
-@app.post(
-    "/api/batches/{bid}/analyze", status_code=202, dependencies=[Depends(presenter)]
-)
-def analyze(bid: str, db: Session = Depends(get_db)):
+class AnalysisSelection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    analysis_profile: Literal["1.0.0", "link-2.2.0", "radar-1.0.0-candidate"] = DEFAULT_PROFILE
+
+
+@app.post("/api/batches/{bid}/analyze", status_code=202, dependencies=[Depends(presenter)])
+def analyze(bid: str, body: AnalysisSelection | None = None, db: Session = Depends(get_db)):
     from app.queue import enqueue_batch
 
     require_current_worker(db)
     try:
-        jobs = enqueue_batch(db, bid)
+        jobs = enqueue_batch(db, bid, (body or AnalysisSelection()).analysis_profile)
         db.commit()
     except ValueError as e:
         db.rollback()
@@ -483,22 +497,25 @@ def job(jid: str, db: Session = Depends(get_db)):
     j = db.get(Job, jid)
     if not j:
         raise HTTPException(404, "Trabajo no encontrado")
+    calls = []
+    if j.kind == "analysis" and j.payload.get("article_id"):
+        generation = j.payload.get("generation", 0)
+        run_key = f"{j.payload['article_id']}:generation:{generation}" if generation else ""
+        calls = db.scalars(select(ApiCall).where(ApiCall.article_id == j.payload["article_id"], ApiCall.run_key == run_key).order_by(ApiCall.created_at)).all()
+    steps = {"a": "Identificación y candidatos", "b": "Exposición, riesgo y urgencia", "candidate_support": "Soporte de las decisiones", "candidate_followup": "Dudas de alcance y urgencia"}
+    last = next((c for c in reversed(calls) if c.status == 200), None)
     return {
         "id": j.id,
         "kind": j.kind,
+        "analysis_profile": j.payload.get("analysis_profile", DEFAULT_PROFILE),
+        "last_completed_step": steps.get(last.stage) if last else None,
         "state": j.state,
         "attempts": j.attempts,
         "heartbeat": j.heartbeat,
         "error": j.error,
         "source_id": j.payload.get("source_id"),
         "article_id": j.payload.get("article_id"),
-        "network_requests": db.scalar(
-            select(func.count())
-            .select_from(ApiCall)
-            .where(ApiCall.article_id == j.payload["article_id"])
-        )
-        if j.kind == "analysis" and j.payload.get("article_id")
-        else None,
+        "network_requests": len(calls) if j.kind == "analysis" else None,
     }
 
 
@@ -774,8 +791,10 @@ def batch_execution(bid: str, db: Session = Depends(get_db)):
 
 
 class ManualRssAnalysis(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     limit: int | None = Field(default=None, ge=1)
     article_ids: list[str] | None = Field(default=None, min_length=1, max_length=6)
+    analysis_profile: Literal["1.0.0", "radar-1.0.0-candidate"] = DEFAULT_PROFILE
 
 
 @app.post("/api/analysis/rss", status_code=202, dependencies=[Depends(presenter)])
@@ -785,20 +804,38 @@ def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
     require_current_worker(db)
     if db.scalar(select(func.count()).select_from(Supplier)) != 40:
         raise HTTPException(409, "Importa primero las 40 identidades de la cartera.")
-    jobs = enqueue_rss_analysis(db, body.limit, article_ids=body.article_ids)
+    if body.analysis_profile != DEFAULT_PROFILE and (not body.article_ids or len(body.article_ids) != 1):
+        raise HTTPException(422, "La candidata RSS se elige para una noticia concreta.")
+    jobs = enqueue_rss_analysis(db, body.limit, article_ids=body.article_ids, profile=body.analysis_profile)
     if not jobs:
         db.rollback()
         raise HTTPException(
             409, "No hay noticias pendientes sin un trabajo de análisis en la cola."
         )
     db.commit()
-    return {"job_ids": jobs, "articles": len(jobs), "maximum_requests": len(jobs) * 6}
+    from app.profiles import maximum_requests
+    return {"job_ids": jobs, "articles": len(jobs), "maximum_requests": len(jobs) * maximum_requests(body.analysis_profile)}
+
+
+@app.post("/api/articles/{aid}/analyze", status_code=202, dependencies=[Depends(presenter)])
+def analyze_article(aid: str, body: AnalysisSelection, db: Session = Depends(get_db)):
+    from app.reanalysis import enqueue_article
+    from app.profiles import maximum_requests
+    require_current_worker(db)
+    try:
+        j = enqueue_article(db, aid, body.analysis_profile)
+        db.commit()
+    except ValueError as exc:
+        db.rollback()
+        raise HTTPException(409, str(exc))
+    return {"job_ids": [j.id], "maximum_requests": maximum_requests(body.analysis_profile), "analysis_profile": body.analysis_profile}
 
 
 class DemoSelection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     selection: list[str] = Field(max_length=500)
     mode: Literal["delete", "rerun"] = "delete"
-    analysis_profile: Literal["1.0.0", "link-2.2.0"] = DEFAULT_PROFILE
+    analysis_profile: Literal["1.0.0", "link-2.2.0", "radar-1.0.0-candidate"] = DEFAULT_PROFILE
 
 
 @app.get("/api/demo/options", dependencies=[Depends(presenter)])
@@ -856,6 +893,7 @@ def comparisons(aid: str, db: Session = Depends(get_db)):
 def analysis_runs(aid: str, db: Session = Depends(get_db)):
     return [
         {
+            "id": r.id,
             "generation": r.generation,
             "created_at": r.created_at,
             "result": r.result,
@@ -947,7 +985,7 @@ def alerts(
             if a.id > after
         ],
         "cursor": max((a.id for a in rows), default=after),
-        "unread": sum(not a.acknowledged for a in rows),
+        "unread": sum(not a.acknowledged and a.data.get("state") != "superseded" for a in rows),
     }
 
 
@@ -1020,6 +1058,11 @@ def draft(body: DraftInput, db: Session = Depends(get_db)):
 @app.get("/api/model/candidates", dependencies=[Depends(presenter)])
 def model_candidates():
     return json.loads((ROOT / "app/model_candidates.json").read_text())
+
+
+@app.get("/api/model/operational-candidate", dependencies=[Depends(presenter)])
+def operational_candidate_evaluation():
+    return json.loads((ROOT / "app/window_evaluation.json").read_text())
 
 
 @app.get("/api/model/review-policy", dependencies=[Depends(presenter)])

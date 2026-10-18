@@ -1,3 +1,4 @@
+import { WindowEvaluation } from "./WindowEvaluation";
 import { CandidateComparison } from "./CandidateComparison";
 import { ReviewPolicyComparison } from "./ReviewPolicyComparison";
 import React, { useEffect, useState } from "react";
@@ -182,6 +183,7 @@ export function ModelPage({
         </section>
       ) : (
         <>
+          <WindowEvaluation />
           <CandidateComparison />
           <ReviewPolicyComparison />
           {error && (
@@ -464,8 +466,11 @@ export function ModelPage({
                 <h3>Versiones de análisis vigentes</h3>
                 <ul>
                   {execution.versions.map((v: any) => (
-                    <li key={[v.model, v.questions, v.policy].join("|")}>
-                      {v.model} · preguntas {v.questions} · política {v.policy}:{" "}
+                    <li
+                      key={[v.model, v.questions, v.policy, v.review].join("|")}
+                    >
+                      {v.model} · preguntas {v.questions} · revisión{" "}
+                      {v.review || "no registrada"} · política {v.policy}:{" "}
                       {v.count} noticias
                     </li>
                   ))}

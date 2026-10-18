@@ -55,6 +55,10 @@ def run(client, article, suppliers, deadline, cached_a=None):
     result['context_notes']=sorted(set(result.get('context_notes',[])+['model_check_same_source_not_independent_corroboration']))
     raw['_request_payload_hashes']={'a':digest(pa),'b':digest(pb) if selected else None}
     raw['_new_requests']=client.network_requests;raw['_cache_stages']=client.cached_stages
+    raw['_cache_reuse']=getattr(client,'reuse_details',[])
+    for assessment in result['assessments']:
+        if assessment.get('exposure_kind')=='unknown' and not assessment['needs_review'] and assessment['supplier_id'] not in result['affected_supplier_ids']:
+            assessment['exposure_kind']='excluded'
     valid={e['id'] for e in result['evidence']}
     for e in result['evidence']:
         if article.data[e['field']][e['start']:e['end']]!=e['text']:

@@ -2,6 +2,7 @@ from datetime import date
 from app.provenance import KNOWN_INPUT_FILENAMES
 from app.event_tags import event_tag
 from app.geography import payload_location
+from app.settings import POLICY
 from sqlalchemy import select, func, and_
 from app.models import (
     Supplier,
@@ -18,8 +19,8 @@ from app.models import (
 
 def current(incident):
     return max(
-        (h for h in incident.history if "assessment" in h),
-        key=lambda h: h.get("published_date", ""),
+        (h for h in incident.history if "assessment" in h and not h.get("superseded")),
+        key=lambda h: (h.get("published_date", ""), h.get("at", "")),
         default={},
     )
 
@@ -113,7 +114,7 @@ def suppliers_view(db, context="exercise", origin=""):
         }
         projected = []
         for inc in incidents:
-            history = [h for h in inc.history if h.get("article_id") in selected_ids]
+            history = [h for h in inc.history if h.get("article_id") in selected_ids and not h.get("superseded")]
             if not history:
                 continue
             entry = max(
@@ -146,11 +147,15 @@ def suppliers_view(db, context="exercise", origin=""):
             )
         incidents = projected
     known = {}
+    doubts = {}
+    processed = 0
     analyzed = db.execute(
         select(Article, Analysis.result)
         .join(Analysis, Analysis.article_id == Article.id)
         .where(Article.context == context, Analysis.generation == Article.generation)
+        .order_by(Analysis.created_at)
     ).all()
+    analyzed = list({article_row.id: (article_row, result) for article_row, result in analyzed}.values())
     article_tags = {a.id: event_tag(result) for a, result in analyzed}
     for article_row, result in analyzed:
         if not origin_matches(article_row, origin):
@@ -158,8 +163,13 @@ def suppliers_view(db, context="exercise", origin=""):
         article_data = article_row.data
         if result["analysis_status"] == "error":
             continue
+        processed += 1
+        uncertain_links = {d["supplier_id"] for d in result.get("review_details", []) if d["requires_review"] and d["relevance"] == "association"}
         for assessment in result["assessments"]:
-            if assessment["supplier_id"] not in result["affected_supplier_ids"]:
+            sid = assessment["supplier_id"]
+            if assessment.get("needs_review") and (sid in uncertain_links or assessment["p_link"] >= POLICY["thresholds"]["review_low"]):
+                doubts[sid] = article_data["published_date"]
+            if sid not in result["affected_supplier_ids"]:
                 continue
             sid = assessment["supplier_id"]
             stamp = article_data["published_date"]
@@ -221,10 +231,8 @@ def suppliers_view(db, context="exercise", origin=""):
                 "needs_review": any(
                     current(i).get("assessment", {}).get("needs_review") for i in active
                 )
-                or bool(
-                    not hist
-                    and known.get(s.id, {}).get("assessment", {}).get("needs_review")
-                ),
+                or bool(not active and s.id in doubts)
+                or bool(not hist and known.get(s.id, {}).get("assessment", {}).get("needs_review")),
                 "incidents": rows,
                 "incident_count": len(active),
                 "latest_evidence": latest.event_date
@@ -232,23 +240,30 @@ def suppliers_view(db, context="exercise", origin=""):
                 else (
                     max(i.event_date for i in hist)
                     if hist
-                    else known.get(s.id, {}).get("date")
+                    else known.get(s.id, {}).get("date") or doubts.get(s.id)
                 ),
                 "reason": current(latest).get(
                     "explanation", "Sin incidentes analizados activos"
                 )
                 if latest
                 else (
-                    "Incidente recuperado; historial conservado"
+                    "Hay dudas de exposición o decisión que requieren verificación"
+                    if s.id in doubts
+                    else "Incidente recuperado; historial conservado"
+                    if any(i.state == "resolved" for i in hist)
+                    else "Análisis anterior sustituido; consulta el último resultado"
                     if hist
                     else "Sin riesgo activo en las noticias procesadas"
                     if s.id in known
+                    else "Sin vínculo sustentado en las noticias procesadas"
+                    if processed
                     else "Pendiente de análisis"
                 ),
                 "status": "active"
                 if active
                 else (
-                    "resolved" if hist else "positive" if s.id in known else "pending"
+                    "review" if s.id in doubts else "resolved" if any(i.state == "resolved" for i in hist)
+                    else "superseded" if hist else "positive" if s.id in known else "unlinked" if processed else "pending"
                 ),
             }
         )

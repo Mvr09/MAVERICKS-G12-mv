@@ -1,4 +1,4 @@
-from app.profiles import DEFAULT_PROFILE, EXERCISE_PROFILES
+from app.profiles import DEFAULT_PROFILE, EXERCISE_PROFILES, maximum_requests
 """Selección explícita, vista previa firmada y operaciones transaccionales de demo."""
 
 from sqlalchemy import select, delete, text, or_
@@ -218,7 +218,7 @@ def preview(db, selection=None, mode="delete", analysis_profile=DEFAULT_PROFILE)
         "blocked": plan["blocked"],
         "mode": mode,
         "analysis_profile": analysis_profile,
-        "maximum_requests": len(plan["aids"]) * 6 if mode == "rerun" else 0,
+        "maximum_requests": len(plan["aids"]) * maximum_requests(analysis_profile) if mode == "rerun" else 0,
         "token": codec().dumps(
             {
                 "purpose": "demo-cleanup",
@@ -311,7 +311,7 @@ def cleanup(db, token):
         raise ValueError(plan["blocked"])
     aids = plan["aids"]
     if plan["mode"] == "rerun":
-        from app.queue import reserve, enqueue
+        from app.queue import reserve, enqueue, analysis_payload
         from app.jev import grant_requires_diagnosis
 
         # Autorizar todo antes de retirar resultados; fallo revierte la transacción completa.
@@ -329,7 +329,8 @@ def cleanup(db, token):
                 raise ValueError(
                     "Hay un error de proveedor pendiente de diagnóstico; no se reinician sus intentos."
                 )
-        detach_incidents(db, plan["incidents"], aids)
+        # Keep last known effects and drafts until each new generation succeeds.
+        # Successful publication retires old evidence without deleting history.
         # Cancelar trabajos pendientes anteriores para no duplicar ni publicar generaciones antiguas.
         for j in plan["jobs"]:
             if j.kind != "rss" and j.state == "queued":
@@ -347,7 +348,7 @@ def cleanup(db, token):
                     db,
                     f"analysis:{a.id}:g{a.generation}",
                     "analysis",
-                    {"article_id": a.id, "generation": a.generation, "analysis_profile": approved.get("analysis_profile", "1.0.0")},
+                    analysis_payload(a, approved.get("analysis_profile", "1.0.0")),
                     100,
                 ).id
             )

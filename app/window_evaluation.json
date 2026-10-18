@@ -1,0 +1,864 @@
+{
+  "candidate": "radar-1.0.0-candidate",
+  "versions": {
+    "profile": "radar-1.0.0-candidate",
+    "matching": "link-3.3.0",
+    "retrieval": "link-3.0.0-dev",
+    "questions": "link-3.3.0",
+    "review": "review-1.2.0",
+    "support": "decision-support-1.0.0",
+    "facts": "decision-facts-1.0.0",
+    "exclusion": "relational-exclusion-1.0.0",
+    "duration": "duration-1.1.0"
+  },
+  "default": "1.0.0",
+  "runtime_enabled": true,
+  "promoted_default": false,
+  "recommendation": "Selectable assisted discovery; do not promote. Higher recall and correct automation coexist with reviewed false associations/urgencies and two controlled risk omissions.",
+  "training": {
+    "1.0.0": {
+      "n": 30,
+      "risk": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 4,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7142857142857143,
+        "f1": 0.8333333333333334,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 3,
+        "fn": 0,
+        "tn": 22,
+        "precision": 0.625,
+        "recall": 1.0,
+        "f1": 0.7692307692307693,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 25,
+        "n": 30,
+        "precision": 0.9285714285714286,
+        "recall": 0.5909090909090909,
+        "exact_set_accuracy": 0.8333333333333334,
+        "tp": 13,
+        "fp": 1,
+        "fn": 9,
+        "f1": 0.7222222222222222
+      },
+      "review_count": 16,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.4666666666666667,
+      "automatic": {
+        "n": 14,
+        "risk": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 2,
+          "tn": 10,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "n": 14,
+          "positives": 4
+        },
+        "urgent": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 12,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 14,
+          "positives": 2
+        },
+        "suppliers": {
+          "exact": 12,
+          "n": 14,
+          "precision": 1.0,
+          "recall": 0.625,
+          "exact_set_accuracy": 0.8571428571428571,
+          "tp": 5,
+          "fp": 0,
+          "fn": 3,
+          "f1": 0.7692307692307693
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 2,
+      "automatic_joint_error_rate": 0.14285714285714285
+    },
+    "3.0 + review1.1": {
+      "n": 30,
+      "risk": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 3,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7857142857142857,
+        "f1": 0.88,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 0,
+        "tn": 24,
+        "precision": 0.8333333333333334,
+        "recall": 1.0,
+        "f1": 0.9090909090909091,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 28,
+        "n": 30,
+        "precision": 0.9130434782608695,
+        "recall": 0.9545454545454546,
+        "exact_set_accuracy": 0.9333333333333333,
+        "tp": 21,
+        "fp": 2,
+        "fn": 1,
+        "f1": 0.9333333333333333
+      },
+      "review_count": 18,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.4,
+      "automatic": {
+        "n": 12,
+        "risk": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 9,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 12,
+          "positives": 3
+        },
+        "urgent": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 9,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 12,
+          "positives": 3
+        },
+        "suppliers": {
+          "exact": 12,
+          "n": 12,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    },
+    "3.0 + review1.2": {
+      "n": 30,
+      "risk": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 3,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7857142857142857,
+        "f1": 0.88,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 0,
+        "tn": 24,
+        "precision": 0.8333333333333334,
+        "recall": 1.0,
+        "f1": 0.9090909090909091,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 28,
+        "n": 30,
+        "precision": 0.9130434782608695,
+        "recall": 0.9545454545454546,
+        "exact_set_accuracy": 0.9333333333333333,
+        "tp": 21,
+        "fp": 2,
+        "fn": 1,
+        "f1": 0.9333333333333333
+      },
+      "review_count": 13,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.5666666666666667,
+      "automatic": {
+        "n": 17,
+        "risk": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 17,
+          "positives": 3
+        },
+        "urgent": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 17,
+          "positives": 3
+        },
+        "suppliers": {
+          "exact": 17,
+          "n": 17,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    },
+    "3.3 + review1.2": {
+      "n": 30,
+      "risk": {
+        "tp": 13,
+        "fp": 0,
+        "fn": 1,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.9285714285714286,
+        "f1": 0.9629629629629629,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 2,
+        "fn": 0,
+        "tn": 23,
+        "precision": 0.7142857142857143,
+        "recall": 1.0,
+        "f1": 0.8333333333333334,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 29,
+        "n": 30,
+        "precision": 0.88,
+        "recall": 1.0,
+        "exact_set_accuracy": 0.9666666666666667,
+        "tp": 22,
+        "fp": 3,
+        "fn": 0,
+        "f1": 0.9361702127659575
+      },
+      "review_count": 14,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.5333333333333333,
+      "automatic": {
+        "n": 16,
+        "risk": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 13,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 16,
+          "positives": 3
+        },
+        "urgent": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 13,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 16,
+          "positives": 3
+        },
+        "suppliers": {
+          "exact": 16,
+          "n": 16,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    }
+  },
+  "operational_strata": {
+    "1.0.0": {
+      "fn": 9,
+      "fn_high": 2,
+      "fn_single_source": 1,
+      "fp": 1,
+      "fp_high": 1,
+      "fp_single_source": 0
+    },
+    "3.0 + review1.1": {
+      "fn": 1,
+      "fn_high": 0,
+      "fn_single_source": 0,
+      "fp": 2,
+      "fp_high": 1,
+      "fp_single_source": 0
+    },
+    "3.0 + review1.2": {
+      "fn": 1,
+      "fn_high": 0,
+      "fn_single_source": 0,
+      "fp": 2,
+      "fp_high": 1,
+      "fp_single_source": 0
+    },
+    "3.3 + review1.2": {
+      "fn": 0,
+      "fn_high": 0,
+      "fn_single_source": 0,
+      "fp": 3,
+      "fp_high": 2,
+      "fp_single_source": 0
+    }
+  },
+  "review_causes": {
+    "3.0 + review1.1": {
+      "blocking_details": {
+        "urgency": 16,
+        "risk": 29,
+        "impact": 4,
+        "association": 44
+      },
+      "articles_per_cause": {
+        "urgency": 8,
+        "risk": 11,
+        "impact": 2,
+        "association": 14
+      },
+      "discarded_supplier_blockers": {
+        "association": 36
+      },
+      "nonblocking_details": {
+        "auxiliary": 48,
+        "association": 12,
+        "risk": 6,
+        "urgency": 7,
+        "severity": 18,
+        "impact": 15
+      }
+    },
+    "3.0 + review1.2": {
+      "blocking_details": {
+        "urgency": 16,
+        "risk": 29,
+        "impact": 4,
+        "association": 33
+      },
+      "articles_per_cause": {
+        "urgency": 8,
+        "risk": 11,
+        "impact": 2,
+        "association": 8
+      },
+      "discarded_supplier_blockers": {
+        "association": 25
+      },
+      "nonblocking_details": {
+        "auxiliary": 48,
+        "association": 23,
+        "risk": 6,
+        "urgency": 7,
+        "severity": 18,
+        "impact": 15
+      }
+    },
+    "3.3 + review1.2": {
+      "blocking_details": {
+        "urgency": 23,
+        "risk": 20,
+        "association": 35,
+        "impact": 9
+      },
+      "articles_per_cause": {
+        "urgency": 10,
+        "risk": 12,
+        "association": 8,
+        "impact": 4
+      },
+      "discarded_supplier_blockers": {
+        "association": 24
+      },
+      "nonblocking_details": {
+        "auxiliary": 57,
+        "association": 27,
+        "risk": 5,
+        "severity": 17,
+        "impact": 12,
+        "urgency": 4
+      }
+    }
+  },
+  "controlled_final": {
+    "authored_before_calls": true,
+    "metrics": {
+      "baseline": {
+        "n": 18,
+        "risk": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 6,
+          "tn": 8,
+          "precision": 1.0,
+          "recall": 0.4,
+          "f1": 0.5714285714285714,
+          "n": 18,
+          "positives": 10
+        },
+        "urgent": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 18,
+          "positives": 4
+        },
+        "suppliers": {
+          "exact": 16,
+          "n": 18,
+          "precision": 1.0,
+          "recall": 0.8461538461538461,
+          "exact_set_accuracy": 0.8888888888888888,
+          "tp": 11,
+          "fp": 0,
+          "fn": 2,
+          "f1": 0.9166666666666666
+        },
+        "review_count": 14,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.2222222222222222,
+        "automatic": {
+          "n": 4,
+          "risk": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 4,
+            "precision": null,
+            "recall": null,
+            "f1": null,
+            "n": 4,
+            "positives": 0
+          },
+          "urgent": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 4,
+            "precision": null,
+            "recall": null,
+            "f1": null,
+            "n": 4,
+            "positives": 0
+          },
+          "suppliers": {
+            "exact": 4,
+            "n": 4,
+            "precision": null,
+            "recall": null,
+            "exact_set_accuracy": 1.0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "f1": null
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      },
+      "prior": {
+        "n": 18,
+        "risk": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 6,
+          "tn": 8,
+          "precision": 1.0,
+          "recall": 0.4,
+          "f1": 0.5714285714285714,
+          "n": 18,
+          "positives": 10
+        },
+        "urgent": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 18,
+          "positives": 4
+        },
+        "suppliers": {
+          "exact": 18,
+          "n": 18,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 13,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 6,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.6666666666666666,
+        "automatic": {
+          "n": 12,
+          "risk": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 2,
+            "tn": 6,
+            "precision": 1.0,
+            "recall": 0.6666666666666666,
+            "f1": 0.8,
+            "n": 12,
+            "positives": 6
+          },
+          "urgent": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 12,
+            "positives": 4
+          },
+          "suppliers": {
+            "exact": 12,
+            "n": 12,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 7,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 2,
+        "automatic_joint_error_rate": 0.16666666666666666
+      },
+      "candidate": {
+        "n": 18,
+        "risk": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 2,
+          "tn": 8,
+          "precision": 1.0,
+          "recall": 0.8,
+          "f1": 0.8888888888888888,
+          "n": 18,
+          "positives": 10
+        },
+        "urgent": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 18,
+          "positives": 4
+        },
+        "suppliers": {
+          "exact": 17,
+          "n": 18,
+          "precision": 0.8125,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9444444444444444,
+          "tp": 13,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.896551724137931
+        },
+        "review_count": 6,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.6666666666666666,
+        "automatic": {
+          "n": 12,
+          "risk": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 12,
+            "positives": 4
+          },
+          "urgent": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 12,
+            "positives": 4
+          },
+          "suppliers": {
+            "exact": 12,
+            "n": 12,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 6,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      }
+    },
+    "scorable": 18,
+    "total": 24,
+    "all_case_states": {
+      "baseline": {
+        "done": 7,
+        "review": 17
+      },
+      "prior": {
+        "done": 12,
+        "review": 11,
+        "error": 1
+      },
+      "candidate": {
+        "done": 12,
+        "review": 12
+      }
+    },
+    "latency": {
+      "baseline": {
+        "n": 24,
+        "p50": 0.6613943199990899,
+        "p95": 0.7371088008585502,
+        "includes_cache": true,
+        "environment": "local development, not Railway A20"
+      },
+      "prior": {
+        "n": 24,
+        "p50": 1.3916534454983776,
+        "p95": 1.7137295206506675,
+        "includes_cache": true,
+        "environment": "local development, not Railway A20"
+      },
+      "candidate": {
+        "n": 24,
+        "p50": 0.8276527990019531,
+        "p95": 1.3327490261021007,
+        "includes_cache": true,
+        "environment": "local development, not Railway A20"
+      }
+    },
+    "unknown_controls": [
+      {
+        "case": "unknown_taizhou",
+        "status": "review",
+        "expected_review": true,
+        "review_pass": true,
+        "reported_individual_effect": false
+      },
+      {
+        "case": "unknown_route",
+        "status": "review",
+        "expected_review": true,
+        "review_pass": true,
+        "reported_individual_effect": false
+      },
+      {
+        "case": "unknown_site",
+        "status": "review",
+        "expected_review": true,
+        "review_pass": true,
+        "reported_individual_effect": false
+      },
+      {
+        "case": "unknown_scope",
+        "status": "review",
+        "expected_review": true,
+        "review_pass": true,
+        "reported_individual_effect": false
+      },
+      {
+        "case": "unknown_timing",
+        "status": "review",
+        "expected_review": true,
+        "review_pass": true,
+        "reported_individual_effect": false
+      },
+      {
+        "case": "unknown_transport_mode",
+        "status": "review",
+        "expected_review": true,
+        "review_pass": true,
+        "reported_individual_effect": false
+      }
+    ],
+    "all_predictions_included": true,
+    "errors": {
+      "prior": 1,
+      "candidate": 0,
+      "baseline": 0
+    },
+    "automatic_candidate_correct": 12,
+    "automatic_candidate_total": 12,
+    "urgent_correct_automatic": 4,
+    "controlled_execution_guards_pass": true,
+    "default_promotion_justified": false,
+    "limits": "Author-generated controls are not independent evidence of real RSS generalisation. Six underdetermined controls are safety checks, not negative labels."
+  },
+  "consumption": {
+    "new_requests": 307,
+    "retries": 0,
+    "counter_before": 595,
+    "counter_after": 902,
+    "trials": [
+      {
+        "run": "night-relational-review-01",
+        "requests": 17,
+        "retries": 0,
+        "http_statuses": {
+          "200": 17
+        },
+        "http_seconds_sum": 4.641940546018304,
+        "reported_usage": {
+          "input_tokens": 42851,
+          "output_tokens": 4214
+        },
+        "new_stage_requests": 17,
+        "reuse_stages": 0
+      },
+      {
+        "run": "night-joint-scope-01",
+        "requests": 82,
+        "retries": 0,
+        "http_statuses": {
+          "200": 82
+        },
+        "http_seconds_sum": 24.38068596109224,
+        "reported_usage": {
+          "input_tokens": 310258,
+          "output_tokens": 41696
+        },
+        "new_stage_requests": 82,
+        "reuse_stages": 36
+      },
+      {
+        "run": "night-potential-scope-02",
+        "requests": 40,
+        "retries": 0,
+        "http_statuses": {
+          "200": 40
+        },
+        "http_seconds_sum": 12.954855493051582,
+        "reported_usage": {
+          "input_tokens": 232833,
+          "output_tokens": 37407
+        },
+        "new_stage_requests": 40,
+        "reuse_stages": 77
+      },
+      {
+        "run": "night-final-controls-01",
+        "requests": 168,
+        "retries": 0,
+        "http_statuses": {
+          "200": 167,
+          "400": 1
+        },
+        "http_seconds_sum": 53.626070842088666,
+        "reported_usage": {
+          "input_tokens": 1366651,
+          "output_tokens": 117446
+        },
+        "new_stage_requests": 167,
+        "reuse_stages": 32
+      }
+    ],
+    "maximum_window_attempts": 1500,
+    "periodic_paid_rss": false
+  },
+  "known_errors": {
+    "training": {
+      "risk_fn": 1,
+      "urgent_fp": 2,
+      "supplier_fp": 3,
+      "all_reviewed": true
+    },
+    "controlled": {
+      "risk_fn": 2,
+      "supplier_fp": 3,
+      "all_reviewed": true
+    }
+  },
+  "a06": "open; baseline still omits supported exposure, S003 province still unknown. Controlled S024 partial-risk recovery is not proof that N044 is solved.",
+  "historical_2_2_confound": "Stored2.2 precedes duration1.1; do not attribute all differences to matching."
+}

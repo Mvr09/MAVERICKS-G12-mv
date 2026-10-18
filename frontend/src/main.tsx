@@ -1,3 +1,5 @@
+import { ReviewGuidance } from "./ReviewGuidance";
+import { AnalysisProfile, CANDIDATE } from "./AnalysisProfile";
 import {
   VerificationDraft,
   RssArticleAnalysis,
@@ -101,7 +103,8 @@ Object.assign(names, {
   risk_evidence_insufficient:
     "Evidencia insuficiente para la decisión de riesgo",
   urgency_ambiguous: "Decisión de urgencia ambigua",
-  urgency_support_insufficient: "Falta soporte suficiente del criterio de urgencia",
+  urgency_support_insufficient:
+    "Falta soporte suficiente del criterio de urgencia",
   risk_impact_contradiction: "Riesgo y estado del impacto contradictorios",
   inventory_missing: "Inventario físico no informado",
   criticality_missing: "Criticidad no informada",
@@ -451,9 +454,15 @@ function App() {
               <n.icon size={19} />
               {n.text}
               {n.to === "/alertas" &&
-                alerts.filter((a) => !a.acknowledged).length > 0 && (
+                alerts.filter(
+                  (a) => !a.acknowledged && a.state !== "superseded",
+                ).length > 0 && (
                   <span className="nav-count">
-                    {alerts.filter((a) => !a.acknowledged).length}
+                    {
+                      alerts.filter(
+                        (a) => !a.acknowledged && a.state !== "superseded",
+                      ).length
+                    }
                   </span>
                 )}
             </NavLink>
@@ -889,7 +898,7 @@ function App() {
               />
               <Route
                 path="/noticias/:id"
-                element={<ArticleDetail {...shared} />}
+                element={<ArticleDetail {...shared} suppliers={suppliers} />}
               />
               <Route
                 path="/alertas"
@@ -901,7 +910,12 @@ function App() {
                         <p>Reconocer una alerta conserva el incidente activo</p>
                       </div>
                       <Badge>
-                        {alerts.filter((a) => !a.acknowledged).length} sin leer
+                        {
+                          alerts.filter(
+                            (a) => !a.acknowledged && a.state !== "superseded",
+                          ).length
+                        }{" "}
+                        sin leer
                       </Badge>
                     </div>
                     <div className="ranking-toolbar">
@@ -914,6 +928,7 @@ function App() {
                         <option value="new">Sin leer</option>
                         <option value="ack">Reconocidas</option>
                         <option value="resolved">Recuperadas</option>
+                        <option value="superseded">Análisis sustituidos</option>
                       </select>
                     </div>
                     {alerts.length ? (
@@ -921,10 +936,14 @@ function App() {
                         .filter(
                           (a) =>
                             alertFilter === "all" ||
-                            (alertFilter === "new" && !a.acknowledged) ||
+                            (alertFilter === "new" &&
+                              !a.acknowledged &&
+                              a.state !== "superseded") ||
                             (alertFilter === "ack" && a.acknowledged) ||
                             (alertFilter === "resolved" &&
-                              a.state === "resolved"),
+                              a.state === "resolved") ||
+                            (alertFilter === "superseded" &&
+                              a.state === "superseded"),
                         )
                         .slice()
                         .reverse()
@@ -944,13 +963,15 @@ function App() {
                                         : "danger"
                                   }
                                 >
-                                  {a.state === "resolved"
-                                    ? "Recuperada"
-                                    : a.needs_review
-                                      ? "Requiere revisión"
-                                      : a.urgent === 'Y' || a.sound_eligible
-                                        ? "Acción inmediata"
-                                        : "Atención de compras"}
+                                  {a.state === "superseded"
+                                    ? "Análisis sustituido"
+                                    : a.state === "resolved"
+                                      ? "Recuperada"
+                                      : a.needs_review
+                                        ? "Requiere revisión"
+                                        : a.urgent === "Y" || a.sound_eligible
+                                          ? "Acción inmediata"
+                                          : "Atención de compras"}
                                 </Badge>
                                 <small>{date(a.created_at)}</small>
                               </div>
@@ -1000,7 +1021,11 @@ function App() {
                                 </button>
                                 <Link
                                   className="text-link"
-                                  to={"/proveedores/" + a.supplier_id}
+                                  to={
+                                    a.article_id
+                                      ? "/noticias/" + a.article_id
+                                      : "/proveedores/" + a.supplier_id
+                                  }
                                 >
                                   Ver evidencia →
                                 </Link>
@@ -1354,7 +1379,9 @@ function Ranking({
                   <small>
                     {s.latest_evidence
                       ? `Evidencia: ${date(s.latest_evidence)}`
-                      : "Pendiente de análisis"}
+                      : s.status === "unlinked"
+                        ? "Sin evidencia vinculada"
+                        : "Pendiente de análisis"}
                   </small>
                 </div>
               </div>
@@ -1365,6 +1392,10 @@ function Ranking({
                 {s.single_source === "Y" && <small>Fuente única</small>}
                 {s.status === "resolved" && (
                   <Badge tone="success">Recuperado</Badge>
+                )}
+                {s.status === "unlinked" && <Badge>Sin vínculo</Badge>}
+                {s.status === "superseded" && (
+                  <Badge>Análisis sustituido</Badge>
                 )}
                 {s.status === "positive" && (
                   <Badge tone="success">Sin riesgo activo</Badge>
@@ -1603,7 +1634,7 @@ function NewsPage({ articles }: { articles: Article[] }) {
     </section>
   );
 }
-function ArticleDetail({ context, presenter, action }: any) {
+function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
   const { id } = useParams();
   const [a, setA] = useState<Article | null>(null),
     [error, setError] = useState("");
@@ -1731,7 +1762,7 @@ function ArticleDetail({ context, presenter, action }: any) {
           </span>
         </div>
       )}
-      {presenter && (
+      {presenter && a.split !== "rss" && (
         <div className="inline">
           <DemoControl
             buttonLabel="Reanalizar noticia"
@@ -1785,7 +1816,8 @@ function ArticleDetail({ context, presenter, action }: any) {
               categorías.
             </small>
           </div>
-          {!!a.analysis.review_details?.length && (
+          <ReviewGuidance analysis={a.analysis} suppliers={suppliers} />
+          {presenter && !!a.analysis.review_details?.length && (
             <details>
               <summary>Revisión por campo y relevancia</summary>
               {a.analysis.review_details.map((d, index) => (
@@ -1800,7 +1832,7 @@ function ArticleDetail({ context, presenter, action }: any) {
                       ? "Requiere revisión"
                       : d.resolution
                         ? "Soporte comprobado · no bloquea la decisión"
-                        : d.relevance === 'priority'
+                        : d.relevance === "priority"
                           ? "Advertencia de prioridad · no bloquea riesgo o urgencia"
                           : "Observación auxiliar · no bloquea la decisión"}{" "}
                     ·{" "}
@@ -1816,6 +1848,9 @@ function ArticleDetail({ context, presenter, action }: any) {
                       )[d.relevance]
                     }
                   </p>
+                  {d.requires_review && d.resolution_hint && (
+                    <p className="review-next-step">{d.resolution_hint}</p>
+                  )}
                   <small>
                     Campo: {d.field} · Valor:{" "}
                     {typeof d.value === "number"
@@ -1846,14 +1881,19 @@ function ArticleDetail({ context, presenter, action }: any) {
           )}
           {a.analysis.assessments.map((s) => (
             <div className="assessment" key={s.supplier_id}>
-              <Link to={"/proveedores/" + s.supplier_id}>{s.supplier_id}</Link>
+              <Link to={"/proveedores/" + s.supplier_id}>
+                {suppliers.find(
+                  (p: Supplier) => p.supplier_id === s.supplier_id,
+                )?.name || s.supplier_id}
+              </Link>
               <Score value={s.priority} />
               <BuyerDecision assessment={s} />
               <span>
-                {s.needs_review ? 'Propuesta por confirmar · ' : ''}Vínculo {number(s.p_link * 100)}% · {riskLabel(s.is_risk)} ·{" "}
-                {urgencyLabel(s.urgent)}
+                {s.needs_review ? "Propuesta por confirmar · " : ""}
+                {presenter ? `Vínculo ${number(s.p_link * 100)}% · ` : ""}
+                {riskLabel(s.is_risk)} · {urgencyLabel(s.urgent)}
               </span>
-              {s.p_candidate != null && (
+              {presenter && s.p_candidate != null && (
                 <small>
                   Candidatura inicial: {number(s.p_candidate * 100)}% ·
                   Asociación final:{" "}
@@ -1865,7 +1905,7 @@ function ArticleDetail({ context, presenter, action }: any) {
                   · {s.geography_version}
                 </small>
               )}
-              {s.p_identity != null && (
+              {presenter && s.p_identity != null && (
                 <small>
                   Señal de identidad: {number(s.p_identity * 100)}% ·
                   Compatibilidad de exposición:{" "}
@@ -2061,7 +2101,9 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                             : "danger"
                       }
                     >
-                      {label(i.state)}
+                      {i.state === "superseded"
+                        ? "Análisis sustituido"
+                        : label(i.state)}
                     </Badge>
                     <EventTag analysis={i.event_tag} state="unavailable" />
                     <small>{date(i.event_date)}</small>
@@ -2074,7 +2116,25 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                   {i.history
                     .filter((h) => h.assessment)
                     .map((h, n) => (
-                      <div key={n}>
+                      <div
+                        key={n}
+                        className={
+                          h.superseded ? "superseded-evidence" : undefined
+                        }
+                      >
+                        {h.superseded && (
+                          <p className="notice">
+                            Evaluación anterior sustituida. Se conserva como
+                            historial; no acredita el estado actual ni una
+                            recuperación.
+                          </p>
+                        )}
+                        {presenter && h.analysis_profile && (
+                          <small>
+                            Perfil: {h.analysis_profile} · Ejecución{" "}
+                            {(h.generation || 0) + 1}
+                          </small>
+                        )}
                         {h.explanation && (
                           <blockquote>{h.explanation}</blockquote>
                         )}
@@ -2445,7 +2505,8 @@ function MaterialDetail() {
   );
 }
 function Batches({ batches, presenter, action }: any) {
-  const [busy, setBusy] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null),
+    [profile, setProfile] = useState("1.0.0");
   return (
     <section className="card batches">
       <div className="section-heading">
@@ -2455,6 +2516,13 @@ function Batches({ batches, presenter, action }: any) {
         </div>
         <Badge>{batches.length} importados</Badge>
       </div>
+      {presenter && (
+        <AnalysisProfile
+          value={profile}
+          onChange={setProfile}
+          disabled={!!busy}
+        />
+      )}
       {batches.length ? (
         batches.map((b: Batch) => (
           <div className="batch-row" key={b.id}>
@@ -2472,6 +2540,20 @@ function Batches({ batches, presenter, action }: any) {
                 value={b.done}
                 aria-label={"Progreso " + label(b.split)}
               />
+              {presenter &&
+                b.analysis_profiles?.map((p) => (
+                  <small key={[p.profile, p.questions, p.review].join(":")}>
+                    Perfil: {p.profile} · preguntas {p.questions} · revisión{" "}
+                    {p.review} · {p.count} filas
+                  </small>
+                ))}
+              {presenter && b.mixed_profiles && (
+                <p className="notice warning">
+                  Este lote contiene perfiles distintos por reanálisis
+                  individuales. La exportación conserva el resultado actual de
+                  cada fila; no representa la evaluación de un único perfil.
+                </p>
+              )}
               {b.elapsed_seconds != null && (
                 <small>
                   Tiempo medido del lote: {number(b.elapsed_seconds)} s
@@ -2495,6 +2577,7 @@ function Batches({ batches, presenter, action }: any) {
                       () =>
                         api("/batches/" + b.id + "/analyze", {
                           method: "POST",
+                          body: JSON.stringify({ analysis_profile: profile }),
                         }),
                       "Análisis encolado. El progreso se actualiza automáticamente.",
                     );
@@ -3323,15 +3406,21 @@ function DemoControl({
                   }}
                   disabled={busy}
                 >
-                  <option value="1.0.0">1.0.0 · versión anterior</option>
+                  <option value="1.0.0">
+                    1.0.0 · predeterminado (RSS actual 2.2)
+                  </option>
                   <option value="link-2.2.0">
                     link-2.2.0 · vínculo y revisión experimental
                   </option>
+                  <option value={CANDIDATE}>
+                    Candidata · exposición 3.3 / revisión 1.2
+                  </option>
                 </select>
                 <small>
-                  Conserva versiones anteriores. Solo afecta al ejercicio; RSS
-                  mantiene su perfil. Validación inspeccionada: comparación
-                  retrospectiva. No ejecutar Test/LiveDay como desarrollo.
+                  Conserva versiones anteriores y borradores. La candidata se
+                  aplica también al RSS seleccionado; 1.0 conserva el motor RSS
+                  actual. Validación inspeccionada: comparación retrospectiva.
+                  No ejecutar Test/LiveDay como desarrollo.
                 </small>
               </label>
             )}
@@ -3665,11 +3754,21 @@ function AnalysisHistory({ article }: { article: Article }) {
       {loading && <p role="status">Actualizando historial…</p>}
       {error && <p role="alert">{error}</p>}
       {rows.map((r: any) => (
-        <details key={r.generation}>
+        <details key={r.id || `${r.generation}:${r.created_at}`}>
           <summary>
             Análisis {r.generation + 1} · {date(r.created_at)} ·{" "}
             {label(r.result.analysis_status)} <EventTag analysis={r.result} />
           </summary>
+          <p className="run-versions">
+            Perfil:{" "}
+            {r.result.analysis_profile ||
+              r.result.question_version ||
+              "No registrado"}{" "}
+            · Preguntas: {r.result.question_version} · Revisión:{" "}
+            {r.result.analysis_versions?.review ||
+              r.result.review_policy_version ||
+              "Política original"}
+          </p>
           <p>
             {riskLabel(r.result.is_risk)} · {urgencyLabel(r.result.urgent)} ·
             Proveedores{" "}

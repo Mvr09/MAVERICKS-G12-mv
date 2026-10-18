@@ -46,6 +46,8 @@ class Assessment(StrictModel):
     priority_requires_review: bool = False
     localized_warnings: list[str] = Field(default_factory=list)
     human_attention: Literal['verify_decision', 'immediate_contact', 'priority_follow_up', 'regular_follow_up', 'none'] | None = None
+    exposure_kind: Literal['reported', 'identity', 'potential', 'unknown', 'excluded'] | None = None
+    requires_pathway_confirmation: bool = False
 
     @model_validator(mode="after")
     def consistency(self):

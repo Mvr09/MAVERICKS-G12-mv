@@ -24,6 +24,15 @@ def analysis_key(article):
     )
 
 
+def analysis_payload(article, profile="1.0.0"):
+    from app.profiles import CANDIDATE_PROFILE
+    data = {"article_id": article.id, "generation": article.generation, "analysis_profile": profile}
+    if profile == CANDIDATE_PROFILE:
+        from app.candidate_engine import VERSIONS
+        data["analysis_versions"] = dict(VERSIONS)
+    return data
+
+
 def enqueue(db, key, kind, payload, priority=10):
     job = db.scalar(select(Job).where(Job.key == key))
     if job:
@@ -56,8 +65,7 @@ def reserve(db, article, split, manual_rss=False, fresh=False):
             )
         )
         if (
-            settings.jev_budget_limits_enabled
-            and not db.get(RssDailyUsage, daily_key)
+            not db.get(RssDailyUsage, daily_key)
             and daily >= RSS["daily_analysis_budget"]
         ):
             return False
@@ -127,7 +135,7 @@ def budget_available(db, budget_id):
     )
 
 
-def enqueue_rss_analysis(db, limit=None, article_ids=None):
+def enqueue_rss_analysis(db, limit=None, article_ids=None, profile="1.0.0"):
     db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     query = select(Article).where(Article.context == "rss", Article.state == "pending")
     if article_ids is not None:
@@ -145,14 +153,14 @@ def enqueue_rss_analysis(db, limit=None, article_ids=None):
                     db,
                     analysis_key(a),
                     "analysis",
-                    {"article_id": a.id, "generation": a.generation},
+                    analysis_payload(a, profile),
                     1,
                 ).id
             )
     return jobs
 
 
-def enqueue_batch(db, bid):
+def enqueue_batch(db, bid, profile="1.0.0"):
     db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     b = db.get(Batch, bid)
     if not b:
@@ -163,9 +171,23 @@ def enqueue_batch(db, bid):
         .order_by(Article.row_order)
         .with_for_update()
     ).all()
+    from app.models import Analysis
+    from app.profiles import CANDIDATE_PROFILE
+    for a in articles:
+        if a.state not in ("done", "review"):
+            continue
+        for old in db.scalars(select(Analysis).where(Analysis.article_id == a.id, Analysis.generation == a.generation)):
+            if old.result.get("analysis_status") == "error":
+                continue
+            same = old.result.get("analysis_profile", old.result.get("question_version")) == profile
+            if same and profile == CANDIDATE_PROFILE:
+                from app.candidate_engine import VERSIONS
+                same = all(old.result.get("analysis_versions", {}).get(k) == v for k, v in VERSIONS.items())
+            if not same:
+                raise ValueError("Este lote contiene otro perfil o versión. Usa Reanalizar lote para una ejecución coherente, conservando el historial.")
     jobs = []
     for a in articles:
-        if a.state in ("done", "review"):
+        if a.state in ("done", "review", "error"):
             continue
         if reserve(db, a, b.split):
             jobs.append(
@@ -173,7 +195,7 @@ def enqueue_batch(db, bid):
                     db,
                     analysis_key(a),
                     "analysis",
-                    {"article_id": a.id, "generation": a.generation},
+                    analysis_payload(a, profile),
                     100,
                 ).id
             )

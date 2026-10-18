@@ -9,12 +9,13 @@ export function procurement(s: Supplier, context: string, incidentId?: string) {
     ? s.incidents.find((i) => i.id === incidentId)
     : [...active].sort((a, b) => b.priority - a.priority)[0];
   const entry = incident?.history
-    .filter((h) => h.assessment)
+    .filter((h) => h.assessment && !h.superseded)
     .slice()
-    .sort((a, b) =>
-      ((b as any).published_date || b.at || "").localeCompare(
-        (a as any).published_date || a.at || "",
-      ),
+    .sort(
+      (a, b) =>
+        ((b as any).published_date || "").localeCompare(
+          (a as any).published_date || "",
+        ) || (b.at || "").localeCompare(a.at || ""),
     )[0];
   const physical = !["Logistics", "Services"].includes(s.category);
   const inventory = !physical
@@ -48,26 +49,35 @@ export function procurement(s: Supplier, context: string, incidentId?: string) {
     ? !!entry?.assessment?.needs_review
     : s.needs_review;
   const urgent = incidentId ? entry?.assessment?.urgent === "Y" : s.urgent;
-  const action = isResolved
-    ? "Confirmar la normalización de entregas y conservar el historial."
-    : review
-      ? "Validar el vínculo y los hechos con el proveedor antes de decidir medidas."
-      : urgent
-        ? "Contactar al proveedor y confirmar entregas comprometidas y medidas de continuidad."
-        : incident
-          ? "Confirmar alcance y plazos con el proveedor; mantener seguimiento del evento."
-          : s.status === "resolved"
-            ? "Confirmar la normalización de entregas y conservar el historial."
-            : s.status === "pending"
-              ? "Confirmar el vínculo con una noticia antes de concluir sobre exposición."
-              : "Mantener seguimiento; sin riesgo activo detectado en las noticias procesadas.";
-  const exposure = isResolved
-    ? "Evento recuperado · cartera ficticia"
-    : s.status === "pending"
-      ? "Exposición sin establecer"
-      : context === "rss"
-        ? "Exposición potencial · cartera simulada"
-        : "Datos del ejercicio · cartera ficticia";
+  const superseded = incident?.state === "superseded";
+  const action = superseded
+    ? "Análisis anterior sustituido: consultar el último resultado antes de decidir medidas."
+    : isResolved
+      ? "Confirmar la normalización de entregas y conservar el historial."
+      : review
+        ? "Validar el vínculo y los hechos con el proveedor antes de decidir medidas."
+        : urgent
+          ? "Contactar al proveedor y confirmar entregas comprometidas y medidas de continuidad."
+          : incident
+            ? "Confirmar alcance y plazos con el proveedor; mantener seguimiento del evento."
+            : s.status === "resolved"
+              ? "Confirmar la normalización de entregas y conservar el historial."
+              : s.status === "pending"
+                ? "Analizar noticias antes de concluir sobre exposición."
+                : s.status === "unlinked"
+                  ? "Mantener seguimiento: las noticias procesadas no sustentan un vínculo con este proveedor."
+                  : "Mantener seguimiento; sin riesgo activo detectado en las noticias procesadas.";
+  const exposure = superseded
+    ? "Evidencia anterior · conservada en el historial"
+    : entry?.assessment?.exposure_kind === "reported"
+      ? "Afectación reportada por la fuente · cartera ficticia"
+      : isResolved
+        ? "Evento recuperado · cartera ficticia"
+        : s.status === "pending"
+          ? "Exposición sin establecer"
+          : context === "rss"
+            ? "Exposición potencial · cartera simulada"
+            : "Datos del ejercicio · cartera ficticia";
   const materials = s.materials.map((m) => ({
     ...m,
     role: m.primary_id === s.supplier_id ? "Principal" : "Alternativo",

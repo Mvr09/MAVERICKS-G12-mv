@@ -179,7 +179,7 @@ for (const width of [360, 390, 768, 1440])
       ),
     ).toBe(true);
     await page.screenshot({
-      path: `../reports/rss-verification-mock-${width}.png`,
+      path: `../reports/${process.env.SCREENSHOT_PREFIX || "rss-verification-mock"}-${width}.png`,
       fullPage: true,
     });
     await page

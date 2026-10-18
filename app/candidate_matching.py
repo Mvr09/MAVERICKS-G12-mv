@@ -8,8 +8,9 @@ if the adapter's projection had been returned by JEV.
 from copy import deepcopy
 from app import link_candidate as previous, rss_questions
 from reference.jev_requests import sentences
+from app.settings import POLICY
 
-VERSION = 'link-3.2.0'
+VERSION = 'link-3.3.0'
 PROFILE = 'radar-1.0.0-candidate'
 RETRIEVAL_VERSION = previous.VERSION
 
@@ -39,17 +40,25 @@ def stage_b(article, suppliers, durations, model, context='exercise'):
     for sid in (s['supplier_id'] for s in suppliers):
         q = p['questions']
         q['joint_exposure_'+sid] = {'type':'noul','instructions':(
-            f'For supplier {sid} in state.suppliers, does the actual reported event jointly cover its stated '
-            'activity AND an explicitly affected catalog location/region or explicitly declared transport service? '
+            f'For supplier {sid} in state.suppliers, do source facts support POTENTIAL exposure of its stated '
+            'activity in the affected catalog city/region, or its explicitly declared transport service? '
             'Evaluate the whole article and catalog together, independently of retrieval and conditional risk. '
-            'A broad regional utility restriction or factory production reduction can potentially expose compatible '
-            'manufacturing/material activity without naming each company; this is not confirmed individual damage. '
-            'For route-specific transport events require matching declared route AND mode. Company headquarters '
-            'are not a shipment route. Unknown routes, plants or ambiguous provinces remain unknown. '
+            'Use the SAME LEVEL OF SCOPE as the article: regional factory/utility restrictions can potentially expose '
+            'compatible material manufacturing in that region; regional delivery obstruction can potentially expose '
+            'compatible activities in the delivery area. Chemical-flow restrictions can potentially expose chemical '
+            'suppliers/distributors in that area, but not every nearby unrelated manufacturer. Potential class exposure '
+            'does NOT assert use of a particular barge, road, factory or shipment. Do not demand proof of individual '
+            'damage for this potential relation. For a catalogued logistics service, match route AND mode; headquarters '
+            'are not routes. Essential unknown province or incompatible known mode must remain uncertain or unrelated. '
             'A price statistic, conference, ordinary commercial supply agreement or positive expansion does not '
             'by itself establish adverse operational exposure of other suppliers. A recovery may concern a previously '
             'disrupted compatible activity. Identity is assessed separately and can preserve a named positive supplier. '
             'Do not assume a factory process, barge use, Helixa shipment or alternate capacity.')}
+        q['impact_scope_'+sid] = {'type':'choice','instructions':f'For {sid}, distinguish what the source actually attributes from what is only potential. Do not answer risk or urgency.', 'criteria':{
+            'supplier_reported':'Source explicitly attributes the operational or strategic event to this identified supplier, not merely to its city or a company it comments on.',
+            'class_potential':'Only compatible regional/activity/transport-service exposure is supported; no actual individual effect or shipment is established.',
+            'no_adverse_effect':'Positive/harmless supplier identity or unrelated content; no adverse operational effect is reported.',
+            'unknown':'The source cannot establish the impact scope.'}}
         q['risk_'+sid]['instructions'] = (
             f'For {sid}, conditional on separately established identity or operational exposure: does the source '
             'report a credible threat to continued production, deliveries or strategic security of supply? '
@@ -94,6 +103,15 @@ def normalize(article, suppliers, a, b, durations):
     result['question_version']=VERSION
     result['matching_version']=VERSION
     result['analysis_profile']=PROFILE
+    for assessment in result['assessments']:
+        sid=assessment['supplier_id'];scope=(b or {}).get('answers',{}).get('impact_scope_'+sid,{})
+        linked=sid in result['affected_supplier_ids']
+        t=POLICY['thresholds']
+        reported=(scope.get('choice')=='supplier_reported' and scope.get('confidence',0)>=t['choice_score_confidence']
+                  and assessment['p_identity']>t['review_high'] and assessment['is_risk']=='Y')
+        assessment['exposure_kind']=('reported' if reported else 'identity' if linked and assessment['is_risk']=='N' and assessment['p_identity']>=t['link']
+            else 'potential' if linked else 'unknown' if assessment['needs_review'] else 'excluded')
+        assessment['requires_pathway_confirmation']=assessment['exposure_kind']=='potential'
     if article.context == 'rss':
         result['evidence']=rss_questions.sentences(article.data)
         category=a['answers']['event_type']['choice']

@@ -55,6 +55,15 @@ def run_job(jid):
                     j.lease_until = None
                     db.commit()
                     return
+                from app.profiles import CANDIDATE_PROFILE
+                from app.candidate_engine import VERSIONS
+                if j.payload.get("analysis_profile") == CANDIDATE_PROFILE and j.payload.get("analysis_versions") != VERSIONS:
+                    j.state = "error"
+                    j.error = "PROFILE_VERSION_CHANGED"
+                    j.lease_until = None
+                    article.state = "error"
+                    db.commit()
+                    return
                 r = process_article(
                     db,
                     j.payload["article_id"],

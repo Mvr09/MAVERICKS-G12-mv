@@ -1,0 +1,32 @@
+{
+  "run": "night-potential-scope-02",
+  "versions": {
+    "profile": "radar-1.0.0-candidate",
+    "matching": "link-3.3.0",
+    "retrieval": "link-3.0.0-dev",
+    "questions": "link-3.3.0",
+    "review": "review-1.2.0",
+    "support": "decision-support-1.0.0",
+    "facts": "decision-facts-1.0.0",
+    "exclusion": "relational-exclusion-1.0.0",
+    "duration": "duration-1.1.0"
+  },
+  "cases": "30training+6existing synthetics",
+  "max_attempts": 432,
+  "hypothesis": "Potential exposure is evaluated at the actual source activity/area level, separately from attributed individual impact; unknown pathways are not asserted. Reduced capacity remains risk even when stock covers it. Keep identity and urgency independent, review1.1-derived targeted checks, unchanged thresholds and formula.",
+  "changed_predictions_expected": true,
+  "retrieval": "Exact3.0A reused and validated; compact new B and conditional factual support are evaluated together, not a causal claim for one question.",
+  "adoption": [
+    "Operationally better supplier FN/FP balance, not F1 alone",
+    "No new automatic erroneous risk/urgency/associations",
+    "Regional partial reduction riskY/nonurgent",
+    "Unknown province/route remain reviewed",
+    "Positive named supplier retains identity/riskN"
+  ],
+  "files": {
+    "app/candidate_matching.py": "78f7432bd5c6ffe4b8238837b19ed973fcfd2ee6d2f0676bc370d43d25f31626",
+    "app/candidate_review.py": "d1a1dadbe775f7dbd2c4836fe2d67e1e28117d8787755aa57d1214f4f0e480ce",
+    "app/candidate_engine.py": "cfc57d95e7d1e8ca4285e61f1167d3f4e528da6449adc9daf0333da07133b568",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+  }
+}

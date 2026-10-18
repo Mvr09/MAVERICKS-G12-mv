@@ -4,6 +4,13 @@ export interface Assessment {
   p_candidate?: number;
   association_status?: "confirmed" | "review" | "excluded";
   geography_version?: string;
+  exposure_kind?:
+    | "reported"
+    | "identity"
+    | "potential"
+    | "unknown"
+    | "excluded";
+  requires_pathway_confirmation?: boolean;
   p_identity?: number;
   p_exposure?: number;
   p_risk: number;
@@ -28,6 +35,9 @@ export interface Assessment {
   human_attention?: string;
 }
 export interface Analysis {
+  analysis_profile?: string;
+  matching_version?: string;
+  analysis_versions?: Record<string, string>;
   review_details?: {
     code: string;
     field: string;
@@ -37,6 +47,7 @@ export interface Analysis {
     value: string | number | null;
     threshold: number | null;
     resolution?: string | null;
+    resolution_hint?: string;
   }[];
   event_classification?: {
     category: string;
@@ -116,6 +127,9 @@ export interface Incident {
   event_date: string;
   stale: boolean;
   history: {
+    superseded?: boolean;
+    generation?: number;
+    analysis_profile?: string;
     article_id?: string;
     assessment?: Assessment;
     headline?: string;
@@ -187,6 +201,13 @@ export interface Source {
   error: string | null;
 }
 export interface Batch {
+  analysis_profiles?: {
+    profile: string;
+    questions: string;
+    review: string;
+    count: number;
+  }[];
+  mixed_profiles?: boolean;
   filename?: string;
   origin_label?: string;
   queued?: number;
@@ -202,6 +223,9 @@ export interface Batch {
   elapsed_seconds: number | null;
 }
 export interface Alert {
+  article_id?: string;
+  generation?: number;
+  analysis_profile?: string;
   urgent?: string;
   event_tag?: EventInfo;
   id: number;

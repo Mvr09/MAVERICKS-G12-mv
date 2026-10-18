@@ -1,0 +1,463 @@
+{
+  "authored_at": "2026-10-18T22:15:01.941675+00:00",
+  "kind": "author-generated controlled sample, not independent RSS generalisation",
+  "catalog_hash": "bac7dc1f5a8269061dbf2a80ec0a5556687606bbd717d42a0406a21844667e21",
+  "cases": [
+    {
+      "case": "harmless_hangzhou",
+      "data": {
+        "news_id": "QA-FINAL-harmless_hangzhou",
+        "headline": "Hangzhou school opens a science exhibition",
+        "summary": "Local school pupils exhibit astronomy projects. The event concerns education; no commercial restriction is reported.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reasoned_reference": "Education activity has no operational relation to the material suppliers in Hangzhou.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "passenger_cork",
+      "data": {
+        "news_id": "QA-FINAL-passenger_cork",
+        "headline": "Cork airport reports record holiday passenger traffic",
+        "summary": "More holiday passengers used Cork airport. Cargo, manufacturing and deliveries are not affected.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reasoned_reference": "Passenger statistics are different from biologics production; shared city alone is insufficient.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "sport_valencia",
+      "data": {
+        "news_id": "QA-FINAL-sport_valencia",
+        "headline": "Valencia celebrates a local athletics award",
+        "summary": "A city athlete receives a medal. Commercial production and deliveries continue normally.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reasoned_reference": "Sport is unrelated to starch supply; source explicitly preserves normal activity.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "culture_mainz",
+      "data": {
+        "news_id": "QA-FINAL-culture_mainz",
+        "headline": "Mainz museum hosts a Rhine painting exhibition",
+        "summary": "Visitors can see paintings of the river Rhine. No shipping or industrial event is reported.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reasoned_reference": "River mention in a museum event is not a waterway or glass-supplier interruption.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "policy_debate",
+      "data": {
+        "news_id": "QA-FINAL-policy_debate",
+        "headline": "European Parliament debates future publication rules",
+        "summary": "Members discussed a proposal about public publication of policy documents. No law, transport restriction or pharmaceutical production change was adopted.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reasoned_reference": "Discussion of document publication has no actual supplier operational impact.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "wind_oslo",
+      "data": {
+        "news_id": "QA-FINAL-wind_oslo",
+        "headline": "Oslo wind orchestra wins international competition",
+        "summary": "A youth wind orchestra won an award. This is a music competition, not an energy or industrial event.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reasoned_reference": "Wind is musical activity, not power restrictions or lipid production.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "named_positive_biologic",
+      "data": {
+        "news_id": "QA-FINAL-named_positive_biologic",
+        "headline": "Celtic BioLogics Ltd expands approved capacity",
+        "summary": "Celtic BioLogics Ltd obtained approval to expand capacity. Existing production and deliveries continue normally, with no adverse operational change.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S008"
+      },
+      "reasoned_reference": "Exact organisation identity retained; positive expansion is neither supply risk nor urgency.",
+      "expected_review": false,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "named_positive_labels",
+      "data": {
+        "news_id": "QA-FINAL-named_positive_labels",
+        "headline": "LabelCraft Ireland expands approved capacity",
+        "summary": "LabelCraft Ireland obtained approval to expand capacity. Existing production and deliveries continue normally, with no adverse operational change.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S023"
+      },
+      "reasoned_reference": "Exact organisation identity retained; positive expansion is neither supply risk nor urgency.",
+      "expected_review": false,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "partial_leaflets",
+      "data": {
+        "news_id": "QA-FINAL-partial_leaflets",
+        "headline": "Zhejiang Paper Leaflets reports limited production reduction",
+        "summary": "Zhejiang Paper Leaflets reports a 20% reduction of production capacity for two days during scheduled repairs. Current deliveries remain on time and normal output returns after repairs.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S024"
+      },
+      "reasoned_reference": "Named organisation and partial capacity reduction support risk. Short, limited event with preserved deliveries supports regular follow-up, not urgent coordination.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "partial_filters",
+      "data": {
+        "news_id": "QA-FINAL-partial_filters",
+        "headline": "Hsinchu Membrane Tech reports limited production reduction",
+        "summary": "Hsinchu Membrane Tech reports a 20% reduction of production capacity for two days during scheduled repairs. Current deliveries remain on time and normal output returns after repairs.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S027"
+      },
+      "reasoned_reference": "Named organisation and partial capacity reduction support risk. Short, limited event with preserved deliveries supports regular follow-up, not urgent coordination.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "short_delivery",
+      "data": {
+        "news_id": "QA-FINAL-short_delivery",
+        "headline": "Rhenvale Excipients GmbH reports a brief delivery slowdown",
+        "summary": "Rhenvale Excipients GmbH reports a minor delivery slowdown lasting two days. Production is normal; existing delivery commitments remain covered and there is no serious near-term supply delay.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S009"
+      },
+      "reasoned_reference": "A named slowdown remains risk; explicit limited timing and preserved commitments support non-urgency.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "sea_not_rail",
+      "data": {
+        "news_id": "QA-FINAL-sea_not_rail",
+        "headline": "Asia-Europe sea freight faces a limited two-day slowdown",
+        "summary": "Commercial sea freight from Asia to Europe will operate at reduced capacity for two days. Rail freight between Asia and Europe remains normal. The reduction is minor and no serious near-term supply stoppage is expected.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S032"
+      },
+      "reasoned_reference": "Catalog explicitly declares S032 maritime corridor; S033 is rail and explicitly unaffected. No headquarters or undocumented route inference.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "urgent_named_api",
+      "data": {
+        "news_id": "QA-FINAL-urgent_named_api",
+        "headline": "Sunrise BioChem Ltd halts all production after destructive fire",
+        "summary": "Sunrise BioChem Ltd has halted all production and all shipments after a destructive factory fire. The company reports severe damage, no restart date and immediate cancellation of forthcoming deliveries. No alternate capacity is confirmed.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "Y",
+        "Affected_Supplier_IDs": "S001"
+      },
+      "reasoned_reference": "Exact organisation, active serious production and shipment stoppage with no recovery date supports immediate procurement coordination. Alternate capacity is not assumed.",
+      "expected_review": false,
+      "sound_must_be_false": false
+    },
+    {
+      "case": "urgent_named_bags",
+      "data": {
+        "news_id": "QA-FINAL-urgent_named_bags",
+        "headline": "Celsius Bioprocess Systems halts all production after destructive fire",
+        "summary": "Celsius Bioprocess Systems has halted all production and all shipments after a destructive factory fire. The company reports severe damage, no restart date and immediate cancellation of forthcoming deliveries. No alternate capacity is confirmed.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "Y",
+        "Affected_Supplier_IDs": "S025"
+      },
+      "reasoned_reference": "Exact organisation, active serious production and shipment stoppage with no recovery date supports immediate procurement coordination. Alternate capacity is not assumed.",
+      "expected_review": false,
+      "sound_must_be_false": false
+    },
+    {
+      "case": "urgent_named_vials",
+      "data": {
+        "news_id": "QA-FINAL-urgent_named_vials",
+        "headline": "Lumina Glassworks halts all production after destructive fire",
+        "summary": "Lumina Glassworks has halted all production and all shipments after a destructive factory fire. The company reports severe damage, no restart date and immediate cancellation of forthcoming deliveries. No alternate capacity is confirmed.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "Y",
+        "Affected_Supplier_IDs": "S015"
+      },
+      "reasoned_reference": "Exact organisation, active serious production and shipment stoppage with no recovery date supports immediate procurement coordination. Alternate capacity is not assumed.",
+      "expected_review": false,
+      "sound_must_be_false": false
+    },
+    {
+      "case": "urgent_named_capsules",
+      "data": {
+        "news_id": "QA-FINAL-urgent_named_capsules",
+        "headline": "Aurum Gelatin Capsules halts all production after destructive fire",
+        "summary": "Aurum Gelatin Capsules has halted all production and all shipments after a destructive factory fire. The company reports severe damage, no restart date and immediate cancellation of forthcoming deliveries. No alternate capacity is confirmed.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "Y",
+        "Affected_Supplier_IDs": "S036"
+      },
+      "reasoned_reference": "Exact organisation, active serious production and shipment stoppage with no recovery date supports immediate procurement coordination. Alternate capacity is not assumed.",
+      "expected_review": false,
+      "sound_must_be_false": false
+    },
+    {
+      "case": "two_affected_sites",
+      "data": {
+        "news_id": "QA-FINAL-two_affected_sites",
+        "headline": "Limited production restrictions in Valencia and Barcelona",
+        "summary": "Material manufacturers in Valencia and Barcelona report a 10% output reduction for two days due to scheduled electricity maintenance. Current delivery commitments remain on time. Other cities are unaffected.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S011; S018"
+      },
+      "reasoned_reference": "Both catalog cities and manufacturing activities are within stated scope. Potential class exposure is not proven damage to individual firms; limited duration and intact deliveries keep urgency N.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "lodz_alias",
+      "data": {
+        "news_id": "QA-FINAL-lodz_alias",
+        "headline": "Minor production restrictions in Łódź",
+        "summary": "Manufacturers in Łódź will reduce output by 10% for two days during planned maintenance. Deliveries remain on schedule and operations in other cities are normal.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S019"
+      },
+      "reasoned_reference": "Łódź is a verified alias of catalog Lodz. Potential manufacturing exposure; minor short interruption with preserved deliveries is not urgent.",
+      "expected_review": null,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "unknown_taizhou",
+      "data": {
+        "news_id": "QA-FINAL-unknown_taizhou",
+        "headline": "Jiangsu industrial restrictions announced",
+        "summary": "Industrial sites in Jiangsu will face restrictions. The article does not name individual companies or identify the province of any Taizhou supplier.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reasoned_reference": "S003 Taizhou province is unknown; essential location cannot be completed from an expected label.",
+      "expected_review": true,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "unknown_route",
+      "data": {
+        "news_id": "QA-FINAL-unknown_route",
+        "headline": "River barge terminal closed in a region",
+        "summary": "A river barge terminal is closed after a local equipment failure. The affected firms and transport routes are not specified.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reasoned_reference": "Catalog does not document individual suppliers using this terminal or a barge route.",
+      "expected_review": true,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "unknown_site",
+      "data": {
+        "news_id": "QA-FINAL-unknown_site",
+        "headline": "Inspection at an unidentified packaging facility",
+        "summary": "Inspectors paused output at a packaging facility. The operator, city, country and material have not been identified.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reasoned_reference": "Missing essential identity and geography prevent confirmation or confident exclusion of the relevant supplier.",
+      "expected_review": true,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "unknown_scope",
+      "data": {
+        "news_id": "QA-FINAL-unknown_scope",
+        "headline": "Possible electricity restrictions near Taizhou",
+        "summary": "Officials are considering restrictions near a city called Taizhou. The province, affected activities and implementation date are not specified.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reasoned_reference": "Both province and enacted operational scope are missing; potential future action is not actual urgent supplier damage.",
+      "expected_review": true,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "unknown_timing",
+      "data": {
+        "news_id": "QA-FINAL-unknown_timing",
+        "headline": "Unverified report about production at Hsinchu Membrane Tech",
+        "summary": "An unverified message says Hsinchu Membrane Tech may face an operational issue. It does not say what happened, whether output changed or when any effect could occur.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reasoned_reference": "Organisation identity exists, but risk, impact and timing are uncertain. Identity alone must not prove risk or urgency.",
+      "expected_review": true,
+      "sound_must_be_false": true
+    },
+    {
+      "case": "unknown_transport_mode",
+      "data": {
+        "news_id": "QA-FINAL-unknown_transport_mode",
+        "headline": "Asia-Europe transport interruption reported without a mode",
+        "summary": "A report says some transport between Asia and Europe may be interrupted. It does not specify sea, rail or air, affected operators or the operational timing.",
+        "published_date": "2026-10-18T22:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO · evaluación interna, no RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reasoned_reference": "S032/S033 explicit corridors share geography but mode and real impact are missing; do not assume maritime or rail.",
+      "expected_review": true,
+      "sound_must_be_false": true
+    }
+  ]
+}

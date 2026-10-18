@@ -1,0 +1,48 @@
+{
+  "created_at": "2026-10-18T22:15:01.941675+00:00",
+  "versions": {
+    "profile": "radar-1.0.0-candidate",
+    "matching": "link-3.3.0",
+    "retrieval": "link-3.0.0-dev",
+    "questions": "link-3.3.0",
+    "review": "review-1.2.0",
+    "support": "decision-support-1.0.0",
+    "facts": "decision-facts-1.0.0",
+    "exclusion": "relational-exclusion-1.0.0",
+    "duration": "duration-1.1.0"
+  },
+  "sample_hash": "414827d52d9498285e37f0791a446c177ff18c6d9d57878b75084dfd483779b9",
+  "sample_count": 24,
+  "scorable": 18,
+  "underdetermined_safety_controls": 6,
+  "initial_request_ceiling": 240,
+  "maximum_attempts": 720,
+  "hypothesis": "Candidate3.3 recovers compatible potential exposure and limited-production risk while review1.2 reduces irrelevant-topic review; unknown operational scope stays uncertain.",
+  "criteria_before_responses": [
+    "Keep default1.0 unless evidence sufficient beyond training and controlled tests; not independent RSS accuracy",
+    "No new automatic jointly erroneous case on the 18 scorable controls; all reviewed predictions remain in TP/FP/FN",
+    "All four named serious stoppages correctly riskY/urgentY, at least two automatic",
+    "Two named positive suppliers retain identity and riskN/urgentN automatically",
+    "No automatic urgent decision for short/minor disruptions with preserved deliveries",
+    "Unknown province, site, mode or route must not be represented as confirmed individual effect; report review failures separately",
+    "Training known errors and operational consequences disclosed, no adoption by aggregate F1 alone"
+  ],
+  "files": {
+    "app/candidate_matching.py": "78f7432bd5c6ffe4b8238837b19ed973fcfd2ee6d2f0676bc370d43d25f31626",
+    "app/candidate_review.py": "d1a1dadbe775f7dbd2c4836fe2d67e1e28117d8787755aa57d1214f4f0e480ce",
+    "app/candidate_engine.py": "ce14218a71b8531926de2d605359b9334e54ab54edc9049130101d630bbfb0bc",
+    "app/payload_cache.py": "cbcdf4dbd5ed27a4a7f13a23af0a40f23d9794e190ef4c6f4ca85cfe918b5480",
+    "app/review_support.py": "1c154bdd44fe28c954073ced01614bc9892fcc704ea863795c6a124553d79997",
+    "app/review_facts.py": "d4cae019075a81763f97d4c921c49a47fa1200efb1c36fc7bc988148e9f1abf1",
+    "app/link_candidate.py": "eaafebb059b7c52119b4be9664c45d2a7ffe643a2c28f1fdf38bf504cd7e44ac",
+    "app/link_analysis.py": "571ae51ae985fae85e2a40ed0e9e6ab32b3add7a9b531ddce0f6d8f65fab9766",
+    "app/link_questions.py": "2bb2ba0b9216e42c4bacb69ccd4cf9f100f027cdb1b4544e928ff4eb1f27b9a6",
+    "app/duration.py": "e538570b253edc7f8ed340f7475e022b000b8bdb9f2a44deefd4d4b558a2b8d1",
+    "app/geography.py": "fa4a580bc0e8acda6b69567223f06175372d271735dff3d34daf5865e3aafe0e",
+    "config/geography.json": "9806c25134760d92c57e03039b4a3d85bc21bc6d47710c128a4486f291265f94",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c",
+    "reference/jev_requests.py": "0152f231cac1fe8e08c0ea4000076f17e6e008781155d10fe01925ddd59a1de9",
+    "reference/scoring.py": "50f9c7f9e62a3231b10461217c18947a00d250adcc3c99372366cfbbe6fe316a"
+  },
+  "held_out": "No validation/test/LiveDay/answer key; new controlled sample authored before calls. Any post-inspection change makes this development."
+}
