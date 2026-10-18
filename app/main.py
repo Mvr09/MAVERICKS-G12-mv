@@ -1027,6 +1027,15 @@ def model_metrics(
     return calculate(db, context, origin)
 
 
+@app.get("/api/model/diagnostics/{bid}", dependencies=[Depends(presenter)])
+def model_diagnostics(bid: str, db: Session = Depends(get_db)):
+    from app.diagnostics import diagnose_batch
+    try:
+        return diagnose_batch(db, bid)
+    except ValueError as exc:
+        raise HTTPException(409, str(exc))
+
+
 @app.post("/api/evaluations/{bid}", dependencies=[Depends(presenter)])
 def evaluate(bid: str, db: Session = Depends(get_db)):
     from app.evaluation import evaluate_batch

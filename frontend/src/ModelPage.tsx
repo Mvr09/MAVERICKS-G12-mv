@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { api, date, number } from "./api";
 import type { Batch, Source } from "./types";
+import { DiagnosticPanel } from "./DiagnosticPanel";
 
 const percent = (value: number | null | undefined) =>
   value == null ? "No calculable" : number(value * 100) + "%";
@@ -357,6 +358,9 @@ export function ModelPage({
                       </table>
                     </div>
                   </>
+                )}
+                {selected && m && (
+                  <DiagnosticPanel key={selected.id} bid={selected.id} />
                 )}
                 <p className="small-note">
                   Test, LiveDay y RSS no tienen referencia válida para medir

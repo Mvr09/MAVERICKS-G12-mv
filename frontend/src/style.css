@@ -2144,3 +2144,34 @@ dialog header {
   white-space: normal;
   text-align: left;
 }
+
+.diagnostic-panel {
+  margin-top: 24px;
+  border-top: 1px solid #e6eaf1;
+  padding-top: 18px;
+}
+.diagnostic-panel summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.diagnostic-row {
+  padding: 20px 0;
+  border-top: 1px solid #e6eaf1;
+  overflow-wrap: anywhere;
+}
+.diagnostic-comparison {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 16px;
+}
+.diagnostic-cause {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f5f7fb;
+  border-radius: 8px;
+}
+.diagnostic-cause pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
