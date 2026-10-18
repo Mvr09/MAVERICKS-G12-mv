@@ -137,6 +137,7 @@ def view(db, row):
                 "affected_supplier_ids": b["affected_supplier_ids"],
                 "event_type": b["event_type"],
                 "event_classification": b.get("event_classification"),
+                "context_notes": b.get("context_notes", []),
                 "error": b["error"],
                 "review_reasons": sorted(
                     set(b["review_reasons"])

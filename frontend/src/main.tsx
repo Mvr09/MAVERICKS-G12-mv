@@ -60,6 +60,7 @@ import { audio } from "./audio";
 import { setBands, getBands, bandFor } from "./policy";
 import "./style.css";
 import { ModelPage } from "./ModelPage";
+import { EventTag, eventNames } from "./EventTag";
 
 const names: Record<string, string> = {
   training: "Entrenamiento",
@@ -82,22 +83,7 @@ const names: Record<string, string> = {
   Low: "Baja",
 };
 Object.assign(names, {
-  wildfire: "Incendio forestal",
-  fire_incident: "Incendio o explosión",
-  natural_disaster: "Desastre natural",
-  labour_strike: "Huelga",
-  regulatory_action: "Acción regulatoria",
-  export_restriction: "Restricción de exportación",
-  financial_distress: "Dificultades financieras",
-  quality_recall: "Retirada o calidad",
-  logistics_disruption: "Interrupción logística",
-  utility_outage: "Interrupción de suministros",
-  leadership_change: "Cambio de dirección",
-  acquisition: "Adquisición",
-  recovery: "Recuperación",
-  positive_news: "Noticia positiva",
-  other: "Otro evento",
-  not_relevant: "Sin vínculo operativo",
+  ...eventNames,
   inventory_missing: "Inventario físico no informado",
   criticality_missing: "Criticidad no informada",
   risk_without_operational_evidence:
@@ -857,6 +843,10 @@ function App() {
                                 </Link>
                               </h3>
                               <p>{a.headline}</p>
+                              <EventTag
+                                analysis={a.event_tag}
+                                state="unavailable"
+                              />
                               <small>
                                 Prioridad {number(a.priority)} ·{" "}
                                 {a.sound_eligible
@@ -1296,6 +1286,7 @@ function NewsList({
             >
               {label(a.state)}
             </Badge>
+            <EventTag analysis={a.analysis} state={a.state} />
           </div>
           <h3>
             <Link to={"/noticias/" + a.id} onClick={onOpen}>
@@ -1512,6 +1503,7 @@ function ArticleDetail({ context, presenter, action }: any) {
       </Link>
       <div className="inline">
         <Badge>{label(a.state)}</Badge>
+        <EventTag analysis={a.analysis} state={a.state} />
         <span>
           {a.source} · {date(a.published_date)}
         </span>
@@ -1789,6 +1781,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     >
                       {label(i.state)}
                     </Badge>
+                    <EventTag analysis={i.event_tag} state="unavailable" />
                     <small>{date(i.event_date)}</small>
                   </div>
                   <h4>
@@ -3200,8 +3193,7 @@ function ComparisonControl({ article }: { article: Article }) {
                 · {riskLabel(b.is_risk)} · {urgencyLabel(b.urgent)} ·
                 Proveedores{" "}
                 {b.affected_supplier_ids.join(", ") || "sin vínculo"} ·{" "}
-                {b.event_classification?.label_es ||
-                  label(b.event_type || "other")}
+                <EventTag analysis={b} />
                 {b.error && <p className="error-text">{b.error}</p>}
                 {b.review_reasons.map((r: string) => (
                   <p key={r}>{reviewLabel(r)}</p>
@@ -3319,7 +3311,7 @@ function AnalysisHistory({ article }: { article: Article }) {
         <details key={r.generation}>
           <summary>
             Análisis {r.generation + 1} · {date(r.created_at)} ·{" "}
-            {label(r.result.analysis_status)}
+            {label(r.result.analysis_status)} <EventTag analysis={r.result} />
           </summary>
           <p>
             {riskLabel(r.result.is_risk)} · {urgencyLabel(r.result.urgent)} ·

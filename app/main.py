@@ -16,6 +16,7 @@ from app.rss_questions import VERSION as RSS_QUESTION_VERSION
 from app.models import *
 from app.auth import presenter, identity, login, codec
 from app.importer import import_excel, export_batch, digest
+from app.event_tags import event_tag
 from app.views import (
     suppliers_view,
     articles_view,
@@ -909,6 +910,16 @@ def alerts(
         .where(Incident.context == context)
         .order_by(Alert.id)
     ).all()
+    # Legacy alerts did not retain the category. Read the linked article,
+    # never guess from its headline or the incident's canonical category.
+    article_tags = {
+        article.id: event_tag(result)
+        for article, result in db.execute(
+            select(Article, Analysis.result)
+            .join(Analysis, Analysis.article_id == Article.id)
+            .where(Article.context == context, Analysis.generation == Article.generation)
+        ).all()
+    }
     return {
         "items": [
             {
@@ -918,6 +929,8 @@ def alerts(
                 "acknowledged": a.acknowledged,
                 "created_at": a.created_at,
                 **a.data,
+                "event_tag": a.data.get("event_tag")
+                or article_tags.get(a.data.get("article_id")),
             }
             for a in rows
             if a.id > after

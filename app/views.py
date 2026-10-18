@@ -1,5 +1,6 @@
 from datetime import date
 from app.provenance import KNOWN_INPUT_FILENAMES
+from app.event_tags import event_tag
 from sqlalchemy import select, func, and_
 from app.models import (
     Supplier,
@@ -149,6 +150,7 @@ def suppliers_view(db, context="exercise", origin=""):
         .join(Analysis, Analysis.article_id == Article.id)
         .where(Article.context == context, Analysis.generation == Article.generation)
     ).all()
+    article_tags = {a.id: event_tag(result) for a, result in analyzed}
     for article_row, result in analyzed:
         if not origin_matches(article_row, origin):
             continue
@@ -177,6 +179,8 @@ def suppliers_view(db, context="exercise", origin=""):
                 "revision": i.revision,
                 "history": i.history,
                 "current_headline": current(i).get("headline"),
+                "event_tag": current(i).get("event_tag")
+                or article_tags.get(current(i).get("article_id")),
                 "stale": (
                     now().date().isoformat() > i.event_date[:10]
                     and (now().date() - date.fromisoformat(i.event_date[:10])).days > 7

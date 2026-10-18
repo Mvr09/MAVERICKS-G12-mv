@@ -56,6 +56,16 @@ export interface Analysis {
   model_id: string | null;
   review_reasons: string[];
 }
+export type EventInfo = Partial<
+  Pick<
+    Analysis,
+    | "event_type"
+    | "event_classification"
+    | "context_notes"
+    | "review_reasons"
+    | "analysis_status"
+  >
+>;
 export interface Article {
   origin?: string;
   origin_label?: string;
@@ -79,6 +89,7 @@ export interface Article {
   news_id: string;
 }
 export interface Incident {
+  event_tag?: EventInfo;
   current_headline?: string;
   id: string;
   state: string;
@@ -165,6 +176,7 @@ export interface Batch {
   elapsed_seconds: number | null;
 }
 export interface Alert {
+  event_tag?: EventInfo;
   id: number;
   incident_id: string;
   revision: number;

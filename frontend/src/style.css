@@ -2138,3 +2138,9 @@ dialog header {
     font-size: 0.9rem;
   }
 }
+
+.event-tag {
+  font-size: 11px;
+  white-space: normal;
+  text-align: left;
+}

@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy import select
 from app.models import Incident, Alert, Supplier, now
 from app.importer import digest
+from app.event_tags import event_tag
 from app.settings import POLICY
 from reference.scoring import decisions
 
@@ -92,6 +93,7 @@ def reconcile(db, article, result):
         )
         entry = {
             "article_id": article.id,
+            "event_tag": event_tag(result),
             "origin_key": article.origin_key,
             "headline": article.data["headline"],
             "published_date": published,
@@ -238,6 +240,7 @@ def reconcile(db, article, result):
                         "supplier_name": s["name"],
                         "priority": inc.priority,
                         "headline": article.data["headline"],
+                        "event_tag": event_tag(result),
                         "needs_review": assessment["needs_review"],
                         "sound_eligible": gate["sound_eligible"],
                         "state": inc.state,
