@@ -1,0 +1,18 @@
+# A14 · registro de sonido
+
+## Confirmación del usuario
+
+- Dispositivo: **ordenador**. Sistema operativo y modelo no indicados; no se inventan.
+- Navegador: **Firefox**. Versión no indicada.
+- Prueba confirmada en esta conversación: **solo «Probar alarma»**. Sonido audible confirmado por el usuario.
+- La declaración previa «funciona perfecto» respondía al guion Activar sonido → Probar alarma → Silenciar → Probar alarma. Se conserva como confirmación previa de sonido/silencio; no se transforma en prueba de disparo automático.
+- Fecha exacta y commit en el momento de la prueba física no indicados. Se registra la declaración del usuario en18-10-2026, sin atribuir a una revisión concreta una prueba que no se fechó.
+
+## Dos recorridos diferentes
+
+1. **Botón Probar alarma:** después del gesto de activación llama a reproducción; el mute impide el sonido. Este es el recorrido físico confirmado en ordenador/Firefox.
+2. **Nueva alerta elegible:** exige alerta nueva/no reconocida, sound_eligible=true, sonido activado/no silenciado, ventana de cooldown de30s y una emisión por revisión/pestaña. Se activa por el sondeo de alertas, no por pulsar Probar alarma. Este recorrido no se probó físicamente según la aclaración del usuario.
+
+Los E2E históricos verifican gesto, historial silencioso, emisión única, cooldown, foco, mute y bloqueo del navegador con un AudioContext simulado. app/audio.ts y el disparo por alertas no cambiaron con la corrección de duración/texto. Se hereda esa prueba lógica, sin usarla como evidencia de audibilidad.
+
+**Estado A14: no ejecutado completo.** Falta escuchar una nueva alerta elegible automática en ordenador/Firefox tras activar sonido. No se genera una alerta falsa presentada como real, ni se altera elegibilidad/revisión para forzar sonido. Si se usa un evento QA para probarlo, debe estar identificado y permanecer separado de las noticias reales/dataset.

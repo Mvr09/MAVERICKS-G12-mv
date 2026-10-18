@@ -1,0 +1,28 @@
+{
+  "historical_status": "pasa",
+  "current_revision_status": "no ejecutado",
+  "execution_revision": "4a3645ae1a51084f2134762f41c0210efbe48668",
+  "profile": "1.0.0",
+  "policy": "1.0.0",
+  "model": "jev-1.13.0",
+  "date_utc": "2026-10-17",
+  "client_start": "2026-10-17T21:28:35.424566+00:00",
+  "client_export_received": "2026-10-17T21:28:41.177534+00:00",
+  "rows": 14,
+  "seconds_client": 5.753,
+  "timer": "Delta datetime UTC del mismo cliente; no monotonic. No mezclar relojes cliente/servidor.",
+  "server_started_at": "2026-10-17T21:28:09.954112+00:00",
+  "server_completed_at": "2026-10-17T21:28:13.821974+00:00",
+  "server_seconds": 3.867862,
+  "cache": {
+    "new_http_a": 14,
+    "new_http_b": 9,
+    "http_200": 23,
+    "retries": 0,
+    "fully_cached_replay": false,
+    "limitation": "El registro consultado no contiene flags de caché por análisis; no se afirma ausencia absoluta de caché de B a partir de llamadas únicamente."
+  },
+  "inputs_not_reopened": true,
+  "new_liveday_inference": false,
+  "inheritance_limit": "El extractor de duración y los payloads B cambiaron después: 5,753 s no certifica el rendimiento de12c4dff. Una nueva medición corresponde solo a la fase final autorizada, sin usar resultados para ajustar."
+}

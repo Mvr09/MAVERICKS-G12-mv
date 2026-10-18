@@ -1,3 +1,5 @@
+> **Informe histórico del17-10-2026.** Estado y pendientes de la versión actual en [ACEPTACION_ACTUAL.md](ACEPTACION_ACTUAL.md). No interpretar sus tiempos o versiones como una ejecución nueva.
+
 # Informe de ejecución y entrega · 17-10-2026
 
 ## Publicación

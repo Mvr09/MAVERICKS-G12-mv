@@ -1,11 +1,21 @@
-# Evaluación del motor · separada de las etiquetas
+# Evaluación del motor · estado consolidado18-10-2026
 
-Versión de preguntas 1.0.0, política 1.0.0 y modelo fijado jev-1.13.0. La congelación está registrada en `prompt-freeze.json`. No se han ajustado preguntas ni umbrales con validación, test o LiveDay.
+## Versiones y separación
 
-La comprobación autenticada autorizada cubrió tres identidades de noticias de entrenamiento: N001, N002 y N005. Se realizaron cuatro peticiones (tres de etapa A y una de etapa B), todas HTTP 200 al primer intento; el modelo devuelto fue jev-1.13.0. Tiempo total local: 1,476 s. Uso agregado reportado por la API: 36.879 tokens de entrada y 3.284 de salida. No se conoce el cargo facturado ni se estima precisión a partir de estos tres ejemplos.
+Predeterminado1.0.0 y experimental link-2.2.0; política1.0.0/modelo jev-1.13.0. No se promueve una versión por reducir revisión. Las preguntas/umbrales congelados no se modificaron en el cierreA06. [Matriz de aceptación actual](ACEPTACION_ACTUAL.md).
 
-Validación retenida (10 noticias): **no ejecutada**, pendiente de autorización de consumo. Test (20) y LiveDay (14): **no ejecutados**, reservados para la fase final. No se publican etiquetas ni salidas protegidas del reto en este informe. No hay matrices de confusión, F1 o tiempos del lote final que se puedan afirmar todavía.
+La primera comprobación autorizada se realizó con tres identidades de training (4HTTP200,1,476s locales), documentada en jev-local.json. El estado inicial «validación/test/LiveDay no ejecutados» dejó de ser vigente durante la fase final del17-10-2026: validation10, test20 y LiveDay14 se ejecutaron con1.0.0; fechas, versión y exportación constan en final-execution-summary.json. Las flagsfalse en prompt-freeze.json describen la congelación previa; ese artefacto histórico no se reescribe.
 
-El endpoint protegido `POST /api/evaluations/{batch_id}` calcula matrices de riesgo y urgencia con precision/recall/F1, denominador n, exactitud del conjunto de proveedores y precision/recall por ID. Rechaza lotes incompletos y splits sin etiquetas. Tras ejecutar validación una vez, conservar el informe en `reports/private/`, excluido de Git y de la imagen. Si se cambiasen las preguntas a partir de ese resultado, documentar que la validación deja de ser independiente.
+## Qué se evaluó
 
-RSS: ingesta real comprobada; análisis de pago apagado por defecto. Las noticias RSS no alteran las exportaciones del ejercicio. Las pruebas con mocks son pruebas de software, no métricas de clasificación.
+Validation histórica n=10: riesgo TP3/FP0/FN2/TN5, F1=0,75; urgencia F1=1,00 con2positivos; conjuntos de proveedores exactos8/10;8noticias en revisión. No se presentan esos resultados como una nueva evaluación independiente ni como precisión general del producto. Test/LiveDay no tienen métricas de exactitud calculadas con answer key: no se buscó ni utilizó. Su ejecución final y formato de exportación no equivalen a una evaluación supervisada de acierto.
+
+El desarrollo posterior de vínculo se hizo con30training y sintéticos; se congeló2.2.0 antes de una comparación retrospectiva de la validation ya inspeccionada. Se conservan las regresiones y el falloA06 del default; no se vuelve a ajustar con ese caso. Véanse LINK_V2_PROPUESTA.md y AUDITORIA_SOPORTE.md. Los datos por noticia/referencias permanecen en reports/private, fueraGit/Docker/frontend.
+
+El ensayo dirigido de duración posterior usó solo seis sintéticos:6/6duraciones,12HTTP200/0reintentos de36máximo; no cambia la conclusión de matching ni acredita una mejora de precisión. Consumo, uso y límite en DURATION_RESULTADOS.md. El factorial sigue aplazado.
+
+## LiveDay y RSS
+
+LiveDay se ejecutó **el17-10-2026**, no durante el desarrollo posterior del18-10. [A20_HISTORICO.md](A20_HISTORICO.md) registra14filas,5,753s, commit4a3645a,23peticiones HTTP nuevas y límites de caché/reloj. No se reabre ni ejecuta LiveDay para corregirA06. El tiempo histórico no certifica12c4dff: A20actual queda no ejecutado, con antecedente aprobado.
+
+RSS conserva datos reales y exposición potencial de una cartera simulada; no modifica exportaciones del ejercicio. Consultas del worker en12c4dff:seis trabajos completados,2HTTP200/4HTTP304, sin llamadas JEV adicionales. Inferencia periódica de pago=false. No existe evaluación RSS independiente etiquetada con la que afirmar precisión/recall. Mocks y acuerdo entre ejecuciones no sustituyen esas etiquetas.

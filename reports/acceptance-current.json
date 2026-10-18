@@ -1,0 +1,120 @@
+{
+  "revision": "12c4dff59252acca6a122341ae36479c81041b0c",
+  "default_profile": "1.0.0",
+  "experimental_profile": "link-2.2.0",
+  "new_jev_requests": 0,
+  "counts": {
+    "pasa": 17,
+    "falla": 1,
+    "no ejecutado": 2
+  },
+  "checks": [
+    {
+      "id": "A01",
+      "status": "pasa",
+      "evidence_and_limit": "Catálogo40 comprobado en12c4dff;20materiales/6productos y40Noul heredados de auditoría inicial/integración120. Constructor y catálogo sin cambios por el arreglo de duración."
+    },
+    {
+      "id": "A02",
+      "status": "pasa",
+      "evidence_and_limit": "Importación idempotente de los cuatro esquemas heredada; ampliaciones posteriores verificaron News_Feed y LiveDay habilitado. Importador sin cambios desde la integración amplia. No se reabrieron los originales para esta tarea."
+    },
+    {
+      "id": "A03",
+      "status": "pasa",
+      "evidence_and_limit": "Exclusión de cinco etiquetas en payload HTTP probada previamente; whitelists intactas. Nuevas pruebas unitarias de preparación de duración conservan la separación. Se hereda la prueba con centinela; no se envían etiquetas a JEV."
+    },
+    {
+      "id": "A04",
+      "status": "pasa",
+      "evidence_and_limit": "Homónimos/geografía inocua cubiertos en unitarias e integración y sintéticos almacenados; sin nuevo atajo por keywords. Matching/normalizadores sin cambios en12c4dff. Muestra histórica limitada, no precisión perfecta."
+    },
+    {
+      "id": "A05",
+      "status": "pasa",
+      "evidence_and_limit": "Positivas con identidad y riesgo/urgencia negativos cubiertas por integración; soporte negativo verificado en19unit de contrato. Puertas y polaridad intactas."
+    },
+    {
+      "id": "A06",
+      "status": "falla",
+      "evidence_and_limit": "Caso regional concreto sigue fallando en el predeterminado. Se reconstruyó del diagnóstico ya existente, sin ajustar con validación. Corrección general parcial ya desarrollada en training/sintéticos permanece experimental. Falta confirmar provincia/ubicación operativa de una identidad ambigua; además persiste limitación de interpretación del default para otra identidad con geografía resoluble. Detalle protegido en reports/private/A06_CIERRE.md. No se eleva a requisito de precisión perfecta ni se rebaja el caso para aprobarlo."
+    },
+    {
+      "id": "A07",
+      "status": "pasa",
+      "evidence_and_limit": "Agrupación de titulares e incidentes/máximo por proveedor heredada de integración y sondeos reales. Incidentes y deduplicación sin cambios; no se suma la nueva duración al score como factor independiente."
+    },
+    {
+      "id": "A08",
+      "status": "pasa",
+      "evidence_and_limit": "Recuperación compatible, historial y recepción tardía cubiertos por integración. Código de reconciliación y cierre intacto; evidencia heredada, sin cerrar incidentes reales para probar otra vez."
+    },
+    {
+      "id": "A09",
+      "status": "pasa",
+      "evidence_and_limit": "Inventario físico desconocido/no aplicable/cero probado previamente; scoring intacto. El extractor no inventa stock o lead time. Pruebas nuevas conservan duración desconocida cuando no es utilizable."
+    },
+    {
+      "id": "A10",
+      "status": "pasa",
+      "evidence_and_limit": "Fórmula y referencia congeladas, severidad y confianza separadas; hereda suite de referencia/integración.42pruebas originales de duración +2de preparación/caché pasan;6sintéticos JEV verifican dos días exactos/mínimos sin alterar pesos ni puertas."
+    },
+    {
+      "id": "A11",
+      "status": "pasa",
+      "evidence_and_limit": "Ingesta/análisisRSS real previo conservado. En12c4dff, seis trabajos de consulta reales done,2HTTP200/4HTTP304 y fechas actualizadas;304 son respuestas condicionales, no cuerpos nuevos. Pago periódico false; contadorJEVRSS48→48 en esta comprobación."
+    },
+    {
+      "id": "A12",
+      "status": "pasa",
+      "evidence_and_limit": "RSS/Atom,304, GUID actualizado, versiones, duplicados y XML peligroso heredados de integración. ParserRSS/versionado sin cambios. Consulta del worker actual confirma operación, sin presentar ese sondeo como nuevo ensayo de todos los casos negativos."
+    },
+    {
+      "id": "A13",
+      "status": "pasa",
+      "evidence_and_limit": "Reintentos401/429/529 y error no convertido enN heredados; adaptador sin cambios desde0d.126campos de soporte cacheados auditados y19unit de contrato pasan. Ensayo nuevo6sintéticos:12HTTP200,0reintentos; no se simula que haya ocurrido un error externo nuevo."
+    },
+    {
+      "id": "A14",
+      "status": "no ejecutado",
+      "evidence_and_limit": "Ordenador+Firefox: el usuario confirma sonido mediante **Probar alarma**; aclara expresamente que solo usó ese botón. Audibilidad de una **alerta elegible nueva automática**, no confirmada. Gesto/mute/cooldown/emisión única/historial/foco/bloqueo heredan E2E con mocks, códigoaudio intacto; no acreditan sonido físico automático. Registro en AUDIO_VERIFICACION.md."
+    },
+    {
+      "id": "A15",
+      "status": "pasa",
+      "evidence_and_limit": "Borrador alternativo real editado, guardado, copiado y TXT descargado; proveedor directo probado en integración. Generador y persistencia sin cambios. No se repite una mutación real sin necesidad ni se inventa capacidad del alternativo."
+    },
+    {
+      "id": "A16",
+      "status": "pasa",
+      "evidence_and_limit": "Formato/orden/IDs/Y-N/exportaciones reales históricas comprobados; exportador sin cambios. No se afirma una nueva exportación de test/LiveDay ni se reevalúan sus respuestas. El arreglo de duración no cambia el contrato del archivo."
+    },
+    {
+      "id": "A17",
+      "status": "pasa",
+      "evidence_and_limit": "Persistencia de resultados/exportaciones comprobada tras redeploy histórico; esquema0007, catálogo y fuentes/trabajos observados tras redeploy12c4dff. ModeloDB/migraciones/leases sin cambios; reclamación concurrente y recuperación de lease heredan integración."
+    },
+    {
+      "id": "A18",
+      "status": "pasa",
+      "evidence_and_limit": "HTTPS/assets/catálogo/ficha actuales200; lectura pública y sincronización con sesión real comprobadas. Auth/origen/CSRF heredados sin cambios; bundle/paquete71archivos y17archivos del push revisados sin secretos ni originales nuevos."
+    },
+    {
+      "id": "A19",
+      "status": "pasa",
+      "evidence_and_limit": "UI pública real12c4dff a360/390/768/1440, ficha y noticiaRSS, foco contexto, sin overflow/erroresJS. Captura360 revisada visualmente con texto de exposición. Guardia de perfil/revisión heredada de4E2E locales del mismo cambio. No equivale a móvil físico, omitido por el usuario."
+    },
+    {
+      "id": "A20",
+      "status": "no ejecutado",
+      "evidence_and_limit": "**Históricamente pasa:**17-10-2026, commit4a3645a, perfil/política1.0.0,14filas,5,753s hasta Excel.23HTTP nuevas, no replay íntegro. Parser de duración cambió después y puede cambiar B: no extrapolar ese tiempo a12c4dff ni a2.2.0. Repetición únicamente en fase final autorizada, sin desarrollar con LiveDay. Detalle en A20_HISTORICO.md."
+    }
+  ],
+  "audio": {
+    "device": "ordenador",
+    "browser": "Firefox",
+    "manual_test_audible": "confirmado por el usuario",
+    "automatic_eligible_alert_audible": "no ejecutado según el usuario"
+  },
+  "a20_metadata": "a20-historical-evidence.json"
+}

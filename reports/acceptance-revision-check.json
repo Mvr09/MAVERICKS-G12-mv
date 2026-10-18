@@ -1,0 +1,7 @@
+{
+  "checked_at": "2026-10-18T15:55:52.448136+00:00",
+  "path": "/healthz",
+  "http": 200,
+  "revision": "12c4dff59252acca6a122341ae36479c81041b0c",
+  "purpose": "Anclar la matriz a la versión pública; no nueva inferencia ni reevaluación."
+}

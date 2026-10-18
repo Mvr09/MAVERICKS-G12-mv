@@ -1,3 +1,5 @@
+> **Estado vigente:** [ACEPTACION_ACTUAL.md](ACEPTACION_ACTUAL.md), consolidado para12c4dff. Este archivo conserva las auditorías históricas. A14 distingue botón de prueba y alerta automática; A20 conserva el ensayo histórico sin trasladar su tiempo al extractor actual.
+
 # Auditoría A01–A20 · 17-10-2026
 
 Ejecutada conforme a `prompts/03_AUDITORIA_Y_ENTREGA.md` y `docs/07_ACEPTACION_Y_DEMO.md`. Ejecución real final con código **4a3645a**, modelo **jev-1.13.0**, preguntas/política **1.0.0** congeladas. No se abrió el answer key ni se reajustó con resultados retenidos.
