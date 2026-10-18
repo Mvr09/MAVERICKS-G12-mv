@@ -2,8 +2,8 @@
 
 ## Estado verificado · 18-10-2026 (Madrid)
 
-- Aplicación publicada: **bf9812e21d83daff49bed7fc011b4fd98a8d2f23** (nombres de archivo recuperados en Modelo/Resumen) , `origin/main`, Mvr09/MAVERICKS-G12-mv. Railway peaceful-harmony / production: web, worker y PostgreSQL; ambos despliegues GitHub success. Sin acceso directo al panel.
-- URL real: https://mavericks-g12-mv-production.up.railway.app. Smoke18-10 00:43:45UTC(local): /, /healthz, /readyz, catálogo, fuentes, configuración y cuatro assets **200**; esquema0007. Worker online/compatible en la misma revisión.
+- Aplicación publicada: **9a00034b7cc089c845f52611f9ab67249f170892** (etiquetas de noticia y categorías RSS2.2), `origin/main`, Mvr09/MAVERICKS-G12-mv. Railway peaceful-harmony / production: web, worker y PostgreSQL; ambos despliegues GitHub success. Sin acceso directo al panel.
+- URL real: https://mavericks-g12-mv-production.up.railway.app. Smoke18-10 00:55:14UTC(local): /, /healthz, /readyz, catálogo, fuentes, configuración y cuatro assets **200**; esquema0007. Worker online/compatible en la misma revisión.
 - Persistencia 22:20:35 UTC:40 proveedores,20 materiales; validation10/test20 procesados y Excel200 idénticos celda a celda tras redeploy. Training/LiveDay ya no están cargados: el agente no los borró ni reimportó. RSS37 procesados (23review/14done), seis fuentes saludables200/304. No se ejecutó borrado ni reanálisis remoto durante esta ampliación.
 - Interfaz/documentación en español. Materiales, dashboard/fichas, fuentes/stream, filtros, ingestión/exportación, permisos, audio y borradores operativos. Servidor0.0.0.0:8000, web/worker misma imagen, predeploy `python -m app.predeploy`.
 
@@ -111,3 +111,6 @@
 - Se conserva metadato de clasificación en nuevas revisiones de incidentes/alertas; para registros antiguos se consulta la clasificación disponible del artículo vinculado. No se inventa subtipo desde la categoría canónica del incidente.
 - Validación local:109tests backend pasan32,41s con mocks; cuatro E2E nuevos pasan4,2s y recorren seis rutas más historial/contraste a360/390/768/1440. Capturas360/1440 revisadas: etiquetas legibles, sin overflow/erroresJS. BuildTS/Vite y paquete64archivos sin secretos/originales pasan. Cero llamadasJEV para estas pruebas; menor incertidumbre estadísticaRSS no acreditada sin evaluación independiente.
 - Se prepara publicaciónmain autorizada con cambios pertinentes; sin migración y sin reanálisis automático de históricos. Pendiente smoke y UI real tras autodeploy.
+
+- Publicación verificada **9a00034**, main; web/worker GitHubsuccess y compatibles. Primer smoke aún veía bf9812e y primer intentoUI detectó heartbeat antiguo durante transición: se esperó al despliegue, sin encolar análisis. Smoke00:55:14UTC: /,healthz,readyz,catálogo40,fuentes6,configuración y4assets200; esquema0007 y pago periódicoRSSfalse.
+- Chromium Railway real a360/390/768/1440:37noticias con una etiqueta cada una,4señalesResumen,12streamRSS,1incidente/1alerta y detalleforestal explícito. Sin overflow ni erroresJS;0mutaciones/0JEV. Evidencia reports/news-tags-railway.json y public-deployment-news-tags.json. RSS solo consultado desde su API de datos persistidos en este ensayo; no afirmar un nuevo sondeo de las seis fuentes. Histórico conservado; nuevas definiciones RSS solo en análisis/reanálisis explícito. No se ha cuantificado reducción de incertidumbre/precisiónRSS. Metadatos posteriores en commit documental local para evitar otro redeploy sin cambios de código.

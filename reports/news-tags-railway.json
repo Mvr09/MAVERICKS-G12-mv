@@ -1,0 +1,158 @@
+{
+  "checked_at_local": "2026-10-18T00:55:26.652Z",
+  "revision": "9a00034b7cc089c845f52611f9ab67249f170892",
+  "mocked": false,
+  "viewports": [
+    {
+      "width": 360,
+      "checks": [
+        {
+          "path": "/",
+          "cards": 4,
+          "tag_per_card": true
+        },
+        {
+          "path": "/noticias",
+          "cards": 37,
+          "tag_per_card": true
+        },
+        {
+          "path": "/noticias/:id",
+          "explicit_forest_type": true
+        },
+        {
+          "path": "/fuentes",
+          "cards": 12,
+          "tag_per_card": true
+        },
+        {
+          "path": "/proveedores/:id",
+          "cards": 1,
+          "tag_per_card": true
+        },
+        {
+          "path": "/alertas",
+          "cards": 1,
+          "tag_per_card": true
+        }
+      ],
+      "page_errors": [],
+      "mutation_requests": 0,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "checks": [
+        {
+          "path": "/",
+          "cards": 4,
+          "tag_per_card": true
+        },
+        {
+          "path": "/noticias",
+          "cards": 37,
+          "tag_per_card": true
+        },
+        {
+          "path": "/noticias/:id",
+          "explicit_forest_type": true
+        },
+        {
+          "path": "/fuentes",
+          "cards": 12,
+          "tag_per_card": true
+        },
+        {
+          "path": "/proveedores/:id",
+          "cards": 1,
+          "tag_per_card": true
+        },
+        {
+          "path": "/alertas",
+          "cards": 1,
+          "tag_per_card": true
+        }
+      ],
+      "page_errors": [],
+      "mutation_requests": 0,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 768,
+      "checks": [
+        {
+          "path": "/",
+          "cards": 4,
+          "tag_per_card": true
+        },
+        {
+          "path": "/noticias",
+          "cards": 37,
+          "tag_per_card": true
+        },
+        {
+          "path": "/noticias/:id",
+          "explicit_forest_type": true
+        },
+        {
+          "path": "/fuentes",
+          "cards": 12,
+          "tag_per_card": true
+        },
+        {
+          "path": "/proveedores/:id",
+          "cards": 1,
+          "tag_per_card": true
+        },
+        {
+          "path": "/alertas",
+          "cards": 1,
+          "tag_per_card": true
+        }
+      ],
+      "page_errors": [],
+      "mutation_requests": 0,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "checks": [
+        {
+          "path": "/",
+          "cards": 4,
+          "tag_per_card": true
+        },
+        {
+          "path": "/noticias",
+          "cards": 37,
+          "tag_per_card": true
+        },
+        {
+          "path": "/noticias/:id",
+          "explicit_forest_type": true
+        },
+        {
+          "path": "/fuentes",
+          "cards": 12,
+          "tag_per_card": true
+        },
+        {
+          "path": "/proveedores/:id",
+          "cards": 1,
+          "tag_per_card": true
+        },
+        {
+          "path": "/alertas",
+          "cards": 1,
+          "tag_per_card": true
+        }
+      ],
+      "page_errors": [],
+      "mutation_requests": 0,
+      "horizontal_overflow": false
+    }
+  ],
+  "jev_requests_initiated": 0,
+  "worker_compatible": true,
+  "rss_paid_analysis_disabled": true
+}

@@ -1,0 +1,76 @@
+{
+  "checked_at": "2026-10-18T00:55:14.200252+00:00",
+  "url": "https://mavericks-g12-mv-production.up.railway.app",
+  "expected_commit": "9a00034b7cc089c845f52611f9ab67249f170892",
+  "requests": [
+    {
+      "path": "/",
+      "http": 200,
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/healthz",
+      "http": 200,
+      "content_type": "application/json",
+      "status": "ok",
+      "revision": "9a00034b7cc089c845f52611f9ab67249f170892",
+      "schema": null
+    },
+    {
+      "path": "/readyz",
+      "http": 200,
+      "content_type": "application/json",
+      "status": "ok",
+      "revision": null,
+      "schema": "0007"
+    },
+    {
+      "path": "/api/suppliers",
+      "http": 200,
+      "content_type": "application/json",
+      "supplier_count": 40
+    },
+    {
+      "path": "/api/sources",
+      "http": 200,
+      "content_type": "application/json",
+      "source_count": 6
+    },
+    {
+      "path": "/api/config",
+      "http": 200,
+      "content_type": "application/json",
+      "rss_paid_analysis": false
+    },
+    {
+      "path": "/assets/charts-CYNItjKg.js",
+      "http": 200,
+      "content_type": "text/javascript; charset=utf-8",
+      "bytes": 323423
+    },
+    {
+      "path": "/assets/icons-vHhdBFLU.js",
+      "http": 200,
+      "content_type": "text/javascript; charset=utf-8",
+      "bytes": 21240
+    },
+    {
+      "path": "/assets/index-CUW9IaIs.js",
+      "http": 200,
+      "content_type": "text/javascript; charset=utf-8",
+      "bytes": 292074
+    },
+    {
+      "path": "/assets/index-Du6Qci8t.css",
+      "http": 200,
+      "content_type": "text/css; charset=utf-8",
+      "bytes": 31342
+    }
+  ],
+  "success": true,
+  "asset_count": 4,
+  "revision_matches": true,
+  "application_healthy": true,
+  "catalogue_ready": true,
+  "rss_paid_analysis_disabled": true
+}
