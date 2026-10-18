@@ -1,0 +1,49 @@
+{
+  "revision": "93365de7a03b991c8fc3bc6b399629f50fd8e56a",
+  "mutating_page_requests": [],
+  "errors": [],
+  "viewports": [
+    {
+      "width": 360,
+      "comparison_visible": true,
+      "keyboard_details": true,
+      "focus_preserved": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "comparison_visible": true,
+      "keyboard_details": true,
+      "focus_preserved": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 768,
+      "comparison_visible": true,
+      "keyboard_details": true,
+      "focus_preserved": true,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "comparison_visible": true,
+      "keyboard_details": true,
+      "focus_preserved": true,
+      "horizontal_overflow": false
+    }
+  ],
+  "new_analysis": false,
+  "new_drafts": 0,
+  "candidate_report": {
+    "policy": "review-1.1.0-candidate",
+    "runtime_enabled": false,
+    "review": 18,
+    "automatic": 12,
+    "new_requests_in_experiments": 64
+  },
+  "default_profile": "1.0.0",
+  "paid_rss_periodic": false,
+  "new_jev_requests": 0,
+  "passed": true,
+  "checked_at": "2026-10-18T20:50:48.124Z"
+}

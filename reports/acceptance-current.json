@@ -1,5 +1,5 @@
 {
-  "revision": "88b3f45b951daa564086f1347e6357a122a4c421",
+  "revision": "93365de7a03b991c8fc3bc6b399629f50fd8e56a",
   "default_profile": "1.0.0",
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
@@ -113,11 +113,11 @@
   "a14_physical_auto": "Todavía no la he probado: usuario",
   "a20": "a20-current-results.json",
   "new_jev_requests_this_delivery": {
-    "development": 150,
-    "rss_railway": 1,
-    "total": 151,
+    "development": 64,
+    "rss_railway": 0,
+    "total": 64,
     "retries": 0,
-    "development_http400": 1
+    "http_errors": 0
   },
   "audio_physical_confirmation": {
     "device": "ordenador",
@@ -128,16 +128,14 @@
     "recorded_on": "2026-10-18"
   },
   "new_delivery": {
-    "comparison": "candidate-selection.json",
-    "real_rss": "rss-flow-evidence.json",
-    "final_public": "rss-final-verification.json",
-    "final_ui": "rss-final-ui.json",
-    "a20_inheritance": "rss-a20-inheritance.json",
-    "calls_are_cumulative_not_reset": true
+    "review_report": "review-policy-results.json",
+    "diagnosis_private": "reports/private/REVISION_23_DIAGNOSTICO.md",
+    "final_public": "review-public-verification.json",
+    "final_ui": "review-public-ui.json"
   },
   "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
-  "final_verification": "rss-final-verification.json",
-  "evidence_revision_note": "Web/worker y revisión UI efectivamente comprobados en88b3f45. Motor predeterminado/exportación intactos; candidatos internos sin promoción.",
+  "final_verification": "review-public-verification.json",
+  "evidence_revision_note": "Web/worker93365de y UIreal4anchos comprobados; política1.1evaluada pero no activada en inferencia de producción.",
   "review_policy_delivery": {
     "candidate": "review-1.1.0-candidate",
     "runtime_enabled": false,
@@ -149,6 +147,22 @@
     "counter_before": 531,
     "counter_after": 595,
     "classification_changes": 0,
-    "scope": "training/synthetics only"
+    "scope": "training/synthetics only",
+    "published_commit": "93365de7a03b991c8fc3bc6b399629f50fd8e56a"
+  },
+  "previous_delivery_requests": {
+    "development": 150,
+    "rss_railway": 1,
+    "total": 151,
+    "retries": 0,
+    "development_http400": 1
+  },
+  "previous_rss_delivery": {
+    "comparison": "candidate-selection.json",
+    "real_rss": "rss-flow-evidence.json",
+    "final_public": "rss-final-verification.json",
+    "final_ui": "rss-final-ui.json",
+    "a20_inheritance": "rss-a20-inheritance.json",
+    "calls_are_cumulative_not_reset": true
   }
 }

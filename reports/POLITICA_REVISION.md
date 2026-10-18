@@ -67,3 +67,7 @@ Cinco negativos aparentemente no operativos conservan revisión por discrepancia
 64HTTPnuevos(35+29), todos200,0reintentos; contador531→595, límite compartido126 sin reiniciar. UsoAPI:135374tokensentrada/11584salida. Suma duraciónHTTP19,864s: no es tiempo de lote niA20.35respuestas previas reutilizadas; cachehits HTTP de los payloads nuevos0. A/B de36casos guardadas;6controles tienen bases sintéticas explícitas. No se presupone coste monetario o saldo.
 
 Validation retrospectiva, test/LiveDay/answerkey intactos. Factorial aplazado; RSSperiódico de pago desactivado. A20 sigue histórico de1.0.0/b4d697b,14filas/7,888s/23nuevas/0caché; no certifica el candidato con verificaciones adicionales.
+
+## Publicación y comprobaciones
+
+Publicado **93365de**, URL https://mavericks-g12-mv-production.up.railway.app. GitHub, web y worker coinciden; esquema0008, salud/readiness/assets/catálogo/fichas correctos. Modelo entrega el agregado protegido con18revisadas/12automáticas y candidata inactiva. Revisión real en360/390/768/1440 con teclado y foco conservado, sin overflow/erroresJS ni nuevas llamadas. 95pruebas unitarias/integración sintética y7E2E dirigidos pasan; seis controles de soporte real pasan. Modelo realmente usado:jev-1.13.0, registrado por petición. Evidencia posterior guardada localmente, sin otro autodeploy documental.

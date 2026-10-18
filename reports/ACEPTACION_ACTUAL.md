@@ -1,6 +1,6 @@
 # Aceptación consolidada · entrega RSS y matching
 
-Versión funcional comprobada: **88b3f45**. Predeterminado **1.0.0**, **link-2.2.0** experimental;3.0/3.1/4.0.1 internos sin promoción. Política empresarial intacta. **19pasa/1falla(A06)**. A14físico cerrado; A20histórico vigente, sin repetirLiveDay.
+Versión funcional comprobada: **93365de**. Predeterminado **1.0.0**, **link-2.2.0** experimental;3.0/3.1/4.0.1 internos sin promoción. Política empresarial intacta. **19pasa/1falla(A06)**. A14físico cerrado; A20histórico vigente, sin repetirLiveDay.
 
 Esta matriz reemplaza el resumen anterior; el historial permanece en Git y AUDITORIA.md. «Heredado» significa componente y recorrido pertinentes sin cambios, no una ejecución nueva. Detalles por noticia y referencias permanecen en reports/private, fuera de Git/Docker/APIpública.
 
@@ -40,3 +40,5 @@ Comprobación posterior a la publicación88b3f45: web y worker muestran ese SHA,
 ## Entrega de política de revisión candidata
 
 review-1.1.0 sobre respuestas3.0 congeladas:18revisadas/12automáticas de30, cero errores entre automáticas y tres urgentes positivos correctos. Sin cambios de clasificación/score; cinco casos erróneos aún revisados. 95unit/integración y7E2E dirigidos pasan; controles6/6con soporteJEVreal sobre basesMOCK. 64HTTP200/0reintentos,contador531→595; no datos retenidos. Candidata no activada en producción: la UI sí distingue incertidumbre de acción urgente yModelo presenta el ensayo protegido. No se cierraA06 ni se extrapolaA20 al nuevo candidato. A14 hereda físico/audio intacto, reforzado por pruebas de elegibilidad por proveedor/incidente. Evidencias:POLITICA_REVISION.md,review-policy-results.json yreview-inheritance.json.
+
+Verificación posterior real de93365de: GitHub/web/worker coinciden, esquema0008; HTTPS, salud/readiness, cuatroassets, catálogo40 y ficha200; endpoint de revisión401anónimo y200presentador. Modelo muestra18revisadas/12automáticas y política inactiva, default1.0.0/RSSperiódicofalse. Navegadorreal360/390/768/1440, teclado/foco y sin overflow/JS;0JEV/0mutaciones de página. Evidencias review-public-verification.json yreview-public-ui.json. A14cerrado yA20histórico;19pasa/1fallaA06.
