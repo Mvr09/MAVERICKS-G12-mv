@@ -1,0 +1,481 @@
+{
+  "policy_version": "review-1.1.0-candidate",
+  "source_question_version": "link-3.0.0-dev",
+  "sample": "30 training; all reviewed predictions included; development comparison, not independent evaluation",
+  "runtime_enabled": false,
+  "default_profile": "1.0.0",
+  "prediction_changes": 0,
+  "priority_changes": 0,
+  "stages": {
+    "3.0_original": {
+      "n": 30,
+      "risk": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 3,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7857142857142857,
+        "f1": 0.88,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 0,
+        "tn": 24,
+        "precision": 0.8333333333333334,
+        "recall": 1.0,
+        "f1": 0.9090909090909091,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 28,
+        "n": 30,
+        "precision": 0.9130434782608695,
+        "recall": 0.9545454545454546,
+        "exact_set_accuracy": 0.9333333333333333,
+        "tp": 21,
+        "fp": 2,
+        "fn": 1,
+        "f1": 0.9333333333333333
+      },
+      "review_count": 23,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.23333333333333334,
+      "automatic": {
+        "n": 7,
+        "risk": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 7,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 7,
+          "positives": 0
+        },
+        "urgent": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 7,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 7,
+          "positives": 0
+        },
+        "suppliers": {
+          "exact": 7,
+          "n": 7,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    },
+    "policy_only": {
+      "n": 30,
+      "risk": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 3,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7857142857142857,
+        "f1": 0.88,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 0,
+        "tn": 24,
+        "precision": 0.8333333333333334,
+        "recall": 1.0,
+        "f1": 0.9090909090909091,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 28,
+        "n": 30,
+        "precision": 0.9130434782608695,
+        "recall": 0.9545454545454546,
+        "exact_set_accuracy": 0.9333333333333333,
+        "tp": 21,
+        "fp": 2,
+        "fn": 1,
+        "f1": 0.9333333333333333
+      },
+      "review_count": 23,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.23333333333333334,
+      "automatic": {
+        "n": 7,
+        "risk": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 7,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 7,
+          "positives": 0
+        },
+        "urgent": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 7,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 7,
+          "positives": 0
+        },
+        "suppliers": {
+          "exact": 7,
+          "n": 7,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    },
+    "review_1_0_support": {
+      "n": 30,
+      "risk": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 3,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7857142857142857,
+        "f1": 0.88,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 0,
+        "tn": 24,
+        "precision": 0.8333333333333334,
+        "recall": 1.0,
+        "f1": 0.9090909090909091,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 28,
+        "n": 30,
+        "precision": 0.9130434782608695,
+        "recall": 0.9545454545454546,
+        "exact_set_accuracy": 0.9333333333333333,
+        "tp": 21,
+        "fp": 2,
+        "fn": 1,
+        "f1": 0.9333333333333333
+      },
+      "review_count": 22,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.26666666666666666,
+      "automatic": {
+        "n": 8,
+        "risk": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 8,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 8,
+          "positives": 0
+        },
+        "urgent": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 8,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 8,
+          "positives": 0
+        },
+        "suppliers": {
+          "exact": 8,
+          "n": 8,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    },
+    "review_1_1_facts": {
+      "n": 30,
+      "risk": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 3,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7857142857142857,
+        "f1": 0.88,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 0,
+        "tn": 24,
+        "precision": 0.8333333333333334,
+        "recall": 1.0,
+        "f1": 0.9090909090909091,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 28,
+        "n": 30,
+        "precision": 0.9130434782608695,
+        "recall": 0.9545454545454546,
+        "exact_set_accuracy": 0.9333333333333333,
+        "tp": 21,
+        "fp": 2,
+        "fn": 1,
+        "f1": 0.9333333333333333
+      },
+      "review_count": 18,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.4,
+      "automatic": {
+        "n": 12,
+        "risk": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 9,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 12,
+          "positives": 3
+        },
+        "urgent": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 9,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 12,
+          "positives": 3
+        },
+        "suppliers": {
+          "exact": 12,
+          "n": 12,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    }
+  },
+  "causes_before": {
+    "blocking_details": {
+      "risk": 35,
+      "urgency": 7,
+      "severity": 3,
+      "association": 48,
+      "impact": 4
+    },
+    "articles_per_cause": {
+      "risk": 15,
+      "urgency": 5,
+      "severity": 3,
+      "association": 15,
+      "impact": 2
+    },
+    "discarded_supplier_blockers": {
+      "association": 40
+    },
+    "nonblocking_details": {
+      "auxiliary": 48,
+      "association": 8,
+      "impact": 15,
+      "severity": 15
+    }
+  },
+  "causes_after": {
+    "blocking_details": {
+      "urgency": 16,
+      "risk": 29,
+      "impact": 4,
+      "association": 44
+    },
+    "articles_per_cause": {
+      "urgency": 8,
+      "risk": 11,
+      "impact": 2,
+      "association": 14
+    },
+    "discarded_supplier_blockers": {
+      "association": 36
+    },
+    "nonblocking_details": {
+      "auxiliary": 48,
+      "association": 12,
+      "risk": 6,
+      "urgency": 7,
+      "severity": 18,
+      "impact": 15
+    }
+  },
+  "codes_before": {
+    "risk_evidence_insufficient": 22,
+    "urgency_ambiguous": 7,
+    "risk_ambiguous": 13,
+    "severity_confidence_low": 3,
+    "association_support_insufficient": 40,
+    "impact_state_confidence_low": 4,
+    "link_ambiguous": 8
+  },
+  "codes_after": {
+    "urgency_ambiguous": 7,
+    "risk_ambiguous": 13,
+    "risk_evidence_insufficient": 16,
+    "urgency_support_insufficient": 9,
+    "impact_state_confidence_low": 4,
+    "association_support_insufficient": 36,
+    "link_ambiguous": 8
+  },
+  "controls": [
+    {
+      "case": "urgent_secondary",
+      "expected_review": false,
+      "actual_review": false,
+      "expected_sound": true,
+      "actual_sound": true,
+      "passed": true,
+      "scope": "Controlled base predictions, real JEV support verification; not full classifier accuracy"
+    },
+    {
+      "case": "irrelevant_macro",
+      "expected_review": false,
+      "actual_review": false,
+      "expected_sound": false,
+      "actual_sound": false,
+      "passed": true,
+      "scope": "Controlled base predictions, real JEV support verification; not full classifier accuracy"
+    },
+    {
+      "case": "unknown_route",
+      "expected_review": true,
+      "actual_review": true,
+      "expected_sound": false,
+      "actual_sound": false,
+      "passed": true,
+      "scope": "Controlled base predictions, real JEV support verification; not full classifier accuracy"
+    },
+    {
+      "case": "partial_negative",
+      "expected_review": true,
+      "actual_review": true,
+      "expected_sound": false,
+      "actual_sound": false,
+      "passed": true,
+      "scope": "Controlled base predictions, real JEV support verification; not full classifier accuracy"
+    },
+    {
+      "case": "urgency_uncertain",
+      "expected_review": true,
+      "actual_review": true,
+      "expected_sound": false,
+      "actual_sound": false,
+      "passed": true,
+      "scope": "Controlled base predictions, real JEV support verification; not full classifier accuracy"
+    },
+    {
+      "case": "positive_named",
+      "expected_review": false,
+      "actual_review": false,
+      "expected_sound": false,
+      "actual_sound": false,
+      "passed": true,
+      "scope": "Controlled base predictions, real JEV support verification; not full classifier accuracy"
+    }
+  ],
+  "new_correct_automatic": 5,
+  "new_incorrect_automatic": 0,
+  "known_error_cases": 5,
+  "known_errors_still_reviewed": 5,
+  "positive_risk_automatic": 3,
+  "training_sound_eligible": 0,
+  "consumption": {
+    "support_trial": 35,
+    "facts_trial": 29,
+    "total": 64,
+    "retries": 0,
+    "statuses": {
+      "200": 64
+    },
+    "counter_before": 531,
+    "counter_after": 595,
+    "shared_limit": 126,
+    "provider_reported_usage": {
+      "input_tokens": 135374,
+      "output_tokens": 11584
+    },
+    "duration_seconds_sum": 19.864276585067273,
+    "original_classification_replayed": false,
+    "valid_support_responses_reused": 35
+  },
+  "promotion_guards_passed": true,
+  "recommendation": "Adopt1.1 as the review policy of the development candidate; do not replace default1.0 or silently apply to RSS/2.2. Independent scope evaluation and runtime integration remain required before general production promotion.",
+  "limitations": [
+    "Small inspected training sample; zero errors among12automatic cases is not a production accuracy guarantee.",
+    "Five known erroneous cases remain reviewed; classification itself is unchanged.",
+    "Some clearly non-operational topics still have conflicting support and remain reviewed; do not lower thresholds just to remove these.",
+    "Three training urgent cases become automatic but none meets all original0.8audio thresholds. Controlled urgent case does.",
+    "Validation remains retrospective; no test/LiveDay/answer-key access. Paid RSS periodic remains off."
+  ]
+}

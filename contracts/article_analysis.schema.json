@@ -247,6 +247,31 @@
               "string",
               "null"
             ]
+          },
+          "review_policy_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priority_requires_review": {
+            "type": "boolean"
+          },
+          "localized_warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "human_attention": {
+            "enum": [
+              "verify_decision",
+              "immediate_contact",
+              "priority_follow_up",
+              "regular_follow_up",
+              "none",
+              null
+            ]
           }
         },
         "allOf": [
@@ -498,9 +523,34 @@
               "number",
               "null"
             ]
+          },
+          "original_requires_review": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "resolution": {
+            "enum": [
+              "independent_support_check",
+              "factual_basis_check",
+              null
+            ]
           }
         }
       }
+    },
+    "review_policy_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verification_question_version": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "allOf": [

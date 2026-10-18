@@ -42,6 +42,10 @@ class Assessment(StrictModel):
     duration_is_lower_bound: bool = False
     factor_values: dict[Literal["C", "U", "B", "G"], float]
     policy_version: str
+    review_policy_version: str | None = None
+    priority_requires_review: bool = False
+    localized_warnings: list[str] = Field(default_factory=list)
+    human_attention: Literal['verify_decision', 'immediate_contact', 'priority_follow_up', 'regular_follow_up', 'none'] | None = None
 
     @model_validator(mode="after")
     def consistency(self):
@@ -80,6 +84,8 @@ class ReviewDetail(StrictModel):
     requires_review: bool
     value: float | str | None
     threshold: float | None
+    original_requires_review: bool | None = None
+    resolution: Literal['independent_support_check', 'factual_basis_check'] | None = None
 
 
 class NormalizedAnalysis(StrictModel):
@@ -100,6 +106,8 @@ class NormalizedAnalysis(StrictModel):
     review_reasons: list[str]
     context_notes: list[str] = Field(default_factory=list)
     review_details: list[ReviewDetail] = Field(default_factory=list)
+    review_policy_version: str | None = None
+    verification_question_version: str | None = None
     source_reading: SourceReading | None = None
     event_classification: EventClassification | None = None
 

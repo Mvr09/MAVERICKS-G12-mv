@@ -39,4 +39,5 @@ def test_inquiry_endpoints_deny_anonymous():
         assert client.get('/api/articles/MOCK/drafts').status_code==401
         assert client.get('/api/drafts/MOCK').status_code==401
         assert client.get('/api/model/candidates').status_code==401
+        assert client.get('/api/model/review-policy').status_code==401
         assert client.get('/api/suppliers/S024/verification-drafts').status_code==401

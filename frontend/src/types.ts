@@ -22,6 +22,10 @@ export interface Assessment {
   factor_values: Record<string, number>;
   evidence_ids: string[];
   impact_status: string;
+  review_policy_version?: string;
+  priority_requires_review?: boolean;
+  localized_warnings?: string[];
+  human_attention?: string;
 }
 export interface Analysis {
   review_details?: {
@@ -32,6 +36,7 @@ export interface Analysis {
     requires_review: boolean;
     value: string | number | null;
     threshold: number | null;
+    resolution?: string | null;
   }[];
   event_classification?: {
     category: string;
@@ -197,6 +202,7 @@ export interface Batch {
   elapsed_seconds: number | null;
 }
 export interface Alert {
+  urgent?: string;
   event_tag?: EventInfo;
   id: number;
   incident_id: string;

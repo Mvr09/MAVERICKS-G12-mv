@@ -863,6 +863,17 @@ h1 {
   font-size: 12px;
   font-weight: 600;
 }
+.buyer-decision {
+  flex-basis: 100%;
+  min-width: 0;
+  padding: 14px;
+  border-left: 3px solid #6c5cff;
+  background: #f6f4ff;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.buyer-decision p { margin: 6px 0; }
+.buyer-decision .notice { display: block; margin-top: 8px; }
 .text-link {
   display: inline-flex;
   min-height: 44px;

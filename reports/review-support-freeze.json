@@ -1,0 +1,28 @@
+{
+  "version": "review-1.0.0-candidate",
+  "support_questions": "decision-support-1.0.0",
+  "files": {
+    "app/review_policy.py": "ebad31ab2c0b5a81b5ac96995c4f21643b422433b71eab27cc9282737f96dc5b",
+    "app/review_support.py": "1c154bdd44fe28c954073ced01614bc9892fcc704ea863795c6a124553d79997",
+    "scripts/review_scenarios.py": "357336496f1401cc8282c250a142610aa85164157164bf22d290244e220d016c",
+    "app/link_candidate.py": "eaafebb059b7c52119b4be9664c45d2a7ffe643a2c28f1fdf38bf504cd7e44ac",
+    "app/link_questions.py": "2bb2ba0b9216e42c4bacb69ccd4cf9f100f027cdb1b4544e928ff4eb1f27b9a6",
+    "app/link_analysis.py": "571ae51ae985fae85e2a40ed0e9e6ab32b3add7a9b531ddce0f6d8f65fab9766",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+  },
+  "training": 30,
+  "stored_synthetic": 6,
+  "controlled_policy": 6,
+  "initial_requests_max": 42,
+  "attempts_including_retries_max": 126,
+  "hypothesis": "Explicit conditional-risk and polarity-specific exclusion support can replace redundant support blockers while preserving genuine missing scope, risk/urgency ambiguity and negative-decision uncertainty. Urgent action is independent of secondary priority uncertainty.",
+  "promotion_guards": [
+    "Strictly more automatic correct cases with no added automatic joint errors",
+    "All risk/urgency/supplier decisions and priority scores unchanged",
+    "Known training omissions retain review, not reclassified as correct",
+    "Controlled partial false-negative/unknown-route/ambiguous-urgency stay reviewed",
+    "Controlled well-supported urgent case becomes automatic and audible with priority warning",
+    "No claim of independent held-out accuracy; default1.0 stays reproducible"
+  ],
+  "held_out": "No validation/test/LiveDay/answer key; only stored training and synthetics"
+}

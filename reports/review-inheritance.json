@@ -1,0 +1,26 @@
+{
+  "reference_revision": "88b3f45",
+  "measured_a20_revision": "b4d697b",
+  "historical_only": true,
+  "measured_rows": 14,
+  "elapsed_seconds": 7.888295967,
+  "new_calls": 23,
+  "cached_calls": 0,
+  "repeated": false,
+  "unchanged_files": {
+    "app/analysis.py": true,
+    "app/jev.py": true,
+    "app/duration.py": true,
+    "app/profiles.py": true,
+    "app/importer.py": true,
+    "app/worker.py": true,
+    "app/queue.py": true,
+    "reference/scoring.py": true,
+    "reference/jev_requests.py": true,
+    "config/risk_policy.json": true,
+    "frontend/src/audio.ts": true
+  },
+  "incident_logic_identical_except_four_alert_metadata_keys": true,
+  "candidate_timing_certified": false,
+  "notes": "Review candidate is inactive in production. Contracts add optional metadata only. A20 is not a new timing certificate for verification stages."
+}

@@ -1,0 +1,23 @@
+{
+  "policy_version": "review-1.1.0-candidate",
+  "questions": "decision-facts-1.0.0",
+  "files": {
+    "app/review_policy.py": "ebad31ab2c0b5a81b5ac96995c4f21643b422433b71eab27cc9282737f96dc5b",
+    "app/review_support.py": "1c154bdd44fe28c954073ced01614bc9892fcc704ea863795c6a124553d79997",
+    "app/review_facts.py": "d4cae019075a81763f97d4c921c49a47fa1200efb1c36fc7bc988148e9f1abf1",
+    "scripts/review_scenarios.py": "357336496f1401cc8282c250a142610aa85164157164bf22d290244e220d016c",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+  },
+  "hypothesis": "Replace demands for literal buyer advice/exclusion with explicit source factual basis: serious active stoppage versus limited/slow threat; clearly non-operational subject plus low final identity/exposure. Preserve uncertainty and original decisions.",
+  "source_cases": 42,
+  "maximum_initial_requests": 35,
+  "shared_budget_total_including_first_trial_and_retries": 126,
+  "reuse": "All35valid support responses plus original A/B; never re-ask a valid response",
+  "guards": [
+    "No changes to probabilities/classification/priority",
+    "Increase correct automatic coverage without adding automatic errors",
+    "Retain known training omissions and controlled missing-route/partial-risk-negative/ambiguous-urgency review",
+    "Clearly urgent supported case audible despite secondary score warning",
+    "No held-out data; no default change"
+  ]
+}

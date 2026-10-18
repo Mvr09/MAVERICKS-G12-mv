@@ -37,7 +37,7 @@
     {
       "id": "A06",
       "status": "falla",
-      "evidence_and_limit": "Falla en predeterminado1.0.0: enriquecimiento no resuelve por sí solo exposición respaldada. Capacidad multiselección40Noul acreditada.3.0 reduce omisiones críticas/únicas pero pierde un servicio declarado y añade2FP;3.1 recupera ese vínculo y todas22asociacionestraining, añade2FP no disruptivos y mantiene problemas de riesgo/urgencia sintéticos. No promovidos; ver SELECCION_OPERATIVA.md. S003provincia desconocida sigue siendo limitación de datos; no se inventa ni se fuerza por referencia. Sin ajuste con validation/test/LiveDay."
+      "evidence_and_limit": "Falla en predeterminado1.0.0: enriquecimiento no resuelve por sí solo exposición respaldada. Capacidad multiselección40Noul acreditada.3.0 reduce omisiones críticas/únicas pero pierde un servicio declarado y añade2FP;3.1 recupera ese vínculo y todas22asociacionestraining, añade2FP no disruptivos y mantiene problemas de riesgo/urgencia sintéticos. No promovidos; ver SELECCION_OPERATIVA.md. S003provincia desconocida sigue siendo limitación de datos; no se inventa ni se fuerza por referencia. Sin ajuste con validation/test/LiveDay. Política1.1de revisión mejora cobertura7→12/30sin cambiar predicciones; los5casos erróneos continúan revisados. A06no se cierra mediante cambio de revisión."
     },
     {
       "id": "A07",
@@ -72,12 +72,12 @@
     {
       "id": "A13",
       "status": "pasa",
-      "evidence_and_limit": "Adaptador estable/reintentos heredados; desarrollo150HTTP(149éxito/1HTTP400diagnosticado),0reintentos, contador381→531 compartido228.3.1reutiliza57etapas porhash. RSSmanualRailway1HTTP/0caché,contador48→49. Unit/integración sintética83pasan; no se atribuyen métricas retenidas a estos experimentos."
+      "evidence_and_limit": "Adaptador estable/reintentos heredados; desarrollo150HTTP(149éxito/1HTTP400diagnosticado),0reintentos, contador381→531 compartido228.3.1reutiliza57etapas porhash. RSSmanualRailway1HTTP/0caché,contador48→49. Unit/integración sintética83pasan; no se atribuyen métricas retenidas a estos experimentos. Ensayosreview1.0/1.1registran64HTTP200/0reintentos,531→595;35soportes+36A/Breutilizados ypayloadsretienen exclusión de etiquetas. No nueva evaluación retenida."
     },
     {
       "id": "A14",
       "status": "pasa",
-      "evidence_and_limit": "Pasa físico confirmado por usuario: ordenador/Firefox, Activar sonido→programarQA5s→una sola emisión automática audible sinProbaralarma. Misma lógica elegibilidad/notificador; no acredita calidadJEV. Códigoaudio intacto yQAautomatizado heredado; no nueva prueba física móvil."
+      "evidence_and_limit": "Pasa físico confirmado por usuario: ordenador/Firefox, Activar sonido→programarQA5s→una sola emisión automática audible sinProbaralarma. Misma lógica elegibilidad/notificador; no acredita calidadJEV. Códigoaudio intacto yQAautomatizado heredado; no nueva prueba física móvil. Nuevas pruebasPG/navegador:aviso por proveedor sustentado pese a prioridad incierta y otro proveedor revisado; urgencia visual separada del umbral de sonido. audio.ts intacto; no nueva prueba física."
     },
     {
       "id": "A15",
@@ -97,7 +97,7 @@
     {
       "id": "A18",
       "status": "pasa",
-      "evidence_and_limit": "Actual701f2b0 HTTPS,/,healthz/readyz200,4assets200,catálogo40,ficha/rutaprofunda200; endpoints administrativos nuevos401anónimo y operacionespresentador probadas. AllowlistDocker85archivos sinsecretos/originales; sesiones/permisos heredados más testsnuevos."
+      "evidence_and_limit": "Actual701f2b0 HTTPS,/,healthz/readyz200,4assets200,catálogo40,ficha/rutaprofunda200; endpoints administrativos nuevos401anónimo y operacionespresentador probadas. AllowlistDocker85archivos sinsecretos/originales; sesiones/permisos heredados más testsnuevos. Endpoint GET/model/review-policy exige presentador y solo entrega agregados;95unit/integración incluyen401anónimo. Paqueteallowlist92sinsecretos/originales."
     },
     {
       "id": "A19",
@@ -107,7 +107,7 @@
     {
       "id": "A20",
       "status": "pasa",
-      "evidence_and_limit": "Pasa heredado: b4d697b,18-10-2026,1.0.0/jev1.13/duration1.1,14LiveDay,7.888295967s hasta exportación,23HTTPnuevos/0caché/0reintentos. rss-a20-inheritance.json:10dependencias intactas y4funciones de ejecución/cola ASTidénticas; gateesquema actualizado0008. No se repiteLiveDay ni se extrapola al candidato o a los4min de lectura."
+      "evidence_and_limit": "Pasa heredado: b4d697b,18-10-2026,1.0.0/jev1.13/duration1.1,14LiveDay,7.888295967s hasta exportación,23HTTPnuevos/0caché/0reintentos. rss-a20-inheritance.json:10dependencias intactas y4funciones de ejecución/cola ASTidénticas; gateesquema actualizado0008. No se repiteLiveDay ni se extrapola al candidato o a los4min de lectura. review-inheritance.json:11dependencias estables intactas yreconcileASTigual salvo4metadatos de alerta. No certifica tiempo del candidato con verificaciones adicionales."
     }
   ],
   "a14_physical_auto": "Todavía no la he probado: usuario",
@@ -137,5 +137,18 @@
   },
   "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
   "final_verification": "rss-final-verification.json",
-  "evidence_revision_note": "Web/worker y revisión UI efectivamente comprobados en88b3f45. Motor predeterminado/exportación intactos; candidatos internos sin promoción."
+  "evidence_revision_note": "Web/worker y revisión UI efectivamente comprobados en88b3f45. Motor predeterminado/exportación intactos; candidatos internos sin promoción.",
+  "review_policy_delivery": {
+    "candidate": "review-1.1.0-candidate",
+    "runtime_enabled": false,
+    "source": "review-policy-results.json",
+    "tests_unit_integration": 95,
+    "tests_e2e": 7,
+    "requests": 64,
+    "retries": 0,
+    "counter_before": 531,
+    "counter_after": 595,
+    "classification_changes": 0,
+    "scope": "training/synthetics only"
+  }
 }

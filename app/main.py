@@ -1022,6 +1022,13 @@ def model_candidates():
     return json.loads((ROOT / "app/model_candidates.json").read_text())
 
 
+@app.get("/api/model/review-policy", dependencies=[Depends(presenter)])
+def review_policy_evaluation():
+    # Aggregate development evidence only. Never exposes case references or
+    # reclassifies historical articles when the dashboard is opened.
+    return json.loads((ROOT / "app/review_evaluation.json").read_text())
+
+
 class VerificationInput(BaseModel):
     article_id: str
     supplier_id: str = Field(pattern=r"^S\d{3}$")

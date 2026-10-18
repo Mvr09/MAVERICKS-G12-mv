@@ -1,4 +1,5 @@
 import { CandidateComparison } from "./CandidateComparison";
+import { ReviewPolicyComparison } from "./ReviewPolicyComparison";
 import React, { useEffect, useState } from "react";
 import { api, date, number } from "./api";
 import type { Batch, Source } from "./types";
@@ -182,6 +183,7 @@ export function ModelPage({
       ) : (
         <>
           <CandidateComparison />
+          <ReviewPolicyComparison />
           {error && (
             <div className="notice error" role="alert">
               {error}{" "}

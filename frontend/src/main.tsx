@@ -4,6 +4,7 @@ import {
   SupplierVerificationList,
 } from "./VerificationDraft";
 import { ProcessingPulse } from "./ProcessingPulse";
+import { BuyerDecision } from "./BuyerDecision";
 import { AttentionDesk, ProcurementBrief } from "./Procurement";
 import React, { useEffect, useState, useRef } from "react";
 import { createRoot } from "react-dom/client";
@@ -100,6 +101,7 @@ Object.assign(names, {
   risk_evidence_insufficient:
     "Evidencia insuficiente para la decisión de riesgo",
   urgency_ambiguous: "Decisión de urgencia ambigua",
+  urgency_support_insufficient: "Falta soporte suficiente del criterio de urgencia",
   risk_impact_contradiction: "Riesgo y estado del impacto contradictorios",
   inventory_missing: "Inventario físico no informado",
   criticality_missing: "Criticidad no informada",
@@ -946,7 +948,9 @@ function App() {
                                     ? "Recuperada"
                                     : a.needs_review
                                       ? "Requiere revisión"
-                                      : "Urgente"}
+                                      : a.urgent === 'Y' || a.sound_eligible
+                                        ? "Acción inmediata"
+                                        : "Atención de compras"}
                                 </Badge>
                                 <small>{date(a.created_at)}</small>
                               </div>
@@ -1794,7 +1798,11 @@ function ArticleDetail({ context, presenter, action }: any) {
                   <p>
                     {d.requires_review
                       ? "Requiere revisión"
-                      : "Observación auxiliar · no bloquea la decisión"}{" "}
+                      : d.resolution
+                        ? "Soporte comprobado · no bloquea la decisión"
+                        : d.relevance === 'priority'
+                          ? "Advertencia de prioridad · no bloquea riesgo o urgencia"
+                          : "Observación auxiliar · no bloquea la decisión"}{" "}
                     ·{" "}
                     {
                       (
@@ -1840,8 +1848,9 @@ function ArticleDetail({ context, presenter, action }: any) {
             <div className="assessment" key={s.supplier_id}>
               <Link to={"/proveedores/" + s.supplier_id}>{s.supplier_id}</Link>
               <Score value={s.priority} />
+              <BuyerDecision assessment={s} />
               <span>
-                Vínculo {number(s.p_link * 100)}% · {riskLabel(s.is_risk)} ·{" "}
+                {s.needs_review ? 'Propuesta por confirmar · ' : ''}Vínculo {number(s.p_link * 100)}% · {riskLabel(s.is_risk)} ·{" "}
                 {urgencyLabel(s.urgent)}
               </span>
               {s.p_candidate != null && (
