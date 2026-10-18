@@ -1,0 +1,255 @@
+{
+  "run": "night-joint-scope-01",
+  "complete": true,
+  "versions": {
+    "profile": "radar-1.0.0-candidate",
+    "matching": "link-3.2.0",
+    "retrieval": "link-3.0.0-dev",
+    "questions": "link-3.2.0",
+    "review": "review-1.2.0",
+    "support": "decision-support-1.0.0",
+    "facts": "decision-facts-1.0.0",
+    "exclusion": "relational-exclusion-1.0.0",
+    "duration": "duration-1.1.0"
+  },
+  "requests": 82,
+  "retries": 0,
+  "global_counter": 694,
+  "metrics": {
+    "baseline": {
+      "n": 30,
+      "risk": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 4,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7142857142857143,
+        "f1": 0.8333333333333334,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 3,
+        "fn": 0,
+        "tn": 22,
+        "precision": 0.625,
+        "recall": 1.0,
+        "f1": 0.7692307692307693,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 25,
+        "n": 30,
+        "precision": 0.9285714285714286,
+        "recall": 0.5909090909090909,
+        "exact_set_accuracy": 0.8333333333333334,
+        "tp": 13,
+        "fp": 1,
+        "fn": 9,
+        "f1": 0.7222222222222222
+      },
+      "review_count": 16,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.4666666666666667,
+      "automatic": {
+        "n": 14,
+        "risk": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 2,
+          "tn": 10,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "n": 14,
+          "positives": 4
+        },
+        "urgent": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 12,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 14,
+          "positives": 2
+        },
+        "suppliers": {
+          "exact": 12,
+          "n": 14,
+          "precision": 1.0,
+          "recall": 0.625,
+          "exact_set_accuracy": 0.8571428571428571,
+          "tp": 5,
+          "fp": 0,
+          "fn": 3,
+          "f1": 0.7692307692307693
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 2,
+      "automatic_joint_error_rate": 0.14285714285714285
+    },
+    "prior": {
+      "n": 30,
+      "risk": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 3,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7857142857142857,
+        "f1": 0.88,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 0,
+        "tn": 24,
+        "precision": 0.8333333333333334,
+        "recall": 1.0,
+        "f1": 0.9090909090909091,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 28,
+        "n": 30,
+        "precision": 0.9130434782608695,
+        "recall": 0.9545454545454546,
+        "exact_set_accuracy": 0.9333333333333333,
+        "tp": 21,
+        "fp": 2,
+        "fn": 1,
+        "f1": 0.9333333333333333
+      },
+      "review_count": 13,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.5666666666666667,
+      "automatic": {
+        "n": 17,
+        "risk": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 17,
+          "positives": 3
+        },
+        "urgent": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 17,
+          "positives": 3
+        },
+        "suppliers": {
+          "exact": 17,
+          "n": 17,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    },
+    "prediction": {
+      "n": 30,
+      "risk": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 4,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.7142857142857143,
+        "f1": 0.8333333333333334,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 0,
+        "fn": 0,
+        "tn": 25,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 27,
+        "n": 30,
+        "precision": 1.0,
+        "recall": 0.7727272727272727,
+        "exact_set_accuracy": 0.9,
+        "tp": 17,
+        "fp": 0,
+        "fn": 5,
+        "f1": 0.8717948717948718
+      },
+      "review_count": 14,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.5333333333333333,
+      "automatic": {
+        "n": 16,
+        "risk": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 13,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 16,
+          "positives": 3
+        },
+        "urgent": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 13,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 16,
+          "positives": 3
+        },
+        "suppliers": {
+          "exact": 16,
+          "n": 16,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
+    }
+  },
+  "decision": "Do not adopt joint-scope trial: five supplier FN including twoHigh, noFP; S024partialrisk recovered. Preserve trial and distinguish class-potential exposure from confirmed pathways."
+}
