@@ -1,3 +1,9 @@
+import {
+  scopedPath,
+  useNewsFilters,
+  useNewsReturn,
+  rememberNews,
+} from "./NewsContinuity";
 import { ReviewGuidance } from "./ReviewGuidance";
 import { AnalysisProfile, CANDIDATE } from "./AnalysisProfile";
 import {
@@ -230,7 +236,9 @@ function Modal({
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [origin, setOrigin] = useState("");
+  const [origin, setOrigin] = useState(
+    new URLSearchParams(window.location.search).get("origen") || "",
+  );
   const effectiveOrigin =
     location.pathname === "/" && !origin.startsWith("context:") ? origin : "";
   const [context, setContext] = useState(
@@ -454,7 +462,11 @@ function App() {
         <div className="workspace-label">HELIXA PHARMACEUTICALS</div>
         <nav aria-label="Principal">
           {navigation.map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.to === "/"}>
+            <NavLink
+              key={n.to}
+              to={scopedPath(n.to, context)}
+              end={n.to === "/"}
+            >
               <n.icon size={19} />
               {n.text}
               {n.to === "/alertas" &&
@@ -491,7 +503,17 @@ function App() {
               value={context}
               onChange={(e) => {
                 setOrigin("");
-                setContext(e.target.value);
+                const next = e.target.value;
+                setContext(next);
+                navigate(
+                  scopedPath(
+                    location.pathname.startsWith("/noticias/")
+                      ? "/noticias"
+                      : location.pathname,
+                    next,
+                  ),
+                  { replace: true },
+                );
               }}
             >
               <option value="exercise">Ejercicio</option>
@@ -727,13 +749,21 @@ function App() {
                         onChange={(e) => {
                           const value = e.target.value;
                           setOrigin(value);
-                          if (value)
-                            setContext(
+                          if (value) {
+                            const next =
                               value === "context:rss" ||
-                                value.startsWith("rss:")
+                              value.startsWith("rss:")
                                 ? "rss"
-                                : "exercise",
+                                : "exercise";
+                            setContext(next);
+                            navigate(
+                              scopedPath(
+                                "/?origen=" + encodeURIComponent(value),
+                                next,
+                              ),
+                              { replace: true },
                             );
+                          }
                         }}
                       >
                         <option value="">
@@ -898,7 +928,9 @@ function App() {
               <Route path="/materiales/:id" element={<MaterialDetail />} />
               <Route
                 path="/noticias"
-                element={<NewsPage key={scope} articles={articles} />}
+                element={
+                  <NewsPage key={scope} articles={articles} context={context} />
+                }
               />
               <Route
                 path="/noticias/:id"
@@ -1104,7 +1136,11 @@ function App() {
         {navigation
           .filter((n) => ["/", "/noticias", "/alertas"].includes(n.to))
           .map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.to === "/"}>
+            <NavLink
+              key={n.to}
+              to={scopedPath(n.to, context)}
+              end={n.to === "/"}
+            >
               <n.icon size={21} />
               <span>{n.text}</span>
             </NavLink>
@@ -1127,7 +1163,11 @@ function App() {
               ].includes(n.to),
             )
             .map((n) => (
-              <Link key={n.to} to={n.to} onClick={() => setMore(false)}>
+              <Link
+                key={n.to}
+                to={scopedPath(n.to, context)}
+                onClick={() => setMore(false)}
+              >
                 <n.icon size={18} />
                 {n.text}
               </Link>
@@ -1442,6 +1482,7 @@ function NewsList({
   articles: Article[];
   onOpen?: () => void;
 }) {
+  const listLocation = useLocation();
   return articles.length ? (
     <div className="news-list">
       {articles.map((a) => (
@@ -1462,7 +1503,29 @@ function NewsList({
             <EventTag analysis={a.analysis} state={a.state} />
           </div>
           <h3>
-            <Link to={"/noticias/" + a.id} onClick={onOpen}>
+            <Link
+              id={"news-link-" + a.id}
+              to={scopedPath(
+                "/noticias/" + a.id,
+                a.split === "rss" ? "rss" : "exercise",
+              )}
+              state={{
+                newsReturnTo: scopedPath(
+                  "/noticias",
+                  a.split === "rss" ? "rss" : "exercise",
+                ),
+                newsFromList: listLocation.pathname === "/noticias",
+              }}
+              onClick={(e) => {
+                if (listLocation.pathname === "/noticias")
+                  rememberNews(
+                    a.split === "rss" ? "rss" : "exercise",
+                    a.id,
+                    e.currentTarget,
+                  );
+                onOpen?.();
+              }}
+            >
               {a.headline}
             </Link>
           </h3>
@@ -1479,15 +1542,40 @@ function NewsList({
     </Empty>
   );
 }
-function NewsPage({ articles }: { articles: Article[] }) {
-  const [q, setQ] = useState(""),
-    [state, setState] = useState(""),
-    [source, setSource] = useState(""),
-    [split, setSplit] = useState(""),
-    [from, setFrom] = useState(""),
-    [to, setTo] = useState(""),
-    [event, setEvent] = useState(""),
-    [relevant, setRelevant] = useState(false);
+function NewsPage({
+  articles,
+  context,
+}: {
+  articles: Article[];
+  context: string;
+}) {
+  const [filters, patch] = useNewsFilters(context);
+  const { q, state, source, split, from, to, event, relevant } = filters;
+  const setQ = (q: string) => patch({ q }),
+    setState = (state: string) => patch({ state }),
+    setSource = (source: string) => patch({ source }),
+    setSplit = (split: string) => patch({ split }),
+    setFrom = (from: string) => patch({ from }),
+    setTo = (to: string) => patch({ to }),
+    setEvent = (event: string) => patch({ event }),
+    setRelevant = (relevant: boolean) => patch({ relevant });
+  const filtered = articles.filter(
+    (a) =>
+      (!q ||
+        (a.headline + " " + a.summary)
+          .toLowerCase()
+          .includes(q.toLowerCase())) &&
+      (!state || a.state === state) &&
+      (!source || a.source === source) &&
+      (!split || a.split === split) &&
+      (!from || a.published_date >= from) &&
+      (!to || a.published_date.slice(0, 10) <= to) &&
+      (!event ||
+        a.analysis?.event_type === event ||
+        a.analysis?.event_classification?.category === event) &&
+      (!relevant || Boolean(a.analysis?.affected_supplier_ids.length)),
+  );
+  useNewsReturn(context, filtered.length);
   return (
     <section className="card">
       <div className="section-heading">
@@ -1617,29 +1705,26 @@ function NewsPage({ articles }: { articles: Article[] }) {
           Limpiar
         </button>
       </div>
-      <NewsList
-        articles={articles.filter(
-          (a) =>
-            (!q ||
-              (a.headline + " " + a.summary)
-                .toLowerCase()
-                .includes(q.toLowerCase())) &&
-            (!state || a.state === state) &&
-            (!source || a.source === source) &&
-            (!split || a.split === split) &&
-            (!from || a.published_date >= from) &&
-            (!to || a.published_date.slice(0, 10) <= to) &&
-            (!event ||
-              a.analysis?.event_type === event ||
-              a.analysis?.event_classification?.category === event) &&
-            (!relevant || Boolean(a.analysis?.affected_supplier_ids.length)),
-        )}
-      />
+      <p className="small-note" role="status">
+        {filtered.length} de {articles.length} noticias
+      </p>
+      {filtered.length ? (
+        <NewsList articles={filtered} />
+      ) : (
+        <Empty
+          title={articles.length ? "Sin coincidencias" : "Aún no hay noticias"}
+        >
+          {articles.length
+            ? "Prueba otra fuente o limpia los filtros para ver todas las noticias."
+            : "Consulta los RSS o importa un lote desde la vista de presentador."}
+        </Empty>
+      )}
     </section>
   );
 }
 function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
   const { id } = useParams();
+  const articleLocation = useLocation();
   const [a, setA] = useState<Article | null>(null),
     [error, setError] = useState("");
   useEffect(() => {
@@ -1672,7 +1757,11 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
     );
   return (
     <section className="card detail-card">
-      <Link className="text-link" to="/noticias">
+      <Link
+        className="text-link"
+        to={scopedPath("/noticias", a.split === "rss" ? "rss" : "exercise")}
+        state={{ restoreNews: articleLocation.state?.newsFromList === true }}
+      >
         ← Noticias
       </Link>
       <div className="inline">

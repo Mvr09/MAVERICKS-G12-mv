@@ -92,7 +92,7 @@ export function procurement(s: Supplier, context: string, incidentId?: string) {
     exposure,
     materials,
     alternative: s.alternate_id
-      ? "Alternativo registrado: confirmar disponibilidad, capacidad y plazo antes de recurrir a él."
+      ? "Alternativo registrado: confirmar adecuación, disponibilidad, capacidad y plazo antes de recurrir a él."
       : "No hay alternativo registrado: consultar opciones aprobadas con procurement.",
     unknown:
       "La noticia y la relación de catálogo no confirman daños individuales ni entregas afectadas.",

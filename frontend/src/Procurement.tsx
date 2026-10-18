@@ -1,3 +1,4 @@
+import { scopedPath } from "./NewsContinuity";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -46,7 +47,10 @@ export function ProcurementBrief({
             <div>
               {p.materials.length ? (
                 p.materials.map((m) => (
-                  <Link key={m.material_id} to={"/materiales/" + m.material_id}>
+                  <Link
+                    key={m.material_id}
+                    to={scopedPath("/materiales/" + m.material_id, context)}
+                  >
                     {m.name} <small>· {m.role}</small>
                   </Link>
                 ))
@@ -78,7 +82,7 @@ export function ProcurementBrief({
       {p.entry?.article_id && (
         <Link
           className="text-link procurement-evidence"
-          to={"/noticias/" + p.entry.article_id}
+          to={scopedPath("/noticias/" + p.entry.article_id, context)}
         >
           <ArrowUpRight size={16} />
           Ver evidencia:{" "}
