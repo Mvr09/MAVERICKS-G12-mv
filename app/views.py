@@ -179,7 +179,7 @@ def suppliers_view(db, context="exercise", origin=""):
         uncertain_links = {d["supplier_id"] for d in result.get("review_details", []) if d["requires_review"] and d["relevance"] == "association"}
         for assessment in result["assessments"]:
             sid = assessment["supplier_id"]
-            if assessment.get("needs_review") and (sid in uncertain_links or assessment["p_link"] >= POLICY["thresholds"]["review_low"]):
+            if assessment.get("needs_review") and (assessment.get('decision_origin') == 'human' or sid in uncertain_links or assessment["p_link"] >= POLICY["thresholds"]["review_low"]):
                 doubts[sid] = article_data["published_date"]
                 review_work.setdefault(sid,[]).append({"article_id":article_row.id,"headline":article_data["headline"]})
             if sid not in result["affected_supplier_ids"]:

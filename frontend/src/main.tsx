@@ -1832,7 +1832,7 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
       />
       <span>
         {s.needs_review ? "Propuesta por confirmar · " : ""}
-        {presenter ? `Vínculo ${number(s.p_link * 100)}% · ` : ""}
+        {presenter ? `Vínculo ${s.p_link == null ? "no estimado" : number(s.p_link * 100) + "%"} · ` : ""}
         {riskLabel(s.is_risk)} · {urgencyLabel(s.urgent)}
       </span>
       {presenter && s.p_candidate != null && (
@@ -2377,7 +2377,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                             : "Evaluación completada con evidencia."}
                         </p>
                         <p>
-                          Vínculo {number((h.assessment?.p_link || 0) * 100)}% ·
+                          Vínculo JEV {h.assessment?.p_link == null ? "no estimado" : number(h.assessment.p_link * 100) + "%"} ·
                           Severidad {number(h.assessment?.severity)} / 10
                         </p>
                         <div className="factor-grid">

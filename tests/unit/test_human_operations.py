@@ -149,3 +149,23 @@ def test_declared_corridor_retrieval_distinguishes_modes_without_inventing_shipm
 
 def test_nonurgent_human_risk_does_not_imply_inactive_impact(setup):
  db,a,analysis,sid=setup;save(db,a.id,body(a,analysis,sid).model_copy(update={'impact_status':'active','urgent':'N'}));inc=db.scalar(select(Incident).where(Incident.supplier_id==sid));assert inc.state=='active'and inc.history[-1]['assessment']['urgent']=='N'
+
+def test_new_human_candidate_is_pending_not_resolved_and_never_invents_probabilities(setup):
+ db,a,analysis,sid=setup;extra='QA-NEW-'+str(uuid4());db.add(Supplier(id=extra,data={**db.get(Supplier,sid).data,'supplier_id':extra}));db.flush()
+ # No original model candidate/assessment exists for this supplier.
+ request=save(db,a.id,DecisionInput(supplier_id=extra,generation=0,source_version=1,source_hash=a.content_hash,analysis_id=analysis.id,association='unknown',note='MOCK confirmar ubicación antes de concluir la exposición'))
+ assert extra in view(db,a)['remaining_suppliers']and view(db,a)['state']=='in_verification'
+ from app.views import suppliers_view
+ selected=next(s for s in suppliers_view(db,'exercise')if s['supplier_id']==extra);assert selected['needs_review']and selected['review_work']
+ positive=body(a,analysis,extra,previous_id=request.id);save(db,a.id,positive);inc=db.scalar(select(Incident).where(Incident.supplier_id==extra));assessment=inc.history[-1]['assessment']
+ assert all(assessment[k]is None for k in ['p_link','p_risk','p_urgent'])and not assessment['model_probabilities_available']
+ assert all(p['supplier_id']!=extra for p in analysis.result['assessments'])
+
+
+def test_positive_identity_correction_without_risk_is_visible_operationally(setup):
+ db,a,analysis,sid=setup;extra='QA-POS-'+str(uuid4());db.add(Supplier(id=extra,data={**db.get(Supplier,sid).data,'supplier_id':extra}));db.flush()
+ payload=DecisionInput(supplier_id=extra,generation=0,source_version=1,source_hash=a.content_hash,analysis_id=analysis.id,association='confirmed',risk='N',urgent='N',note='MOCK noticia positiva, proveedor identificado sin amenaza',evidence='MOCK supplier received a sustainability award.',evidence_source='MOCK source')
+ save(db,a.id,payload)
+ from app.views import suppliers_view
+ selected=next(s for s in suppliers_view(db,'exercise')if s['supplier_id']==extra)
+ assert selected['priority']==0 and not selected['needs_review']and 'Sin riesgo activo'in selected['reason']

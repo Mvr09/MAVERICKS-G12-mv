@@ -1,6 +1,6 @@
 export interface Assessment {
   supplier_id: string;
-  p_link: number;
+  p_link: number | null;
   p_candidate?: number;
   association_status?: "confirmed" | "review" | "excluded";
   geography_version?: string;
@@ -13,8 +13,8 @@ export interface Assessment {
   requires_pathway_confirmation?: boolean;
   p_identity?: number;
   p_exposure?: number;
-  p_risk: number;
-  p_urgent: number;
+  p_risk: number | null;
+  p_urgent: number | null;
   is_risk: string;
   urgent: string;
   severity: number | null;

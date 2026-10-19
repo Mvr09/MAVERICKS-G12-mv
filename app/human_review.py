@@ -64,12 +64,12 @@ def required_suppliers(result):
     return set(result.get('affected_supplier_ids',[]))|{a['supplier_id']for a in result.get('assessments',[])if a.get('needs_review') and a.get('p_link',0)>=POLICY['thresholds']['review_low']}|{d['supplier_id']for d in result.get('review_details',[])if d.get('requires_review')and d.get('relevance')=='association'and d.get('supplier_id')}
 
 def summary(db,article,analysis=None):
-    analysis=analysis or latest_analysis(db,article);latest=current_decisions(db,article,analysis);required=required_suppliers(analysis.result)if analysis else set()
+    analysis=analysis or latest_analysis(db,article);latest=current_decisions(db,article,analysis);model_required=required_suppliers(analysis.result)if analysis else set();required=model_required|set(latest)
     resolved={sid for sid,r in latest.items()if r.data['association']!='unknown'}
     result=analysis.result if analysis else {}
     general=[d.get('resolution_hint')or d['code'] for d in result.get('review_details',[])if d.get('requires_review')and not d.get('supplier_id')and d.get('relevance')not in('auxiliary','priority')]
     general += [r for r in result.get('review_reasons',[]) if r not in {'event_type_confidence_low','severity_confidence_low'} and ':'not in r and not any(d.get('code')==r for d in result.get('review_details',[]))]
-    general_pending=bool(result.get('analysis_status')=='review' and (general or not required) and not any(r.data.get('case_scope_confirmed')and r.data['association']!='unknown'for r in latest.values()))
+    general_pending=bool(result.get('analysis_status')=='review' and (general or not model_required) and not any(r.data.get('case_scope_confirmed')and r.data['association']!='unknown'for r in latest.values()))
     return {'state':'resolved'if latest and not(required-resolved) and not general_pending else'in_verification'if latest else'pending'if result.get('analysis_status')=='review'else'not_required','updated_at':max((r.created_at.isoformat() for r in latest.values()),default=None),'general_pending':general_pending,'general_questions':general,'resolved_suppliers':sorted(resolved),'remaining_suppliers':sorted(required-resolved),'decisions':[{'supplier_id':r.supplier_id,'id':r.id,'association':r.data['association'],'risk':r.data['risk'],'urgent':r.data['urgent'],'exposure':r.data['exposure']}for r in latest.values()]}
 
 def view(db,article):
@@ -81,18 +81,19 @@ def effective_result(db,article,result):
     result=deepcopy(result);latest=current_decisions(db,article)
     for sid,r in latest.items():
         d=r.data
-        if d['association']=='unknown':
-            assessment=next((a for a in result['assessments']if a['supplier_id']==sid),None)
-            if assessment:assessment.update(needs_review=True)
-            continue
         assessment=next((a for a in result['assessments']if a['supplier_id']==sid),None)
-        if assessment:
-            assessment.update(needs_review=False,review_reasons=[],decision_origin='human',human_review_id=r.id)
+        if assessment is None and d['association']!='rejected':
+            assessment={'supplier_id':sid,'p_link':None,'p_risk':None,'p_urgent':None,'model_probabilities_available':False,'is_risk':None,'urgent':None,'severity':None,'priority':None,'priority_band':None,'factor_values':{},'evidence_ids':[],'review_reasons':[],'impact_status':'unclear'}
+            result['assessments'].append(assessment)
+        if d['association']=='unknown':
+            if assessment:assessment.update(needs_review=True,decision_origin='human',human_review_id=r.id)
+            continue
+        if assessment:assessment.update(needs_review=False,review_reasons=[],decision_origin='human',human_review_id=r.id)
         if d['association']=='rejected':
             result['affected_supplier_ids']=[s for s in result['affected_supplier_ids']if s!=sid]
             if assessment:assessment.update(is_risk='N',urgent='N')
         elif sid not in result['affected_supplier_ids']:result['affected_supplier_ids'].append(sid)
-        if assessment and d['association']=='confirmed':assessment.update(is_risk=d['risk'],urgent=d['urgent'])
+        if assessment and d['association']=='confirmed':assessment.update(is_risk=d['risk'],urgent=d['urgent'],exposure_kind=d['exposure'])
     return result
 
 def project(db,article,record,analysis):
@@ -125,7 +126,7 @@ def project(db,article,record,analysis):
     s=db.get(Supplier,sid).data;prior=next((a for a in analysis.result['assessments']if a['supplier_id']==sid),{})
     score=priority(is_risk=True,severity=d['severity'],criticality=s.get('criticality'),single_source=s.get('single_source'),share_category_pct=s.get('share_category_pct'),inventory_days=s.get('inventory_days'),lead_days=s.get('lead_days'),disruption_days=prior.get('duration_days'),inventory_applicability='not_applicable'if s.get('category')in('Logistics','Services')else'physical')
     # Probabilities remain original estimates; human confirmation does not make p=1.
-    assessment={**prior,'supplier_id':sid,'p_link':prior.get('p_link',0),'p_risk':prior.get('p_risk',0),'p_urgent':prior.get('p_urgent',0),'is_risk':d['risk'],'urgent':d['urgent'],'severity':d['severity'],'priority':score['priority'],'priority_band':score['band'],'factor_values':score['factors'],'needs_review':False,'review_reasons':[],'priority_requires_review':score['needs_review'],'localized_warnings':score['warnings'],'impact_status':d['impact_status'],'decision_origin':'human','human_review_id':record.id,'exposure_kind':d['exposure'],'requires_pathway_confirmation':d['exposure']=='potential'}
+    assessment={**prior,'supplier_id':sid,'p_link':prior.get('p_link'),'p_risk':prior.get('p_risk'),'p_urgent':prior.get('p_urgent'),'model_probabilities_available':bool(prior),'is_risk':d['risk'],'urgent':d['urgent'],'severity':d['severity'],'priority':score['priority'],'priority_band':score['band'],'factor_values':score['factors'],'needs_review':False,'review_reasons':[],'priority_requires_review':score['needs_review'],'localized_warnings':score['warnings'],'impact_status':d['impact_status'],'decision_origin':'human','human_review_id':record.id,'exposure_kind':d['exposure'],'requires_pathway_confirmation':d['exposure']=='potential'}
     entry={'article_id':article.id,'generation':article.generation,'origin_key':article.origin_key,'published_date':article.data['published_date'],'headline':article.data['headline'],'at':now().isoformat(),'assessment':assessment,'decision_origin':'human','human_review_id':record.id,'explanation':'Decisión humana registrada; '+('afectación individual confirmada por el presentador.'if d['exposure']=='reported'else'exposición potencial; entregas individuales por confirmar.'),'tokens':[]}
     if target and (target.state=='resolved' or article.data['published_date']<target.event_date):
         target.history=[*target.history,{**entry,'superseded':True,'projection_note':'No reabre incidente cerrado o más reciente'}];return
@@ -144,7 +145,7 @@ def save(db,aid,body):
     if not db.get(Supplier,body.supplier_id):raise ValueError('Proveedor no encontrado')
     previous=current_decisions(db,article,analysis).get(body.supplier_id)
     if (previous.id if previous else None)!=body.previous_id:raise ReviewConflict('Otra decisión fue registrada. Recarga el historial antes de guardar')
-    d=body.model_dump(exclude={'generation','source_version','analysis_id','previous_id','supplier_id','source_hash'});d.update(human_policy='human-review-1.0.0',actor='Presentador autenticado (acceso compartido)',decision_origin='human',status='in_verification'if body.association=='unknown'else'resolved')
+    d=body.model_dump(exclude={'generation','source_version','analysis_id','previous_id','supplier_id','source_hash'});d.update(human_policy='human-review-1.0.1',actor='Presentador autenticado (acceso compartido)',decision_origin='human',status='in_verification'if body.association=='unknown'else'resolved')
     if body.intent=='note':
         if not previous:raise ValueError('Registra primero una decisión o solicitud de verificación')
         d={**deepcopy(previous.data),'note':body.note,'entry_kind':'note','previous_decision_id':previous.id}
