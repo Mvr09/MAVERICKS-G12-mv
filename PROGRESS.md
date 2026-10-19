@@ -1,3 +1,12 @@
+# Acceso directo a análisis · 19-10-2026
+
+- Basef420a3d publicado y comprobado enweb/worker. Se añade Analizar junto a noticias pendientes y Analizar pendientes(hasta10 porclic) enResumen,Noticias,Fuentes yAnalítica;respeta contexto/filtros,usa perfilpredeterminado yno abre herramientas ni exige escribirREANALIZAR. Selecciónmanual/perfilesanteriores conservados.
+- FichaExcel reutiliza análisisconperfil y confirmaciónsimple para repetición;históricos/borradores intactos. Revisiónhumana no equivale a pendiente;errores conservan diagnóstico. Colavisibletrasrecarga mediante consultaagrupada de jobs sinexponerpayloads;preflight evita duplicados/analizar resultadosya completados. Progresoreal yfalloparcialvisible,ningúnerrorseconvierteenN.
+- Pruebas157unit/integración enPGaislado y23E2Edirigidos distintos con mocks pasan(incluyen5anchos,filtros,permisos,máximo10,cola/recarga yExcelanálisis/reanálisis).Build ypaquete124archivos sinsecretos/originales pasan.0JEVdesarrollo;verificaciónposteriorpublicada en.runtime/pending-analysis-public.json.
+- Se publicaúnicamente esta mejora mediante main/autodeploy. No se repite campaña148,niseabre answerkey,niseusan test/LiveDay para desarrollo. Default1.0.0 intacto,recomendacióndeperfilpendientede cierre,A06 abierto,S003provincia desconocida,A14/A20heredados,RSSperiódicopagodesactivado.
+
+## Estado anterior conservado
+
 # Reparación visual · 19-10-2026
 
 - Base934c8f8; reparación exclusiva de layout. Padding unificado22px(16móvil), ancho explícito y máximo1570px, grids según espacio útil junto a sidebar; filtros Noticias alineados, estados envolventes y tablas con scroll local accesible. Analítica sin ejes recortados; Modelo leyenda HTML legible y gráficos redimensionables. Impresión A4 sin navegación fija y sin reservar ancho de sidebar.

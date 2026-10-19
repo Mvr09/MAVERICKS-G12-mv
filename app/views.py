@@ -105,7 +105,18 @@ def articles_view(db, context="exercise", include_history=False, origin=""):
     articles = db.scalars(
         query.order_by(Article.fetched_at.desc(), Article.row_order)
     ).all()
-    return [article_view(db, a) for a in articles if origin_matches(a, origin)]
+    items = [article_view(db, a) for a in articles if origin_matches(a, origin)]
+    # One batched lookup makes in-flight work visible after reload without exposing payloads.
+    if items:
+        jobs = db.scalars(select(Job).where(
+            Job.kind == "analysis", Job.state.in_(("queued", "running")),
+            Job.payload["article_id"].as_string().in_([a["id"] for a in items]),
+        )).all()
+        active = {j.payload["article_id"]: {"id": j.id, "state": j.state,
+            "analysis_profile": j.payload.get("analysis_profile", "1.0.0")} for j in jobs}
+        for item in items:
+            item["analysis_job"] = active.get(item["id"])
+    return items
 
 
 def suppliers_view(db, context="exercise", origin=""):

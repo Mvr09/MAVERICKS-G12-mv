@@ -1,3 +1,4 @@
+import { PendingAnalysis } from "./PendingAnalysis";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { scopedPath } from "./NewsContinuity";
@@ -5,7 +6,15 @@ import { Activity, ArrowUpRight } from "lucide-react";
 import type { Article } from "./types";
 
 /** Arrival signals follow real API state transitions; initial history is not new. */
-export function ProcessingPulse({ articles }: { articles: Article[] }) {
+export function ProcessingPulse({
+  articles,
+  analysisArticles = articles,
+  presenter = false,
+}: {
+  articles: Article[];
+  analysisArticles?: Article[];
+  presenter?: boolean;
+}) {
   const location = useLocation();
   const context =
     new URLSearchParams(location.search).get("context") === "rss"
@@ -97,6 +106,7 @@ export function ProcessingPulse({ articles }: { articles: Article[] }) {
             : "Las novedades aparecerán aquí"}
         </span>
       </div>
+      <PendingAnalysis articles={analysisArticles} presenter={presenter} />
       <div
         className="processing-track"
         role="progressbar"

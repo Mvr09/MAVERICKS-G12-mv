@@ -20,7 +20,10 @@ export async function api<T = any>(
     const e = await response
       .json()
       .catch(() => ({ message: "Error de conexión" }));
-    throw new Error(e.message || "No se pudo completar la operación");
+    throw new Error(
+      (typeof e.detail === "string" ? e.detail : e.message) ||
+        "No se pudo completar la operación",
+    );
   }
   return response.json();
 }

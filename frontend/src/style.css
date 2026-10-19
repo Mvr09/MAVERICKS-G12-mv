@@ -3343,3 +3343,27 @@ main > *,
     flex-wrap: wrap;
   }
 }
+
+.pending-analysis {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-block: 12px;
+  min-width: 0;
+}
+.pending-analysis > small {
+  flex: 1 1 210px;
+}
+.pending-analysis > [role="alert"] {
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+.pending-analysis.compact {
+  margin-block: 10px;
+}
+@media print {
+  .pending-analysis {
+    display: none;
+  }
+}

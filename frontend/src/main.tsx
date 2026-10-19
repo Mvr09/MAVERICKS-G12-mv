@@ -1,3 +1,4 @@
+import { PendingAnalysis } from "./PendingAnalysis";
 import { RssTriage } from "./RssTriage";
 import { HumanReview } from "./HumanReview";
 import { IncidentWorkspace } from "./IncidentWorkspace";
@@ -894,7 +895,11 @@ function App() {
                         tone="green"
                       />
                     </div>
-                    <ProcessingPulse key={scope} articles={articles} />
+                    <ProcessingPulse
+                      key={scope}
+                      articles={articles}
+                      presenter={presenter}
+                    />
                     <div className="dashboard-grid">
                       <section className="card ranking-panel">
                         <div className="section-heading">
@@ -933,6 +938,7 @@ function App() {
                             cada grupo. Las noticias neutras siguen en Noticias.
                           </p>
                           <NewsList
+                            presenter={presenter}
                             articles={[...articles]
                               .sort((a, b) => {
                                 const rank = (x: Article) =>
@@ -1229,6 +1235,7 @@ function App() {
                 element={
                   <Analytics
                     overview={overview}
+                    articles={articles}
                     suppliers={suppliers}
                     sources={sources}
                     batches={batches}
@@ -1630,9 +1637,11 @@ function Ranking({
 }
 function NewsList({
   articles,
+  presenter = false,
   onOpen,
 }: {
   articles: Article[];
+  presenter?: boolean;
   onOpen?: () => void;
 }) {
   const listLocation = useLocation();
@@ -1716,6 +1725,9 @@ function NewsList({
                 : ""}
             </p>
           ) : null}
+          {a.state === "pending" && (
+            <PendingAnalysis articles={[a]} presenter={presenter} single />
+          )}
           <small>
             {date(a.published_date)}
             {a.cached ? " · Resultado cacheado" : ""}
@@ -1798,7 +1810,11 @@ function NewsPage({
         </div>
         <Badge>{articles.length} recibidas</Badge>
       </div>
-      <ProcessingPulse articles={articles} />
+      <ProcessingPulse
+        articles={articles}
+        analysisArticles={filtered}
+        presenter={presenter}
+      />
       <div className="ranking-toolbar news-primary-filters">
         <div className="search">
           <Search size={18} />
@@ -1954,7 +1970,7 @@ function NewsPage({
       </p>
       {context === "rss" && presenter && <RssTriage articles={filtered} />}
       {filtered.length ? (
-        <NewsList articles={filtered} />
+        <NewsList articles={filtered} presenter={presenter} />
       ) : (
         <Empty
           title={articles.length ? "Sin coincidencias" : "Aún no hay noticias"}
@@ -2202,19 +2218,9 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
           </span>
         </div>
       )}
-      {presenter && a.split !== "rss" && (
-        <div className="inline">
-          <DemoControl
-            buttonLabel="Reanalizar noticia"
-            initialSelection={["article:" + a.id]}
-            initialMode="rerun"
-            onClean={async () => {
-              setA(await api("/articles/" + id));
-            }}
-          />
-        </div>
+      {presenter && !["error", "superseded"].includes(a.state) && (
+        <RssArticleAnalysis article={a} />
       )}
-      {presenter && a.split === "rss" && <RssArticleAnalysis article={a} />}
 
       {a.state === "error" && presenter && (
         <RetryAnalysis article={a} action={action} />
@@ -2678,7 +2684,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
               <SupplierVerificationList supplierId={s.supplier_id} />
             )}
             <h3>Noticias relacionadas por el análisis</h3>
-            <NewsList articles={s.articles || []} />
+            <NewsList articles={s.articles || []} presenter={presenter} />
           </div>
           <aside>
             <div className="fact-box">
@@ -3127,6 +3133,7 @@ function Batches({ batches, presenter, action }: any) {
 }
 function Analytics({
   overview,
+  articles = [],
   suppliers,
   sources,
   batches,
@@ -3176,6 +3183,7 @@ function Analytics({
             </div>
           ))}
         </div>
+        <PendingAnalysis articles={articles} presenter={shared.presenter} />
         <div className="charts">
           <div>
             <h3>Recepciones RSS acumuladas · ámbito global</h3>
@@ -3703,6 +3711,7 @@ function SourcesPage({
       {presenter && (
         <section className="card detail-card">
           <h2>Analizar y revisar noticias RSS</h2>
+          <PendingAnalysis articles={stream} presenter={presenter} />
           <p>
             {streamLoading
               ? "Consultando pendientes…"
@@ -3754,7 +3763,11 @@ function SourcesPage({
             de cada fuente.
           </p>
         ) : (
-          <NewsList articles={stream.slice(0, 12)} onOpen={onRss} />
+          <NewsList
+            articles={stream.slice(0, 12)}
+            presenter={presenter}
+            onOpen={onRss}
+          />
         )}
       </section>
     </>

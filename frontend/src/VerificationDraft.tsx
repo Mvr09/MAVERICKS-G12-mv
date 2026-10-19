@@ -81,7 +81,7 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
       <AnalysisProfile
         value={profile}
         onChange={setProfile}
-        rss
+        rss={a.split === "rss"}
         disabled={busy || activeJob}
       />
       {rerun && (
@@ -105,11 +105,13 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
           setError("");
           try {
             const r = await api(
-              rerun ? "/articles/" + a.id + "/analyze" : "/analysis/rss",
+              rerun || a.split !== "rss"
+                ? "/articles/" + a.id + "/analyze"
+                : "/analysis/rss",
               {
                 method: "POST",
                 body: JSON.stringify(
-                  rerun
+                  rerun || a.split !== "rss"
                     ? { analysis_profile: profile }
                     : {
                         limit: 1,
