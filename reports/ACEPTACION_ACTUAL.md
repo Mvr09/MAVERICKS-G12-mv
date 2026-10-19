@@ -1,6 +1,14 @@
 # Aceptación actual · Supplier Risk Radar
 
-Registro:19-10-2026. **19 pasa /1 falla (A06).** Default **1.0.0**; única candidata seleccionable **3.4.2/revisión1.3.1**, sin promoción. Versión funcional **43f1d66** y HTTP observados en `operational-public.json`; esta matriz distingue herencia de ejecución nueva.
+Registro:19-10-2026. **19 pasa /1 falla (A06).** Default **1.0.0**; única candidata seleccionable **3.4.2/revisión1.3.1**, sin promoción. Versión funcional **77d8581** y HTTP observados en `campaign-20261019-verification.json`; esta matriz distingue herencia de ejecución nueva.
+
+## Iteración comparativa nueva · código funcional77d8581
+
+- **156unit/integración y31E2E distintos con mocks** pasan; build ypaquete123archivos comprobados. UIreal de Railway a360/390/768/1440:comparar→celda→noticia/evidencia/prioridad,filtros persistentes yexportación148filas. Web/worker77d8581online/compatibles,esquema0010. Evidencia:campaign-20261019-verification.json.
+- Campaña nueva **148/148válidos,379HTTP200,0reintentos/0cachéhistórica**, ejecutada enPostgreSQLlocalaislado eimportadaprivada enRailway201. No seatribuyen sus59.701793s aRailway ni aA20. Lasconsultasgráficas/importación/verificación consumieron0JEVadicionales;operación95ejercicio/74RSS intacta. Referencias solo training/validation;test/LiveDay sin etiquetas. Nuevaautorización expresa permite esta repetición,sinajustar preguntas/umbralesdespués.
+- TrainingF1 riesgo78.26→100,urgencia76.92→90.91,proveedores68.57→91.67;automáticas12→16/30,errores2/12→0/16. ValidationF1 riesgo75→100,urgencia100→80(regresión),proveedores82.35→95.24;automáticas2→3/10,0erroresenambas. Muestrasya inspeccionadas,no evidencia independiente.5asociaciones adicionales y2urgenciasFP dela candidata siguen visibles. **Default1.0.0sinpromoción;A06abierto.**
+- Fuentes:UIrealActualizarahora→6trabajosdone,3HTTP200/3HTTP304,0novedades;104identidades/154versionesalmacenadas enelsnapshot. Sonunidades yperiodos diferentes;no se fuerza inferencia. RSSperiódicopagofalse.
+- Seguimiento yborrador anteriores reabiertos trasredeploy a390/1440. A14físicoheredado yA20histórico conservan alcance. Elúltimo commit documentalno cambiainterfaz ni motor;heredaestas comprobaciones yse compruebapublicación/salud/persistencia después.
 
 ## Entrega operativa verificada · 19-10-2026
 

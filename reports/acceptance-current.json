@@ -1,5 +1,5 @@
 {
-  "revision": "43f1d66e5dc8d833a192e6c07c947cc2a4c1839c",
+  "revision": "77d8581cd8ad73c66a106c9da74cfbb5a88fa025",
   "default_profile": "1.0.0",
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
@@ -22,7 +22,7 @@
     {
       "id": "A03",
       "status": "pasa",
-      "evidence_and_limit": "Unit/integración inspecciona el payload efectivo con cinco centinelas de etiquetas excluidos. El candidato, soporte, RSS y transporte mantienen whitelists; las particiones conservan el mismo estado sin añadir etiquetas."
+      "evidence_and_limit": "Unit/integración inspecciona el payload efectivo con cinco centinelas de etiquetas excluidos. El candidato, soporte, RSS y transporte mantienen whitelists; las particiones conservan el mismo estado sin añadir etiquetas. Campaña nueva:inspección de payloads efectivos reales sin lascinco etiquetas protegidas;referencias solo enCampaignRun privado.379peticiones nuevas200,sin cachéhistórica."
     },
     {
       "id": "A04",
@@ -37,7 +37,7 @@
     {
       "id": "A06",
       "status": "falla",
-      "evidence_and_limit": "Abierto:default omiteS024 con geografía respaldada. Diagnóstico3.4.2 congelado deN044 recuperaS024 como exposición potencial,riskY/urgentN,pero mantiene revisión por soporte/impacto. S003 provincia desconocida;el modelo lo incluye con vínculo0,63 yurgencia0,56,revisados,no asociación validada. La mejoraS024 no resuelveS003 ni la urgencia agregada dudosa. Sin ajustes conN044."
+      "evidence_and_limit": "Abierto:default omiteS024 con geografía respaldada. Diagnóstico3.4.2 congelado deN044 recuperaS024 como exposición potencial,riskY/urgentN,pero mantiene revisión por soporte/impacto. S003 provincia desconocida;el modelo lo incluye con vínculo0,63 yurgencia0,56,revisados,no asociación validada. La mejoraS024 no resuelveS003 ni la urgencia agregada dudosa. Sin ajustes conN044. Nueva comparación completa conocida mantiene A06abierto:default1.0.0 omite13asociaciones en40etiquetadas;candidatarecuperatodas peroañade5asociaciones y2urgenciasFP,con incertidumbre de catálogoS003 intacta. No sepromueve ni se ajusta tras la campaña."
     },
     {
       "id": "A07",
@@ -62,7 +62,7 @@
     {
       "id": "A11",
       "status": "pasa",
-      "evidence_and_limit": "Seis consultas reales terminadas por el worker a2e962f:2HTTP200/4HTTP304; JEV60→60. Fuente y hora en window-final-rss-sync.json;304 no es contenido nuevo. Dos análisis manuales3.3 previos y un nuevo3.4.2 de Namibia:incendio forestal,N/N,sin vínculo,solo resumen identificado,2HTTP200. TotalRSS13peticiones nuevas,12HTTP200/1HTTP400 diagnosticado; contador49→62; pago periódico false. Entrega operativa:6 consultas manuales completadas desde worker;2RSS reales con candidata3.4.2,12HTTP200/0reintentos,contador62→74. Uno doneN/N sin vínculo y otro reviewN/N sin vínculo;sin referencia independiente. Periódico de pago false."
+      "evidence_and_limit": "Seis consultas reales terminadas por el worker a2e962f:2HTTP200/4HTTP304; JEV60→60. Fuente y hora en window-final-rss-sync.json;304 no es contenido nuevo. Dos análisis manuales3.3 previos y un nuevo3.4.2 de Namibia:incendio forestal,N/N,sin vínculo,solo resumen identificado,2HTTP200. TotalRSS13peticiones nuevas,12HTTP200/1HTTP400 diagnosticado; contador49→62; pago periódico false. Entrega operativa:6 consultas manuales completadas desde worker;2RSS reales con candidata3.4.2,12HTTP200/0reintentos,contador62→74. Uno doneN/N sin vínculo y otro reviewN/N sin vínculo;sin referencia independiente. Periódico de pago false. 77d8581:botónActualizarahora probado en UIreal,6trabajosdone,3HTTP200/3HTTP304,todos0versiones nuevas enese sondeo. Hay104identidadesRSS y154versiones almacenadas enelsnapshotporfuente;0novedades no esbandejavacía. RSS74→74,pagoperiódicofalse."
     },
     {
       "id": "A12",
@@ -72,7 +72,7 @@
     {
       "id": "A13",
       "status": "pasa",
-      "evidence_and_limit": "Errores no son negativos. DosHTTP400 de la ventana registrados y diagnosticados antes de insistir. Fanout conserva estado/preguntas completos y caché. Guardas persistentes de36intentos por generación y deadline; run_key de generación0 vacío sigue acotado por artículo. Mocks401/429/reintentos y contratos pasan.454peticiones nuevas:452HTTP200/2HTTP400,0reintentos; contadores preservados. Cierre:ambosHTTP400auditados. El caso localpendiente se corrigió aerror explícito/riesgo-urgencianull,sin sobrescribir respuestas válidas ni gastarJEV;126tests pasan. Railway conserva job ygeneraciónerror,recuperación3.3 revisada separada. Revisión/acciones con control optimista, fuente y análisis fijados, sin convertir errores en decisiones. RSSmanual hasta10seleccionadas;sin periódico."
+      "evidence_and_limit": "Errores no son negativos. DosHTTP400 de la ventana registrados y diagnosticados antes de insistir. Fanout conserva estado/preguntas completos y caché. Guardas persistentes de36intentos por generación y deadline; run_key de generación0 vacío sigue acotado por artículo. Mocks401/429/reintentos y contratos pasan.454peticiones nuevas:452HTTP200/2HTTP400,0reintentos; contadores preservados. Cierre:ambosHTTP400auditados. El caso localpendiente se corrigió aerror explícito/riesgo-urgencianull,sin sobrescribir respuestas válidas ni gastarJEV;126tests pasan. Railway conserva job ygeneraciónerror,recuperación3.3 revisada separada. Revisión/acciones con control optimista, fuente y análisis fijados, sin convertir errores en decisiones. RSSmanual hasta10seleccionadas;sin periódico. Campañas0010:fallos nulos explícitos,pausa por401/contrato,reanudación solo de pendientes,caché aislada yleasesagotadosterminales. Importaciónprivadaidempotente preserva resultados yno fabrica intentosHTTP."
     },
     {
       "id": "A14",
@@ -82,7 +82,7 @@
     {
       "id": "A15",
       "status": "pasa",
-      "evidence_and_limit": "ConsultaRSS real con cita e hipótesis:edición,guardado,copia con readback,TXT y recarga a4anchos. Borrador creado en4a818c1 persiste tras autodeploya2e962f. Oferta ferroviaria propia del alternativo visible; se pregunta adecuación antes de disponibilidad/capacidad. Continuidad de edición probada, sin envío externo. Workspace persistente por incidente,consultas reabribles,contexto conservado yadvertencia de cambio. Notas humanas privadas;Analysis/etiquetas/exportaciónoriginal intactos. 43f1d66:revisión funcional identificada de ejercicio ficticio→confirmación→borrador editable→acción completada→seguimiento persistidos en Railway. Reapertura390/1440 y trasredeploy. Sin confirmar entregas externas ni enviar comunicaciones."
+      "evidence_and_limit": "ConsultaRSS real con cita e hipótesis:edición,guardado,copia con readback,TXT y recarga a4anchos. Borrador creado en4a818c1 persiste tras autodeploya2e962f. Oferta ferroviaria propia del alternativo visible; se pregunta adecuación antes de disponibilidad/capacidad. Continuidad de edición probada, sin envío externo. Workspace persistente por incidente,consultas reabribles,contexto conservado yadvertencia de cambio. Notas humanas privadas;Analysis/etiquetas/exportaciónoriginal intactos. 43f1d66:revisión funcional identificada de ejercicio ficticio→confirmación→borrador editable→acción completada→seguimiento persistidos en Railway. Reapertura390/1440 y trasredeploy. Sin confirmar entregas externas ni enviar comunicaciones. 77d8581:consulta guardada yseguimientoanteriores recuperados trasredeploy a390/1440,Escape ysin overflow. Ningún mensaje enviado."
     },
     {
       "id": "A16",
@@ -92,34 +92,26 @@
     {
       "id": "A17",
       "status": "pasa",
-      "evidence_and_limit": "Esquema0008 y migración aditiva heredados; web/worker compatibles observados en HTTPS. Draft y análisis anteriores sobreviven a autodeploy. Pruebas PG aisladas de generaciones y rollback de proyección al fallar. No se simula una caída destructiva del worker en Railway. Migración0009aditiva,24tablas comprobadas enbase aislada;histórico humano protegido de limpieza ydowngrade con datos. Nueva migración aditiva0009 con24tablas probada. Web yworker43f1d66 compatibles; persistencia real de decisión/acción/consulta trasredeploy. Sin borrado ni migración irreversible."
+      "evidence_and_limit": "Esquema0008 y migración aditiva heredados; web/worker compatibles observados en HTTPS. Draft y análisis anteriores sobreviven a autodeploy. Pruebas PG aisladas de generaciones y rollback de proyección al fallar. No se simula una caída destructiva del worker en Railway. Migración0009aditiva,24tablas comprobadas enbase aislada;histórico humano protegido de limpieza ydowngrade con datos. Nueva migración aditiva0009 con24tablas probada. Web yworker43f1d66 compatibles; persistencia real de decisión/acción/consulta trasredeploy. Sin borrado ni migración irreversible. Esquema0010 aditivo observadoenRailway,web/worker77d8581online/compatibles,campaña148resultadospersistida yexportable traspublicación. Operaciónprevia conservada."
     },
     {
       "id": "A18",
       "status": "pasa",
-      "evidence_and_limit": "a2e962f:web yworker compatibles,HTTPS,/,healthz/readyz,5assets,catálogo40,ficha/rutas profundas200;administración y análisis401 anónimos yoriginales404. Modelo protegido renderiza candidata3.4.2/revisión1.3.1,441llamadas locales yensayos descartados sin erroresJS. Paquete112archivos sin .env,originales ni referencias protegidas; sesiones/permisos probados. 146unit/integración,build ypaquete119archivos comprobados. Notas humanas privadas; administración401/originales404 en43f1d66."
+      "evidence_and_limit": "a2e962f:web yworker compatibles,HTTPS,/,healthz/readyz,5assets,catálogo40,ficha/rutas profundas200;administración y análisis401 anónimos yoriginales404. Modelo protegido renderiza candidata3.4.2/revisión1.3.1,441llamadas locales yensayos descartados sin erroresJS. Paquete112archivos sin .env,originales ni referencias protegidas; sesiones/permisos probados. 146unit/integración,build ypaquete119archivos comprobados. Notas humanas privadas; administración401/originales404 en43f1d66. Campañas yexportaciones401sinpresentador,referenciasprivadas. Paquete123archivos,sinoriginales/.env;156unit/integraciónpasan. Exportaciónprivada13MBHTTP200con148filas."
     },
     {
       "id": "A19",
       "status": "pasa",
-      "evidence_and_limit": "HTTPSa2e962f en360/390/768/1440:sin overflow/erroresJS;filtros,foco,contexto,Escape yconsulta persistida. Material yproductos esperados cargados,oferta propia del alternativo visible.26E2E distintos con mocks. Guiones4min1440/390 más repetición de pasos afectados; emulación,no estudio de compradores ni móvil físico. JS inicial215653→118897bytes codificados observados,44.87%menos; no es latencia niA20. Nuevo recorrido3.4.2 real390/1440,Excel→noticia→proveedor→M02/Glucora→borrador;8E2E mock dirigidos yerror real422sin lote ni consumo. Flujo operativo nuevo:resolver revisión sin perder texto poractualizaciones;acciones yRSSseleccionado,mocks en360/390/768/1440. Pendiente verificación deldespliegue deesta ampliación. Entrega operativa:26E2E dirigidos distintos con mocks a360/390/768/1440;fuente sustituida,mensajesconflicto,errores,lote ydiálogos. UI real390/1440 sin overflow,contexto yborrador conservados. Emulación,no nuevoensayo físico."
+      "evidence_and_limit": "HTTPSa2e962f en360/390/768/1440:sin overflow/erroresJS;filtros,foco,contexto,Escape yconsulta persistida. Material yproductos esperados cargados,oferta propia del alternativo visible.26E2E distintos con mocks. Guiones4min1440/390 más repetición de pasos afectados; emulación,no estudio de compradores ni móvil físico. JS inicial215653→118897bytes codificados observados,44.87%menos; no es latencia niA20. Nuevo recorrido3.4.2 real390/1440,Excel→noticia→proveedor→M02/Glucora→borrador;8E2E mock dirigidos yerror real422sin lote ni consumo. Flujo operativo nuevo:resolver revisión sin perder texto poractualizaciones;acciones yRSSseleccionado,mocks en360/390/768/1440. Pendiente verificación deldespliegue deesta ampliación. Entrega operativa:26E2E dirigidos distintos con mocks a360/390/768/1440;fuente sustituida,mensajesconflicto,errores,lote ydiálogos. UI real390/1440 sin overflow,contexto yborrador conservados. Emulación,no nuevoensayo físico. Nuevo comparador realRailway a360/390/768/1440:matrices→noticias,evidencia,prioridad,filtrosyrecarga,sinJSerrors/overflow;31E2Edistintosconmocks. Modelografosdiferidos no penalizancompras. No móvil físico ni nuevoestudio de compradores."
     },
     {
       "id": "A20",
       "status": "pasa",
-      "evidence_and_limit": "Pasa histórico, no medición actual ni del candidato:b4d697b,18-10-2026,1.0.0/jev1.13/duration1.1,14LiveDay,7.888295967s hasta exportación,23 peticiones nuevas/0caché/0reintentos. Se conservan datos/fecha/perfil; no se repite LiveDay para desarrollo. Preguntas/normalizador/fórmula/duración/exportación default permanecen; la nueva orquestación opcional y UI no renuevan por sí solas esa certificación. No extrapolar tiempo al candidato/RSS."
+      "evidence_and_limit": "Pasa histórico, no medición actual ni del candidato:b4d697b,18-10-2026,1.0.0/jev1.13/duration1.1,14LiveDay,7.888295967s hasta exportación,23 peticiones nuevas/0caché/0reintentos. Se conservan datos/fecha/perfil; no se repite LiveDay para desarrollo. Preguntas/normalizador/fórmula/duración/exportación default permanecen; la nueva orquestación opcional y UI no renuevan por sí solas esa certificación. No extrapolar tiempo al candidato/RSS. Campaña comparativa autorizada nueva ejecutó también14LiveDay porperfil,localyaislada,sinajustes.59.701793sde148intercalados/379nuevas no renuevan A20:otro protocolo/infraestructura/exportaciónJSON. Históricopreservado."
     }
   ],
   "a14_physical_auto": "Confirmado por el usuario: ordenador/Firefox, una alerta automática QA sin Probar alarma.",
   "a20": "a20-current-results.json",
-  "new_jev_requests_this_delivery": {
-    "development": 441,
-    "rss_railway": 13,
-    "total": 454,
-    "retries": 0,
-    "http_errors": 2,
-    "http200": 452
-  },
   "audio_physical_confirmation": {
     "device": "ordenador",
     "browser": "Firefox",
@@ -136,8 +128,8 @@
     "real_rss": "rss-smoke-342.json"
   },
   "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
-  "final_verification": "operational-public.json",
-  "evidence_revision_note": "Entrega operativa43f1d66 observada en web y worker. Históricos anteriores conservados; publicación documental posterior no modifica código.",
+  "final_verification": "campaign-20261019-verification.json",
+  "evidence_revision_note": "Backend d912168 + interfaz/worker77d8581 verificados; commit documental posterior conserva el mismo código. Campaña real local importada privada en Railway sin repetir inferencias.",
   "review_policy_delivery": {
     "candidate": "review-1.1.0-candidate",
     "runtime_enabled": false,
@@ -280,5 +272,61 @@
     "package_files": 119,
     "a20_renewed": false
   },
-  "previous_verified_revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f"
+  "previous_verified_revision": "43f1d66e5dc8d833a192e6c07c947cc2a4c1839c",
+  "historical_delivery_requests_20261018_window": {
+    "development": 441,
+    "rss_railway": 13,
+    "total": 454,
+    "retries": 0,
+    "http_errors": 2,
+    "http200": 452
+  },
+  "current_delivery_requests": {
+    "new_jev": 379,
+    "retries": 0,
+    "http_errors": 0,
+    "historical_cache_stages": 0,
+    "infrastructure": "Local PostgreSQL isolated campaign executor",
+    "railway_import_new_jev": 0,
+    "railway_verification_new_jev": 0,
+    "operational_counters_before_after": {
+      "exercise": [
+        95,
+        95
+      ],
+      "rss": [
+        74,
+        74
+      ]
+    }
+  },
+  "comparison_delivery": {
+    "campaign_id": "6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7",
+    "original_entries_per_profile": 74,
+    "completed_analyses": 148,
+    "errors": 0,
+    "samples": {
+      "training": 30,
+      "validation": 10,
+      "test": 20,
+      "liveday": 14
+    },
+    "reference_scope": "training/validation already inspected, descriptive; no references for test/LiveDay",
+    "new_test_liveday_permission": "Explicit user authorization for this campaign only, no tuning after inspection",
+    "default_promoted": false,
+    "report": "campaign-20261019-summary.json",
+    "verification": "campaign-20261019-verification.json",
+    "elapsed_local_interleaved_seconds": 59.701793,
+    "a20_renewed": false,
+    "unit_integration": 156,
+    "e2e_mock_distinct": 31,
+    "ui_real_widths": [
+      360,
+      390,
+      768,
+      1440
+    ],
+    "schema": "0010",
+    "rss_manual_jobs_completed": 6
+  }
 }

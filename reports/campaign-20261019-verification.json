@@ -1,0 +1,487 @@
+{
+  "functional_revision": "77d8581cd8ad73c66a106c9da74cfbb5a88fa025",
+  "public_url": "https://mavericks-g12-mv-production.up.railway.app",
+  "health": {
+    "revision": "77d8581cd8ad73c66a106c9da74cfbb5a88fa025",
+    "health_http": 200,
+    "ready_http": 200,
+    "schema": "0010",
+    "worker": {
+      "online": true,
+      "compatible": true,
+      "revision": "77d8581cd8ad73c66a106c9da74cfbb5a88fa025"
+    }
+  },
+  "campaign_import": {
+    "import_http": 201,
+    "campaign_id": "6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7",
+    "import_seconds": 3.2590454390010564,
+    "before_operational_requests": {
+      "exercise": 95,
+      "rss": 74
+    },
+    "after_operational_requests": {
+      "exercise": 95,
+      "rss": 74
+    },
+    "campaign_new_requests_measured": 379,
+    "analyses": 148,
+    "state": "complete",
+    "web_revision": "d9121682d5be52ca874cc53e2b6de9de29f66168",
+    "infrastructure": {
+      "service": "Local PostgreSQL isolated campaign executor",
+      "python": "3.12.3",
+      "region": "not reported"
+    },
+    "new_jev_requests_import": 0
+  },
+  "backend": {
+    "campaign_id": "6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7",
+    "http": [
+      {
+        "path": "/healthz",
+        "status": 200
+      },
+      {
+        "path": "/readyz",
+        "status": 200
+      },
+      {
+        "path": "/",
+        "status": 200
+      },
+      {
+        "path": "/assets/react-vendor-C7qHzZhZ.js",
+        "status": 200
+      },
+      {
+        "path": "/assets/icons-DTN_LyQ6.js",
+        "status": 200
+      },
+      {
+        "path": "/assets/index-BspQa2n2.js",
+        "status": 200
+      },
+      {
+        "path": "/assets/charts-DfJYECE0.js",
+        "status": 200
+      },
+      {
+        "path": "/assets/react-redux-CQKuQvA-.js",
+        "status": 200
+      },
+      {
+        "path": "/assets/index-qapcLNEj.css",
+        "status": 200
+      },
+      {
+        "path": "/assets/_commonjsHelpers-CqkleIqs.js",
+        "status": 200
+      },
+      {
+        "path": "/modelo",
+        "status": 200
+      },
+      {
+        "path": "/fuentes?context=exercise",
+        "status": 200
+      },
+      {
+        "path": "/proveedores/S024",
+        "status": 200
+      },
+      {
+        "path": "/materiales/M02",
+        "status": 200
+      },
+      {
+        "path": "/api/config",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=training",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=validation",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=test",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=liveday",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=labelled",
+        "status": 200
+      },
+      {
+        "path": "/api/model/metrics?context=exercise",
+        "status": 200
+      },
+      {
+        "path": "/api/model/metrics?context=rss",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7/export",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/model/metrics?context=exercise",
+        "status": 200
+      },
+      {
+        "path": "/api/model/metrics?context=rss",
+        "status": 200
+      },
+      {
+        "path": "/api/articles?context=exercise",
+        "status": 200
+      },
+      {
+        "path": "/api/articles?context=rss",
+        "status": 200
+      },
+      {
+        "path": "/api/sources",
+        "status": 200
+      },
+      {
+        "path": "/api/articles/93456605-e83d-4adf-8ee5-c2f52bba7478",
+        "status": 200
+      }
+    ],
+    "revision": "d9121682d5be52ca874cc53e2b6de9de29f66168",
+    "private_access_protected": true,
+    "metrics_match_local": {
+      "training": true,
+      "validation": true,
+      "test": true,
+      "liveday": true,
+      "labelled": true
+    },
+    "export": {
+      "http": 200,
+      "bytes": 13125913,
+      "response_seconds": 1.1319995939993532,
+      "rows": 148
+    },
+    "original_predictions_preserved": true,
+    "worker": {
+      "online": true,
+      "compatible": true,
+      "revision": "d9121682d5be52ca874cc53e2b6de9de29f66168"
+    },
+    "operational_requests_before": {
+      "exercise": 95,
+      "rss": 74
+    },
+    "operational_requests_after": {
+      "exercise": 95,
+      "rss": 74
+    },
+    "exercise_articles": 47,
+    "rss_articles": 103,
+    "sources": [
+      {
+        "id": "biopharma_dive",
+        "status": "unchanged",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-19T17:00:09.559820+00:00",
+        "item_count": 0,
+        "stored_unique": 10,
+        "stored_versions": 10,
+        "received_count": 26,
+        "duplicates": 12
+      },
+      {
+        "id": "el_pais",
+        "status": "ok",
+        "http_status": 200,
+        "last_attempt_at": "2026-10-19T17:00:09.577969+00:00",
+        "item_count": 0,
+        "stored_unique": 33,
+        "stored_versions": 55,
+        "received_count": 5440,
+        "duplicates": 5375
+      },
+      {
+        "id": "ema",
+        "status": "unchanged",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-19T17:00:10.134706+00:00",
+        "item_count": 0,
+        "stored_unique": 1,
+        "stored_versions": 1,
+        "received_count": 3,
+        "duplicates": 1
+      },
+      {
+        "id": "gdacs",
+        "status": "ok",
+        "http_status": 200,
+        "last_attempt_at": "2026-10-19T17:00:09.611266+00:00",
+        "item_count": 0,
+        "stored_unique": 30,
+        "stored_versions": 55,
+        "received_count": 2560,
+        "duplicates": 2493
+      },
+      {
+        "id": "supply_chain_dive",
+        "status": "unchanged",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-19T17:00:09.626641+00:00",
+        "item_count": 0,
+        "stored_unique": 10,
+        "stored_versions": 10,
+        "received_count": 31,
+        "duplicates": 18
+      },
+      {
+        "id": "the_loadstar",
+        "status": "ok",
+        "http_status": 200,
+        "last_attempt_at": "2026-10-19T17:00:10.146057+00:00",
+        "item_count": 0,
+        "stored_unique": 19,
+        "stored_versions": 22,
+        "received_count": 2569,
+        "duplicates": 2538
+      }
+    ],
+    "human_review_persisted": true,
+    "passed": true
+  },
+  "ui_real_chromium": {
+    "campaign": "6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7",
+    "transport": "real Railway API + persisted real JEV campaign, no mocks; no new inference",
+    "widths": [
+      {
+        "width": 360,
+        "drilldown": true,
+        "reference_absent_for_test": true,
+        "filter_persisted": true,
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "drilldown": true,
+        "reference_absent_for_test": true,
+        "filter_persisted": true,
+        "overflow": false
+      },
+      {
+        "width": 768,
+        "drilldown": true,
+        "reference_absent_for_test": true,
+        "filter_persisted": true,
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "drilldown": true,
+        "reference_absent_for_test": true,
+        "filter_persisted": true,
+        "overflow": false
+      }
+    ],
+    "errors": [],
+    "revision": "77d8581cd8ad73c66a106c9da74cfbb5a88fa025",
+    "export": {
+      "http": 200,
+      "bytes": 13125913,
+      "download_seconds": 1.575647648000002,
+      "rows": 148
+    },
+    "ui_write_requests": [],
+    "passed": true
+  },
+  "operations_real_railway": {
+    "transport": "real Railway UI/API, no mocks",
+    "errors": [],
+    "revision": "77d8581cd8ad73c66a106c9da74cfbb5a88fa025",
+    "before": {
+      "exercise": 95,
+      "rss": 74
+    },
+    "source_job_ids": [
+      "ba519cfd-dea6-4e47-a805-1aa5119a6055",
+      "1da0da96-279a-47ab-850c-53e997ce3fa1",
+      "0f0c2070-78b2-4f01-a5d1-b748594ed09b",
+      "ea6781b7-ddb1-4ab7-9c85-271adf2d0693",
+      "4a4cf40a-e036-4fe6-a35c-41e39a4fff60",
+      "78d14126-af8c-4a93-9687-e2432ed13025"
+    ],
+    "source_jobs": [
+      {
+        "id": "ba519cfd-dea6-4e47-a805-1aa5119a6055",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "1da0da96-279a-47ab-850c-53e997ce3fa1",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "0f0c2070-78b2-4f01-a5d1-b748594ed09b",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "ea6781b7-ddb1-4ab7-9c85-271adf2d0693",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "4a4cf40a-e036-4fe6-a35c-41e39a4fff60",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "78d14126-af8c-4a93-9687-e2432ed13025",
+        "state": "done",
+        "error": null
+      }
+    ],
+    "sources": [
+      {
+        "id": "biopharma_dive",
+        "status": "unchanged",
+        "http": 304,
+        "queried_at": "2026-10-19T17:08:25.967154+00:00",
+        "new_versions": 0,
+        "stored_unique": 10,
+        "stored_versions": 10,
+        "last_poll": {
+          "received": 0,
+          "new": 0,
+          "duplicates": 0,
+          "not_modified": true
+        }
+      },
+      {
+        "id": "el_pais",
+        "status": "ok",
+        "http": 200,
+        "queried_at": "2026-10-19T17:08:25.441893+00:00",
+        "new_versions": 0,
+        "stored_unique": 34,
+        "stored_versions": 56,
+        "last_poll": {
+          "received": 10,
+          "new": 0,
+          "duplicates": 10,
+          "parsed": 24
+        }
+      },
+      {
+        "id": "ema",
+        "status": "unchanged",
+        "http": 304,
+        "queried_at": "2026-10-19T17:08:25.443058+00:00",
+        "new_versions": 0,
+        "stored_unique": 1,
+        "stored_versions": 1,
+        "last_poll": {
+          "received": 0,
+          "new": 0,
+          "duplicates": 0,
+          "not_modified": true
+        }
+      },
+      {
+        "id": "gdacs",
+        "status": "ok",
+        "http": 200,
+        "queried_at": "2026-10-19T17:08:25.976347+00:00",
+        "new_versions": 0,
+        "stored_unique": 30,
+        "stored_versions": 55,
+        "last_poll": {
+          "received": 10,
+          "new": 0,
+          "duplicates": 10,
+          "parsed": 225
+        }
+      },
+      {
+        "id": "supply_chain_dive",
+        "status": "unchanged",
+        "http": 304,
+        "queried_at": "2026-10-19T17:08:25.440548+00:00",
+        "new_versions": 0,
+        "stored_unique": 10,
+        "stored_versions": 10,
+        "last_poll": {
+          "received": 0,
+          "new": 0,
+          "duplicates": 0,
+          "not_modified": true
+        }
+      },
+      {
+        "id": "the_loadstar",
+        "status": "ok",
+        "http": 200,
+        "queried_at": "2026-10-19T17:08:25.442427+00:00",
+        "new_versions": 0,
+        "stored_unique": 19,
+        "stored_versions": 22,
+        "last_poll": {
+          "received": 10,
+          "new": 0,
+          "duplicates": 10,
+          "parsed": 10
+        }
+      }
+    ],
+    "widths": [
+      {
+        "width": 390,
+        "followup_persisted": true,
+        "draft_reopened": true,
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "followup_persisted": true,
+        "draft_reopened": true,
+        "overflow": false
+      }
+    ],
+    "after": {
+      "exercise": 95,
+      "rss": 74
+    },
+    "passed": true
+  },
+  "tests": {
+    "unit_integration": 156,
+    "e2e_distinct_mock": 31,
+    "widths": [
+      360,
+      390,
+      768,
+      1440
+    ],
+    "build": true,
+    "allowlisted_package_files": 123,
+    "anyio_warning": "external deprecation"
+  },
+  "inheritance": "Backend privacy/metrics/prediction identity verified at d912168; 77d8581 changes frontend loading and explanation only. Public UI, worker revision, RSS and saved-workspace verified anew at77d8581. Final documentation-only commit inherits these checks.",
+  "new_jev_requests_final_verification": 0,
+  "paid_periodic_rss": false,
+  "a06": "open",
+  "a14": "physical PC/Firefox inherited, not a new audible test",
+  "a20": "historical b4d697b retained, this comparison does not renew it"
+}

@@ -923,7 +923,7 @@
     "No classifier, threshold or profile changed after examining this campaign.",
     "A06 open; A14 physical and A20 historical retained."
   ],
-  "public_ui_verification": "pending next deployment",
+  "public_ui_verification": "campaign-20261019-verification.json",
   "local_ui_verification": "real persisted JEV results at360/390/768/1440, drill-down, filters, export; no new JEV calls",
   "publication": {
     "presenter_access": "restored HTTP200",
@@ -939,6 +939,15 @@
     "after_import_operational_counters": {
       "exercise": 95,
       "rss": 74
-    }
+    },
+    "verified_functional_revision": "77d8581cd8ad73c66a106c9da74cfbb5a88fa025",
+    "verified_widths": [
+      360,
+      390,
+      768,
+      1440
+    ],
+    "rss_jobs_done": 6,
+    "post_redeploy_draft_and_followup_persisted": true
   }
 }
