@@ -6,6 +6,7 @@ for (const width of [360, 390, 768, 1024, 1440])
     await page.setViewportSize({ width, height: 940 });
     let posts: string[] = [],
       queued = false;
+    let selection: any = null;
     const row = (id: string, source: string, state = "pending") => ({
       id,
       headline: "MOCK noticia " + id,
@@ -24,14 +25,25 @@ for (const width of [360, 390, 768, 1024, 1440])
     await page.route("**/api/**", async (route) => {
       const u = new URL(route.request().url()),
         p = u.pathname.slice(4);
-      if (route.request().method() === "POST" && p.endsWith("/analyze")) {
+      if (route.request().method() === "POST" && p === "/analysis/pending") {
         posts.push(p);
-        expect(route.request().postDataJSON()).toEqual({
-          analysis_profile: "1.0.0",
-        });
+        const body = route.request().postDataJSON();
+        expect(body.article_ids).toEqual(["B"]);
+        expect(body.analysis_profile).toBe("1.0.0");
         queued = true;
-        return route.fulfill({ status: 202, json: { job_ids: ["MOCK-J"] } });
+        selection = {
+          id: body.request_id,
+          context: "exercise",
+          state: "running",
+          total: 1,
+          finished: 0,
+          counts: { done: 0, queued: 1, running: 0, error: 0, skipped: 0 },
+          items: [{ article_id: "B", job_id: "MOCK-J", state: "queued" }],
+        };
+        return route.fulfill({ status: 202, json: selection });
       }
+      if (p.startsWith("/analysis/pending/"))
+        return route.fulfill({ json: selection });
       const payload: any = {
         "/session": { presenter: true, csrf: "MOCK" },
         "/config": { bands: [] },
@@ -57,10 +69,13 @@ for (const width of [360, 390, 768, 1024, 1440])
     await page.goto("/noticias?context=exercise");
     await page.getByLabel("Fuente", { exact: true }).selectOption("Fuente B");
     await page
-      .getByRole("button", { name: "Analizar pendientes (1)", exact: true })
+      .getByRole("button", {
+        name: "Analizar todas las pendientes (1)",
+        exact: true,
+      })
       .click();
     await expect.poll(() => posts.length).toBe(1);
-    expect(posts).toEqual(["/articles/B/analyze"]);
+    expect(posts).toEqual(["/analysis/pending"]);
     await expect(
       page
         .locator(".news-item")
@@ -90,34 +105,63 @@ for (const width of [360, 390, 768, 1024, 1440])
       ),
     ).toBe(true);
   });
-test("Lote directo máximo diez, fallo parcial visible y resultados conservados · MOCK", async ({
+test("Todas las pendientes, progreso fijo y errores parciales recuperables · MOCK", async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 390, height: 940 });
+  let phase = 0,
+    selectionId = "",
+    posts: any[] = [];
   const rows = Array.from({ length: 12 }, (_, i) => ({
     id: "RSS" + i,
     headline: "MOCK RSS " + i,
     source: "MOCK",
-    state: "pending",
+    state:
+      phase === 2
+        ? i === 3
+          ? "error"
+          : i === 0
+            ? "review"
+            : "done"
+        : phase === 1 && i < 5
+          ? "done"
+          : "pending",
     split: "rss",
     published_date: "2026-10-19",
     summary: "MOCK",
   }));
-  let posts: string[] = [];
+  const group = () => ({
+    id: selectionId,
+    context: "rss",
+    state: phase === 2 ? "partial" : "running",
+    total: 12,
+    finished: phase === 2 ? 12 : phase === 1 ? 6 : 0,
+    counts:
+      phase === 2
+        ? { done: 11, error: 1, queued: 0, running: 0, skipped: 0 }
+        : phase === 1
+          ? { done: 5, error: 1, queued: 4, running: 2, skipped: 0 }
+          : { done: 0, error: 0, queued: 10, running: 2, skipped: 0 },
+    items: rows.map((r, i) => ({
+      article_id: r.id,
+      headline: r.headline,
+      state: i === 3 ? "error" : "done",
+      error: i === 3 ? "MOCK límite técnico: no reservado" : null,
+    })),
+  });
   await page.route("**/api/**", async (route) => {
     const p = new URL(route.request().url()).pathname.slice(4);
-    if (route.request().method() === "POST" && p.endsWith("/analyze")) {
-      posts.push(p);
-      if (p.includes("RSS3/"))
-        return route.fulfill({
-          status: 409,
-          json: { message: "MOCK fuente cambió, consulta versión actual" },
-        });
-      return route.fulfill({
-        status: 202,
-        json: { job_ids: ["J" + posts.length] },
-      });
+    if (route.request().method() === "POST") {
+      expect(p).toBe("/analysis/pending");
+      const body = route.request().postDataJSON();
+      posts.push(body);
+      selectionId = body.request_id;
+      expect(body.article_ids).toHaveLength(12);
+      return route.fulfill({ status: 202, json: group() });
     }
-    const payload: any = {
+    if (p.startsWith("/analysis/pending/"))
+      return route.fulfill({ json: group() });
+    const data: any = {
       "/session": { presenter: true, csrf: "MOCK" },
       "/config": { bands: [] },
       "/overview": {},
@@ -127,28 +171,49 @@ test("Lote directo máximo diez, fallo parcial visible y resultados conservados 
       "/batches": [],
       "/alerts": { items: [], cursor: 0, unread: 0 },
     };
-    await route.fulfill({
-      json: p.startsWith("/articles/")
-        ? rows.find((r) => p === "/articles/" + r.id)
-        : p.startsWith("/jobs/")
-          ? { id: p, state: "running" }
-          : payload[p] || {},
-    });
+    await route.fulfill({ json: data[p] || {} });
   });
   await page.goto("/noticias?context=rss");
   await page
     .getByRole("button", {
-      name: "Analizar pendientes (10 de 12)",
+      name: "Analizar todas las pendientes (12)",
       exact: true,
     })
     .click();
-  await expect.poll(() => posts.length).toBe(10);
+  const bar = page.getByRole("progressbar", {
+    name: "Progreso del lote de análisis",
+    exact: true,
+  });
+  await expect(bar).toHaveAttribute("max", "12");
+  await expect(bar).toHaveAttribute("value", "0");
+  phase = 1;
+  await expect(bar).toHaveAttribute("value", "6", { timeout: 7000 });
+  await page.setViewportSize({ width: 390, height: 940 });
+  await page
+    .locator(".pending-progress")
+    .screenshot({ path: ".runtime/all-pending-progress-390.png" });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
   await expect(
-    page.getByRole("alert").filter({ hasText: "MOCK fuente cambió" }),
+    page.getByText("5 de 12 analizadas", { exact: true }),
   ).toBeVisible();
-  expect(posts.some((p) => p.includes("RSS10/") || p.includes("RSS11/"))).toBe(
-    false,
-  );
+  await page.reload();
+  await expect(bar).toHaveAttribute("max", "12");
+  await expect(bar).toHaveAttribute("value", "6");
+  phase = 2;
+  await expect(bar).toHaveAttribute("value", "12", { timeout: 7000 });
+  await expect(
+    page.getByText("11 de 12 analizadas", { exact: true }),
+  ).toBeVisible();
+  await page.getByText("Ver 1 error", { exact: true }).click();
+  await expect(
+    page.getByText(/MOCK límite técnico: no reservado/),
+  ).toBeVisible();
+  expect(posts).toHaveLength(1);
+  expect(posts[0].article_ids).toHaveLength(12);
 });
 test("Lectura pública muestra acción protegida sin inferencia · MOCK", async ({
   page,

@@ -1,4 +1,5 @@
 import io, json, os
+from uuid import UUID
 from pathlib import Path
 from typing import Literal
 from fastapi import FastAPI, Depends, HTTPException, Request, Response, UploadFile, File
@@ -875,6 +876,36 @@ def analyze_article(aid: str, body: AnalysisSelection, db: Session = Depends(get
         db.rollback()
         raise HTTPException(409, str(exc))
     return {"job_ids": [j.id], "maximum_requests": maximum_requests(body.analysis_profile), "analysis_profile": body.analysis_profile}
+
+
+class PendingSelection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    request_id: UUID
+    article_ids: list[str] = Field(min_length=1)
+    context: Literal["exercise", "rss"]
+    analysis_profile: Literal["1.0.0", "radar-1.0.0-candidate"] = DEFAULT_PROFILE
+
+
+@app.post("/api/analysis/pending", status_code=202, dependencies=[Depends(presenter)])
+def analyze_pending(body: PendingSelection, db: Session = Depends(get_db)):
+    from app.pending_selection import create
+    require_current_worker(db)
+    try:
+        result = create(db, body.request_id, body.article_ids, body.context, body.analysis_profile)
+        db.commit()
+        return result
+    except ValueError as exc:
+        db.rollback()
+        raise HTTPException(409, str(exc))
+
+
+@app.get("/api/analysis/pending/{selection_id}", dependencies=[Depends(presenter)])
+def pending_progress(selection_id: str, db: Session = Depends(get_db)):
+    from app.pending_selection import KIND, view
+    manifest = db.get(Job, selection_id)
+    if not manifest or manifest.kind != KIND:
+        raise HTTPException(404, "Selección no encontrada")
+    return view(db, manifest)
 
 
 class DemoSelection(BaseModel):

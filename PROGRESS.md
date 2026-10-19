@@ -1,3 +1,12 @@
+# Todas las pendientes y progreso · 19-10-2026
+
+- Base3c0d6c0 publicada y comprobada. El botón ahora abarca todas las noticias pendientes de la vista/filtros,sin límite artificial de10. La selección se registra atómicamente enPostgreSQL como manifiesto de solicitud(Jobanalysis_selection finalizado,no tarea delworker);los trabajos reales siguen en la cola existente,con leases/reintentos/cupos técnicos intactos.
+- Barra accesible con denominador congelado,analizadas/cola/enproceso/errores/omitidas yporcentaje terminado. Una revisión de clasificación cuenta como análisis completado;unfallo no se cuenta como analizado ni comoN. El totalno cambia con noticias nuevas;se recupera alnavegar/recargar mediantesesión del navegador+manifiestopersistente. POSTidempotente reutilizatrabajosactivos yno reanaliza noticiasya completadas. Sondeo agrupado,cancelado al terminar,no uno pornoticia.
+-160unit/integraciónPGaislado y19E2Edirigidos distintosconmocks pasan;incluyen12noticias,progreso0/50/100%,errorparcial,recarga,permisos,contextos y5anchos360/390/768/1024/1440. Revisiónvisualmóvil delabarra;build ypaquete125archivos/sinsecretos/originales pasan.0JEV deesta iteración;no se ejecutael loteRSS real por comprobar laUI. Verificaciónpública posterior:.runtime/all-pending-public.json.
+-Default1.0.0,campaña148 e históricos intactos;RSSperiódicopagodesactivado. Recomendacióndeperfilpendiente,A06abierto(motor/S024 frente a provinciaS003desconocida),A14/A20conservan evidencia/alcance. No hay migración,facturación nueva niborrado de datos.
+
+## Estado anterior conservado
+
 # Acceso directo a análisis · 19-10-2026
 
 - Basef420a3d publicado y comprobado enweb/worker. Se añade Analizar junto a noticias pendientes y Analizar pendientes(hasta10 porclic) enResumen,Noticias,Fuentes yAnalítica;respeta contexto/filtros,usa perfilpredeterminado yno abre herramientas ni exige escribirREANALIZAR. Selecciónmanual/perfilesanteriores conservados.

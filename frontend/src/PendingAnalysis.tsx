@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { api } from "./api";
 import type { Article } from "./types";
 
 /** A direct, bounded action: only pending inputs; never resets or supersedes results. */
-export function PendingAnalysis({
+function SinglePendingAnalysis({
   articles,
   presenter,
-  single = false,
 }: {
   articles: Article[];
   presenter: boolean;
@@ -68,14 +68,14 @@ export function PendingAnalysis({
     (a) =>
       !["queued", "running"].includes((jobs[a.id] || a.analysis_job)?.state),
   );
-  const chosen = available.slice(0, single ? 1 : 10);
+  const chosen = available.slice(0, 1);
   const running =
     active.length ||
     pending.filter((a) =>
       ["queued", "running"].includes(a.analysis_job?.state || ""),
     ).length;
   return (
-    <div className={"pending-analysis" + (single ? " compact" : "")}>
+    <div className="pending-analysis compact">
       <button
         className="button primary"
         disabled={!presenter || busy || !chosen.length}
@@ -121,16 +121,8 @@ export function PendingAnalysis({
           ? "Encolando…"
           : running && !chosen.length
             ? "Analizando…"
-            : single
-              ? "Analizar"
-              : `Analizar pendientes (${chosen.length}${available.length > chosen.length ? " de " + available.length : ""})`}
+            : "Analizar"}
       </button>
-      {!single && (
-        <small>
-          Solo pendientes de esta vista · hasta 10 · perfil predeterminado.
-          Otros perfiles en la ficha o selección manual.
-        </small>
-      )}
       {!presenter && (
         <small>Inicia sesión como presentador para analizar.</small>
       )}
@@ -156,5 +148,218 @@ export function PendingAnalysis({
         </p>
       )}
     </div>
+  );
+}
+
+function BulkPendingAnalysis({
+  articles,
+  presenter,
+}: {
+  articles: Article[];
+  presenter: boolean;
+}) {
+  const location = useLocation();
+  const progressRef = useRef<HTMLDivElement>(null),
+    focusAfterStart = useRef(false);
+  const context = articles.length
+    ? articles[0].split === "rss"
+      ? "rss"
+      : "exercise"
+    : new URLSearchParams(location.search).get("context") === "rss"
+      ? "rss"
+      : "exercise";
+  const storageKey = "radar:pending-selection:" + context;
+  const readId = () => {
+    try {
+      return sessionStorage.getItem(storageKey) || "";
+    } catch {
+      return "";
+    }
+  };
+  const [id, setId] = useState(readId),
+    [group, setGroup] = useState<any>(null),
+    [busy, setBusy] = useState(false),
+    [preparingTotal, setPreparingTotal] = useState(0),
+    [error, setError] = useState("");
+  useEffect(() => {
+    setId(readId());
+    setGroup(null);
+    setError("");
+  }, [storageKey, presenter]);
+  useEffect(() => {
+    if (!id || !presenter || (group?.id === id && group.state !== "running"))
+      return;
+    let alive = true,
+      inFlight = false;
+    const load = async () => {
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const result = await api("/analysis/pending/" + id);
+        if (alive) {
+          setGroup(result);
+          setError("");
+        }
+      } catch (e) {
+        if (alive)
+          setError("No se pudo recuperar el progreso: " + (e as Error).message);
+      } finally {
+        inFlight = false;
+      }
+    };
+    void load();
+    const timer = window.setInterval(() => {
+      if (document.visibilityState !== "hidden") void load();
+    }, 2000);
+    return () => {
+      alive = false;
+      clearInterval(timer);
+    };
+  }, [id, presenter, group?.state]);
+  useEffect(() => {
+    if (group && focusAfterStart.current) {
+      focusAfterStart.current = false;
+      progressRef.current?.focus({ preventScroll: true });
+      progressRef.current?.scrollIntoView({
+        block: "center",
+        behavior: "instant",
+      });
+    }
+  }, [group?.id]);
+  const pending = articles.filter((a) => a.state === "pending");
+  if (!pending.length && !group && !busy && !error) return null;
+  const running = group?.state === "running";
+  const counts = group?.counts || {};
+  return (
+    <div className="pending-analysis pending-bulk">
+      <button
+        className="button primary"
+        disabled={!presenter || busy || running || !pending.length}
+        title={
+          !presenter
+            ? "Acceso de presentador necesario"
+            : "Analiza todas las pendientes de esta vista sin repetir análisis en curso"
+        }
+        onClick={async () => {
+          focusAfterStart.current = true;
+          const requestId = crypto.randomUUID();
+          setPreparingTotal(pending.length);
+          setBusy(true);
+          setError("");
+          setGroup(null);
+          try {
+            sessionStorage.setItem(storageKey, requestId);
+          } catch {
+            /* Optional browser continuity. */
+          }
+          try {
+            const result = await api("/analysis/pending", {
+              method: "POST",
+              body: JSON.stringify({
+                request_id: requestId,
+                article_ids: pending.map((a) => a.id),
+                context,
+                analysis_profile: "1.0.0",
+              }),
+            });
+            setGroup(result);
+            setId(result.id);
+            // The list refresh already reads all active jobs in one query.
+            // Avoid starting one polling loop per row for a large selection.
+          } catch (e) {
+            setId(requestId);
+            setError((e as Error).message);
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        {busy
+          ? `Preparando ${preparingTotal} noticias…`
+          : running
+            ? `Analizando ${group.total} noticias…`
+            : pending.length
+              ? `Analizar todas las pendientes (${pending.length})`
+              : "Sin noticias pendientes"}
+      </button>
+      <small>
+        Todas las pendientes de esta vista y sus filtros · perfil predeterminado
+        para nuevas ejecuciones. Las que ya están en curso conservan su perfil;
+        se respetan los límites técnicos del servicio.
+      </small>
+      {!presenter && (
+        <small>Inicia sesión como presentador para analizar.</small>
+      )}
+      {presenter && group && (
+        <div
+          className="pending-progress"
+          ref={progressRef}
+          tabIndex={-1}
+          role="region"
+          aria-label="Progreso de la selección actual"
+        >
+          <div role="status" aria-live="polite">
+            <strong>
+              {counts.done || 0} de {group.total} analizadas
+            </strong>{" "}
+            · {counts.queued || 0} en cola · {counts.running || 0} en proceso ·{" "}
+            {counts.error || 0} {counts.error === 1 ? "error" : "errores"}
+            {counts.skipped
+              ? ` · ${counts.skipped} omitidas porque ya no están pendientes`
+              : ""}
+          </div>
+          <progress
+            max={group.total || 1}
+            value={group.finished}
+            aria-label="Progreso del lote de análisis"
+            aria-valuetext={`${group.finished} de ${group.total} terminadas; ${counts.done || 0} analizadas, ${counts.error || 0} ${counts.error === 1 ? "error" : "errores"}`}
+          />
+          <small>
+            {Math.round((group.finished / Math.max(group.total, 1)) * 100)}% del
+            lote terminado. El total se fija al pulsar el botón; las noticias
+            nuevas no lo modifican.
+          </small>
+          {group.state !== "running" && (
+            <p>
+              {counts.error
+                ? "Lote finalizado con errores; revisa los detalles antes de reintentar."
+                : "Lote finalizado. Los resultados están disponibles; las dudas de clasificación conservan su revisión."}
+            </p>
+          )}
+          {!!counts.error && (
+            <details>
+              <summary>
+                Ver {counts.error} {counts.error === 1 ? "error" : "errores"}
+              </summary>
+              {group.items
+                .filter((i: any) => i.state === "error")
+                .map((i: any) => (
+                  <p key={i.article_id}>
+                    {i.headline || i.article_id}:{" "}
+                    {i.error || "Abre la noticia para diagnosticar el fallo."}
+                  </p>
+                ))}
+            </details>
+          )}
+        </div>
+      )}
+      {error && (
+        <p role="alert">
+          {error} La cola se conserva; recarga para recuperar su estado.
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function PendingAnalysis(props: {
+  articles: Article[];
+  presenter: boolean;
+  single?: boolean;
+}) {
+  return props.single ? (
+    <SinglePendingAnalysis {...props} />
+  ) : (
+    <BulkPendingAnalysis {...props} />
   );
 }

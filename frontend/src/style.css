@@ -3367,3 +3367,43 @@ main > *,
     display: none;
   }
 }
+.pending-progress {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #dedaf1;
+  border-radius: 10px;
+  background: #f8f7ff;
+  overflow-wrap: anywhere;
+}
+.pending-progress progress {
+  width: 100%;
+  height: 12px;
+  accent-color: #635bff;
+}
+.pending-progress details summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding-block: 10px;
+}
+.pending-progress progress[value] {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: #e7e5f1;
+  overflow: hidden;
+}
+.pending-progress progress::-webkit-progress-bar {
+  background: #e7e5f1;
+  border-radius: 999px;
+}
+.pending-progress progress::-webkit-progress-value {
+  background: linear-gradient(90deg, #635bff, #0891b2);
+  border-radius: 999px;
+}
+.pending-progress progress::-moz-progress-bar {
+  background: #635bff;
+  border-radius: 999px;
+}
