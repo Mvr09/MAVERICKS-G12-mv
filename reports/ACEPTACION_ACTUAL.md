@@ -1,3 +1,13 @@
+# Cierre de producto · 19 de octubre de 2026
+
+**Perfil habitual promovido: 3.4.2 / revisión 1.3.1**, componentes exactos en `config/final_profile.json`; rollback 1.0.0. Esta decisión de producto sustituye las recomendaciones de default de los apartados históricos siguientes, sin modificar sus predicciones.
+
+**19 criterios con evidencia de aprobación / A06 abierto.** A06 mantiene separados los errores del motor, la recuperación de S024 como exposición potencial en el perfil final y la provincia desconocida de S003. Ni la promoción ni el recall de una muestra conocida cierran el criterio. A14 conserva la audibilidad física PC/Firefox de una única alerta QA automática; A20 conserva exclusivamente su medición histórica b4d697b, no certifica el perfil promovido.
+
+Verificación de cierre: `final-release-verification.json` y `PROGRESS.md`. Modelo calcula métricas de la campaña persistida exacta, incluidas revisadas, y separa telemetría local de Railway. Ocho secciones en cinco anchos y redimensionado intermedio, teclado, filtros, revisiones/acciones/borradores persistidos; nuevas ejecuciones QA Excel/RSS sin repetir 148 análisis ni LiveDay. Las cifras históricas siguientes no sustituyen esa evidencia actual.
+
+## Historial de aceptación conservado
+
 ## Reparación visual · 19-10-2026
 
 Sin cambios de aceptación semántica ni promoción. La recomendación del perfil sigue pendiente de cierre con la campaña existente; default1.0.0 intacto. A06 abierto, separando errores del motor/S024 de la provincia desconocidaS003. A14/A20 conservan evidencia y alcance previos. RSS periódico de pago desactivado.

@@ -3,7 +3,8 @@
 from collections import Counter
 from sqlalchemy import select, text, func
 from app.models import Article, Comparison, Job, GrantArticle, ApiCall
-from app.queue import reserve, enqueue
+from app.queue import reserve, enqueue, analysis_payload
+from app.profiles import DEFAULT_PROFILE, LEGACY_PROFILE, profile_snapshot
 from app.jev import grant_requires_diagnosis
 from app.importer import digest
 
@@ -76,9 +77,8 @@ def enqueue_comparison(db, aid):
         "comparison:" + comparison.id,
         "comparison",
         {
-            "article_id": aid,
+            **analysis_payload(article, DEFAULT_PROFILE),
             "comparison_id": comparison.id,
-            "generation": article.generation,
         },
         10,
     )
@@ -91,6 +91,15 @@ def process_comparison(db, cid, transport=None):
     comparison = db.get(Comparison, cid)
     if comparison.state in ("done", "error", "cancelled"):
         return comparison
+    job = db.scalar(select(Job).where(Job.key == "comparison:" + cid))
+    payload = job.payload if job else {}
+    profile = payload.get("analysis_profile", LEGACY_PROFILE)
+    snapshot = payload.get("profile_snapshot")
+    if snapshot and snapshot != profile_snapshot(profile, "rss"):
+        comparison.state = "error"
+        comparison.summary = {"message": "La configuración del trabajo no coincide con la congelada; requiere diagnóstico.", "advisory_only": True}
+        db.commit()
+        return comparison
     comparison.state = "running"
     db.commit()
     # Guardar cada voto: reclamar un lease no repite consultas ya completadas.
@@ -102,6 +111,8 @@ def process_comparison(db, cid, transport=None):
             transport=transport,
             run_key=f"comparison:{cid}:{index}",
             publish=False,
+            profile=profile,
+            profile_snapshot=snapshot,
         )
         comparison.ballots = [*comparison.ballots, result]
         comparison.summary = summarize(comparison.ballots)

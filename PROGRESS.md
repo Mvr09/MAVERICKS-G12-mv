@@ -1,3 +1,15 @@
+# Cierre final verificado · 19 de octubre de 2026
+
+- Publicado funcional **af47731** por main/autodeploy. Perfil habitual **3.4.2/revisión1.3.1** completo de campaña148;1.0.0 avanzado/rollback. Sin reanálisis de históricos, cambios humanos ni alertas retroactivas. Nuevos trabajos y caché separados por instantánea; contraste auxiliar antiguo conserva su perfil.
+- Modelo informativo final:40etiquetadas incluidas revisadas, matrices,74duraciones locales (media2,14067s) separadas de nuevasRailway; simulador editable con tasa histórica0,03941248835$/millón, sin inferencias ni tarifa oficial. Comparador/histórico privados conservados.
+- Feedback de carga/errores/recuperación/guardado/descarga, importación y progreso real de lotes. Fichas Material/Proveedor/Noticia con recuperación; reconocer aviso no resuelve acción/incidente. Contenido/filtros/borradores preservados.
+- **164unit/integraciónPGaislado y38E2Econmocks pasan**, build/paquete130archivos sinsecretos/originales. Chrome realRailway:8páginas×5anchos=40 y312redimensionados350–1490,0overflow/0erroresJS; simulador/filtros/recarga/PDF y persistencia de revisión/acción/borrador en5anchos. Emulación móvil, no ensayo físico.
+- Cierre real ExcelQA training1fila→análisis→exportación yRSSpendiente→análisis→recarga: instantáneas finales confirmadas en API/worker. **7peticiones200/0reintentos/0caché**, JEV1.13.0,82.659entrada/5.723salida reportados; contadores97→99ejercicio y107→112RSS. Media2duracionesRailway1,2124875s, no A20.6RSSactualizados desdeUI:2HTTP200/4HTTP304,6jobsdone,0JEVextra.
+- Evidencia:reports/final-release-verification.json. Handoff único:docs/HANDOFF_FINAL.md. README y aceptación actualizados. **A06 abierto**, motor/S024 y provinciaS003desconocida separados; **A14/A20 heredados** con alcance explícito; RSSperiódicopagooff. Campaña148/decisioneshumanas/históricos conservados. Sin ajustes del clasificador ni repeticiónLiveDay.
+- Último pulido preparado: material con skeleton/error/reintento, reconocimiento asíncrono, instantáneas en contraste auxiliar y prueba de compatibilidad antigua. Siguiente:publicar este cierre agrupado y comprobar revisión/salud/assets/perfil/métricas sin nuevas inferencias.
+
+## Historial de implementación conservado
+
 # Cierre final · implementación verificada
 
 - Base350e95f. Plan:1)verificar manifiesto y promover perfil completoevaluado3.4.2/revisión1.3.1 preservando trabajos/históricos y rollback1.0.0;2)Modelo informativo con métricaspersistidas,telemetríaindividual ysimuladorhistórico;3)layout/feedbackglobal,pruebasdemora/error yrecorridosrealesExcel/RSS;4)publicación,comprobación yhandoffúnico.

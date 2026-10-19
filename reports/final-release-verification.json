@@ -1,0 +1,351 @@
+{
+  "functional_revision": "af4773187afa92903c141b6f3ea2fdedbe4f756f",
+  "url": "https://mavericks-g12-mv-production.up.railway.app",
+  "default_profile": "radar-1.0.0-candidate",
+  "components": {
+    "profile": "radar-1.0.0-candidate",
+    "matching": "link-3.3.0",
+    "retrieval": "link-3.0.0-dev",
+    "questions": "decision-3.4.2",
+    "risk": "risk-focus-1.2.0",
+    "review": "review-1.3.1",
+    "support": "decision-support-1.0.0",
+    "facts": "decision-facts-1.0.0",
+    "exclusion": "relational-exclusion-1.0.0",
+    "duration": "duration-1.1.0",
+    "transport": "fanout-1.0.0",
+    "policy": "1.0.0",
+    "model": "jev-1.13.0"
+  },
+  "campaign_preserved": "6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7",
+  "campaign_repeated": false,
+  "paid_periodic_rss": false,
+  "automated": {
+    "unit_integration": 164,
+    "unit_environment": "PostgreSQL radar_test aislado; mocks JEV identificados",
+    "browser_mock_cases": 38,
+    "browser": "Chrome real con respuestas simuladas identificadas",
+    "build": "pasa",
+    "package": "130 archivos;sin originales ni secretos"
+  },
+  "real_browser": {
+    "environment": "Chrome Linux, Railway real; viewports móviles emulados, no dispositivo físico",
+    "page_width_cases": 40,
+    "pages": [
+      "/",
+      "/alertas",
+      "/analitica",
+      "/fuentes",
+      "/materiales",
+      "/modelo",
+      "/noticias",
+      "/proveedores"
+    ],
+    "widths": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "continuous_resize_cases": 312,
+    "range": "350–1490 px cada30",
+    "javascript_errors": [],
+    "query_api_mutations": [],
+    "query_jev_counts_before": {
+      "exercise": 97,
+      "rss": 107
+    },
+    "query_jev_counts_after": {
+      "exercise": 97,
+      "rss": 107
+    },
+    "filters_and_simulator_persisted": true,
+    "print_documents": 2,
+    "review_action_draft_persistence": true,
+    "persistence_widths": [
+      {
+        "width": 360,
+        "followup_persisted": true,
+        "draft_reopened": true,
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "followup_persisted": true,
+        "draft_reopened": true,
+        "overflow": false
+      },
+      {
+        "width": 768,
+        "followup_persisted": true,
+        "draft_reopened": true,
+        "overflow": false
+      },
+      {
+        "width": 1024,
+        "followup_persisted": true,
+        "draft_reopened": true,
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "followup_persisted": true,
+        "draft_reopened": true,
+        "overflow": false
+      }
+    ]
+  },
+  "real_analyses": {
+    "purpose": "Comprobación operativa de cierre; no evaluación independiente ni A20",
+    "excel": {
+      "job": "98436881-7765-40a1-8b04-5bded069a1b2",
+      "state": "done",
+      "snapshot": {
+        "profile": "radar-1.0.0-candidate",
+        "matching": "link-3.3.0",
+        "retrieval": "link-3.0.0-dev",
+        "questions": "decision-3.4.2",
+        "risk": "risk-focus-1.2.0",
+        "review": "review-1.3.1",
+        "support": "decision-support-1.0.0",
+        "facts": "decision-facts-1.0.0",
+        "exclusion": "relational-exclusion-1.0.0",
+        "duration": "duration-1.1.0",
+        "transport": "fanout-1.0.0",
+        "policy": "1.0.0",
+        "model": "jev-1.13.0"
+      },
+      "telemetry": {
+        "started_at": "2026-10-19T21:31:50.386467+00:00",
+        "environment": "Railway",
+        "revision": "af4773187afa92903c141b6f3ea2fdedbe4f756f",
+        "completed_at": "2026-10-19T21:31:51.087166+00:00",
+        "queued_at": "2026-10-19T21:31:49.840505+00:00",
+        "new_requests": 2,
+        "cached_stages": [],
+        "usage": {
+          "input_tokens": 23659,
+          "output_tokens": 1519,
+          "total_tokens": null
+        }
+      },
+      "export_rows": 1,
+      "export_columns": [
+        "News_ID",
+        "Is_Risk",
+        "Urgent",
+        "Affected_Supplier_IDs"
+      ],
+      "fixture": "QA identificada, una fila de training conocido sin etiquetas; no LiveDay"
+    },
+    "rss": {
+      "job": "6821978a-b611-4213-9528-2809d9af053c",
+      "state": "done",
+      "snapshot": {
+        "profile": "radar-1.0.0-candidate",
+        "matching": "link-3.3.0",
+        "retrieval": "link-3.0.0-dev",
+        "questions": "decision-3.4.2",
+        "risk": "risk-focus-1.2.0",
+        "review": "review-1.3.1",
+        "support": "decision-support-1.0.0",
+        "facts": "decision-facts-1.0.0",
+        "exclusion": "relational-exclusion-1.0.0",
+        "duration": "duration-1.1.0",
+        "transport": "fanout-1.0.0",
+        "policy": "1.0.0",
+        "model": "jev-1.13.0"
+      },
+      "telemetry": {
+        "started_at": "2026-10-19T21:31:57.358203+00:00",
+        "environment": "Railway",
+        "revision": "af4773187afa92903c141b6f3ea2fdedbe4f756f",
+        "completed_at": "2026-10-19T21:31:59.082479+00:00",
+        "queued_at": "2026-10-19T21:31:56.952261+00:00",
+        "new_requests": 5,
+        "cached_stages": [],
+        "usage": {
+          "input_tokens": 59000,
+          "output_tokens": 4204,
+          "total_tokens": null
+        }
+      },
+      "source": "RSS real pendiente almacenado",
+      "reloaded": true
+    },
+    "requests": 7,
+    "retries": 0,
+    "calls": [
+      {
+        "stage": "a",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.2399624940007925,
+        "usage": {
+          "input_tokens": 20284,
+          "output_tokens": 1044
+        }
+      },
+      {
+        "stage": "b",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.1281079798936844,
+        "usage": {
+          "input_tokens": 3375,
+          "output_tokens": 475
+        }
+      },
+      {
+        "stage": "a.part1",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.2740520746447146,
+        "usage": {
+          "input_tokens": 20888,
+          "output_tokens": 1017
+        }
+      },
+      {
+        "stage": "a.part2",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.18551804684102535,
+        "usage": {
+          "input_tokens": 15754,
+          "output_tokens": 42
+        }
+      },
+      {
+        "stage": "b",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.1775603462010622,
+        "usage": {
+          "input_tokens": 13038,
+          "output_tokens": 2238
+        }
+      },
+      {
+        "stage": "candidate_support",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.1332698678597808,
+        "usage": {
+          "input_tokens": 4188,
+          "output_tokens": 323
+        }
+      },
+      {
+        "stage": "candidate_followup",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.15969436103478074,
+        "usage": {
+          "input_tokens": 5132,
+          "output_tokens": 584
+        }
+      }
+    ],
+    "counts_before": {
+      "exercise": 97,
+      "rss": 107
+    },
+    "counts_after": {
+      "exercise": 99,
+      "rss": 112
+    }
+  },
+  "rss_from_railway": {
+    "six_jobs_done": true,
+    "sources": [
+      {
+        "name": "BioPharma Dive",
+        "status": "unchanged",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-19T21:32:57.094616+00:00",
+        "last_success_at": "2026-10-19T21:32:57.172900+00:00",
+        "stored_unique": 10,
+        "stored_versions": 10,
+        "item_count": 0,
+        "duplicates": 12
+      },
+      {
+        "name": "EL PAIS Internacional",
+        "status": "ok",
+        "http_status": 200,
+        "last_attempt_at": "2026-10-19T21:32:57.083165+00:00",
+        "last_success_at": "2026-10-19T21:32:57.245443+00:00",
+        "stored_unique": 35,
+        "stored_versions": 64,
+        "item_count": 0,
+        "duplicates": 5926
+      },
+      {
+        "name": "EMA",
+        "status": "unchanged",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-19T21:32:57.158994+00:00",
+        "last_success_at": "2026-10-19T21:32:57.230611+00:00",
+        "stored_unique": 1,
+        "stored_versions": 1,
+        "item_count": 0,
+        "duplicates": 1
+      },
+      {
+        "name": "GDACS",
+        "status": "unchanged",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-19T21:32:57.696094+00:00",
+        "last_success_at": "2026-10-19T21:32:58.202475+00:00",
+        "stored_unique": 32,
+        "stored_versions": 58,
+        "item_count": 0,
+        "duplicates": 2750
+      },
+      {
+        "name": "Supply Chain Dive",
+        "status": "unchanged",
+        "http_status": 304,
+        "last_attempt_at": "2026-10-19T21:32:57.672897+00:00",
+        "last_success_at": "2026-10-19T21:32:57.774817+00:00",
+        "stored_unique": 10,
+        "stored_versions": 10,
+        "item_count": 0,
+        "duplicates": 18
+      },
+      {
+        "name": "The Loadstar",
+        "status": "ok",
+        "http_status": 200,
+        "last_attempt_at": "2026-10-19T21:32:57.105425+00:00",
+        "last_success_at": "2026-10-19T21:32:57.546339+00:00",
+        "stored_unique": 19,
+        "stored_versions": 22,
+        "item_count": 0,
+        "duplicates": 3098
+      }
+    ],
+    "jev_before": {
+      "exercise": 99,
+      "rss": 112
+    },
+    "jev_after": {
+      "exercise": 99,
+      "rss": 112
+    }
+  },
+  "acceptance": {
+    "A06": "abierto; errores de motor separados de provincia S003 desconocida",
+    "A14": "heredada PC/Firefox, alerta QA automática única; sin nueva prueba física",
+    "A20": "histórica b4d697b perfil1.0.0; no renovada por esta promoción"
+  }
+}

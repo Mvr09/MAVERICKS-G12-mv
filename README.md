@@ -2,15 +2,13 @@
 
 Aplicación en español con React/TypeScript/Vite/Tailwind, FastAPI, SQLAlchemy/Alembic y PostgreSQL. Web y worker comparten imagen; solo la web tiene dominio público. Los datos de Helixa representan una cartera ficticia.
 
-**Estado verificado:** [demo pública](https://mavericks-g12-mv-production.up.railway.app), web/worker compatibles y PostgreSQL persistente, esquema **0010**. Código funcional **77d8581**; campaña nueva de148análisis persistida y exportable. Publicación documental posterior y últimas observaciones en [PROGRESS.md](PROGRESS.md). **Default 1.0.0**, candidata explícita **3.4.2 / revisión 1.3.1**, sin promoción. RSS real y análisis manual comprobados; el periódico de pago sigue desactivado. **A06 abierto; A14 físico cerrado** (ordenador/Firefox, una alerta automática QA). A20 conserva su medida histórica:14 artículos LiveDay en7,888295967 s,b4d697b,23 peticiones nuevas / 0 caché; no se presenta como tiempo actual del candidato.
+**Estado actual:** [aplicación pública](https://mavericks-g12-mv-production.up.railway.app), web/worker y PostgreSQL, esquema **0010**. Perfil habitual **3.4.2 / revisión 1.3.1**, promovido por autorización expresa con los componentes exactos de la campaña completa. **1.0.0** sigue disponible en opciones avanzadas y para rollback. Publicación y últimas comprobaciones en [PROGRESS.md](PROGRESS.md).
 
-Selección de demo cerrada: usar **3.4.2/revisión1.3.1** explícitamente; mantener **1.0.0** predeterminada. [Comparación pareada, errores y decisión](reports/SELECCION_DEMO_FINAL.md).
+**Entrega al equipo:** [configuración, operación, métricas, simulador, pruebas y límites](docs/HANDOFF_FINAL.md). Modelo muestra el perfil final; el comparador y las campañas se conservan en herramientas privadas de administración. Sus muestras training/validation conocidas no prueban precisión independiente en RSS.
 
-Comparador: [campañas, métricas, ejecución e importación privada](docs/11_COMPARADOR_Y_CAMPANAS.md).
+RSS periódico de pago **desactivado**; análisis explícito individual o por lote conservado. **A06 abierto**, distinguiendo fallos del motor y provincia desconocida de S003. A14 conserva evidencia física en ordenador/Firefox y A20 su medición histórica, no renovada por esta promoción. [Aceptación actual](reports/ACEPTACION_ACTUAL.md).
 
-Operación diaria: [revisión humana, acciones por incidente y RSS en lote](docs/10_OPERACION_Y_REVISION.md). Las decisiones humanas conservan JEV, sus métricas y las etiquetas originales.
-
-Documentación vigente: [comparación y límites](reports/CANDIDATA_OPERATIVA.md), [aceptación A01–A20](reports/ACEPTACION_ACTUAL.md) y [guion de cuatro minutos](docs/09_DEMO_PROCUREMENT.md). Los informes anteriores se conservan como historial, no como evaluaciones nuevas.
+[Revisión humana, acciones y RSS por lote](docs/10_OPERACION_Y_REVISION.md). Las decisiones humanas no sustituyen las predicciones originales en las métricas. Los informes de experimentos y recomendaciones anteriores se conservan como historial.
 
 ## Arranque local con Docker Compose
 

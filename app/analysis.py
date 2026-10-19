@@ -208,7 +208,7 @@ def process_article(
     )
     from app.payload_cache import PayloadCacheClient
     candidate = profile == CANDIDATE_PROFILE
-    client_type = PayloadCacheClient if candidate and campaign_article is None else JevClient
+    client_type = PayloadCacheClient if candidate and campaign_article is None and publish else JevClient
     client_options = {}
     if profile_snapshot:
         client_options["cache_namespace"] = digest(profile_snapshot)

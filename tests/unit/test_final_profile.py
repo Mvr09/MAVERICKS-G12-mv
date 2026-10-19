@@ -71,3 +71,26 @@ def test_final_report_recalculates_counts_keeps_review_and_separates_time():
             # Endpoint DTO never returns per-item references/payloads.
             assert 'reference' not in r and 'rows' not in r
         finally:db.rollback()
+
+
+def test_queued_auxiliary_comparisons_preserve_legacy_and_new_snapshot(monkeypatch):
+    from app.comparison import process_comparison
+    recorded=[]
+    def process(db, aid, **kw):
+        recorded.append(kw)
+        return {'analysis_status':'done','is_risk':'N','urgent':'N','affected_supplier_ids':[], 'event_type':'none','review_reasons':[],'assessments':[]}
+    monkeypatch.setattr('app.analysis.process_article',process)
+    class DB:
+        def __init__(self,payload):
+            self.row=SimpleNamespace(state='queued',article_id='MOCK',ballots=[],summary={})
+            self.job=SimpleNamespace(payload=payload)
+        def get(self,*a):return self.row
+        def scalar(self,*a):return self.job
+        def commit(self):pass
+    for payload,expected in [({},'1.0.0'),({'analysis_profile':DEFAULT_PROFILE,'profile_snapshot':FINAL_COMPONENTS},DEFAULT_PROFILE)]:
+        recorded.clear();r=process_comparison(DB(payload),'MOCK')
+        assert r.state=='done' and len(recorded)==3
+        assert all(k['profile']==expected and k['publish'] is False for k in recorded)
+        assert all(k['profile_snapshot']==payload.get('profile_snapshot') for k in recorded)
+    recorded.clear();db=DB({'analysis_profile':DEFAULT_PROFILE,'profile_snapshot':{'model':'WRONG-MOCK'}})
+    assert process_comparison(db,'MOCK').state=='error' and not recorded

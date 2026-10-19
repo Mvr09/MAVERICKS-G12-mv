@@ -947,7 +947,7 @@ def compare_article(aid: str, db: Session = Depends(get_db)):
         return {
             "comparison_id": comparison.id,
             "job_id": job.id,
-            "maximum_requests": 18,
+            "maximum_requests": 3 * __import__("app.profiles", fromlist=["maximum_requests"]).maximum_requests(job.payload.get("analysis_profile", LEGACY_PROFILE)),
         }
     except ValueError as exc:
         db.rollback()

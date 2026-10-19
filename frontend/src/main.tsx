@@ -1212,19 +1212,22 @@ function App() {
                               />
                             )}
                             <div className="inline">
-                              <button
+                              <AsyncButton
                                 className="button small"
                                 disabled={!presenter || a.acknowledged}
-                                onClick={() =>
-                                  action(() =>
-                                    api(`/alerts/${a.id}/ack`, {
-                                      method: "POST",
-                                    }),
-                                  )
-                                }
+                                busyLabel="Reconociendo…"
+                                onAction={async () => {
+                                  await api(`/alerts/${a.id}/ack`, {
+                                    method: "POST",
+                                  });
+                                  setMessage(
+                                    "Aviso reconocido. La acción y el incidente conservan su estado.",
+                                  );
+                                  await refresh(true);
+                                }}
                               >
                                 {a.acknowledged ? "Reconocida" : "Reconocer"}
-                              </button>
+                              </AsyncButton>
                               <Link
                                 className="text-link"
                                 to={
@@ -2920,7 +2923,9 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                 refresh();
               } catch (e) {
                 setResolutionError((e as Error).message);
-              } finally { setResolving(false); }
+              } finally {
+                setResolving(false);
+              }
             }}
           >
             {resolutionError && <p role="alert">{resolutionError}</p>}
@@ -2933,7 +2938,12 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             />
-            <button className="button primary" type="submit" disabled={resolving} aria-busy={resolving}>
+            <button
+              className="button primary"
+              type="submit"
+              disabled={resolving}
+              aria-busy={resolving}
+            >
               {resolving ? "Guardando resolución…" : "Registrar resolución"}
             </button>
           </form>
@@ -3020,11 +3030,35 @@ function MaterialDetail() {
   const [m, setM] = useState<Material | null>(null),
     [error, setError] = useState("");
   useEffect(() => {
+    let active = true;
+    setM(null);
+    setError("");
     api<Material>("/materials/" + id)
-      .then(setM)
-      .catch((e) => setError(e.message));
+      .then((value) => {
+        if (active) setM(value);
+      })
+      .catch((e) => {
+        if (active) setError(e.message);
+      });
+    return () => {
+      active = false;
+    };
   }, [id]);
-  if (!m) return <div role="status">{error || "Cargando material…"}</div>;
+  if (!m)
+    return error ? (
+      <section className="card detail-card" role="alert">
+        <h2>No se pudo cargar el material</h2>
+        <p>{error}</p>
+        <button className="button" onClick={() => window.location.reload()}>
+          Reintentar carga
+        </button>
+        <Link className="text-link" to={scopedPath("/materiales", context)}>
+          Volver al catálogo
+        </Link>
+      </section>
+    ) : (
+      <LoadingBlock label="Cargando material y proveedores…" />
+    );
   return (
     <section className="card detail-card">
       <Link className="text-link" to={scopedPath("/materiales", context)}>
@@ -3452,7 +3486,13 @@ function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
             Especificaciones, productos y proveedores del catálogo importado
           </p>
         </div>
-        <Badge>{loading ? "Cargando catálogo…" : error ? "Catálogo no disponible" : `${materials.length} materiales`}</Badge>
+        <Badge>
+          {loading
+            ? "Cargando catálogo…"
+            : error
+              ? "Catálogo no disponible"
+              : `${materials.length} materiales`}
+        </Badge>
       </div>
       <div className="ranking-toolbar material-filters">
         <label>
@@ -3493,7 +3533,11 @@ function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
       )}
       {loading ? (
         <LoadingBlock label="Cargando materiales…" />
-      ) : error ? <button className="button" onClick={() => window.location.reload()}>Reintentar carga</button> : rows.length ? (
+      ) : error ? (
+        <button className="button" onClick={() => window.location.reload()}>
+          Reintentar carga
+        </button>
+      ) : rows.length ? (
         <div className="materials-grid">
           {rows.map((m) => (
             <article className="source-card" key={m.material_id}>
@@ -4318,9 +4362,10 @@ function ComparisonControl({ article }: { article: Article }) {
         >
           <div className="modal-body">
             <p>
-              Se harán hasta 18 peticiones JEV, incluidos reintentos: dos etapas
-              por evaluación, con un máximo de tres intentos por etapa. No se
-              consulta la segunda etapa cuando no hay proveedores candidatos.
+              Se ejecutarán tres análisis nuevos del perfil actual 3.4.2, con
+              sus etapas condicionales y reintentos acotados: hasta 108
+              peticiones en total. Se registran las peticiones reales. Los
+              contrastes ya encolados conservan su configuración original.
             </p>
             <p>
               El resultado será auxiliar. Una mayoría no sustituye la evidencia
