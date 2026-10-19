@@ -2,7 +2,7 @@
 
 ## Versión y perfil habitual
 
-Commit funcional **af47731**; el pulido final y su SHA se identifican en `git log --oneline -- docs/HANDOFF_FINAL.md`. Evidencia concreta en `reports/final-release-verification.json` y verificación posterior en `PROGRESS.md`. Publicación por `main` y autodeploy existente, web y worker con la misma imagen. URL: https://mavericks-g12-mv-production.up.railway.app.
+Commits funcionales **af47731** y **c7c56ae**, ambos publicados y comprobados; el pulido final y su SHA se identifican en `git log --oneline -- docs/HANDOFF_FINAL.md`. Evidencia concreta en `reports/final-release-verification.json` y verificación posterior en `PROGRESS.md`. Publicación por `main` y autodeploy existente, web y worker con la misma imagen. URL: https://mavericks-g12-mv-production.up.railway.app.
 
 Se promueve por decisión de producto el perfil **3.4.2 / revisión 1.3.1** de la campaña `6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7`, conservando su identificador histórico interno `radar-1.0.0-candidate`. El manifiesto completo está en `config/final_profile.json`: matching `link-3.3.0`, recuperación `link-3.0.0-dev`, preguntas `decision-3.4.2`, riesgo `risk-focus-1.2.0`, revisión `review-1.3.1`, soporte `decision-support-1.0.0`, hechos `decision-facts-1.0.0`, exclusión `relational-exclusion-1.0.0`, duración `duration-1.1.0`, transporte `fanout-1.0.0`, política empresarial `1.0.0`, JEV `jev-1.13.0`.
 
@@ -51,11 +51,11 @@ La imagen compila frontend y sirve todo desde FastAPI, puerto 8000. Predeploy: `
 
 ## Verificación de cierre
 
-164 pruebas unitarias/integración en PostgreSQL aislado y 38 E2E dirigidos con mocks pasan. Chrome real contra Railway: ocho páginas × cinco anchos (360/390/768/1024/1440), 312 redimensionados intermedios, sin overflow global ni errores JS; filtros, simulador y matrices sin inferencias. Revisiones, seguimientos y borradores anteriores recuperados en los cinco anchos; teclado/Escape y navegación móvil comprobados. Modelo y Noticias también se imprimen en A4. La emulación de móvil no es un ensayo físico.
+164 pruebas unitarias/integración en PostgreSQL aislado y 39 E2E dirigidos con mocks pasan. Chrome real contra Railway: ocho páginas × cinco anchos (360/390/768/1024/1440), 312 redimensionados intermedios, sin overflow global ni errores JS; filtros, simulador y matrices sin inferencias. Revisiones, seguimientos y borradores anteriores recuperados en los cinco anchos; teclado/Escape y navegación móvil comprobados. Modelo y Noticias también se imprimen en A4. La emulación de móvil no es un ensayo físico.
 
 Nuevas ejecuciones reales de cierre: una fila de training identificada como QA, importación idempotente y exportación de una fila/cuatro columnas; un RSS pendiente analizado y recuperado tras recarga. Ambas guardan el manifiesto exacto en servidor y telemetría del worker Railway. **7 peticiones nuevas HTTP200, 0 reintentos, 0 caché**, JEV1.13.0; entrada82.659/salida5.723 tokens reportados. Dos duraciones Railway nuevas, media1,2124875s; muestra mínima, no nueva garantía de rendimiento. No se repite campaña ni LiveDay.
 
-Fuentes actualizadas desde la UI: seis trabajos terminados, **dos HTTP200 y cuatro304**; sin llamadas JEV adicionales. Un304 acredita consulta sin cambios, no noticias nuevas. El RSS de pago periódico sigue desactivado. Los contrastes auxiliares con tres evaluaciones también congelan su perfil; los trabajos antiguos conservan1.0.0, y los nuevos usan el perfil final sin reutilizar votos como consultas nuevas.
+Fuentes actualizadas desde la UI: seis trabajos terminados, **dos HTTP200 y cuatro304**; sin llamadas JEV adicionales. Un304 acredita consulta sin cambios, no noticias nuevas. El RSS de pago periódico sigue desactivado. La verificación privada posterior conserva las148predicciones originales y las métricas de las cinco muestras, sin inferencias nuevas. Los contrastes auxiliares con tres evaluaciones también congelan su perfil; los trabajos antiguos conservan1.0.0, y los nuevos usan el perfil final sin reutilizar votos como consultas nuevas.
 
 ## Límites y continuación
 

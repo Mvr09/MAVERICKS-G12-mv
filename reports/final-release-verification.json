@@ -23,10 +23,11 @@
   "automated": {
     "unit_integration": 164,
     "unit_environment": "PostgreSQL radar_test aislado; mocks JEV identificados",
-    "browser_mock_cases": 38,
+    "browser_mock_cases": 39,
     "browser": "Chrome real con respuestas simuladas identificadas",
     "build": "pasa",
-    "package": "130 archivos;sin originales ni secretos"
+    "package": "130 archivos;sin originales ni secretos",
+    "download_feedback": "Prueba adicional de demora, bloqueo, fallo de red español y reintento; éxito solo después de respuesta real."
   },
   "real_browser": {
     "environment": "Chrome Linux, Railway real; viewports móviles emulados, no dispositivo físico",
@@ -347,5 +348,286 @@
     "A06": "abierto; errores de motor separados de provincia S003 desconocida",
     "A14": "heredada PC/Firefox, alerta QA automática única; sin nueva prueba física",
     "A20": "histórica b4d697b perfil1.0.0; no renovada por esta promoción"
+  },
+  "post_polish_verification": {
+    "revision": "c7c56ae7561f95724be84f43fd355b0714f457fa",
+    "health_and_assets": [
+      {
+        "path": "/healthz",
+        "status": 200
+      },
+      {
+        "path": "/readyz",
+        "status": 200
+      },
+      {
+        "path": "/",
+        "status": 200
+      },
+      {
+        "path": "/assets/index-oaAlSbJo.js",
+        "status": 200
+      },
+      {
+        "path": "/assets/_commonjsHelpers-CqkleIqs.js",
+        "status": 200
+      },
+      {
+        "path": "/assets/react-vendor-C7qHzZhZ.js",
+        "status": 200
+      },
+      {
+        "path": "/assets/index-Tgg6LHXu.css",
+        "status": 200
+      },
+      {
+        "path": "/assets/icons-DTN_LyQ6.js",
+        "status": 200
+      },
+      {
+        "path": "/modelo",
+        "status": 200
+      },
+      {
+        "path": "/fuentes?context=exercise",
+        "status": 200
+      },
+      {
+        "path": "/proveedores/S024",
+        "status": 200
+      },
+      {
+        "path": "/materiales/M02",
+        "status": 200
+      },
+      {
+        "path": "/api/config",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=training",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=validation",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=test",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=liveday",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7?split=labelled",
+        "status": 200
+      },
+      {
+        "path": "/api/model/metrics?context=exercise",
+        "status": 200
+      },
+      {
+        "path": "/api/model/metrics?context=rss",
+        "status": 200
+      },
+      {
+        "path": "/api/campaigns/6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7/export",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/worker",
+        "status": 200
+      },
+      {
+        "path": "/api/model/metrics?context=exercise",
+        "status": 200
+      },
+      {
+        "path": "/api/model/metrics?context=rss",
+        "status": 200
+      },
+      {
+        "path": "/api/articles?context=exercise",
+        "status": 200
+      },
+      {
+        "path": "/api/articles?context=rss",
+        "status": 200
+      },
+      {
+        "path": "/api/sources",
+        "status": 200
+      },
+      {
+        "path": "/api/articles/93456605-e83d-4adf-8ee5-c2f52bba7478",
+        "status": 200
+      }
+    ],
+    "worker": {
+      "online": true,
+      "compatible": true,
+      "revision": "c7c56ae7561f95724be84f43fd355b0714f457fa"
+    },
+    "original_148_predictions_preserved": true,
+    "private_access_protected": true,
+    "metrics_match_local": {
+      "training": true,
+      "validation": true,
+      "test": true,
+      "liveday": true,
+      "labelled": true
+    },
+    "private_export": {
+      "http": 200,
+      "bytes": 13125913,
+      "response_seconds": 1.3416290010063676,
+      "rows": 148
+    },
+    "jev_before": {
+      "exercise": 99,
+      "rss": 112
+    },
+    "jev_after": {
+      "exercise": 99,
+      "rss": 112
+    },
+    "browser_affected_views_cases": 15,
+    "javascript_errors": [],
+    "model_quality": {
+      "queue_wait_seconds": {
+        "n": 40,
+        "p50": 14.287006,
+        "p95": 28.7900051
+      },
+      "total": 40,
+      "completed": 40,
+      "errors": 0,
+      "pending": 0,
+      "labelled_completed": 40,
+      "quality": {
+        "n": 40,
+        "risk": {
+          "tp": 19,
+          "fp": 0,
+          "fn": 0,
+          "tn": 21,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "n": 40,
+          "positives": 19
+        },
+        "urgent": {
+          "tp": 7,
+          "fp": 2,
+          "fn": 0,
+          "tn": 31,
+          "precision": 0.7777777777777778,
+          "recall": 1,
+          "f1": 0.875,
+          "n": 40,
+          "positives": 7
+        },
+        "suppliers": {
+          "exact": 37,
+          "n": 40,
+          "precision": 0.8648648648648649,
+          "recall": 1,
+          "exact_set_accuracy": 0.925,
+          "tp": 32,
+          "fp": 5,
+          "fn": 0,
+          "f1": 0.927536231884058
+        },
+        "review_count": 21
+      },
+      "quality_limit": "Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte",
+      "automatic": 19,
+      "review": 21,
+      "automatic_rate": 0.475,
+      "review_rate": 0.525,
+      "automatic_errors": 0,
+      "automatic_labelled": 19,
+      "automatic_positive": {
+        "n": 3,
+        "errors": 0
+      },
+      "automatic_negative": {
+        "n": 16,
+        "errors": 0
+      },
+      "automatic_risks": 3,
+      "automatic_urgencies": 3,
+      "new_requests": 142,
+      "cache_stages": 0,
+      "retries": 0,
+      "http_errors": 0,
+      "tokens": {
+        "input_tokens": 1179094,
+        "output_tokens": 91192,
+        "total_tokens": null
+      },
+      "analysis_wall_seconds_sum": 84.471329,
+      "elapsed_seconds": 32.743492
+    },
+    "railway": {
+      "fresh": {
+        "n": 2,
+        "mean": 1.2124875,
+        "median": 1.2124875,
+        "p95": 1.724276
+      },
+      "cached_or_mixed": {
+        "n": 0,
+        "mean": null,
+        "median": null,
+        "p95": null
+      },
+      "queue": {
+        "n": 2,
+        "mean": 0.475952,
+        "median": 0.475952,
+        "p95": 0.545962
+      },
+      "definition": "Nuevas ejecuciones operativas con marcas del worker; no incluye históricos sin esa telemetría."
+    }
   }
 }

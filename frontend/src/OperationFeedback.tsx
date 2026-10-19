@@ -101,6 +101,16 @@ export async function downloadFile(url: string, filename: string) {
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(href), 1000);
+  } catch (e) {
+    if (controller.signal.aborted)
+      throw new Error(
+        "La descarga tardó demasiado. Puedes volver a prepararla.",
+      );
+    if (e instanceof TypeError)
+      throw new Error(
+        "No se pudo descargar. Comprueba la conexión y vuelve a intentarlo.",
+      );
+    throw e;
   } finally {
     clearTimeout(timer);
   }

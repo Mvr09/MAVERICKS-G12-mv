@@ -5,7 +5,7 @@ from uuid import uuid4
 from sqlalchemy import select, or_, text
 from app.db import Session
 from app.models import Job, Article, WorkerPresence, Comparison, now
-from app.queue import claim, enqueue_sync, enqueue, reserve, analysis_key
+from app.queue import claim, enqueue_sync, enqueue, reserve, analysis_key, analysis_payload
 from app.settings import settings, RSS
 
 log = logging.getLogger("radar.worker")
@@ -194,10 +194,7 @@ def main():
                                         db,
                                         analysis_key(a),
                                         "analysis",
-                                        {
-                                            "article_id": a.id,
-                                            "generation": a.generation,
-                                        },
+                                        analysis_payload(a),
                                         1,
                                     )
                         db.commit()
