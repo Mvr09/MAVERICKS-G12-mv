@@ -2757,3 +2757,5 @@ dialog > header {
 .triage-option input { flex:0 0 auto;min-width:22px;min-height:22px; }
 .triage-option span { min-width:0;overflow-wrap:anywhere; }
 .triage-option small { display:block; }
+
+.incident-work .saved-query {display:flex;flex-direction:column;align-items:flex-start;white-space:normal;max-width:100%;overflow-wrap:anywhere;text-align:left;margin-block:.5rem;}

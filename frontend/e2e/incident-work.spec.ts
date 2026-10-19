@@ -13,7 +13,20 @@ for (const width of [390, 1440])
       state: "active",
       current: history[0] || null,
       history,
-      drafts: [{ id: "QA-D", kind: "supplier", context_changed: true }],
+      drafts: [
+        {
+          id: "QA-OLD",
+          kind: "supplier",
+          context_changed: true,
+          preview: "MOCK old note",
+        },
+        {
+          id: "QA-D",
+          kind: "supplier",
+          context_changed: false,
+          preview: "MOCK current query",
+        },
+      ],
     });
     const s: any = {
       supplier_id: "QA-S",
@@ -115,9 +128,11 @@ for (const width of [390, 1440])
         exact: true,
       }),
     ).toBeVisible();
-    await page
-      .getByRole("button", { name: /Abrir consulta al proveedor/ })
-      .click();
+    await page.locator('button[data-draft-id="QA-D"]').click();
+    await expect(page.locator(".saved-query").first()).toHaveAttribute(
+      "data-draft-id",
+      "QA-D",
+    );
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
     await dialog
@@ -131,9 +146,7 @@ for (const width of [390, 1440])
     await page
       .getByText("Acción y seguimiento · Acción completada", { exact: true })
       .click();
-    await page
-      .getByRole("button", { name: /Abrir consulta al proveedor/ })
-      .click();
+    await page.locator('button[data-draft-id="QA-D"]').click();
     await expect(
       page.getByLabel("Texto de la consulta guardada", { exact: true }),
     ).toHaveValue(draftText);

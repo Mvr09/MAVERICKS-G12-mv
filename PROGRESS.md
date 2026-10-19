@@ -7,6 +7,7 @@
 - Calidad:clasificador3.4.2/revisión1.3.1 ydefault1.0.0 congelados,sin promoción. Solo recuperación preliminar mejorada:training19/22→20/22 pares recuperados,5candidatos adicionales enambos,2omisiones restantes;7controles de recuperación pasan. No es mejora de clasificación ni evaluación independienteRSS.0llamadasJEV de desarrollo,contadores preservados.
 - Esquema0009 aditivo probado enbase de migraciones:24tablas. Borrado de demo protege decisiones/acciones;downgrade con datos bloqueado. Sin variables nuevas. Documentación operativa:docs/10_OPERACION_Y_REVISION.md.
 - Pruebas:141unit/integración y26E2E dirigidos distintos pasan(22enlote final+4procurement trasactualizar una aserción altexto nuevo),mocks identificados,360/390/768/1440. Build ypaquete119archivos sinsecretos/originales pasan. Pendiente:publicar,comprobarHTTPS/worker0009 yciclo real;máximo2RSSnuevas(72intentos),sin repetirrespuestasválidas. A06abierto;A14/A20heredados,noLiveDay/test/answerkey.
+- Verificación55098e1:web/worker compatibles y0009.6RSS sincronizados;lote2RSSreales completado con12peticiones,0reintentos(62→74),1doneN/Nsinvínculo y1reviewN/Nsinvínculo. EjercicioN001:solicitud→confirmaciónhumana→consulta guardada→acción completada→seguimientopendiente,persistidos. Se detectófricción alabrir laprimera consulta antigua:se ordena contexto vigente primero yse añade vista previa. Reanudación porIDs,sin repetirJEV.
 - Cambios ajenos,credenciales,originales,históricos ycontadores preservados. Guiones ycapturas no son objetivo de esta entrega.
 
 ## Historial conservado

@@ -150,23 +150,33 @@ export function IncidentWorkspace({ incidentId }: { incidentId: string }) {
           {message && <p role="status">{message}</p>}
           <h4>Consultas de este incidente</h4>
           {work.drafts.length ? (
-            work.drafts.map((d: any) => (
-              <button
-                key={d.id}
-                className="button"
-                onClick={async () => {
-                  try {
-                    setDraft(await api("/drafts/" + d.id));
-                  } catch (e) {
-                    setError((e as Error).message);
-                  }
-                }}
-              >
-                Abrir consulta{" "}
-                {d.kind === "alternate" ? "al alternativo" : "al proveedor"}
-                {d.context_changed ? " · contexto actualizado, revisar" : ""}
-              </button>
-            ))
+            work.drafts
+              .slice()
+              .sort(
+                (a: any, b: any) =>
+                  Number(a.context_changed) - Number(b.context_changed),
+              )
+              .map((d: any) => (
+                <button
+                  key={d.id}
+                  data-draft-id={d.id}
+                  className="button saved-query"
+                  onClick={async () => {
+                    try {
+                      setDraft(await api("/drafts/" + d.id));
+                    } catch (e) {
+                      setError((e as Error).message);
+                    }
+                  }}
+                >
+                  Abrir consulta{" "}
+                  {d.kind === "alternate" ? "al alternativo" : "al proveedor"}
+                  {d.context_changed
+                    ? " · contexto anterior, revisar"
+                    : " · contexto vigente"}
+                  {d.preview && <small>{d.preview}</small>}
+                </button>
+              ))
           ) : (
             <p>
               No hay consultas guardadas. Crea una con los botones del incidente
