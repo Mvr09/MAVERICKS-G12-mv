@@ -3,7 +3,7 @@
 import re
 from datetime import datetime
 from sqlalchemy import select
-from app.models import Incident, Alert, Supplier, now
+from app.models import Incident, Alert, Supplier, Article, now
 from app.importer import digest
 from app.event_tags import event_tag
 from app.settings import POLICY
@@ -181,7 +181,7 @@ def reconcile(db, article, result):
         inc = compatible[0] if compatible else None
         if inc:
             # Retain late evidence but never reopen or replace a more recent state.
-            replacement = any(h.get("article_id") == article.id and h.get("superseded") and h.get("generation", 0) < article.generation for h in inc.history)
+            replacement = any(h.get("superseded") and ((h.get("article_id") == article.id and h.get("generation", 0) < article.generation) or (h.get("article_id") != article.id and (previous := db.get(Article,h.get("article_id"))) is not None and previous.origin_key==article.origin_key and previous.version<article.version)) for h in inc.history if h.get("article_id"))
             if any(h.get("article_id") == article.id and not h.get("superseded") for h in inc.history):
                 continue
             if published < inc.event_date or (published == inc.event_date and not replacement):

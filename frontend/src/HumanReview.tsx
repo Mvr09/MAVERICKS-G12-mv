@@ -75,6 +75,47 @@ export function HumanReview({
     setMessage("");
   };
   if (!article.analysis || article.state === "error") return null;
+  if (
+    record?.source_obsolete ||
+    article.human_review?.state === "obsolete" ||
+    article.state === "superseded"
+  )
+    return (
+      <section className="card">
+        <h2>Versión anterior de la fuente</h2>
+        <p>
+          Sus decisiones se conservan como historial. Abre la noticia vigente
+          para revisar la información actual.
+        </p>
+        <a
+          className="button"
+          href={
+            "/noticias/" +
+            ((article as any).human_review?.latest_article_id ||
+              record?.latest_article_id ||
+              article.id) +
+            "?context=" +
+            (article.split === "rss" ? "rss" : "exercise")
+          }
+        >
+          Abrir noticia vigente
+        </a>
+        {note && (
+          <label>
+            Observación sin guardar, conservada para copiar
+            <textarea readOnly value={note} />
+          </label>
+        )}
+        <details>
+          <summary>Historial humano anterior</summary>
+          {record?.history?.map((h: any) => (
+            <p key={h.id}>
+              {h.note} · {date(h.created_at)}
+            </p>
+          ))}
+        </details>
+      </section>
+    );
   return (
     <details
       className="card operational-review"

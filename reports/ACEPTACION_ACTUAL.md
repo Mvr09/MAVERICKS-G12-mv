@@ -61,4 +61,4 @@ Usar3.4.2/revisión1.3.1 explícitamente;default1.0.0 conservado. Comparación p
 
 ## Ampliación operativa · revisión y seguimiento
 
-Esquema0009aditivo,24tablas verificadas enbase aislada;143unit/integración y26E2E dirigidos con mocks pasan. Decisiones humanas,notas yacciones separadas deAnalysis,etiquetas yexportación delreto. Recuperación preliminar medida solo entraining:19→20TPde22referencias,5candidatos adicionales iguales;7controles dedesarrollo pasan,sin nueva precisiónJEV. Publicación ypersistencia externas se registrarán enoperational-public.json. A06abierto;A14yA20conservan evidencia yalcance.
+Esquema0009aditivo,24tablas verificadas enbase aislada;146unit/integración y26E2E dirigidos con mocks pasan. Decisiones humanas,notas yacciones separadas deAnalysis,etiquetas yexportación delreto. Recuperación preliminar medida solo entraining:19→20TPde22referencias,5candidatos adicionales iguales;7controles dedesarrollo pasan,sin nueva precisiónJEV. Publicación ypersistencia externas se registrarán enoperational-public.json. A06abierto;A14yA20conservan evidencia yalcance.

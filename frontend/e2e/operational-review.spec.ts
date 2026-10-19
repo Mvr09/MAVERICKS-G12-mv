@@ -7,6 +7,7 @@ for (const width of [360, 390, 768, 1440]) {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
     let generation = 0;
+    let sourceObsolete = false;
     let human: any = {
       state: "pending",
       resolved_suppliers: [],

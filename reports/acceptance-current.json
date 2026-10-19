@@ -238,12 +238,14 @@
     "default": "1.0.0",
     "candidate": "decision-3.4.2/review-1.3.1",
     "human_policy": "human-review-1.0.1",
-    "unit_integration_passed": 143,
+    "unit_integration_passed": 146,
     "ui_directed_passed": 26,
     "ui_mock": true,
     "migration_tables": 24,
     "paid_periodic_rss": false,
     "new_jev_calls_development": 0,
-    "live_verification": "pending publication"
+    "live_verification": "pending publication",
+    "source_versions_protected": true,
+    "shared_urgent_evidence_preserved": true
   }
 }

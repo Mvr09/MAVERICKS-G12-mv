@@ -22,7 +22,9 @@ Cada registro es nuevo e incluye actor compartido, momento, fuente, versión, ge
 
 **JEV, sus etiquetas de evaluación y la exportación del reto no se modifican.** Las correcciones humanas cambian la gestión operativa y sus incidentes; no mejoran retrospectivamente las métricas ni se incorporan automáticamente a training. Se conservan las probabilidades originales, sin convertirlas en1. Si JEV no evaluó ese candidato se indica «no estimada», no cero. Una solicitud nueva con información ausente sigue pendiente. La política humana vigente es human-review-1.0.1; se conservan las decisiones anteriores con su versión. Las alertas nuevas de origen humano son visuales; no se inventa confianza para habilitar sonido.
 
-Un reanálisis o cambio de fuente conserva las decisiones anteriores como históricas. No se aplican silenciosamente a la nueva ejecución. Los formularios detectan conflictos; recarga la revisión y contrasta el nuevo contexto, conservando tu texto. Rechazar una asociación retira solo la contribución de esa noticia; otra evidencia del incidente continúa vigente. No equivale a recuperación.
+Una revisión de una noticia tampoco silencia otra evidencia urgente del mismo incidente: la urgencia operativa conserva su fuente y explicación.
+
+Un reanálisis o cambio de fuente conserva las decisiones anteriores como históricas. La versión sustituida no admite nuevas decisiones; ofrece un enlace a la fuente vigente. Una actualización válida retira efectos antiguos sin simular recuperación; si falla, conserva el último estado conocido. No se aplican silenciosamente a la nueva ejecución. Los formularios detectan conflictos; recarga la revisión y contrasta el nuevo contexto, conservando tu texto. Rechazar una asociación retira solo la contribución de esa noticia; otra evidencia del incidente continúa vigente. No equivale a recuperación.
 
 ## Acción por incidente
 

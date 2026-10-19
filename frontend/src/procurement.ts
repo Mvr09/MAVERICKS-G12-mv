@@ -48,7 +48,7 @@ export function procurement(s: Supplier, context: string, incidentId?: string) {
   const review = incidentId
     ? !!entry?.assessment?.needs_review
     : s.needs_review;
-  const urgent = incidentId ? entry?.assessment?.urgent === "Y" : s.urgent;
+  const urgent = incidentId ? (entry?.assessment?.urgent === "Y" || (entry?.assessment as any)?.operational_urgent) : s.urgent;
   const superseded = incident?.state === "superseded";
   const work = (incident as any)?.procurement_work;
   const action = work && work.status !== "done" ? work.action : superseded

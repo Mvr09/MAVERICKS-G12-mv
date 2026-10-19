@@ -18,11 +18,16 @@ from app.models import (
 
 
 def current(incident):
-    return max(
-        (h for h in incident.history if "assessment" in h and not h.get("superseded")),
-        key=lambda h: (h.get("published_date", ""), h.get("at", "")),
-        default={},
-    )
+    entry=max((h for h in incident.history if "assessment"in h and not h.get("superseded")),key=lambda h:(h.get("published_date",""),h.get("at","")),default={})
+    # A review of one article must not silence another urgent source of this incident.
+    if getattr(incident,'state','active')in('active','monitoring') and entry.get('decision_origin')=='human' and entry.get('assessment',{}).get('urgent')!='Y':
+        others=[h for h in incident.history if not h.get('superseded') and h.get('article_id')!=entry.get('article_id') and h.get('assessment',{}).get('is_risk')=='Y' and h.get('assessment',{}).get('urgent')=='Y']
+        if others:
+            from copy import deepcopy
+            entry=deepcopy(entry);entry['assessment']['operational_urgent']=True
+            entry['assessment']['needs_review']=entry['assessment'].get('needs_review',False)or any(h['assessment'].get('needs_review')for h in others)
+            entry['explanation']=entry.get('explanation','')+' Urgencia conservada por otra evidencia del incidente: '+'; '.join(h.get('headline','Fuente por verificar')for h in others)
+    return entry
 
 
 def batch_label(batch):
@@ -166,6 +171,8 @@ def suppliers_view(db, context="exercise", origin=""):
     analyzed = list({article_row.id: (article_row, result) for article_row, result in analyzed}.values())
     article_tags = {a.id: event_tag(result) for a, result in analyzed}
     for article_row, result in analyzed:
+        if article_row.state == "superseded":
+            continue
         if not origin_matches(article_row, origin):
             continue
         from app.human_review import effective_result
@@ -239,7 +246,7 @@ def suppliers_view(db, context="exercise", origin=""):
                     default=0 if hist or s.id in known else None,
                 ),
                 "urgent": any(
-                    current(i).get("assessment", {}).get("urgent") == "Y"
+                    (current(i).get("assessment", {}).get("urgent") == "Y" or current(i).get("assessment", {}).get("operational_urgent"))
                     for i in active
                 ),
                 "needs_review": s.id in doubts or s.id in human_pending or any(

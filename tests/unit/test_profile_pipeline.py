@@ -41,3 +41,18 @@ def test_dispatch_original_decisions_and_parser_version_cache(monkeypatch):
         assert seen[1]['questions']==seen[3]['questions']
         assert 'geography' in seen[2]['state']['suppliers'][0]
         assert db.scalar(select(func.count()).select_from(ApiCall))==4
+
+        # Versioned sources use a new Article ID, including generation0.
+        from app.models import Article
+        import app.reanalysis as reanalysis
+        retired=[]
+        real_retire=reanalysis.retire_effects
+        def capture_retire(db,source,result):
+            retired.append((source.id,source.version,source.generation))
+            return real_retire(db,source,result)
+        monkeypatch.setattr(reanalysis,'retire_effects',capture_retire)
+        article.state='superseded'
+        changed=Article(origin_key=article.origin_key,version=2,context=article.context,news_id=article.news_id,data=article.data,content_hash=article.content_hash)
+        db.add(changed);db.flush()
+        process_article(db,changed.id,transport,profile='1.0.0')
+        assert retired==[(changed.id,2,0)]

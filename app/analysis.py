@@ -337,7 +337,7 @@ def process_article(
             "duration": DURATION_VERSION, "policy": POLICY["version"], "model": result["model_id"],
         })
         if publish:
-            if a.generation:
+            if a.generation or a.version > 1:
                 # A failed replacement rolls back its projection, not prior evidence.
                 with db.begin_nested():
                     from app.reanalysis import retire_effects

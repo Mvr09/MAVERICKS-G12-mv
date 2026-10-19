@@ -41,10 +41,22 @@ def enqueue_article(db, aid, profile):
 def retire_effects(db,article,result):
     if result['analysis_status']=='error':return
     stamp=now().isoformat()
+    # A changed RSS source has a new Article ID but the same origin_key.
+    # Retire only older versions after successful inference; never on error.
+    source_cache={}
+    def older(h):
+        if h.get('article_id')==article.id:return h.get('generation',0)<article.generation
+        aid=h.get('article_id')
+        if aid not in source_cache:
+            previous=db.get(Article,aid)if aid else None
+            source_cache[aid]=(previous.origin_key,previous.version)if previous else None
+        previous=source_cache[aid]
+        return bool(previous and previous[0]==article.origin_key and previous[1]<article.version)
+
     for inc in db.scalars(select(Incident).where(Incident.context==article.context).with_for_update()):
-        if not any(h.get('article_id')==article.id and not h.get('superseded') and h.get('generation',0)<article.generation for h in inc.history):continue
+        if not any(older(h) and not h.get('superseded') for h in inc.history):continue
         inc.history=[{**h,'superseded':True,'superseded_at':stamp,'superseded_by_generation':article.generation}
-            if h.get('article_id')==article.id and not h.get('superseded') and h.get('generation',0)<article.generation else h for h in inc.history]
+            if older(h) and not h.get('superseded') else h for h in inc.history]
         current=max((h for h in inc.history if h.get('assessment') and not h.get('superseded')),
             key=lambda h:(h.get('published_date',''),h.get('at','')),default=None)
         manual=max((h.get('at','') for h in inc.history if h.get('manual')),default='')
@@ -59,6 +71,6 @@ def retire_effects(db,article,result):
         else:
             inc.state='superseded';inc.priority=0
         for alert in db.scalars(select(Alert).where(Alert.incident_id==inc.id)):
-            if alert.data.get('article_id')==article.id:
+            if older({'article_id':alert.data.get('article_id'),'generation':alert.data.get('generation',0)}):
                 alert.data={**alert.data,'state':'superseded','sound_eligible':False,'superseded_by_generation':article.generation}
     db.flush()

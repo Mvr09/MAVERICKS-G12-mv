@@ -38,5 +38,8 @@
     "Five extra candidate pairs persist and two reference pairs are still missed; a filter is optional and never drops articles.",
     "No new classifier precision/recall claim; human decisions never enter EvaluationLabel or Analysis.",
     "A06 remains open. A14 physical and A20 historical evidence unchanged."
-  ]
+  ],
+  "source_projection_changed": true,
+  "source_version_tests": "Version2/generation0 retires older effects only after successful inference; older source reviews blocked and history retained. Synthetic PG and mocked model, no new JEV calls.",
+  "shared_incident_tests": "Other urgent evidence remains operationally visible without rewriting individual human verdict."
 }

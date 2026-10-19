@@ -169,3 +169,31 @@ def test_positive_identity_correction_without_risk_is_visible_operationally(setu
  from app.views import suppliers_view
  selected=next(s for s in suppliers_view(db,'exercise')if s['supplier_id']==extra)
  assert selected['priority']==0 and not selected['needs_review']and 'Sin riesgo activo'in selected['reason']
+
+def test_updated_source_preserves_human_history_and_old_version_cannot_be_reviewed(setup):
+ db,a,analysis,sid=setup;save(db,a.id,body(a,analysis,sid));a.state='superseded'
+ updated=Article(origin_key=a.origin_key,version=2,context=a.context,news_id=a.news_id,data=a.data,content_hash='MOCK-v2',state='pending');db.add(updated);db.flush();db.info.pop('source_versions',None)
+ assert view(db,a)['state']=='obsolete'
+ with pytest.raises(ReviewConflict):save(db,a.id,body(a,analysis,sid))
+ assert view(db,updated)['history'][0]['obsolete']
+
+
+def test_successful_source_update_retires_old_effects_without_fake_recovery(setup):
+ from app.reanalysis import retire_effects
+ db,a,analysis,sid=setup;save(db,a.id,body(a,analysis,sid));inc=db.scalar(select(Incident).where(Incident.supplier_id==sid));a.state='superseded'
+ updated=Article(origin_key=a.origin_key,version=2,context=a.context,news_id=a.news_id,data=a.data,content_hash='MOCK-v2',state='done');db.add(updated);db.flush()
+ retire_effects(db,updated,{'analysis_status':'error'});assert inc.state=='monitoring'
+ retire_effects(db,updated,{'analysis_status':'done'});assert inc.state=='superseded'and inc.priority==0;assert all(h.get('superseded')for h in inc.history if h.get('assessment'))
+ # The next valid analysis can reuse the same incident even if publication date is unchanged.
+ newer=deepcopy(analysis.result);newer['assessments'][0].update(priority=77,needs_review=False)
+ reconcile(db,updated,newer);db.flush();assert inc.state=='active'and inc.priority==77
+ assert db.scalar(select(Incident).where(Incident.supplier_id==sid)).id==inc.id
+
+def test_review_of_one_article_does_not_silence_other_urgent_evidence(setup):
+ db,a,analysis,sid=setup;inc=db.scalar(select(Incident).where(Incident.supplier_id==sid));other=deepcopy(inc.history[0]);other.update(article_id='MOCK-OTHER-URGENT',headline='MOCK other urgent supporting evidence');other['assessment'].update(needs_review=False,priority=80);inc.history=[*inc.history,other]
+ save(db,a.id,body(a,analysis,sid))
+ from app.views import current
+ combined=current(inc)
+ assert combined['assessment']['urgent']=='N' # Individual human verdict preserved.
+ assert combined['assessment']['operational_urgent']and inc.state=='active'
+ assert 'other urgent supporting evidence'in combined['explanation']and inc.priority==80

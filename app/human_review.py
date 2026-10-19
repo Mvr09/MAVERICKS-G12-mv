@@ -2,7 +2,7 @@
 from copy import deepcopy
 from typing import Literal
 from pydantic import BaseModel,Field,ConfigDict,model_validator
-from sqlalchemy import select,text
+from sqlalchemy import select,text,func
 from app.models import Article,Analysis,Supplier,HumanDecision,Incident,Alert,now
 from app.importer import digest
 from reference.scoring import priority
@@ -44,21 +44,30 @@ class DecisionInput(BaseModel):
 def latest_analysis(db,article):
     return db.scalar(select(Analysis).where(Analysis.article_id==article.id,Analysis.generation==article.generation).order_by(Analysis.created_at.desc()))
 
+def source_context(db,article):
+    if 'source_versions'not in db.info:
+        db.info['source_versions']=dict(db.execute(select(Article.origin_key,func.max(Article.version)).group_by(Article.origin_key)).all())
+    latest=db.info['source_versions'].get(article.origin_key,article.version)
+    obsolete=article.state=='superseded' or article.version<latest
+    newest=db.scalar(select(Article.id).where(Article.origin_key==article.origin_key,Article.version==latest))if obsolete else article.id
+    return {'source_obsolete':obsolete,'latest_article_id':newest}
+
 def rows(db,article):
     if 'human_decision_rows' not in db.info:
         grouped={}
-        for r in db.scalars(select(HumanDecision).order_by(HumanDecision.created_at,HumanDecision.id)):
-            grouped.setdefault(r.article_id,[]).append(r)
+        for r,origin in db.execute(select(HumanDecision,Article.origin_key).join(Article,Article.id==HumanDecision.article_id).order_by(HumanDecision.created_at,HumanDecision.id)):
+            grouped.setdefault(origin,[]).append(r)
         db.info['human_decision_rows']=grouped
-    return db.info['human_decision_rows'].get(article.id,[])
+    return db.info['human_decision_rows'].get(article.origin_key,[])
 
 def current_decisions(db,article,analysis=None):
+    if source_context(db,article)['source_obsolete']:return {}
     if analysis is not None: analysis_id=analysis.id
     else:
         if 'operational_analysis_ids' not in db.info:
             db.info['operational_analysis_ids']={(aid,g):rid for aid,g,rid in db.execute(select(Analysis.article_id,Analysis.generation,Analysis.id).join(Article,Article.id==Analysis.article_id).where(Analysis.generation==Article.generation).order_by(Analysis.created_at))}
         analysis_id=db.info['operational_analysis_ids'].get((article.id,article.generation))
-    return {r.supplier_id:r for r in rows(db,article)if r.analysis_id==analysis_id and r.generation==article.generation and r.source_version==article.version and r.content_hash==article.content_hash}
+    return {r.supplier_id:r for r in rows(db,article)if r.article_id==article.id and r.analysis_id==analysis_id and r.generation==article.generation and r.source_version==article.version and r.content_hash==article.content_hash}
 
 def required_suppliers(result):
     return set(result.get('affected_supplier_ids',[]))|{a['supplier_id']for a in result.get('assessments',[])if a.get('needs_review') and a.get('p_link',0)>=POLICY['thresholds']['review_low']}|{d['supplier_id']for d in result.get('review_details',[])if d.get('requires_review')and d.get('relevance')=='association'and d.get('supplier_id')}
@@ -70,11 +79,11 @@ def summary(db,article,analysis=None):
     general=[d.get('resolution_hint')or d['code'] for d in result.get('review_details',[])if d.get('requires_review')and not d.get('supplier_id')and d.get('relevance')not in('auxiliary','priority')]
     general += [r for r in result.get('review_reasons',[]) if r not in {'event_type_confidence_low','severity_confidence_low'} and ':'not in r and not any(d.get('code')==r for d in result.get('review_details',[]))]
     general_pending=bool(result.get('analysis_status')=='review' and (general or not model_required) and not any(r.data.get('case_scope_confirmed')and r.data['association']!='unknown'for r in latest.values()))
-    return {'state':'resolved'if latest and not(required-resolved) and not general_pending else'in_verification'if latest else'pending'if result.get('analysis_status')=='review'else'not_required','updated_at':max((r.created_at.isoformat() for r in latest.values()),default=None),'general_pending':general_pending,'general_questions':general,'resolved_suppliers':sorted(resolved),'remaining_suppliers':sorted(required-resolved),'decisions':[{'supplier_id':r.supplier_id,'id':r.id,'association':r.data['association'],'risk':r.data['risk'],'urgent':r.data['urgent'],'exposure':r.data['exposure']}for r in latest.values()]}
+    return {**source_context(db,article),'state':'obsolete'if source_context(db,article)['source_obsolete']else'resolved'if latest and not(required-resolved) and not general_pending else'in_verification'if latest else'pending'if result.get('analysis_status')=='review'else'not_required','updated_at':max((r.created_at.isoformat() for r in latest.values()),default=None),'general_pending':general_pending,'general_questions':general,'resolved_suppliers':sorted(resolved),'remaining_suppliers':sorted(required-resolved),'decisions':[{'supplier_id':r.supplier_id,'id':r.id,'association':r.data['association'],'risk':r.data['risk'],'urgent':r.data['urgent'],'exposure':r.data['exposure']}for r in latest.values()]}
 
 def view(db,article):
     analysis=latest_analysis(db,article)
-    return {**summary(db,article,analysis),'analysis_id':analysis.id if analysis else None,'generation':article.generation,'source_version':article.version,'source_hash':article.content_hash,'history':[{'id':r.id,'supplier_id':r.supplier_id,'generation':r.generation,'created_at':r.created_at,'obsolete':not analysis or r.analysis_id!=analysis.id or r.generation!=article.generation or r.content_hash!=article.content_hash or r.source_version!=article.version,**r.data}for r in reversed(rows(db,article))]}
+    return {**summary(db,article,analysis),'analysis_id':analysis.id if analysis else None,'generation':article.generation,'source_version':article.version,'source_hash':article.content_hash,'history':[{'id':r.id,'supplier_id':r.supplier_id,'article_id':r.article_id,'source_version':r.source_version,'analysis_id':r.analysis_id,'generation':r.generation,'created_at':r.created_at,'obsolete':source_context(db,article)['source_obsolete'] or r.article_id!=article.id or not analysis or r.analysis_id!=analysis.id or r.generation!=article.generation or r.content_hash!=article.content_hash or r.source_version!=article.version,**r.data}for r in reversed(rows(db,article))]}
 
 def effective_result(db,article,result):
     """Read model facts plus human decisions for operations, NEVER evaluation/export."""
@@ -132,20 +141,21 @@ def project(db,article,record,analysis):
         target.history=[*target.history,{**entry,'superseded':True,'projection_note':'No reabre incidente cerrado o más reciente'}];return
     if not target:
         target=Incident(context=article.context,supplier_id=sid,event_type=analysis.result.get('event_type')or'other',signature=digest(['human',article.id,sid]),state=assessment['impact_status'],priority=score['priority']or 0,historical_priority=score['priority']or 0,event_date=article.data['published_date'],history=[]);db.add(target);db.flush()
-    target.history=[*target.history,entry];target.state=assessment['impact_status'];target.event_date=article.data['published_date'];target.priority=max((h.get('assessment',{}).get('priority')or 0 for h in target.history if not h.get('superseded')),default=0);target.historical_priority=max(target.historical_priority,target.priority)
+    target.history=[*target.history,entry];target.state='active'if any(h.get('article_id')!=article.id and not h.get('superseded') and h.get('assessment',{}).get('impact_status')=='active'for h in target.history)else assessment['impact_status'];target.event_date=article.data['published_date'];target.priority=max((h.get('assessment',{}).get('priority')or 0 for h in target.history if not h.get('superseded')),default=0);target.historical_priority=max(target.historical_priority,target.priority)
     db.add(Alert(incident_id=target.id,revision=target.revision,data={'supplier_id':sid,'supplier_name':s['name'],'article_id':article.id,'headline':article.data['headline'],'priority':target.priority,'needs_review':False,'urgent':d['urgent'],'state':target.state,'sound_eligible':False,'decision_origin':'human','human_review_id':record.id}))
 
 def save(db,aid,body):
     db.execute(text("SELECT pg_advisory_xact_lock_shared(72642,4)"))
     article=db.scalar(select(Article).where(Article.id==aid).with_for_update())
     if not article:raise ValueError('Noticia no encontrada')
+    if source_context(db,article)['source_obsolete']:raise ReviewConflict('Esta versión de la fuente fue sustituida. Abre la noticia vigente antes de decidir')
     analysis=latest_analysis(db,article)
     if not analysis or analysis.result['analysis_status']=='error':raise ReviewConflict('Completa un análisis válido antes de revisar')
     if (body.generation,body.source_version,body.analysis_id,body.source_hash)!=(article.generation,article.version,analysis.id,article.content_hash):raise ReviewConflict('La fuente o el análisis cambió. Recarga la revisión antes de decidir')
     if not db.get(Supplier,body.supplier_id):raise ValueError('Proveedor no encontrado')
     previous=current_decisions(db,article,analysis).get(body.supplier_id)
     if (previous.id if previous else None)!=body.previous_id:raise ReviewConflict('Otra decisión fue registrada. Recarga el historial antes de guardar')
-    d=body.model_dump(exclude={'generation','source_version','analysis_id','previous_id','supplier_id','source_hash'});d.update(human_policy='human-review-1.0.1',actor='Presentador autenticado (acceso compartido)',decision_origin='human',status='in_verification'if body.association=='unknown'else'resolved')
+    d=body.model_dump(exclude={'generation','source_version','analysis_id','previous_id','supplier_id','source_hash'});d.update(model_versions=analysis.result.get('analysis_versions',{'model':analysis.result.get('model_id'),'questions':analysis.result.get('question_version')}),human_policy='human-review-1.0.1',actor='Presentador autenticado (acceso compartido)',decision_origin='human',status='in_verification'if body.association=='unknown'else'resolved')
     if body.intent=='note':
         if not previous:raise ValueError('Registra primero una decisión o solicitud de verificación')
         d={**deepcopy(previous.data),'note':body.note,'entry_kind':'note','previous_decision_id':previous.id}
