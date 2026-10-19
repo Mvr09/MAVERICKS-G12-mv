@@ -1,0 +1,485 @@
+{
+  "generated_at": "2026-10-19T13:36:23.733454+00:00",
+  "recommendation": {
+    "frozen_at": "2026-10-19T13:36:23.731010+00:00",
+    "recommended_demo": "radar-1.0.0-candidate",
+    "versions": {
+      "profile": "radar-1.0.0-candidate",
+      "matching": "link-3.3.0",
+      "retrieval": "link-3.0.0-dev",
+      "questions": "decision-3.4.2",
+      "risk": "risk-focus-1.2.0",
+      "review": "review-1.3.1",
+      "support": "decision-support-1.0.0",
+      "facts": "decision-facts-1.0.0",
+      "exclusion": "relational-exclusion-1.0.0",
+      "duration": "duration-1.1.0"
+    },
+    "default": "1.0.0",
+    "promote_default": false,
+    "reason": "Previously frozen criteria explicitly retain default; controlled samples and training do not establish independent real-RSS matching reliability. Candidate improves omissions and correct automation with disclosed reviewed false associations.",
+    "calls_prepared": {
+      "retrospective_N044_max_attempts": 36,
+      "purpose": "Frozen candidate diagnosis only; no tuning or independent validation claim.",
+      "runtime_excel": "Three training inputs through real importer/worker/export, explicitly a subset; not A20 or new model evaluation.",
+      "rss": "Reuse valid current3.4.2 result, no gratuitous reanalysis."
+    },
+    "files": {
+      "app/candidate_engine.py": "c72ac565849f4896051102c9a3b3fed661252733a49bcd8602d9512f67188538",
+      "app/candidate_matching.py": "78f7432bd5c6ffe4b8238837b19ed973fcfd2ee6d2f0676bc370d43d25f31626",
+      "app/candidate_review.py": "d1a1dadbe775f7dbd2c4836fe2d67e1e28117d8787755aa57d1214f4f0e480ce",
+      "app/candidate_review_focus.py": "c93a01943f45a0de092d14c736a8a80821963ad3e7a154220049e1cad8ba4893",
+      "app/candidate_risk.py": "199a0716e33daa958538b43510d1bbba32be78d560391cbe6afd6dd59d8f93f0",
+      "app/duration.py": "e538570b253edc7f8ed340f7475e022b000b8bdb9f2a44deefd4d4b558a2b8d1",
+      "app/geography.py": "fa4a580bc0e8acda6b69567223f06175372d271735dff3d34daf5865e3aafe0e",
+      "config/geography.json": "9806c25134760d92c57e03039b4a3d85bc21bc6d47710c128a4486f291265f94",
+      "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+    },
+    "no_semantic_changes_after_freeze": true
+  },
+  "samples": {
+    "training30": {
+      "1.0.0": {
+        "n": 30,
+        "risk": {
+          "tp": 10,
+          "fp": 0,
+          "fn": 4,
+          "tn": 16,
+          "precision": 1.0,
+          "recall": 0.7142857142857143,
+          "f1": 0.8333333333333334,
+          "n": 30,
+          "positives": 14
+        },
+        "urgent": {
+          "tp": 5,
+          "fp": 3,
+          "fn": 0,
+          "tn": 22,
+          "precision": 0.625,
+          "recall": 1.0,
+          "f1": 0.7692307692307693,
+          "n": 30,
+          "positives": 5
+        },
+        "suppliers": {
+          "exact": 25,
+          "n": 30,
+          "precision": 0.9285714285714286,
+          "recall": 0.5909090909090909,
+          "exact_set_accuracy": 0.8333333333333334,
+          "tp": 13,
+          "fp": 1,
+          "fn": 9,
+          "f1": 0.7222222222222222
+        },
+        "review_count": 16,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.4666666666666667,
+        "automatic": {
+          "n": 14,
+          "risk": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 2,
+            "tn": 10,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666,
+            "n": 14,
+            "positives": 4
+          },
+          "urgent": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tn": 12,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 14,
+            "positives": 2
+          },
+          "suppliers": {
+            "exact": 12,
+            "n": 14,
+            "precision": 1.0,
+            "recall": 0.625,
+            "exact_set_accuracy": 0.8571428571428571,
+            "tp": 5,
+            "fp": 0,
+            "fn": 3,
+            "f1": 0.7692307692307693
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 2,
+        "automatic_joint_error_rate": 0.14285714285714285,
+        "automatic_breakdown": {
+          "risk": {
+            "reference_positive": 4,
+            "reference_negative": 10,
+            "predicted_positive": 2,
+            "predicted_negative": 12,
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 2,
+            "true_negative": 10
+          },
+          "urgent": {
+            "reference_positive": 2,
+            "reference_negative": 12,
+            "predicted_positive": 2,
+            "predicted_negative": 12,
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 12
+          },
+          "suppliers": {
+            "articles_with_reference_suppliers": 7,
+            "articles_without_reference_suppliers": 7,
+            "tp": 5,
+            "fp": 0,
+            "fn": 3,
+            "exact": 12
+          }
+        }
+      },
+      "3.4.2": {
+        "n": 30,
+        "risk": {
+          "tp": 13,
+          "fp": 0,
+          "fn": 1,
+          "tn": 16,
+          "precision": 1.0,
+          "recall": 0.9285714285714286,
+          "f1": 0.9629629629629629,
+          "n": 30,
+          "positives": 14
+        },
+        "urgent": {
+          "tp": 5,
+          "fp": 2,
+          "fn": 0,
+          "tn": 23,
+          "precision": 0.7142857142857143,
+          "recall": 1.0,
+          "f1": 0.8333333333333334,
+          "n": 30,
+          "positives": 5
+        },
+        "suppliers": {
+          "exact": 29,
+          "n": 30,
+          "precision": 0.88,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9666666666666667,
+          "tp": 22,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.9361702127659575
+        },
+        "review_count": 14,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.5333333333333333,
+        "automatic": {
+          "n": 16,
+          "risk": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "urgent": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "suppliers": {
+            "exact": 16,
+            "n": 16,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0,
+        "automatic_breakdown": {
+          "risk": {
+            "reference_positive": 3,
+            "reference_negative": 13,
+            "predicted_positive": 3,
+            "predicted_negative": 13,
+            "true_positive": 3,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 13
+          },
+          "urgent": {
+            "reference_positive": 3,
+            "reference_negative": 13,
+            "predicted_positive": 3,
+            "predicted_negative": 13,
+            "true_positive": 3,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 13
+          },
+          "suppliers": {
+            "articles_with_reference_suppliers": 5,
+            "articles_without_reference_suppliers": 11,
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "exact": 16
+          }
+        }
+      }
+    },
+    "controlled14": {
+      "1.0.0": {
+        "n": 14,
+        "risk": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 4,
+          "tn": 6,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "n": 14,
+          "positives": 8
+        },
+        "urgent": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 12,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 14,
+          "positives": 2
+        },
+        "suppliers": {
+          "exact": 13,
+          "n": 14,
+          "precision": 1.0,
+          "recall": 0.9,
+          "exact_set_accuracy": 0.9285714285714286,
+          "tp": 9,
+          "fp": 0,
+          "fn": 1,
+          "f1": 0.9473684210526315
+        },
+        "review_count": 11,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.21428571428571427,
+        "automatic": {
+          "n": 3,
+          "risk": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tn": 2,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 3,
+            "positives": 1
+          },
+          "urgent": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 3,
+            "precision": null,
+            "recall": null,
+            "f1": null,
+            "n": 3,
+            "positives": 0
+          },
+          "suppliers": {
+            "exact": 3,
+            "n": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0,
+        "automatic_breakdown": {
+          "risk": {
+            "reference_positive": 1,
+            "reference_negative": 2,
+            "predicted_positive": 1,
+            "predicted_negative": 2,
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 2
+          },
+          "urgent": {
+            "reference_positive": 0,
+            "reference_negative": 3,
+            "predicted_positive": 0,
+            "predicted_negative": 3,
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 3
+          },
+          "suppliers": {
+            "articles_with_reference_suppliers": 1,
+            "articles_without_reference_suppliers": 2,
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "exact": 3
+          }
+        }
+      },
+      "3.4.2": {
+        "n": 14,
+        "risk": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 0,
+          "tn": 6,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 14,
+          "positives": 8
+        },
+        "urgent": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 12,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 14,
+          "positives": 2
+        },
+        "suppliers": {
+          "exact": 13,
+          "n": 14,
+          "precision": 0.9090909090909091,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9285714285714286,
+          "tp": 10,
+          "fp": 1,
+          "fn": 0,
+          "f1": 0.9523809523809523
+        },
+        "review_count": 8,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.42857142857142855,
+        "automatic": {
+          "n": 6,
+          "risk": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tn": 4,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 6,
+            "positives": 2
+          },
+          "urgent": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tn": 5,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 6,
+            "positives": 1
+          },
+          "suppliers": {
+            "exact": 6,
+            "n": 6,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0,
+        "automatic_breakdown": {
+          "risk": {
+            "reference_positive": 2,
+            "reference_negative": 4,
+            "predicted_positive": 2,
+            "predicted_negative": 4,
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 4
+          },
+          "urgent": {
+            "reference_positive": 1,
+            "reference_negative": 5,
+            "predicted_positive": 1,
+            "predicted_negative": 5,
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_negative": 5
+          },
+          "suppliers": {
+            "articles_with_reference_suppliers": 2,
+            "articles_without_reference_suppliers": 4,
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "exact": 6
+          }
+        }
+      }
+    }
+  },
+  "new_jev_requests_for_comparison": 0,
+  "limits": [
+    "Both samples already inspected: development/controlled retrospective comparison, never independent generalisation.",
+    "All reviewed predictions included.",
+    "Four underdetermined controls excluded from14 scorable denominators; candidate keeps all four reviewed.",
+    "Baseline semantic payloads preserved but fresh controls used state-preserving fanout; not an unmodified-default performance benchmark."
+  ]
+}

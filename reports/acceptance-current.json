@@ -37,7 +37,7 @@
     {
       "id": "A06",
       "status": "falla",
-      "evidence_and_limit": "Falla conocida del default1.0: omite exposición regional respaldada de S024. La multiselección funciona, pero no basta para aprobar cobertura geográfica/material. Candidata3.4.2 conserva22/22 asociaciones training y3FP revisadas. La nueva muestra propia conserva una FPde proveedor revisada; no demuestra generalizaciónRSS. S003 provincia desconocida es una limitación de datos separada. N044 solo retrospectiva, sin excepciones por noticia ni promoción del default."
+      "evidence_and_limit": "Abierto:default omiteS024 con geografía respaldada. Diagnóstico3.4.2 congelado deN044 recuperaS024 como exposición potencial,riskY/urgentN,pero mantiene revisión por soporte/impacto. S003 provincia desconocida;el modelo lo incluye con vínculo0,63 yurgencia0,56,revisados,no asociación validada. La mejoraS024 no resuelveS003 ni la urgencia agregada dudosa. Sin ajustes conN044."
     },
     {
       "id": "A07",
@@ -72,7 +72,7 @@
     {
       "id": "A13",
       "status": "pasa",
-      "evidence_and_limit": "Errores no son negativos. DosHTTP400 de la ventana registrados y diagnosticados antes de insistir. Fanout conserva estado/preguntas completos y caché. Guardas persistentes de36intentos por generación y deadline; run_key de generación0 vacío sigue acotado por artículo. Mocks401/429/reintentos y contratos pasan.454peticiones nuevas:452HTTP200/2HTTP400,0reintentos; contadores preservados."
+      "evidence_and_limit": "Errores no son negativos. DosHTTP400 de la ventana registrados y diagnosticados antes de insistir. Fanout conserva estado/preguntas completos y caché. Guardas persistentes de36intentos por generación y deadline; run_key de generación0 vacío sigue acotado por artículo. Mocks401/429/reintentos y contratos pasan.454peticiones nuevas:452HTTP200/2HTTP400,0reintentos; contadores preservados. Cierre:ambosHTTP400auditados. El caso localpendiente se corrigió aerror explícito/riesgo-urgencianull,sin sobrescribir respuestas válidas ni gastarJEV;126tests pasan. Railway conserva job ygeneraciónerror,recuperación3.3 revisada separada."
     },
     {
       "id": "A14",
@@ -87,7 +87,7 @@
     {
       "id": "A16",
       "status": "pasa",
-      "evidence_and_limit": "Dos descargas reales390/1440 desdeResumen,HTTP200,ZIPXLSX válido y14filas contadas por estructura sin leer valores de celdas. Solo exportaciónLiveDay ya completada,0reanálisis; no se usa para ajustar. Contrato de IDs/orden/delimitador y bloqueo de errores heredado del exportador sin cambios."
+      "evidence_and_limit": "Dos descargas reales390/1440 desdeResumen,HTTP200,ZIPXLSX válido y14filas contadas por estructura sin leer valores de celdas. Solo exportaciónLiveDay ya completada,0reanálisis; no se usa para ajustar. Contrato de IDs/orden/delimitador y bloqueo de errores heredado del exportador sin cambios. Candidata3.4.2:exportación real200 de3training,sin etiquetas de entrada,News_ID/orden ycolumnas verificados;noA20."
     },
     {
       "id": "A17",
@@ -102,7 +102,7 @@
     {
       "id": "A19",
       "status": "pasa",
-      "evidence_and_limit": "HTTPSa2e962f en360/390/768/1440:sin overflow/erroresJS;filtros,foco,contexto,Escape yconsulta persistida. Material yproductos esperados cargados,oferta propia del alternativo visible.26E2E distintos con mocks. Guiones4min1440/390 más repetición de pasos afectados; emulación,no estudio de compradores ni móvil físico. JS inicial215653→118897bytes codificados observados,44.87%menos; no es latencia niA20."
+      "evidence_and_limit": "HTTPSa2e962f en360/390/768/1440:sin overflow/erroresJS;filtros,foco,contexto,Escape yconsulta persistida. Material yproductos esperados cargados,oferta propia del alternativo visible.26E2E distintos con mocks. Guiones4min1440/390 más repetición de pasos afectados; emulación,no estudio de compradores ni móvil físico. JS inicial215653→118897bytes codificados observados,44.87%menos; no es latencia niA20. Nuevo recorrido3.4.2 real390/1440,Excel→noticia→proveedor→M02/Glucora→borrador;8E2E mock dirigidos yerror real422sin lote ni consumo."
     },
     {
       "id": "A20",
@@ -215,5 +215,21 @@
     "user_report": "Activar sonido;programar alertaQA5s;una emisión automática audible;no Probar alarma",
     "inherited": true,
     "new_physical_test": false
+  },
+  "demo_selection": {
+    "recommended": "radar-1.0.0-candidate",
+    "questions": "decision-3.4.2",
+    "review": "review-1.3.1",
+    "default": "1.0.0",
+    "promoted_default": false,
+    "report": "SELECCION_DEMO_FINAL.md",
+    "freeze": "demo-selection-freeze.json",
+    "new_requests": 8,
+    "retries": 0,
+    "tests_unit": 126,
+    "tests_e2e": 8,
+    "real_runtime": "demo-selected-runtime.json",
+    "error_audit": "demo-failure-outcomes.json",
+    "a20_renewed": false
   }
 }

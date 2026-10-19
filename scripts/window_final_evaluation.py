@@ -6,6 +6,8 @@ from app.db import Session,engine
 from app.models import Supplier,Analysis
 from app.settings import settings,POLICY
 from app.importer import digest
+from app.jev import ProviderError
+from scripts.record_experiment_failure import record_failure
 from app.payload_cache import PayloadCacheClient
 from app import candidate_engine,link_candidate,review_support,review_facts,review_policy
 from app.analysis import normalize
@@ -66,6 +68,10 @@ def main():
                         'seconds':elapsed,'new_requests':client.network_requests,'cache_stages':client.cached_stages,'cache_reuse':client.reuse_details}
                     save(REPORT,r);print(json.dumps({'completed':len(r['results']),'profile':name,'requests':client.network_requests,'review':result['analysis_status']=='review'}),flush=True)
             r['complete']=True
+        except ProviderError as exc:
+            record_failure(db,art,run=RUN,code=exc.code,profile={"baseline":"1.0.0","prior":"link-3.0.0-dev","candidate":candidate_engine.VERSIONS["questions"]}[name],model=settings.jev_model,seconds=time.monotonic()-start)
+            r.setdefault('failures',{})[key]={'error':exc.code,'article_id':art.id,'status':'error','risk':None,'urgent':None}
+            raise
         finally:
             r.update(accounting(db,RUN));r['metrics']={name:report_metrics([v for v in r['results'].values() if v['profile']==name]) for name in profiles};save(REPORT,r);assert r['requests']<=720
     print(json.dumps({'complete':r.get('complete',False),'requests':r['requests'],'retries':r['retries'],'metrics':r['metrics']}))

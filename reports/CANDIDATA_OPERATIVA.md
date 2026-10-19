@@ -1,3 +1,5 @@
+> **Selección cerrada de la demo:** [SELECCION_DEMO_FINAL.md](SELECCION_DEMO_FINAL.md). Candidata3.4.2 explícita; default1.0.0 conservado. Este informe conserva el desarrollo previo.
+
 # Candidata seleccionable · 3.4.2 / revisión 1.3.1
 
 **Default 1.0.0 se conserva.** La única candidata seleccionable es `radar-1.0.0-candidate`: matching `link-3.3.0`, preguntas `decision-3.4.2`, revisión `review-1.3.1`, riesgo `risk-focus-1.2.0`, transporte `fanout-1.0.0` y modelo `jev-1.13.0`. Disponible para Excel y RSS individual, con versiones fijadas por trabajo e historial conservado. No se promociona al default.

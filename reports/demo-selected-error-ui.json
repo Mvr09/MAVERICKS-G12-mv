@@ -1,0 +1,20 @@
+{
+  "kind": "Real invalid Excel input, no classification requests",
+  "widths": [
+    {
+      "width": 390,
+      "http": 422,
+      "error_visible": true
+    },
+    {
+      "width": 1440,
+      "http": 422,
+      "error_visible": true
+    }
+  ],
+  "errors": [],
+  "revision": "69413011550917de2a72332f01f736da28ad6cf6",
+  "passed": true,
+  "new_jev_requests": 0,
+  "batch_count_unchanged": true
+}

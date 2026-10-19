@@ -1,0 +1,121 @@
+{
+  "phase": "retrospective only, already inspected validation; no changes permitted from this result",
+  "complete": true,
+  "new_requests": 4,
+  "cached_stages": [],
+  "seconds": 1.9638728269928833,
+  "calls": [
+    {
+      "stage": "a",
+      "attempt": 1,
+      "status": 200,
+      "model": "jev-1.13.0",
+      "usage": {
+        "input_tokens": 20243,
+        "output_tokens": 1045
+      },
+      "duration": 0.48966849700082093
+    },
+    {
+      "stage": "b",
+      "attempt": 1,
+      "status": 200,
+      "model": "jev-1.13.0",
+      "usage": {
+        "input_tokens": 5629,
+        "output_tokens": 916,
+        "_score_diagnostics": [
+          {
+            "question_id": "severity_S003",
+            "provider_score": 4.7,
+            "displayed_weighted_score": 4.68,
+            "delta": 0.02
+          }
+        ]
+      },
+      "duration": 0.3693114659981802
+    },
+    {
+      "stage": "candidate_support",
+      "attempt": 1,
+      "status": 200,
+      "model": "jev-1.13.0",
+      "usage": {
+        "input_tokens": 2827,
+        "output_tokens": 329
+      },
+      "duration": 0.3595178559917258
+    },
+    {
+      "stage": "candidate_followup",
+      "attempt": 1,
+      "status": 200,
+      "model": "jev-1.13.0",
+      "usage": {
+        "input_tokens": 1899,
+        "output_tokens": 138
+      },
+      "duration": 0.3584761329984758
+    }
+  ],
+  "checked_at": "2026-10-19T13:37:04.131496+00:00",
+  "before_counter": 1036,
+  "after_counter": 1040,
+  "case": "N044",
+  "versions": {
+    "profile": "radar-1.0.0-candidate",
+    "matching": "link-3.3.0",
+    "retrieval": "link-3.0.0-dev",
+    "questions": "decision-3.4.2",
+    "risk": "risk-focus-1.2.0",
+    "review": "review-1.3.1",
+    "support": "decision-support-1.0.0",
+    "facts": "decision-facts-1.0.0",
+    "exclusion": "relational-exclusion-1.0.0",
+    "duration": "duration-1.1.0",
+    "model": "jev-1.13.0"
+  },
+  "prediction": {
+    "analysis_status": "review",
+    "is_risk": "Y",
+    "urgent": "Y",
+    "affected_supplier_ids": [
+      "S003",
+      "S024"
+    ]
+  },
+  "assessments": [
+    {
+      "supplier_id": "S003",
+      "p_link": 0.63,
+      "p_risk": 0.76,
+      "p_urgent": 0.56,
+      "needs_review": true,
+      "review_reasons": [
+        "association_support_insufficient",
+        "geography_requires_review",
+        "link_ambiguous",
+        "risk_evidence_insufficient",
+        "risk_impact_contradiction",
+        "urgency_ambiguous",
+        "urgency_support_insufficient"
+      ],
+      "exposure_kind": "potential",
+      "requires_pathway_confirmation": true
+    },
+    {
+      "supplier_id": "S024",
+      "p_link": 0.85,
+      "p_risk": 0.69,
+      "p_urgent": 0.22,
+      "needs_review": true,
+      "review_reasons": [
+        "impact_state_confidence_low",
+        "risk_evidence_insufficient"
+      ],
+      "exposure_kind": "potential",
+      "requires_pathway_confirmation": true
+    }
+  ],
+  "limits": "Already inspected validation, frozen retrospective diagnosis only. No reference labels, source workbook or raw payload published; no model changes from this observation."
+}
