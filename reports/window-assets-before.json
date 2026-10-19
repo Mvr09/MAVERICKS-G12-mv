@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-19T00:10:22.445Z",
+  "revision": "4a818c1",
+  "resources": [
+    {
+      "asset": "/assets/index-33dB8HK1.js",
+      "encoded_bytes": 109140,
+      "transfer_bytes": 109440
+    },
+    {
+      "asset": "/assets/icons-h47_nvdG.js",
+      "encoded_bytes": 6843,
+      "transfer_bytes": 7143
+    },
+    {
+      "asset": "/assets/charts-Vo4fhvfv.js",
+      "encoded_bytes": 99670,
+      "transfer_bytes": 99970
+    }
+  ],
+  "encoded_bytes": 215653,
+  "single_observation": true
+}

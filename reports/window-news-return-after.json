@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-19T00:00:12.588Z",
+  "new_jev_requests": 0,
+  "before": {
+    "source": "The Loadstar",
+    "query": "Asia-Europe"
+  },
+  "after": {
+    "source": "The Loadstar",
+    "query": "Asia-Europe"
+  },
+  "filters_preserved": true,
+  "focus": {
+    "active": "news-link-702c5e7b-a566-456d-b186-69bdaf92cbe1",
+    "skipTop": "-100px",
+    "scrollY": 504,
+    "skipRect": {
+      "x": 20,
+      "y": -100,
+      "width": 168.859375,
+      "height": 52,
+      "top": -100,
+      "right": 188.859375,
+      "bottom": -48,
+      "left": 20
+    }
+  }
+}

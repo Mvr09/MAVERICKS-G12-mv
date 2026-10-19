@@ -29,7 +29,7 @@ def run(client, article, suppliers, deadline, cached_a=None, risk_focus=False, c
     else:raw['b']=client.ask(pb,'b',deadline) if selected else None
     base=matching.normalize(article,suppliers,raw['a'],raw['b'],ds)
     if risk_focus:
-        from app import candidate_risk
+        from scripts import risk_focus_v1 as candidate_risk
         raw['_versions'].update(questions=candidate_risk.QUESTIONS,risk=candidate_risk.VERSION)
         pfocus=candidate_risk.payload(base,article.data,suppliers,client_model(client))
         if pfocus['questions']:

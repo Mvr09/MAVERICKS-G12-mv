@@ -32,7 +32,7 @@ def main():
                                 'assessment':next(a for a in r['assessments'] if a['supplier_id']==sid),'action_effect':'Verify scope and facts before deciding mitigation; reviewed hypothesis, not validated affected delivery.'})
             strata[version]={k:c[k] for k in ('fn','fn_high','fn_single_source','fp','fp_high','fp_single_source')}
     trials=[]
-    for f in ['window-review.json','window-matching.json','window-matching-potential.json','window-final-evaluation.json']:
+    for f in ['window-review.json','window-matching.json','window-matching-potential.json','window-final-evaluation.json','window-risk-focus.json','window-risk-current.json']:
         r=json.loads((ROOT/'reports/private'/f).read_text());usage=Counter()
         for call in r['calls']:
             for k,v in call['usage'].items():
@@ -54,11 +54,15 @@ def main():
         'controlled_final':{'authored_before_calls':True,'metrics':final['metrics'],'scorable':18,'total':24,'all_case_states':all_cases,'latency':latency,'unknown_controls':safety,'all_predictions_included':True,
             'errors':{'prior':1,'candidate':0,'baseline':0},'automatic_candidate_correct':12,'automatic_candidate_total':12,'urgent_correct_automatic':4,
             'controlled_execution_guards_pass':True,'default_promotion_justified':False,'limits':'Author-generated controls are not independent evidence of real RSS generalisation. Six underdetermined controls are safety checks, not negative labels.'},
-        'consumption':{'new_requests':sum(t['requests'] for t in trials),'retries':sum(t['retries'] for t in trials),'counter_before':595,'counter_after':final['global_counter'],'trials':trials,
+        'consumption':{'new_requests':sum(t['requests'] for t in trials),'retries':sum(t['retries'] for t in trials),'counter_before':595,'counter_after':json.loads((ROOT/'reports/private/window-risk-current.json').read_text())['global_counter'],'trials':trials,
             'maximum_window_attempts':1500,'periodic_paid_rss':False},
         'known_errors':{'training':{'risk_fn':1,'urgent_fp':2,'supplier_fp':3,'all_reviewed':True},'controlled':{'risk_fn':2,'supplier_fp':3,'all_reviewed':True}},
         'a06':'open; baseline still omits supported exposure, S003 province still unknown. Controlled S024 partial-risk recovery is not proof that N044 is solved.',
         'historical_2_2_confound':'Stored2.2 precedes duration1.1; do not attribute all differences to matching.'}
+    report['controlled_final']['reuse_status']='Inspected controls: development only for subsequent candidates; original frozen3.3 comparison retained.'
+    report['followup_experiments']=[{'version':'risk-focus1.0 / decision3.4','requests':6,'decision_es':'No adoptado: training conserva14revisadas y16automáticas; solo un control sintético adicional se automatiza correctamente, sin reparar omisiones de riesgo.'}, {'version':'risk-focus1.1 / review1.3','requests':9,'decision_es':'No adoptado: comprobar amenaza actual no mejora decisiones ni cobertura. Conserva dudas semánticas en interrupciones parciales y amenazas estratégicas. No se rebajan umbrales.'}]
+    rss=json.loads((ROOT/'reports/window-rss-evidence.json').read_text())
+    report['rss_rehearsal']={'new_requests':rss['attributed_requests'],'counter_before':rss['sync']['jev_after'],'counter_after':rss['analysis_jev_after'],'periodic_paid':False,'scope':'Railway RSS only; separate from local experiment counter','articles':[{'id':v['id'],'headline':v['headline'],'status':v['result']['status'],'risk':v['result']['risk'],'urgent':v['result']['urgent'],'suppliers':v['result']['suppliers'],'requests':v['network_requests']} for v in rss['analyses'] if v.get('complete')], 'limits':'No hay referencias independientes de precisión RSS. La noticia de fletes queda en revisión sin proveedor vinculado; la consulta manual no modifica JEV. Dos intentos anteriores fallidos están incluidos.'}
     save(ROOT/'app/window_evaluation.json',report);save(ROOT/'reports/window-candidate-results.json',report);save(ROOT/'reports/private/window-operational-errors.json',private)
     # Preserve earlier candidate evidence; add the operational candidate and its
     # review-only predecessor without rewriting any historical metrics.

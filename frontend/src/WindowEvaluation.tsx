@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "./api";
+import { Link } from "react-router-dom";
 const pct = (x: number | null) =>
   x == null
     ? "No calculable"
@@ -35,10 +36,11 @@ export function WindowEvaluation() {
         Predeterminado: <strong>{data.default}</strong>. No promovida.
       </p>
       <p>
-        24 sintéticos nuevos, con referencias redactadas antes de llamar: 18
-        puntuables y 6 con datos deliberadamente insuficientes. Incluye todas
-        las predicciones revisadas. Es evidencia controlada; no demuestra
-        precisión independiente sobre RSS real.
+        Comprobación congelada de3.3:24 sintéticos, con referencias redactadas
+        antes de llamar:18 puntuables y 6 con datos deliberadamente
+        insuficientes. Incluye todas las predicciones revisadas. Es evidencia
+        controlada; no demuestra precisión independiente sobre RSS real. Ya
+        están inspeccionados y son desarrollo para futuras versiones.
       </p>
       <p>
         <strong>
@@ -100,9 +102,9 @@ export function WindowEvaluation() {
       <details>
         <summary>Consumo, límites y decisión de adopción</summary>
         <p>
-          {data.consumption.new_requests} peticiones nuevas /{" "}
-          {data.consumption.retries} reintentos en esta ventana; contador
-          conservado {data.consumption.counter_before} →{" "}
+          {data.consumption.new_requests} peticiones nuevas de desarrollo local
+          / {data.consumption.retries} reintentos en esta ventana; contador
+          local conservado {data.consumption.counter_before} →{" "}
           {data.consumption.counter_after}. El perfil anterior produjo un
           HTTP400 en un control ambiguo de gran tamaño; se conservó como error,
           sin repetirlo ni convertirlo en negativo. La candidata completó ese
@@ -121,6 +123,49 @@ export function WindowEvaluation() {
           predeterminado; no certifica este perfil.
         </p>
       </details>
+      {data.followup_experiments?.length > 0 && (
+        <details>
+          <summary>Ensayos adicionales descartados</summary>
+          <p>
+            Se conserva una única candidata operativa. Estos intentos no
+            modifican el perfil seleccionable ni se ejecutan al analizar
+            noticias.
+          </p>
+          {data.followup_experiments.map((trial: any) => (
+            <p key={trial.version}>
+              <strong>{trial.version}</strong> · {trial.requests} peticiones.{" "}
+              {trial.decision_es}
+            </p>
+          ))}
+        </details>
+      )}
+      {data.rss_rehearsal && (
+        <details>
+          <summary>Recorrido RSS real comprobado en Railway</summary>
+          <p>
+            {data.rss_rehearsal.new_requests} peticiones nuevas, incluidos dos
+            intentos fallidos diagnosticados; contador RSS{" "}
+            {data.rss_rehearsal.counter_before} →{" "}
+            {data.rss_rehearsal.counter_after}. Pago periódico desactivado.
+            Estos artículos no tienen etiquetas de referencia para medir
+            precisión.
+          </p>
+          {data.rss_rehearsal.articles.map((article: any) => (
+            <p key={article.id}>
+              <Link
+                className="text-link"
+                to={"/noticias/" + article.id + "?context=rss"}
+              >
+                {article.headline} →
+              </Link>
+              <br />
+              {article.status === "review"
+                ? "Requiere verificar exposición; sin proveedor vinculado por la decisión."
+                : "Análisis automático sin vínculo sustentado con la cartera."}
+            </p>
+          ))}
+        </details>
+      )}
     </section>
   );
 }

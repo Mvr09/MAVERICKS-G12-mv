@@ -29,8 +29,19 @@ export function ReviewGuidance({
   }
   for (const d of causes) {
     if (!d.requires_review) continue;
+    const strategic =
+      ["leadership_change", "acquisition", "financial_distress"].includes(
+        analysis.event_type || "",
+      ) &&
+      (d.relevance === "risk" || /risk/.test(d.code));
     const hint =
-      d.resolution_hint ||
+      (strategic
+        ? "Verifica si el cambio organizativo o financiero descrito supone una amenaza para la continuidad estratégica; no implica por sí mismo una parada de producción."
+        : d.code === "risk_ambiguous"
+          ? "Interpretación de riesgo por confirmar: contrasta si la reducción, demora o cambio descritos amenazan la continuidad, aunque el inventario cubra las entregas."
+          : d.code === "urgency_ambiguous"
+            ? "El modelo duda entre seguimiento y acción inmediata. Verifica el estado y el plazo del impacto; la criticidad o la fuente única no demuestran urgencia por sí solas."
+            : d.resolution_hint) ||
       (/source_text|evidence_missing|no_evidence/.test(d.code)
         ? "Completa la lectura de la fuente y conserva un fragmento literal que respalde la conclusión."
         : /inventory/.test(d.code)
@@ -90,12 +101,14 @@ export function ReviewGuidance({
         <a
           className="text-link"
           href="#provider-hypotheses"
-          onClick={() => {
+          onClick={(event) => {
+            event.preventDefault();
             const group = document.getElementById(
               "provider-hypotheses",
             ) as HTMLDetailsElement | null;
             if (group) {
               group.open = true;
+              group.scrollIntoView({ block: "start", behavior: "instant" });
               group.querySelector("summary")?.focus({ preventScroll: true });
             }
           }}

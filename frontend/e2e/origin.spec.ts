@@ -139,6 +139,24 @@ for (const width of [360, 1440]) {
     await expect(page.getByLabel("Origen de los datos")).toHaveValue(
       "context:exercise",
     );
+    await page.goBack();
+    await expect(page.getByLabel("Origen de los datos")).toHaveValue(
+      "context:rss",
+    );
+    await expect(page.getByLabel("Contexto", { exact: true })).toHaveValue(
+      "rss",
+    );
+    await page.goForward();
+    await expect(page.getByLabel("Origen de los datos")).toHaveValue(
+      "context:exercise",
+    );
+    await page.getByRole("link", { name: "Noticias", exact: true }).click();
+    await page.getByRole("link", { name: "Resumen", exact: true }).click();
+    await expect(page).toHaveURL(/origen=context%3Aexercise/);
+    await page.reload();
+    await expect(page.getByLabel("Origen de los datos")).toHaveValue(
+      "context:exercise",
+    );
     await page.getByLabel("Origen de los datos").focus();
     expect(
       await page.evaluate(
@@ -146,7 +164,7 @@ for (const width of [360, 1440]) {
       ),
     ).toBe(true);
     await page.screenshot({
-      path: `../reports/origin-mock-${width}.png`,
+      path: `../reports/${process.env.SCREENSHOT_PREFIX || "origin-mock"}-${width}.png`,
       fullPage: true,
     });
   });

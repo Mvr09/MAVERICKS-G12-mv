@@ -286,6 +286,8 @@ function App() {
       setOrigin("");
       setContext(requested);
     }
+    if (location.pathname === "/")
+      setOrigin(new URLSearchParams(location.search).get("origen") || "");
   }, [location.pathname, location.search]);
   useEffect(() => {
     api("/session")
@@ -429,7 +431,12 @@ function App() {
     if (imported?.batch_id) {
       setContext("exercise");
       setOrigin("batch:" + imported.batch_id);
-      navigate("/");
+      navigate(
+        scopedPath(
+          "/?origen=" + encodeURIComponent("batch:" + imported.batch_id),
+          "exercise",
+        ),
+      );
     }
   }
   const shared = { context, presenter, action, refresh };
@@ -449,7 +456,13 @@ function App() {
         Saltar al contenido
       </a>
       <aside className="sidebar">
-        <Link to={scopedPath("/", context)} className="brand">
+        <Link
+          to={scopedPath(
+            origin ? "/?origen=" + encodeURIComponent(origin) : "/",
+            context,
+          )}
+          className="brand"
+        >
           <span className="brand-icon">
             <Activity />
           </span>
@@ -462,7 +475,12 @@ function App() {
           {navigation.map((n) => (
             <NavLink
               key={n.to}
-              to={scopedPath(n.to, context)}
+              to={scopedPath(
+                n.to === "/" && origin
+                  ? "/?origen=" + encodeURIComponent(origin)
+                  : n.to,
+                context,
+              )}
               end={n.to === "/"}
             >
               <n.icon size={19} />
@@ -572,7 +590,14 @@ function App() {
                 <DemoControl
                   onClean={async (result) => {
                     cursor.current = null;
-                    navigate("/");
+                    navigate(
+                      scopedPath(
+                        result?.mode === "rerun" && origin
+                          ? "/?origen=" + encodeURIComponent(origin)
+                          : "/",
+                        context,
+                      ),
+                    );
                     await refresh(true);
                     setMessage(
                       result?.mode === "rerun"
@@ -746,22 +771,22 @@ function App() {
                         value={origin}
                         onChange={(e) => {
                           const value = e.target.value;
-                          setOrigin(value);
-                          if (value) {
-                            const next =
-                              value === "context:rss" ||
+                          const next = value
+                            ? value === "context:rss" ||
                               value.startsWith("rss:")
-                                ? "rss"
-                                : "exercise";
-                            setContext(next);
-                            navigate(
-                              scopedPath(
-                                "/?origen=" + encodeURIComponent(value),
-                                next,
-                              ),
-                              { replace: true },
-                            );
-                          }
+                              ? "rss"
+                              : "exercise"
+                            : context;
+                          setOrigin(value);
+                          setContext(next);
+                          navigate(
+                            scopedPath(
+                              value
+                                ? "/?origen=" + encodeURIComponent(value)
+                                : "/",
+                              next,
+                            ),
+                          );
                         }}
                       >
                         <option value="">
@@ -846,7 +871,10 @@ function App() {
                           context={context}
                           origin={effectiveOrigin}
                         />
-                        <Link className="card-footer-link" to="/proveedores">
+                        <Link
+                          className="card-footer-link"
+                          to={scopedPath("/proveedores", context)}
+                        >
                           Explorar la cartera completa{" "}
                           <ChevronRight size={16} />
                         </Link>
@@ -1136,7 +1164,12 @@ function App() {
           .map((n) => (
             <NavLink
               key={n.to}
-              to={scopedPath(n.to, context)}
+              to={scopedPath(
+                n.to === "/" && origin
+                  ? "/?origen=" + encodeURIComponent(origin)
+                  : n.to,
+                context,
+              )}
               end={n.to === "/"}
             >
               <n.icon size={21} />
@@ -1163,7 +1196,12 @@ function App() {
             .map((n) => (
               <Link
                 key={n.to}
-                to={scopedPath(n.to, context)}
+                to={scopedPath(
+                  n.to === "/" && origin
+                    ? "/?origen=" + encodeURIComponent(origin)
+                    : n.to,
+                  context,
+                )}
                 onClick={() => setMore(false)}
               >
                 <n.icon size={18} />
@@ -1873,6 +1911,7 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
           </small>
         )}
       </section>
+      {presenter && a.split === "rss" && <VerificationDraft article={a} />}
       {a.split === "rss" && (
         <div className="notice">
           <span>
@@ -1935,7 +1974,7 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
         </div>
       )}
       {presenter && a.split === "rss" && <RssArticleAnalysis article={a} />}
-      {presenter && a.split === "rss" && <VerificationDraft article={a} />}
+
       {a.state === "error" && presenter && (
         <RetryAnalysis article={a} action={action} />
       )}
@@ -2219,7 +2258,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
   if (!s) return <div role="status">{error || "Cargando proveedor…"}</div>;
   return (
     <>
-      <Link className="text-link" to="/proveedores">
+      <Link className="text-link" to={scopedPath("/proveedores", context)}>
         ← Volver a proveedores
       </Link>
       <section className="card detail-card">
@@ -2480,6 +2519,13 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                   <p>
                     {s.alternate.city}, {s.alternate.country}
                   </p>
+                  <p>
+                    Oferta registrada: {s.alternate.material || "No informada"}
+                  </p>
+                  <p className="small-note">
+                    Confirmar adecuación para este material o servicio,
+                    capacidad disponible y plazo de esta consulta.
+                  </p>
                   <Badge tone="warning">Stock sin confirmar</Badge>
                 </>
               ) : (
@@ -2607,7 +2653,7 @@ function MaterialDetail() {
   if (!m) return <div role="status">{error || "Cargando material…"}</div>;
   return (
     <section className="card detail-card">
-      <Link className="text-link" to="/materiales">
+      <Link className="text-link" to={scopedPath("/materiales", context)}>
         ← Catálogo de materiales
       </Link>
       <div className="eyebrow">
@@ -2674,6 +2720,13 @@ function MaterialDetail() {
                 >
                   {m.alternate.name}
                 </Link>
+                <p>
+                  Oferta registrada: {m.alternate.material || "No informada"}
+                </p>
+                <p className="small-note">
+                  Verificar adecuación técnica y operativa antes de
+                  disponibilidad y plazo.
+                </p>
                 <Badge tone="warning">Stock sin confirmar</Badge>
               </>
             ) : (

@@ -1,0 +1,1107 @@
+{
+  "maximum_manual_articles": 2,
+  "maximum_attributed_requests": 24,
+  "analyses": [
+    {
+      "id": "702c5e7b-a566-456d-b186-69bdaf92cbe1",
+      "headline": "Asia-Europe spot rates on the rise ahead of new FAK hikes",
+      "source": "The Loadstar",
+      "url": "https://theloadstar.com/carriers-eye-fak-hikes-as-spot-decline-eases-and-capacity-stays-tight/",
+      "before_generation": 1,
+      "before_profile": "rss-2.0.0",
+      "started_at": "2026-10-18T22:48:30.235Z",
+      "states": [
+        {
+          "at": "2026-10-18T22:48:34.608Z",
+          "state": "running",
+          "last_completed_step": null,
+          "network_requests": 0
+        },
+        {
+          "at": "2026-10-18T22:48:36.312Z",
+          "state": "error",
+          "last_completed_step": "Identificación y candidatos",
+          "network_requests": 2
+        }
+      ],
+      "job_id": "9982a13b-1966-455a-8113-867378fc99a4",
+      "maximum_requests": 12,
+      "queue_status_visible": true,
+      "network_requests": 2,
+      "error": "JEV_HTTP_400",
+      "complete": false
+    },
+    {
+      "id": "702c5e7b-a566-456d-b186-69bdaf92cbe1",
+      "headline": "Asia-Europe spot rates on the rise ahead of new FAK hikes",
+      "source": "The Loadstar",
+      "url": "https://theloadstar.com/carriers-eye-fak-hikes-as-spot-decline-eases-and-capacity-stays-tight/",
+      "before_generation": 2,
+      "before_profile": "link-3.3.0",
+      "started_at": "2026-10-18T23:32:00.500Z",
+      "states": [
+        {
+          "at": "2026-10-18T23:32:02.684Z",
+          "state": "queued",
+          "last_completed_step": null,
+          "network_requests": 0
+        },
+        {
+          "at": "2026-10-18T23:32:04.444Z",
+          "state": "running",
+          "last_completed_step": "Identificación y candidatos · grupo 1",
+          "network_requests": 2
+        },
+        {
+          "at": "2026-10-18T23:32:06.198Z",
+          "state": "running",
+          "last_completed_step": "Soporte de las decisiones",
+          "network_requests": 7
+        },
+        {
+          "at": "2026-10-18T23:32:07.896Z",
+          "state": "done",
+          "last_completed_step": "Dudas de alcance y urgencia",
+          "network_requests": 7
+        }
+      ],
+      "job_id": "82eeb324-3d3b-4c94-aa36-19f67b9fe45b",
+      "maximum_requests": 36,
+      "queue_status_visible": true,
+      "after_generation": 3,
+      "complete": true,
+      "network_requests": 7,
+      "cache_stages": [],
+      "click_to_result_visible_seconds": null,
+      "timing_note": "Completion was observed before verifier failed, but exact click elapsed was not persisted. Not reconstructed or remeasured with a new model call.",
+      "poll_observation_seconds": 5.212,
+      "result": {
+        "status": "review",
+        "risk": "N",
+        "urgent": "N",
+        "suppliers": [],
+        "versions": {
+          "profile": "radar-1.0.0-candidate",
+          "matching": "link-3.3.0",
+          "retrieval": "link-3.0.0-dev",
+          "questions": "link-3.3.0",
+          "review": "review-1.2.0",
+          "support": "decision-support-1.0.0",
+          "facts": "decision-facts-1.0.0",
+          "exclusion": "relational-exclusion-1.0.0",
+          "duration": "duration-1.1.0",
+          "model": "jev-1.13.0",
+          "transport": "fanout-1.0.0"
+        },
+        "event": {
+          "category": "other",
+          "confidence": 0.66,
+          "taxonomy_version": "rss-events-1.2.0",
+          "label_es": "Otro evento comercial u operativo"
+        },
+        "source_reading": {
+          "status": "public_text",
+          "checked_at": "2026-10-18T23:31:37.499154+00:00",
+          "http_status": 200,
+          "source_url": "https://theloadstar.com/carriers-eye-fak-hikes-as-spot-decline-eases-and-capacity-stays-tight/",
+          "method": "editorial_article_container@editorial-scope-1.0.0",
+          "text_hash": "2fb892aa086aa49b04a954e4f84fe8125b68f6e0b29b31de5f5489a45dfb8730",
+          "characters": 3438
+        },
+        "review_reasons": [
+          "association_support_insufficient:S003",
+          "association_support_insufficient:S007",
+          "association_support_insufficient:S030",
+          "association_support_insufficient:S031",
+          "association_support_insufficient:S032",
+          "association_support_insufficient:S033",
+          "association_support_insufficient:S038",
+          "link_ambiguous:S003",
+          "link_ambiguous:S007",
+          "link_ambiguous:S030",
+          "link_ambiguous:S032",
+          "link_ambiguous:S033"
+        ]
+      },
+      "history_updated_without_reload": true,
+      "ui_verifier_issue": "Latest history appeared; following unscoped version locator matched both failed and successful3.3. Paid work recovered read-only.",
+      "recovered_at": "2026-10-18T23:35:56.870478+00:00"
+    },
+    {
+      "id": "80120a6e-49c8-46a6-bdea-ac50087fa060",
+      "headline": "Green forest fire notification in Mozambique",
+      "source": "GDACS",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032900",
+      "before_generation": 0,
+      "started_at": "2026-10-18T23:36:33.289Z",
+      "states": [
+        {
+          "at": "2026-10-18T23:36:35.549Z",
+          "state": "running",
+          "last_completed_step": null,
+          "network_requests": 0
+        },
+        {
+          "at": "2026-10-18T23:36:37.243Z",
+          "state": "running",
+          "last_completed_step": "Identificación y candidatos · grupo 1",
+          "network_requests": 2
+        },
+        {
+          "at": "2026-10-18T23:36:38.945Z",
+          "state": "done",
+          "last_completed_step": "Identificación y candidatos · grupo 2",
+          "network_requests": 2
+        }
+      ],
+      "clicked_at": "2026-10-18T23:36:34.763Z",
+      "job_id": "9208811e-f170-45cf-bedf-a4908076302c",
+      "maximum_requests": 36,
+      "queue_status_visible": true,
+      "click_to_result_visible_seconds": 4.42,
+      "after_generation": 0,
+      "result": {
+        "status": "done",
+        "risk": "N",
+        "urgent": "N",
+        "suppliers": [],
+        "versions": {
+          "profile": "radar-1.0.0-candidate",
+          "matching": "link-3.3.0",
+          "retrieval": "link-3.0.0-dev",
+          "questions": "link-3.3.0",
+          "review": "review-1.2.0",
+          "support": "decision-support-1.0.0",
+          "facts": "decision-facts-1.0.0",
+          "exclusion": "relational-exclusion-1.0.0",
+          "duration": "duration-1.1.0",
+          "model": "jev-1.13.0",
+          "transport": "fanout-1.0.0"
+        },
+        "event": {
+          "category": "wildfire",
+          "confidence": 1,
+          "taxonomy_version": "rss-events-1.2.0",
+          "label_es": "Incendio forestal"
+        },
+        "source_reading": {
+          "status": "summary_only",
+          "checked_at": "2026-10-18T23:36:09.964125+00:00",
+          "http_status": 200,
+          "reason": "editorial_text_unavailable"
+        },
+        "review_reasons": []
+      },
+      "network_requests": 2,
+      "cache_stages": [],
+      "history_updated_without_reload": true,
+      "focus_after_completion": "SUMMARY",
+      "complete": true
+    }
+  ],
+  "sync": {
+    "at": "2026-10-18T22:45:53.232307+00:00",
+    "revision": "4a50559462e5ed1bc2b71e1c218391880e73088f",
+    "jobs": [
+      {
+        "id": "328c1539-07c1-4ab2-9cb1-603fb18e7c55",
+        "kind": "rss",
+        "analysis_profile": "1.0.0",
+        "last_completed_step": null,
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T22:45:21.859286+00:00",
+        "error": null,
+        "source_id": "the_loadstar",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "338e74e0-dda9-4bb0-aaa9-76aefcf05b3c",
+        "kind": "rss",
+        "analysis_profile": "1.0.0",
+        "last_completed_step": null,
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T22:45:21.869349+00:00",
+        "error": null,
+        "source_id": "gdacs",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "9dd57f10-3808-4e5b-925d-3ee46e9e1ce2",
+        "kind": "rss",
+        "analysis_profile": "1.0.0",
+        "last_completed_step": null,
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T22:45:21.881517+00:00",
+        "error": null,
+        "source_id": "el_pais",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "f6ca27b9-db43-4abb-b4fc-f603a21d0927",
+        "kind": "rss",
+        "analysis_profile": "1.0.0",
+        "last_completed_step": null,
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T22:45:21.893996+00:00",
+        "error": null,
+        "source_id": "ema",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "23dc95e4-830f-403a-9fed-76d5f437826a",
+        "kind": "rss",
+        "analysis_profile": "1.0.0",
+        "last_completed_step": null,
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T22:45:22.410712+00:00",
+        "error": null,
+        "source_id": "biopharma_dive",
+        "article_id": null,
+        "network_requests": null
+      },
+      {
+        "id": "41962cb9-5a49-474e-af67-fa03f9247935",
+        "kind": "rss",
+        "analysis_profile": "1.0.0",
+        "last_completed_step": null,
+        "state": "done",
+        "attempts": 1,
+        "heartbeat": "2026-10-18T22:45:22.422473+00:00",
+        "error": null,
+        "source_id": "supply_chain_dive",
+        "article_id": null,
+        "network_requests": null
+      }
+    ],
+    "sources": [
+      {
+        "id": "biopharma_dive",
+        "http_status": 304,
+        "status": "unchanged",
+        "last_attempt_at": "2026-10-18T22:45:22.422934+00:00",
+        "last_success_at": "2026-10-18T22:45:22.473380+00:00",
+        "item_count": 0,
+        "error": null
+      },
+      {
+        "id": "el_pais",
+        "http_status": 200,
+        "status": "ok",
+        "last_attempt_at": "2026-10-18T22:45:21.890762+00:00",
+        "last_success_at": "2026-10-18T22:45:22.073374+00:00",
+        "item_count": 0,
+        "error": null
+      },
+      {
+        "id": "ema",
+        "http_status": 304,
+        "status": "unchanged",
+        "last_attempt_at": "2026-10-18T22:45:21.916945+00:00",
+        "last_success_at": "2026-10-18T22:45:21.982524+00:00",
+        "item_count": 0,
+        "error": null
+      },
+      {
+        "id": "gdacs",
+        "http_status": 304,
+        "status": "unchanged",
+        "last_attempt_at": "2026-10-18T22:45:21.882235+00:00",
+        "last_success_at": "2026-10-18T22:45:22.429485+00:00",
+        "item_count": 0,
+        "error": null
+      },
+      {
+        "id": "supply_chain_dive",
+        "http_status": 304,
+        "status": "unchanged",
+        "last_attempt_at": "2026-10-18T22:45:22.435623+00:00",
+        "last_success_at": "2026-10-18T22:45:22.503426+00:00",
+        "item_count": 0,
+        "error": null
+      },
+      {
+        "id": "the_loadstar",
+        "http_status": 200,
+        "status": "ok",
+        "last_attempt_at": "2026-10-18T22:45:21.872597+00:00",
+        "last_success_at": "2026-10-18T22:45:22.262667+00:00",
+        "item_count": 0,
+        "error": null
+      }
+    ],
+    "jev_before": 49,
+    "jev_after": 49
+  },
+  "inventory": [
+    {
+      "id": "c50b4906-495f-4b97-b587-c19684a9a82d",
+      "headline": "Zelenski afirma que Trump busca la rendición de Ucrania ante Rusia",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/ucrania-lanza-un-intenso-ataque-sobre-san-petersburgo-y-golpea-una-terminal-petrolera-un-centro-de-datos-y-un-centro-logistico.html",
+      "published_date": "2026-10-18T20:12:59+00:00",
+      "generation": 0,
+      "version": 8,
+      "state": "pending"
+    },
+    {
+      "id": "7b51c74b-7909-4122-ba59-c7a3403ba7ea",
+      "headline": "Italia se contagia de las protestas estudiantiles en Francia",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/italia-se-contagia-de-las-protestas-estudiantiles-en-francia.html",
+      "published_date": "2026-10-18T19:34:29+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "pending"
+    },
+    {
+      "id": "80120a6e-49c8-46a6-bdea-ac50087fa060",
+      "headline": "Green forest fire notification in Mozambique",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032900",
+      "published_date": "2026-10-18T19:01:13+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "pending"
+    },
+    {
+      "id": "732d40b2-322f-4c62-914e-4080cf4ff6ab",
+      "headline": "Green forest fire notification in Nigeria",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032899",
+      "published_date": "2026-10-18T19:00:49+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "pending"
+    },
+    {
+      "id": "d6138eec-84bd-4959-bb9a-000fbd795fe3",
+      "headline": "Green forest fire notification in Namibia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032898",
+      "published_date": "2026-10-18T19:00:42+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "pending"
+    },
+    {
+      "id": "3d549146-3383-40b0-8575-f10ca87b9b59",
+      "headline": "Macron acusa a la “extrema izquierda” de inflamar la calle",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/macron-acusa-a-la-extrema-izquierda-de-inflamar-la-calle.html",
+      "published_date": "2026-10-18T18:53:03+00:00",
+      "generation": 0,
+      "version": 2,
+      "state": "pending"
+    },
+    {
+      "id": "2a2910e9-de2f-433b-a56b-8a7edfcc6283",
+      "headline": "Francia hace balance tras el mayor estallido de violencia en décadas: 2.000 detenidos y un millar de comercios saqueados",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/francia-hace-balance-tras-el-mayor-estallido-de-violencia-y-caos-en-decadas-1800-detenidos-y-un-millar-de-comercios-saqueados.html",
+      "published_date": "2026-10-18T15:08:40+00:00",
+      "generation": 0,
+      "version": 4,
+      "state": "pending"
+    },
+    {
+      "id": "4eaf8384-4bb4-447d-b33e-cddfd765b559",
+      "headline": "Trump respalda a Netanyahu a nueve días de las elecciones israelíes: “Es un gran guerrero, fuerte, valiente y brillante”",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/trump-respalda-a-netanyahu-a-nueve-dias-de-las-elecciones-israelies-es-un-gran-guerrero-fuerte-valiente-y-brillante.html",
+      "published_date": "2026-10-18T17:26:37+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "pending"
+    },
+    {
+      "id": "eab7048a-d548-4364-bfc2-c15f4f3791ef",
+      "headline": "Los disturbios vuelven al centro de París un día después de la gran revuelta",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/los-disturbios-vuelven-al-centro-de-paris-un-dia-despues-de-la-gran-revuelta.html",
+      "published_date": "2026-10-18T16:46:26+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "pending"
+    },
+    {
+      "id": "a152f7bb-efcc-44be-affc-928cc6f3b9af",
+      "headline": "News in Brief Podcast | Week 41 2026 | Congestion, cyber threat, and capacity constraint",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/news-in-brief-podcast-week-41-2026-congestion-cyberthreat-and-capacity-constraint/",
+      "published_date": "2026-10-18T16:00:26+00:00",
+      "generation": 0,
+      "version": 2,
+      "state": "done"
+    },
+    {
+      "id": "7fb58d3a-d0d0-438e-9ed1-746a230aebbf",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032895",
+      "published_date": "2026-10-18T15:01:14+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "pending"
+    },
+    {
+      "id": "f415e7fb-f966-4753-b46a-533eb0110b3a",
+      "headline": "Las izquierdas acarician un Gobierno en Berlín que nacionalizará fondos inmobiliarios para abaratar el alquiler",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/las-izquierdas-acarician-un-gobierno-en-berlin-que-nacionalizara-fondos-inmobiliarios-para-abaratar-el-alquiler.html",
+      "published_date": "2026-10-18T13:56:27+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "pending"
+    },
+    {
+      "id": "5b247715-cb6d-4171-9f72-a8958ccce292",
+      "headline": "Green forest fire notification in Sudan",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032872",
+      "published_date": "2026-10-18T11:02:31+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "5301dd30-b78b-4089-a5f8-666f602e470b",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032857",
+      "published_date": "2026-10-16T23:00:47+00:00",
+      "generation": 0,
+      "version": 2,
+      "state": "done"
+    },
+    {
+      "id": "21cd270f-bbc6-4fa6-a6f3-be3e57b256a9",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032883",
+      "published_date": "2026-10-18T07:01:09+00:00",
+      "generation": 0,
+      "version": 4,
+      "state": "done"
+    },
+    {
+      "id": "a4f87ae3-ba45-42f5-affa-a9cf280ff62c",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032870",
+      "published_date": "2026-10-17T19:00:32+00:00",
+      "generation": 0,
+      "version": 2,
+      "state": "done"
+    },
+    {
+      "id": "bb3917dd-54fc-4daf-97ff-b5abbc68c299",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032865",
+      "published_date": "2026-10-17T11:00:35+00:00",
+      "generation": 0,
+      "version": 2,
+      "state": "done"
+    },
+    {
+      "id": "4ab2b35d-afb6-4fff-b104-7512d4eb589c",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032862",
+      "published_date": "2026-10-17T07:00:33+00:00",
+      "generation": 0,
+      "version": 2,
+      "state": "done"
+    },
+    {
+      "id": "7dff02b9-1bde-4c96-930e-053628ba39b7",
+      "headline": "El Papa habla por primera vez a los fieles en la plaza de San Pedro tras su operación: “Retomaré gradualmente mis actividades”",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/el-papa-habla-por-primera-vez-a-los-fieles-en-la-plaza-de-san-pedro-tras-su-operacion-retomare-gradualmente-mis-actividades.html",
+      "published_date": "2026-10-18T10:30:05+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "2dbf5d37-34d3-418c-a89c-f84156362ad6",
+      "headline": "Green forest fire notification in China",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032850",
+      "published_date": "2026-10-18T11:02:14+00:00",
+      "generation": 0,
+      "version": 4,
+      "state": "done"
+    },
+    {
+      "id": "3ccacb83-edd5-4351-acba-52f55ae0e426",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032892",
+      "published_date": "2026-10-18T11:00:41+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "f4f8d195-0ebd-4bea-b83f-da39a0164ba9",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032891",
+      "published_date": "2026-10-18T11:00:36+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "f6a12ac7-ce8a-42c7-bfe2-9b0ad0461327",
+      "headline": "Ocho décadas después, un anciano de 105 años debía responder por los crímenes del nazismo",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/ocho-decadas-despues-un-anciano-de-105-anos-debe-responder-por-los-crimenes-del-nazismo.html",
+      "published_date": "2026-10-18T10:08:11+00:00",
+      "generation": 0,
+      "version": 3,
+      "state": "done"
+    },
+    {
+      "id": "abe0d65c-914e-41b9-ad85-97edb850a86f",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032858",
+      "published_date": "2026-10-17T07:00:58+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "0d33379c-dfa5-4227-b624-c184002a9b02",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032851",
+      "published_date": "2026-10-16T19:01:24+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "098c7af4-ef61-4a5a-a65c-797df54a1391",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032863",
+      "published_date": "2026-10-17T07:01:05+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "bb9f4909-4213-46f0-9be9-da80076c356a",
+      "headline": "Medio centenar de fortificaciones en Gaza: así toma Israel el control de la Franja",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/medio-centenar-de-fortificaciones-en-gaza-asi-toma-israel-el-control-de-la-franja.html",
+      "published_date": "2026-10-18T03:30:00+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "b751e973-9eb6-4627-88e2-a0064f503aea",
+      "headline": "Francia prende fuego al macronismo",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/francia-prende-fuego-al-macronismo.html",
+      "published_date": "2026-10-18T03:30:01+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "469a37b0-6cbf-4629-8371-648e0929b635",
+      "headline": "Trump apuñala a Ucrania por la espalda",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/trump-apunala-a-ucrania-por-la-espalda.html",
+      "published_date": "2026-10-18T03:30:01+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "b3461a94-13e3-4fe7-93c5-8f66c9f175a9",
+      "headline": "El despido de la portavoz de Trump desliza a la Casa Blanca hacia el caos  a dos semanas de las ‘midterms’",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/us/2026-10-18/el-despido-de-la-portavoz-de-trump-desliza-a-la-casa-blanca-hacia-el-caos-a-dos-semanas-de-las-midterms.html",
+      "published_date": "2026-10-18T03:30:01+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "f2346b6b-26f0-48ed-a324-872680915fac",
+      "headline": "Ucrania, en punto muerto: asediada por Putin y abandonada por Trump",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-18/ucrania-en-punto-muerto-asediada-por-putin-y-ninguneada-por-trump.html",
+      "published_date": "2026-10-18T03:30:01+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "b1a3a905-b003-4bd6-936c-cc6fdff04623",
+      "headline": "Green forest fire notification in Australia",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032846",
+      "published_date": "2026-10-16T19:00:57+00:00",
+      "generation": 1,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "1721da43-82d5-4a8c-a713-c158173cac1b",
+      "headline": "Green earthquake (Magnitude 6.9M, Depth:143.176km) in Russia 16/10/2026 03:35 UTC, 10 thousand in MMI&gt;=V.",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=EQ&eventid=1571917",
+      "published_date": "2026-10-16T03:48:39+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "24a80a2d-f05c-47a2-915a-09a23b2eb097",
+      "headline": "Orange notification for tropical cyclone WATI-26. Population affected by Category 1 (120 km/h) wind speeds or higher is 4982 .",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001339",
+      "published_date": "2026-10-16T07:39:18+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "dd27d3ef-476b-4ae4-b56f-996727d521cb",
+      "headline": "Green earthquake (Magnitude 5.7M, Depth:10km) in Pakistan 17/10/2026 05:06 UTC, 2 thousand (in MMI&gt;=VII).",
+      "source": "GDACS",
+      "source_id": "gdacs",
+      "url": "https://www.gdacs.org/report.aspx?eventtype=EQ&eventid=1572122",
+      "published_date": "2026-10-17T05:26:57+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "448c5e66-51d1-4a9f-ac68-d89a5d3b5f06",
+      "headline": "Meeting highlights from the Committee for Medicinal Products for Human Use (CHMP) 12-15 October 2026",
+      "source": "EMA",
+      "source_id": "ema",
+      "url": "https://www.ema.europa.eu/en/news/meeting-highlights-committee-medicinal-products-human-use-chmp-12-15-october-2026",
+      "published_date": "2026-10-16T10:00:00+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "190e71c2-afe7-4bb5-92e3-96dc53cb2183",
+      "headline": "CoreWeave CDS distress – ‘investors sour on AI debt’",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/coreweave-cds-distress-investors-sour-on-ai-debt/",
+      "published_date": "2026-10-16T06:43:11+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "e4120617-295c-4b31-8051-42a1e1b96266",
+      "headline": "Podcast: How AI will transform freight forwarding beyond the hype",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/how-ai-will-transform-freight-forwarding-beyond-the-hype/",
+      "published_date": "2026-10-16T08:23:45+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "f1859def-12b7-422e-a114-5783adc0028a",
+      "headline": "Ex-India spot rates and surcharges ease as peak comes to an end",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/ex-india-spot-rates-and-surcharges-ease-as-peak-comes-to-an-end/",
+      "published_date": "2026-10-16T10:45:07+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "767c915b-0034-4ac0-b9aa-30ed6255f493",
+      "headline": "JB Hunt riding new pricing cycle – shippers must pay up",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/jb-hunt-riding-new-pricing-cycle-shippers-must-pay-up/",
+      "published_date": "2026-10-16T11:10:11+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "73a4080c-58b3-49ef-a1ca-2c547504c2c5",
+      "headline": "We’re ‘shouldering cost burden of green transition’, say carriers",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/were-shouldering-cost-burden-of-green-transition-say-carriers/",
+      "published_date": "2026-10-16T11:15:08+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "5a3b9951-6842-42b1-ac73-ee03ac36237f",
+      "headline": "AI won’t plug forwarder margin leaks without better data and processes",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/ai-wont-plug-forwarder-margin-leaks-without-better-data-and-processes/",
+      "published_date": "2026-10-16T11:19:47+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "6f0e0a50-db1e-4a53-b7e4-5f7691712080",
+      "headline": "DHL Express puts its faith – and its cash – in Africa’s trade potential",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/dhl-express-puts-its-faith-and-its-cash-in-africas-trade-potential/",
+      "published_date": "2026-10-16T11:33:33+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "702c5e7b-a566-456d-b186-69bdaf92cbe1",
+      "headline": "Asia-Europe spot rates on the rise ahead of new FAK hikes",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/carriers-eye-fak-hikes-as-spot-decline-eases-and-capacity-stays-tight/",
+      "published_date": "2026-10-16T12:28:41+00:00",
+      "generation": 1,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "6b7f2f64-7d21-46a3-b3d0-14b9b11123fc",
+      "headline": "DHL Group raises full-year 2026 earnings guidance",
+      "source": "The Loadstar",
+      "source_id": "the_loadstar",
+      "url": "https://theloadstar.com/dhl-group-raises-full-year-2026-earnings-guidance/",
+      "published_date": "2026-10-16T17:53:29+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "2abb8c25-52e3-49c7-8eac-4d1c9d457c27",
+      "headline": "Biogen-backed Estuary nabs $93M for kidney disease gene therapy",
+      "source": "BioPharma Dive",
+      "source_id": "biopharma_dive",
+      "url": "https://www.biopharmadive.com/news/estuary-kidney-disease-gene-therapy-launch-emerged-biogen-biotech-startup/833114/",
+      "published_date": "2026-10-16T10:30:00+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "a090036e-7347-46c5-bb16-2d1798beb6e9",
+      "headline": "Next-gen RNAi drugmaker City prices $200M IPO",
+      "source": "BioPharma Dive",
+      "source_id": "biopharma_dive",
+      "url": "https://www.biopharmadive.com/news/city-therapeutics-ipo-price-rnai-drugs/832945/",
+      "published_date": "2026-10-16T10:33:00+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "d8eca08f-2cc2-4bdf-9100-4374814f6e8e",
+      "headline": "This week in charts: Moderna’s massive stock run",
+      "source": "BioPharma Dive",
+      "source_id": "biopharma_dive",
+      "url": "https://www.biopharmadive.com/news/biotech-charts-moderna-stock-xbi-roche-china/832886/",
+      "published_date": "2026-10-16T13:15:00+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "8bc7e752-585f-48cd-8e20-99d29aea279f",
+      "headline": "Iambic CEO on taking an AI drug company public",
+      "source": "BioPharma Dive",
+      "source_id": "biopharma_dive",
+      "url": "https://www.biopharmadive.com/news/Iambic-ipo-tom-miller-ai-drug-development-discovery/833238/",
+      "published_date": "2026-10-16T16:10:00+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "8cfae04a-2791-4469-9919-e7418addb24d",
+      "headline": "FedEx, UPS delivery prices set for record-high Q4: TD Cowen/AFS",
+      "source": "Supply Chain Dive",
+      "source_id": "supply_chain_dive",
+      "url": "https://www.supplychaindive.com/news/fedex-ups-delivery-prices-set-for-record-high-q4-td-cowenafs/832992/",
+      "published_date": "2026-10-16T13:31:02+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "94fe30c0-706a-48f8-930e-07aef406a2c0",
+      "headline": "FMC proposes fees on Spanish-flagged vessels, import restrictions",
+      "source": "Supply Chain Dive",
+      "source_id": "supply_chain_dive",
+      "url": "https://www.supplychaindive.com/news/fmc-proposes-fees-on-spanish-flagged-vessels-import-restrictions/833122/",
+      "published_date": "2026-10-16T14:13:39+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "4fdbca4a-22ea-4538-a794-a0b7bf866110",
+      "headline": "From library to logistics: Cathy Morrow Roberson shares career insights",
+      "source": "Supply Chain Dive",
+      "source_id": "supply_chain_dive",
+      "url": "https://www.supplychaindive.com/news/from-library-to-logistics-cathy-morrow-roberson-shares-career-insights/833023/",
+      "published_date": "2026-10-16T14:34:00+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "df3cbefa-a27f-4598-b2aa-e661173b46f6",
+      "headline": "Trump despide a la portavoz de prensa de la Casa Blanca tras cinco días en el cargo",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/us/2026-10-16/trump-abre-la-puerta-a-una-salida-de-la-portavoz-de-prensa-recien-nombrada-por-el.html",
+      "published_date": "2026-10-16T19:31:06+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "4fc6a66c-bf9e-4fcb-b1a4-ef9b5b27482d",
+      "headline": "Arrestos, despidos y escupitajos: los profesores israelíes perseguidos por sus opiniones fuera del aula",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-17/arrestos-despidos-y-escupitajos-los-profesores-israelies-perseguidos-por-sus-opiniones-fuera-del-aula.html",
+      "published_date": "2026-10-17T03:45:01+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "1fcf3b1e-6a6a-41f7-820e-0987e413643d",
+      "headline": "El Papa sale del hospital cuatro días después de su operación de pulmón",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-17/el-papa-sale-esta-tarde-del-hospital-cuatro-dias-despues-de-su-operacion-de-pulmon.html",
+      "published_date": "2026-10-17T14:17:26+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "28b2d0c0-f153-4502-9443-7ee1ba9a27ae",
+      "headline": "Kathleen Belew, historiadora: “Trump utiliza y se beneficia de los supremacistas blancos”",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-17/kathleen-belew-historiadora-trump-utiliza-y-se-beneficia-de-los-supremacistas-blancos.html",
+      "published_date": "2026-10-17T03:45:01+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "33273c17-4dda-4260-b9ed-4bd0445fbd1f",
+      "headline": "Trump suspende sanciones contra Rusia en pleno giro para que Putin le ayude a bajar el precio de la energía antes de las elecciones",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/us/2026-10-17/trump-suspende-temporalmente-sanciones-contra-rusia-por-interes-nacional.html",
+      "published_date": "2026-10-17T02:40:36+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "489542cc-6a62-43dd-a396-70bde7445bd9",
+      "headline": "Un grupo de colonos israelíes ataca a una comitiva de diplomáticos europeos en Cisjordania",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-17/un-grupo-de-colonos-israelies-ataca-a-una-comitiva-de-diplomaticos-europeos-en-cisjordania.html",
+      "published_date": "2026-10-17T17:29:37+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "7e60ef31-cc31-4b84-8f54-45e65cdb659d",
+      "headline": "El magnate populista Babis asume como “catastrófico” el resultado de su partido en las legislativas checas",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-17/el-magnate-populista-babis-asume-como-catastrofico-el-resultado-de-su-partido-en-las-legislativas-checas.html",
+      "published_date": "2026-10-17T20:21:59+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "2dce51e7-cbdd-457a-8ccb-d9a6cb1835e8",
+      "headline": "Jérome Fourquet, sobre las protestas de estudiantes en Francia: “Estamos ante el final de un reinado”",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-17/jerome-fourquet-sociologo-estamos-ante-el-final-de-un-reinado-en-francia.html",
+      "published_date": "2026-10-17T15:04:42+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    },
+    {
+      "id": "f253b38c-a402-4d7c-8adf-425d43e61e25",
+      "headline": "Israel afronta unas elecciones decisivas con Netanyahu y la oposición lejos de la mayoría",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-17/israel-afronta-unas-elecciones-decisivas-en-un-escenario-de-total-incertidumbre.html",
+      "published_date": "2026-10-17T17:05:12+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "done"
+    },
+    {
+      "id": "bb79908d-2ac6-4a95-894b-64a2574dc1ad",
+      "headline": "El regreso de los ‘chalecos amarillos’ y la rabia estudiantil incendian Francia",
+      "source": "EL PAIS Internacional",
+      "source_id": "el_pais",
+      "url": "https://elpais.com/internacional/2026-10-17/la-rabia-de-los-estudiantes-los-agricultores-y-los-funcionarios-confluye-en-una-gran-protesta-en-toda-francia.html",
+      "published_date": "2026-10-17T20:11:47+00:00",
+      "generation": 0,
+      "version": 1,
+      "state": "review"
+    }
+  ],
+  "periodic_paid_rss": false,
+  "analysis_protocol": {
+    "hypothesis": "Candidate distinguishes source event category, supplier exposure and supply risk. Pricing alone is not interruption; a wildfire outside catalog geography need not expose a supplier. No RSS ground-truth accuracy claim.",
+    "articles": [
+      "702c5e7b-a566-456d-b186-69bdaf92cbe1",
+      "80120a6e-49c8-46a6-bdea-ac50087fa060"
+    ],
+    "maximum_articles": 2,
+    "maximum_requests_including_retries": 24,
+    "profile": "radar-1.0.0-candidate",
+    "matching": "link-3.3.0",
+    "review": "review-1.2.0",
+    "periodic_paid_rss": false,
+    "registered_at": "2026-10-18T22:48:28.658Z"
+  },
+  "analysis_revision": "35c3b922f195c7cc6b525f29a9d2ec5e9675a533",
+  "analysis_jev_before": 49,
+  "attributed_requests": 11,
+  "transport_correction_plan": {
+    "registered_at": "2026-10-18T23:14:23.442068+00:00",
+    "hypothesis": "Editorial neighbours contaminated source and repeated evidence inflated context. Select one primary article container, partition only independent questions with identical complete state; no new model, question or threshold. Diagnose original400 before corrected new generation.",
+    "maximum_total_requests_including_prior_failure": 80,
+    "maximum_articles": 2,
+    "technical_attempt_cap_per_generation": 36,
+    "paid_periodic": false,
+    "prior_failure_attempts": 2
+  },
+  "analysis_jev_after_failure_derived": 51,
+  "original_failure_diagnosis": {
+    "read_at": "2026-10-18T23:31:03.976255+00:00",
+    "generation": 2,
+    "stage": "b",
+    "payload_bytes": 310015,
+    "questions": 195,
+    "suppliers_in_state": 13,
+    "openapi_valid": true,
+    "per_part_bytes": [
+      59813,
+      56789,
+      56769,
+      56801,
+      59870,
+      59887,
+      59887,
+      58946,
+      49757
+    ],
+    "parts": 9,
+    "complete_state_and_questions_preserved": true,
+    "specific_provider_code": "not retained by earlier sanitizer; generic provider_error",
+    "context_limit_hypothesis": true,
+    "original_payload_not_repeated": true
+  },
+  "analysis_jev_before_retry": 51,
+  "diagnosis_acknowledgement": {
+    "diagnosed_calls": [
+      "fed59403-7648-4990-99be-581e35e130bc"
+    ],
+    "generation": 2,
+    "counters_preserved": true
+  },
+  "phase2_protocol": {
+    "registered_at": "2026-10-18T23:31:04.508921+00:00",
+    "revision": "35c3b922f195c7cc6b525f29a9d2ec5e9675a533",
+    "same_two_articles": true,
+    "maximum_total_requests_including_phase1": 80,
+    "periodic_paid": false,
+    "transport": "fanout-1.0.0",
+    "extractor": "editorial-scope-1.0.0"
+  },
+  "phase1_failure": "Analysis stopped JEV_HTTP_400",
+  "phase2_verifier_issue": "expect(locator).toBeVisible() failed\n\nLocator: locator('.run-versions').filter({ hasText: 'link-3.3.0' })\nExpected: visible\nError: strict mode violation: locator('.run-versions').filter({ hasText: 'link-3.3.0' }) resolved to 2 elements:\n    1) <p class=\"run-versions\">…</p> aka getByRole('paragraph').filter({ hasText: 'Perfil: radar-1.0.0-candidate' })\n    2) <p class=\"run-versions\">…</p> aka getByText('Perfil: radar-1.0.0-candidate').nth(1)\n\nCall log:\n  - Expect \"toBeVisible\" locator('.run-versions').filter({ hasText: 'link-3.3.0' }) with timeout 5000ms\n  - waiting for locator('.run-versions').filter({ hasText: 'link-3.3.0' })\n",
+  "recovery_new_requests": 0,
+  "analysis_jev_after": 60,
+  "errors": [],
+  "analysis_checked_at": "2026-10-18T23:36:39.600Z",
+  "phase2_passed": true,
+  "analysis_jev_before_last_resume": 58,
+  "counter_scope_note": "RSS en Railway:49→60, incluye el primer intento fallido2 y la recuperación7+2; lectura de recuperación y guion sin llamadas."
+}

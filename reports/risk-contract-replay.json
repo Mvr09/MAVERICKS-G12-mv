@@ -1,0 +1,11 @@
+{
+  "cases": 60,
+  "new_requests": 0,
+  "cached_stages": 110,
+  "counter_before": 917,
+  "counter_after": 917,
+  "predictions_priorities_and_review_unchanged": true,
+  "correction": "Use existing factual_basis_check resolution enum for the hypothetical resolved impact path; supported by strict schema unit test. No such resolution was activated in the recorded trial. Not a classifier improvement, not adopted.",
+  "post_run_source_hash": "ecf87527f9db5107db9e8e650366c9ad9fae99801b887e8ad989110176f89e52",
+  "pre_run_source_hash": "27a1c5e0eb4f8840ff4a0c9024353aae304a2bc719c56fcd1e76f2837f3ca4e4"
+}

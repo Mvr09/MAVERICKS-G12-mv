@@ -195,6 +195,9 @@ export function VerificationDraft({ article: a }: { article: Article }) {
     (snapshot.generation !== (a.generation || 0) ||
       snapshot.version !== a.version);
   const chosen = suppliers.find((s) => s.supplier_id === sid);
+  const alternate = suppliers.find(
+    (s) => s.supplier_id === chosen?.alternate_id,
+  );
   const close = () => {
     ref.current?.close();
     returnFocus.current?.focus();
@@ -360,6 +363,13 @@ export function VerificationDraft({ article: a }: { article: Article }) {
                       : "Productos no mapeados"}
                   </p>
                   <p>{procurement(chosen, "rss").alternative}</p>
+                  {alternate && (
+                    <p>
+                      Alternativo registrado: <strong>{alternate.name}</strong>{" "}
+                      · {alternate.material}. Confirmar adecuación para esta
+                      consulta.
+                    </p>
+                  )}
                   <Link
                     className="text-link"
                     to={"/proveedores/" + sid + "?context=rss"}

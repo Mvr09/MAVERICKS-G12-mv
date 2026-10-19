@@ -1,0 +1,575 @@
+{
+  "run": "night-risk-current-02",
+  "protocol": {
+    "run": "night-risk-current-02",
+    "hypothesis": "After independently supported association, active-versus-monitoring ambiguity can be local when a new factual current-threat check and original nonurgent support agree. Never clear unknown/recovered source, association, risk, or urgency doubts. Independently linked partial output/delivery loss and adverse strategic instability are threats before stockout/urgency. A focused factual stage omits business buffers, cannot create links, lower thresholds, or modify urgency. Only strongly factual positive corrections are applied; other review remains.",
+    "sample": "30training+6synthetics+24previously inspected controlled cases, all development",
+    "risk_version": "risk-focus-1.1.0",
+    "questions": "decision-3.4.1",
+    "matching": "link-3.3.0",
+    "review": "review-1.3.0",
+    "max_attempts": 240,
+    "targets": {
+      "training:N014": [
+        "S017"
+      ],
+      "training:N018": [
+        "S020"
+      ],
+      "training:N025": [
+        "S030"
+      ],
+      "controlled:partial_leaflets": [
+        "S024"
+      ],
+      "controlled:partial_filters": [
+        "S027"
+      ],
+      "controlled:sea_not_rail": [
+        "S032"
+      ],
+      "controlled:lodz_alias": [
+        "S019"
+      ]
+    },
+    "adoption": [
+      "No new risk FP/FN or urgent FP/FN on development",
+      "All supplier predictions invariant",
+      "No new automatic joint errors",
+      "Concrete correctly automated risk or reduced omission",
+      "Unknown province/route and false links still reviewed",
+      "Fresh pre-referenced controlled sample before final selectable adoption; default unchanged"
+    ],
+    "files": {
+      "app/candidate_risk.py": "26ef85b7ca46462a8c2faba628082751ca5e0d1d8a9678cf559468072acdb95d",
+      "scripts/risk_engine_current.py": "43b9677872827da07975e6eb2425da54d95a2cc10be089bf1db26d7a0571279d",
+      "app/candidate_matching.py": "78f7432bd5c6ffe4b8238837b19ed973fcfd2ee6d2f0676bc370d43d25f31626",
+      "app/candidate_review.py": "d1a1dadbe775f7dbd2c4836fe2d67e1e28117d8787755aa57d1214f4f0e480ce",
+      "app/candidate_review_focus.py": "27a1c5e0eb4f8840ff4a0c9024353aae304a2bc719c56fcd1e76f2837f3ca4e4",
+      "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+    }
+  },
+  "complete": true,
+  "requests": 9,
+  "retries": 0,
+  "global_counter": 917,
+  "window_reserved": 322,
+  "calls": [
+    {
+      "stage": "candidate_risk_focus",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.2953934169927379,
+      "at": "2026-10-19T01:57:57.715853+02:00",
+      "usage": {
+        "input_tokens": 2064,
+        "output_tokens": 297
+      }
+    },
+    {
+      "stage": "candidate_current_threat",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.24997112998971716,
+      "at": "2026-10-19T01:57:58.053227+02:00",
+      "usage": {
+        "input_tokens": 1219,
+        "output_tokens": 25
+      }
+    },
+    {
+      "stage": "candidate_current_threat",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.2538100050005596,
+      "at": "2026-10-19T01:57:58.666944+02:00",
+      "usage": {
+        "input_tokens": 891,
+        "output_tokens": 25
+      }
+    },
+    {
+      "stage": "candidate_risk_focus",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.24974618600390386,
+      "at": "2026-10-19T01:57:59.164575+02:00",
+      "usage": {
+        "input_tokens": 1699,
+        "output_tokens": 294
+      }
+    },
+    {
+      "stage": "candidate_current_threat",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.251931703009177,
+      "at": "2026-10-19T01:57:59.450584+02:00",
+      "usage": {
+        "input_tokens": 876,
+        "output_tokens": 25
+      }
+    },
+    {
+      "stage": "candidate_current_threat",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.2711852429929422,
+      "at": "2026-10-19T01:58:03.523018+02:00",
+      "usage": {
+        "input_tokens": 898,
+        "output_tokens": 25
+      }
+    },
+    {
+      "stage": "candidate_current_threat",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.23920472600730136,
+      "at": "2026-10-19T01:58:03.974634+02:00",
+      "usage": {
+        "input_tokens": 896,
+        "output_tokens": 25
+      }
+    },
+    {
+      "stage": "candidate_current_threat",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.30041480800719,
+      "at": "2026-10-19T01:58:04.544362+02:00",
+      "usage": {
+        "input_tokens": 854,
+        "output_tokens": 25
+      }
+    },
+    {
+      "stage": "candidate_current_threat",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.24480848500388674,
+      "at": "2026-10-19T01:58:05.774339+02:00",
+      "usage": {
+        "input_tokens": 918,
+        "output_tokens": 25
+      }
+    }
+  ],
+  "metrics": {
+    "training": {
+      "old": {
+        "n": 30,
+        "risk": {
+          "tp": 13,
+          "fp": 0,
+          "fn": 1,
+          "tn": 16,
+          "precision": 1.0,
+          "recall": 0.9285714285714286,
+          "f1": 0.9629629629629629,
+          "n": 30,
+          "positives": 14
+        },
+        "urgent": {
+          "tp": 5,
+          "fp": 2,
+          "fn": 0,
+          "tn": 23,
+          "precision": 0.7142857142857143,
+          "recall": 1.0,
+          "f1": 0.8333333333333334,
+          "n": 30,
+          "positives": 5
+        },
+        "suppliers": {
+          "exact": 29,
+          "n": 30,
+          "precision": 0.88,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9666666666666667,
+          "tp": 22,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.9361702127659575
+        },
+        "review_count": 14,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.5333333333333333,
+        "automatic": {
+          "n": 16,
+          "risk": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "urgent": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "suppliers": {
+            "exact": 16,
+            "n": 16,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      },
+      "prediction": {
+        "n": 30,
+        "risk": {
+          "tp": 13,
+          "fp": 0,
+          "fn": 1,
+          "tn": 16,
+          "precision": 1.0,
+          "recall": 0.9285714285714286,
+          "f1": 0.9629629629629629,
+          "n": 30,
+          "positives": 14
+        },
+        "urgent": {
+          "tp": 5,
+          "fp": 2,
+          "fn": 0,
+          "tn": 23,
+          "precision": 0.7142857142857143,
+          "recall": 1.0,
+          "f1": 0.8333333333333334,
+          "n": 30,
+          "positives": 5
+        },
+        "suppliers": {
+          "exact": 29,
+          "n": 30,
+          "precision": 0.88,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9666666666666667,
+          "tp": 22,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.9361702127659575
+        },
+        "review_count": 14,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.5333333333333333,
+        "automatic": {
+          "n": 16,
+          "risk": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "urgent": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "tn": 13,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 16,
+            "positives": 3
+          },
+          "suppliers": {
+            "exact": 16,
+            "n": 16,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      }
+    },
+    "inspected_controls_development": {
+      "old": {
+        "n": 18,
+        "risk": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 2,
+          "tn": 8,
+          "precision": 1.0,
+          "recall": 0.8,
+          "f1": 0.8888888888888888,
+          "n": 18,
+          "positives": 10
+        },
+        "urgent": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 18,
+          "positives": 4
+        },
+        "suppliers": {
+          "exact": 17,
+          "n": 18,
+          "precision": 0.8125,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9444444444444444,
+          "tp": 13,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.896551724137931
+        },
+        "review_count": 6,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.6666666666666666,
+        "automatic": {
+          "n": 12,
+          "risk": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 12,
+            "positives": 4
+          },
+          "urgent": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 12,
+            "positives": 4
+          },
+          "suppliers": {
+            "exact": 12,
+            "n": 12,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 6,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      },
+      "prediction": {
+        "n": 18,
+        "risk": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 2,
+          "tn": 8,
+          "precision": 1.0,
+          "recall": 0.8,
+          "f1": 0.8888888888888888,
+          "n": 18,
+          "positives": 10
+        },
+        "urgent": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 18,
+          "positives": 4
+        },
+        "suppliers": {
+          "exact": 17,
+          "n": 18,
+          "precision": 0.8125,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.9444444444444444,
+          "tp": 13,
+          "fp": 3,
+          "fn": 0,
+          "f1": 0.896551724137931
+        },
+        "review_count": 6,
+        "includes_review_predictions": true,
+        "automatic_coverage": 0.6666666666666666,
+        "automatic": {
+          "n": 12,
+          "risk": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 12,
+            "positives": 4
+          },
+          "urgent": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 12,
+            "positives": 4
+          },
+          "suppliers": {
+            "exact": 12,
+            "n": 12,
+            "precision": 1.0,
+            "recall": 1.0,
+            "exact_set_accuracy": 1.0,
+            "tp": 6,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "review_count": 0
+        },
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": 0.0
+      }
+    },
+    "synthetic": {
+      "old": {
+        "n": 0,
+        "risk": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 0,
+          "positives": 0
+        },
+        "urgent": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 0,
+          "positives": 0
+        },
+        "suppliers": {
+          "exact": 0,
+          "n": 0,
+          "precision": null,
+          "recall": null,
+          "exact_set_accuracy": null,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "f1": null
+        },
+        "review_count": 0,
+        "includes_review_predictions": true,
+        "automatic_coverage": null,
+        "automatic": null,
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": null
+      },
+      "prediction": {
+        "n": 0,
+        "risk": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 0,
+          "positives": 0
+        },
+        "urgent": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "precision": null,
+          "recall": null,
+          "f1": null,
+          "n": 0,
+          "positives": 0
+        },
+        "suppliers": {
+          "exact": 0,
+          "n": 0,
+          "precision": null,
+          "recall": null,
+          "exact_set_accuracy": null,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "f1": null
+        },
+        "review_count": 0,
+        "includes_review_predictions": true,
+        "automatic_coverage": null,
+        "automatic": null,
+        "automatic_joint_errors": 0,
+        "automatic_joint_error_rate": null
+      }
+    }
+  },
+  "decision": "Rejected: no repaired omissions or automatic-coverage gain. Current-threat framing remains uncertain for limited/strategic threats despite supported concrete adverse facts. Do not lower gates or add paid stage to operational candidate.",
+  "all_predictions_included": true,
+  "safety_control_count": 6,
+  "previous_controls_now_development": true
+}

@@ -53,7 +53,8 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+summary:focus-visible {
   outline: 3px solid #635bff;
   outline-offset: 3px;
 }
@@ -2732,7 +2733,7 @@ dialog > header {
   font-weight: 650;
   color: #233e60;
   cursor: pointer;
-  min-height: 28px;
+  min-height: 44px;
 }
 .association-group > p {
   margin: 8px 0 14px;

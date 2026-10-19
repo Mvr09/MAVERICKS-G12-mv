@@ -7,7 +7,8 @@ from app.models import Article,Supplier,Analysis
 from app.settings import settings
 from app.payload_cache import PayloadCacheClient
 from app.jev_transport import BoundedFanoutClient
-from app import candidate_risk,candidate_matching
+from app import candidate_matching
+from scripts import risk_focus_v1 as candidate_risk
 from scripts import risk_engine_trial as candidate_engine
 from app.importer import digest
 from scripts.window_common import ROOT,check_time,clone,save,accounting
@@ -17,6 +18,11 @@ RUN='night-risk-focus-01';REPORT=ROOT/'reports/private/window-risk-focus.json'
 
 def main():
  ap=argparse.ArgumentParser();ap.add_argument('--execute',action='store_true');args=ap.parse_args()
+ if REPORT.exists() and json.loads(REPORT.read_text()).get('complete'):
+  recorded=json.loads(REPORT.read_text())
+  print(json.dumps({'historical_snapshot':'8dc49e8','complete':True,'new_requests_this_read':0,'recorded_requests':recorded['requests'],'metrics':recorded['metrics']}));return
+ if args.execute:
+  raise RuntimeError('Historical experiment is frozen at8dc49e8. Resume that snapshot; do not mix current questions with its run_key.')
  source=json.loads((ROOT/'reports/private/window-matching-potential.json').read_text())
  final=json.loads((ROOT/'reports/private/window-final-evaluation.json').read_text())
  rows={key:{**v,'old':v['prediction']} for key,v in source['results'].items()}

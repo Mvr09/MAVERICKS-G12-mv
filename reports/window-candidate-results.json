@@ -773,13 +773,14 @@
     "urgent_correct_automatic": 4,
     "controlled_execution_guards_pass": true,
     "default_promotion_justified": false,
-    "limits": "Author-generated controls are not independent evidence of real RSS generalisation. Six underdetermined controls are safety checks, not negative labels."
+    "limits": "Author-generated controls are not independent evidence of real RSS generalisation. Six underdetermined controls are safety checks, not negative labels.",
+    "reuse_status": "Inspected controls: development only for subsequent candidates; original frozen3.3 comparison retained."
   },
   "consumption": {
-    "new_requests": 307,
+    "new_requests": 322,
     "retries": 0,
     "counter_before": 595,
-    "counter_after": 902,
+    "counter_after": 917,
     "trials": [
       {
         "run": "night-relational-review-01",
@@ -841,6 +842,36 @@
         },
         "new_stage_requests": 167,
         "reuse_stages": 32
+      },
+      {
+        "run": "night-risk-focus-01",
+        "requests": 6,
+        "retries": 0,
+        "http_statuses": {
+          "200": 6
+        },
+        "http_seconds_sum": 1.620566340003279,
+        "reported_usage": {
+          "input_tokens": 19729,
+          "output_tokens": 2759
+        },
+        "new_stage_requests": 6,
+        "reuse_stages": 86
+      },
+      {
+        "run": "night-risk-current-02",
+        "requests": 9,
+        "retries": 0,
+        "http_statuses": {
+          "200": 9
+        },
+        "http_seconds_sum": 2.356465703007416,
+        "reported_usage": {
+          "input_tokens": 10315,
+          "output_tokens": 766
+        },
+        "new_stage_requests": 9,
+        "reuse_stages": 101
       }
     ],
     "maximum_window_attempts": 1500,
@@ -860,5 +891,45 @@
     }
   },
   "a06": "open; baseline still omits supported exposure, S003 province still unknown. Controlled S024 partial-risk recovery is not proof that N044 is solved.",
-  "historical_2_2_confound": "Stored2.2 precedes duration1.1; do not attribute all differences to matching."
+  "historical_2_2_confound": "Stored2.2 precedes duration1.1; do not attribute all differences to matching.",
+  "followup_experiments": [
+    {
+      "version": "risk-focus1.0 / decision3.4",
+      "requests": 6,
+      "decision_es": "No adoptado: training conserva14revisadas y16automáticas; solo un control sintético adicional se automatiza correctamente, sin reparar omisiones de riesgo."
+    },
+    {
+      "version": "risk-focus1.1 / review1.3",
+      "requests": 9,
+      "decision_es": "No adoptado: comprobar amenaza actual no mejora decisiones ni cobertura. Conserva dudas semánticas en interrupciones parciales y amenazas estratégicas. No se rebajan umbrales."
+    }
+  ],
+  "rss_rehearsal": {
+    "new_requests": 11,
+    "counter_before": 49,
+    "counter_after": 60,
+    "periodic_paid": false,
+    "scope": "Railway RSS only; separate from local experiment counter",
+    "articles": [
+      {
+        "id": "702c5e7b-a566-456d-b186-69bdaf92cbe1",
+        "headline": "Asia-Europe spot rates on the rise ahead of new FAK hikes",
+        "status": "review",
+        "risk": "N",
+        "urgent": "N",
+        "suppliers": [],
+        "requests": 7
+      },
+      {
+        "id": "80120a6e-49c8-46a6-bdea-ac50087fa060",
+        "headline": "Green forest fire notification in Mozambique",
+        "status": "done",
+        "risk": "N",
+        "urgent": "N",
+        "suppliers": [],
+        "requests": 2
+      }
+    ],
+    "limits": "No hay referencias independientes de precisión RSS. La noticia de fletes queda en revisión sin proveedor vinculado; la consulta manual no modifica JEV. Dos intentos anteriores fallidos están incluidos."
+  }
 }

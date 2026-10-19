@@ -1,0 +1,144 @@
+{
+  "started_at": "2026-10-18T23:59:15.025Z",
+  "widths": [
+    {
+      "width": 360,
+      "passed": true,
+      "filters_and_focus": true,
+      "draft_persisted": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "passed": true,
+      "filters_and_focus": true,
+      "draft_persisted": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "passed": true,
+      "filters_and_focus": true,
+      "draft_persisted": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "passed": true,
+      "filters_and_focus": true,
+      "draft_persisted": true,
+      "overflow": false
+    }
+  ],
+  "tours": [
+    {
+      "width": 1440,
+      "started_at": "2026-10-18T23:59:32.231Z",
+      "stages": [
+        {
+          "name": "Fuentes reales y consulta registrada",
+          "seconds": 0.57
+        },
+        {
+          "name": "Noticia, revisión del vínculo y cita editorial",
+          "seconds": 1.23
+        },
+        {
+          "name": "Proveedor: alcance, inventario no aplicable, plazo y alternativo ferroviario",
+          "seconds": 0.712
+        },
+        {
+          "name": "Decisión de compra: hipótesis explícita y consulta persistida",
+          "seconds": 2.565
+        },
+        {
+          "name": "Ejercicio separado: evidencia, prioridad y productos",
+          "seconds": 0.391
+        },
+        {
+          "name": "Material y especificaciones declaradas",
+          "seconds": 0.45
+        },
+        {
+          "name": "Alertas y ruta QA identificada, sin atribuirla a RSS",
+          "seconds": 0.224
+        },
+        {
+          "name": "Fuentes · descarga pendiente de completar desde Resumen",
+          "seconds": 0.397,
+          "planned_stage_name": "Exportación existente del ejercicio, sin nuevo análisis"
+        }
+      ],
+      "mode": "Browser emulation; heuristic rehearsal, not a buyer study or physical mobile/audio test",
+      "seconds": 240.026,
+      "completed": true,
+      "export_download_performed": false
+    },
+    {
+      "width": 390,
+      "started_at": "2026-10-19T00:03:32.273Z",
+      "stages": [
+        {
+          "name": "Fuentes reales y consulta registrada",
+          "seconds": 0.218
+        },
+        {
+          "name": "Noticia, revisión del vínculo y cita editorial",
+          "seconds": 1.248
+        },
+        {
+          "name": "Proveedor: alcance, inventario no aplicable, plazo y alternativo ferroviario",
+          "seconds": 0.422
+        },
+        {
+          "name": "Decisión de compra: hipótesis explícita y consulta persistida",
+          "seconds": 2.135
+        },
+        {
+          "name": "Ejercicio separado: evidencia, prioridad y productos",
+          "seconds": 0.419
+        },
+        {
+          "name": "Material y especificaciones declaradas",
+          "seconds": 0.228
+        },
+        {
+          "name": "Alertas y ruta QA identificada, sin atribuirla a RSS",
+          "seconds": 10.458
+        },
+        {
+          "name": "Fuentes · descarga pendiente de completar desde Resumen",
+          "seconds": 0.26,
+          "planned_stage_name": "Exportación existente del ejercicio, sin nuevo análisis"
+        }
+      ],
+      "mode": "Browser emulation; heuristic rehearsal, not a buyer study or physical mobile/audio test",
+      "seconds": 240.038,
+      "completed": true,
+      "export_download_performed": false
+    }
+  ],
+  "new_jev_requests": 0,
+  "revision": "4a818c1acbd4b069e87f01924f475dcb91055b9b",
+  "jev_before": 60,
+  "draft_id": "305bf2a7-14d4-4f99-bc11-08ccd64945b4",
+  "draft_edited_saved": true,
+  "clipboard_readback": true,
+  "download_txt": true,
+  "dialog_focus_return": true,
+  "exercise_story": {
+    "supplier_id": "S012",
+    "material_id": "M08",
+    "products": [
+      "HX-RSV mRNA vaccine"
+    ],
+    "context": "exercise",
+    "purpose": "Existing normalized demo data only, no reevaluation or training adjustment"
+  },
+  "unchanged_rss_classification": true,
+  "jev_after": 60,
+  "errors": [],
+  "checked_at": "2026-10-19T00:07:32.963Z",
+  "passed": true,
+  "export_stage_note": "The original tours visited Fuentes during their planned export stage; actual download is completed separately from Resumen in window-final-ui.json. No new analysis or A20 measurement."
+}

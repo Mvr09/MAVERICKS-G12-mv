@@ -57,6 +57,7 @@ for (const width of [360, 390, 768, 1440])
         event_type: "other",
       },
     };
+    if (width === 390) delete (article.analysis as any).review_details; // Legacy stored analyses still need actionable guidance.
     await page.route("**/api/**", async (route) => {
       const path = new URL(route.request().url()).pathname.slice(4);
       const data: any = {
@@ -95,6 +96,7 @@ for (const width of [360, 390, 768, 1440])
     await expect(
       page.locator(".assessment").filter({ hasText: "MOCK supplier S002" }),
     ).toBeVisible();
+    await expect(page.locator("#provider-hypotheses > summary")).toBeFocused();
     await expect(
       page.locator(".assessment").filter({ hasText: "MOCK supplier S003" }),
     ).not.toBeVisible();
