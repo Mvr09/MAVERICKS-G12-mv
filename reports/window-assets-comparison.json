@@ -1,0 +1,10 @@
+{
+  "before_revision": "4a818c1",
+  "after_revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
+  "before_encoded_js_bytes": 215653,
+  "after_encoded_js_bytes": 118897,
+  "reduction_pct": 44.86652168066292,
+  "initial_chart_download": false,
+  "analytics_chart_rendered": true,
+  "limits": "One cold browser observation each; encoded JS bodies, not latency or A20."
+}

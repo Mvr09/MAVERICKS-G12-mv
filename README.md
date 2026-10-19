@@ -2,7 +2,9 @@
 
 Aplicación en español con React/TypeScript/Vite/Tailwind, FastAPI, SQLAlchemy/Alembic y PostgreSQL. Web y worker comparten imagen; solo la web tiene dominio público. Los datos de Helixa representan una cartera ficticia.
 
-**Estado:** desplegado en https://mavericks-g12-mv-production.up.railway.app, web/worker/PostgreSQL operativos, esquema 0006, selección de demo y reanálisis versionado. Ensayo real: test 20 en 5,763 s y LiveDay 14 + Excel en 5,753 s; 37 RSS procesados. Ensayo anterior: 100/200 llamadas consumidas. Límites locales de presupuesto desactivados: sin cupos, vencimientos ni tope diario RSS; inferencia periódica desactivada. Validación n=10: recall de riesgo 60 %, F1 0,75 y proveedores exactos 8/10. **Aceptación incompleta:** A06 falla en un caso múltiple y A14 tiene sonido/silencio confirmados por el usuario y requiere registrar dispositivo/navegador. [Informe de entrega](reports/INFORME_FINAL.md), [auditoría](reports/AUDITORIA.md) y [seguimiento](PROGRESS.md).
+**Estado verificado:** [demo pública](https://mavericks-g12-mv-production.up.railway.app), web/worker compatibles y PostgreSQL persistente, esquema **0008**. Código funcional **a2e962f**; publicación documental posterior y últimas observaciones en [PROGRESS.md](PROGRESS.md). **Default 1.0.0**, candidata explícita **3.4.2 / revisión 1.3.1**, sin promoción. RSS real y análisis manual comprobados; el periódico de pago sigue desactivado. **A06 abierto; A14 físico cerrado** (ordenador/Firefox, una alerta automática QA). A20 conserva su medida histórica:14 artículos LiveDay en7,888295967 s,b4d697b,23 peticiones nuevas / 0 caché; no se presenta como tiempo actual del candidato.
+
+Documentación vigente: [comparación y límites](reports/CANDIDATA_OPERATIVA.md), [aceptación A01–A20](reports/ACEPTACION_ACTUAL.md) y [guion de cuatro minutos](docs/09_DEMO_PROCUREMENT.md). Los informes anteriores se conservan como historial, no como evaluaciones nuevas.
 
 ## Arranque local con Docker Compose
 
@@ -35,7 +37,6 @@ export DATABASE_URL='postgresql+psycopg://radar:radar_local_only@localhost:5432/
 .venv/bin/python -m app.cli config
 .venv/bin/alembic upgrade head
 .venv/bin/python -m app.cli seed
-.venv/bin/python -m app.cli import-manifest
 .venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
@@ -45,7 +46,7 @@ En otra terminal con la misma `DATABASE_URL`:
 .venv/bin/python -m app.worker
 ```
 
-`import-manifest` lee exclusivamente las cuatro rutas XLSX declaradas en `evidence/input_manifest.json`. Importa todos sus esquemas sin ejecutar inferencia. Una repetición devuelve los lotes existentes. En Railway se usan cargas del presentador, porque el paquete desplegable no contiene `inputs/` ni el manifiesto.
+Para desarrollo, cargar explícitamente solo training mediante la interfaz. `import-manifest` es una operación de importación completa para la fase autorizada: lee las cuatro rutas XLSX declaradas en `evidence/input_manifest.json`. Importa todos sus esquemas sin ejecutar inferencia. Una repetición devuelve los lotes existentes. En Railway se usan cargas del presentador, porque el paquete desplegable no contiene `inputs/` ni el manifiesto.
 
 Para trabajar con HMR: `npm --prefix frontend run dev`; el proxy `/api` apunta a FastAPI:8000. Fija `APP_BASE_URL=http://localhost:5173` si vas a usar la sesión desde ese origen. En la demo compilada, API y frontend comparten origen.
 
@@ -61,8 +62,8 @@ No ha sido necesario mapear nombres alternativos. Se usan `TYPESAFE_API_KEY`, `A
 | `SESSION_SECRET` | Firma de cookies; sesiones y revocación en PostgreSQL. |
 | `JEV_MODEL` | Versión explícita, por defecto `jev-1.13.0`. |
 | `APP_BASE_URL` | Origen exacto autorizado; HTTPS activa cookie Secure. |
-| `RSS_ANALYSIS_ENABLED` | `false` por defecto. `true` sigue requiriendo un grant con límite y caducidad. |
-| `PORT` | Puerto del servicio web en Railway. |
+| `RSS_ANALYSIS_ENABLED` | Mantener `false`: el análisis periódico de pago no está autorizado para esta demo. |
+| `PORT` | La entrada `app.web` escucha en `0.0.0.0:8000`; esta variable no cambia el puerto fijo ni el target 8000 del dominio. |
 | `DEMO_FIXTURES_ENABLED` | Solo ensayos identificados de interfaz. No habilita respuestas falsas ni llamadas de pago. |
 
 No existen variables `VITE_*` con credenciales. `.env` queda fuera de Git, Docker, el paquete de despliegue y las rutas públicas. La lectura pública muestra catálogo, resúmenes y decisiones normalizadas; no ofrece etiquetas, Excel originales ni cuerpos de respuesta del proveedor. Las mutaciones requieren sesión y token CSRF; el login limita intentos en PostgreSQL.
@@ -88,23 +89,26 @@ El cupo inicial de tres artículos ya se consumió: N001, N002 y N005; cuatro pe
 
 El usuario desactivó todos los límites locales de presupuesto. `config/authorization.json` fija `budget_limits_enabled=false`: los grants quedan como registros de consumo, sin bloquear por artículos, peticiones, vencimiento o ventana. El antiguo cupo diario RSS tampoco se aplica. En **Fuentes**, **Analizar noticias pendientes con JEV** encola todas las pendientes de una vez. No se requieren variables nuevas en Railway.
 
-La caché y el consumo se conservan en PostgreSQL. Se mantienen concurrencia de cuatro solicitudes, reintentos acotados, timeout y manejo de Retry-After/errores del proveedor. Son controles de ejecución; la aplicación no impone presupuesto monetario ni número diario de análisis. El análisis periódico de pago continúa desactivado.
+La candidata conserva matching3.3 y utiliza preguntas3.4.2/revisión1.3.1. El refinamiento mantiene riesgo y urgencia separados, usa la publicación como referencia temporal y conserva dudas relevantes. Puede repartirse en peticiones independientes con el mismo estado/preguntas, guarda persistente de 36 intentos por generación ydeadline de 60 s. Es un control técnico, no un presupuesto monetario. La caché y el consumo se conservan en PostgreSQL. Se mantienen concurrencia de cuatro solicitudes, reintentos acotados, timeout y manejo de Retry-After/errores del proveedor. Son controles de ejecución; la aplicación no impone presupuesto monetario ni número diario de análisis. El análisis periódico de pago continúa desactivado.
 
 Preguntas y política están congeladas antes de validación: [prompt-freeze.json](reports/prompt-freeze.json). Las métricas retenidas se registran en el informe final. El endpoint de evaluación, exclusivo del presentador, entrega matrices y precision/recall/F1 con denominadores; no devuelve etiquetas ni usa test/LiveDay para ajustar reglas. Un lote incompleto bloquea la evaluación.
 
 ## Pruebas reproducibles
 
-Las pruebas de integración solo pueden borrar la base dedicada **radar_test**, que crea el siguiente comando. No apuntes pruebas de E2E a la base de demo.
+Las pruebas de integración solo pueden borrar la base dedicada **radar_test**. `tests/unit` utiliza mocks y casos sintéticos; no importa los originales. La suite raíz y `tests.setup_e2e` tienen fixtures históricos que importan los cuatro Excel: reservarlas para una fase autorizada, no para desarrollar con conjuntos retenidos. No apuntar pruebas a la base de demo o al historial de experimentos.
 
 ```bash
 .venv/bin/python -m scripts.create_test_database
-DATABASE_URL='postgresql+psycopg://radar:radar_local_only@localhost:5432/radar_test' .venv/bin/python -m pytest -q
+DATABASE_URL='postgresql+psycopg://radar:radar_local_only@localhost:5432/radar_test' .venv/bin/python -m pytest tests/unit -q
 .venv/bin/python -m unittest discover -s reference -p 'test_*.py' -v
 npm --prefix frontend run build
-npm --prefix frontend run test:e2e
+# Las pruebas con page.route pueden ejecutarse contra un preview local.
+E2E_URL=http://127.0.0.1:4173 SCREENSHOT_PREFIX=local-mock frontend/node_modules/.bin/playwright test --config frontend/playwright.config.ts candidate-runtime rss-verification news-continuity buyer-reading origin procurement qa-audio lazy-analytics
 ```
 
-Playwright usa Chrome en `/opt/google/chrome/chrome` en este equipo. En otro equipo, fija `CHROME_PATH` a tu navegador Chromium instalado. `E2E_URL` permite seleccionar el servidor (por defecto localhost:8000). Para recorridos completos con mocks identificados:
+Playwright usa Chrome en `/opt/google/chrome/chrome` en este equipo. En otro equipo, fija `CHROME_PATH` a tu navegador Chromium instalado. `E2E_URL` permite seleccionar el servidor (por defecto localhost:8000). Para el preview, después del build ejecutar desde `frontend/`: `./node_modules/.bin/vite preview --host 127.0.0.1 --port 4173`. Las pruebas anteriores interceptan API y no requieren importar Excel. Usar prefijos de captura propios.
+
+Recorrido de integración amplio **solo en una fase autorizada**; sus fixtures históricos importan los datasets:
 
 ```bash
 DATABASE_URL='postgresql+psycopg://radar:radar_local_only@localhost:5432/radar_test' .venv/bin/python -m tests.setup_e2e
@@ -130,7 +134,7 @@ La continuación usa GitHub → Railway sobre el servicio existente y el dominio
 
 ## Railway: artefactos y recuperación
 
-Repositorio `Mvr09/MAVERICKS-G12-mv`, rama `main`, proyecto existente **peaceful-harmony / production**. Servicios **MAVERICKS-G12-mv** (web), **worker** y **PostgreSQL** desplegados por autodeploy autorizado. Versión de aplicación verificada **53593e2**. No se necesita crear otro proyecto. Los originales ya seguidos en el repositorio se excluyen de la imagen mediante copias explícitas y del paquete permitido.
+Repositorio `Mvr09/MAVERICKS-G12-mv`, rama `main`, autodeploy existente. Web yworker se comprueban por HTTPS/heartbeat; la persistencia usa PostgreSQL. No se dispone de acceso administrativo al panel y no se han creado recursos. Versión funcional verificada **a2e962f**, con las observaciones finales enlazadas en PROGRESS.md. No se necesita crear otro proyecto. Los originales ya seguidos en el repositorio se excluyen de la imagen mediante copias explícitas y del paquete permitido.
 
 ```bash
 .venv/bin/python -m scripts.package_deploy
@@ -146,7 +150,7 @@ Para reproducir la configuración en un entorno autorizado (el actual ya está d
 4. Generar dominio HTTPS únicamente para web; fijar `APP_BASE_URL` al dominio exacto. Confirmar `/readyz`, cookie Secure y rutas profundas.
 5. Cargar Excel por sesión de presentador. La base conserva el resultado tras redeploy; el contenedor no necesita los originales. Aplicar únicamente los grants de consumo aprobados.
 6. Consultar las seis fuentes desde Railway y registrar evidencia nueva (al menos cuatro saludables). Ejecutar análisis RSS autorizado y mostrar exposición potencial de cartera simulada.
-7. Evaluar validación una sola vez tras congelación. Ejecutar test y LiveDay en fase final sin ajustar preguntas ni respuestas. Medir LiveDay desde encolado hasta exportación disponible:
+7. Protocolo actual:training y sintéticos para desarrollo; validación inspeccionada es retrospectiva. Test restante conserva su fase final; LiveDay ya se ejecutó y no se reutiliza para ajustar. Los comandos siguientes se reservan para un ensayo final nuevo autorizado, si una adopción de modelo requiere renovar A20; no ejecutarlos para repetir la medición histórica:
 
 ```bash
 .venv/bin/python -m scripts.smoke URL_HTTPS_REAL

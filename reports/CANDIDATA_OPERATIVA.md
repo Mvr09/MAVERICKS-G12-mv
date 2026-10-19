@@ -17,6 +17,9 @@ Todas las predicciones revisadas están incluidas. Los conjuntos indeterminados 
 | Muestra | Versión | Riesgo TP/FP/FN | Urgencia TP/FP/FN | Proveedores TP/FP/FN | Revisadas | Automáticas / errores |
 |---|---|---|---|---|---|---|
 | Training30 | 1.0 | 10/0/4 | 5/3/0 | 13/1/9 | 16 | 14/30 · 2/14 |
+| Training30 histórico | 2.2, duración anterior | 12/0/2 | 5/0/0 | 17/0/5 | 22 | 8/30 · 0/8 |
+| Training30 | 3.0 + revisión1.1 | 11/0/3 | 5/1/0 | 21/2/1 | 18 | 12/30 · 0/12 |
+| Training30 | 3.0 + revisión1.2, solo política | 11/0/3 | 5/1/0 | 21/2/1 | 13 | 17/30 · 0/17 |
 | Training30 | 3.3 | 13/0/1 | 5/2/0 | 22/3/0 | 14 | 16/30 · 0/16 |
 | Training30 | 3.4.2 | 13/0/1 | 5/2/0 | 22/3/0 | 14 | 16/30 · 0/16 |
 | Controles18 ya inspeccionados, desarrollo | 3.3 | 8/0/2 | 4/0/0 | 13/3/0 | 6 | 12/18 · 0/12 |
@@ -25,9 +28,24 @@ Todas las predicciones revisadas están incluidas. Los conjuntos indeterminados 
 | Controles14 nuevos puntuables | 3.3 | 7/0/1 | 2/0/0 | 10/1/0 | 9 | 5/14 · 0/5 |
 | Controles14 nuevos puntuables | 3.4.2 | 8/0/0 | 2/0/0 | 10/1/0 | 8 | 6/14 · 0/6 |
 
+La comparación2.2 conserva su extractor de duración anterior: no atribuir todas sus diferencias al matching.
+
 La muestra nueva se redactó a01:09UTC antes de consultar JEV, con referencias razonadas y versiones/criterios congelados. Tiene18 entradas:14 puntuables y4 indeterminadas. Sobre las18, la candidata automatiza6 y revisa12; las cuatro indeterminadas siguen revisadas sin atribuir daños individuales. Sobre las14 puntuables: F1 riesgo1,000, urgencia1,000 y proveedores0,952. Son controles propios, no evidencia independiente de precisión RSS. La comparación utiliza fanout para conservar estado/preguntas dentro del contexto del proveedor; sus tiempos locales incluyen caché y no son rendimiento del default desplegado ni A20.
 
 Se adopta como **opción experimental** porque corrige omisiones de interrupciones limitadas y automatiza más riesgos correctos, manteniendo proveedores y probabilidades de urgencia, sin nuevas falsas urgencias o casos automáticos erróneos. Training no mejora en esta última corrección: conserva una omisión de riesgo, tres asociaciones falsas y dos falsas urgencias, todas revisadas. El nuevo control conserva una asociación falsa heredada y revisada. A06 sigue abierto; S003 no tiene provincia confirmada. La decisión no depende solo de F1 ni de reducir revisión.
+
+
+### Precisión y cobertura de la muestra nueva
+
+14referencias completas; todas las predicciones, incluidas revisadas. P/R/F1 por decisión.
+
+| Perfil | Riesgo P/R/F1 | Urgencia P/R/F1 | Proveedores P/R/F1 | Conjunto exacto | Cobertura automática |
+|---|---|---|---|---|---|
+|1.0|1.000/0.500/0.667|1.000/1.000/1.000|1.000/0.900/0.947|13/14|3/14|
+|3.3|1.000/0.875/0.933|1.000/1.000/1.000|0.909/1.000/0.952|13/14|5/14|
+|3.4.2|1.000/1.000/1.000|1.000/1.000/1.000|0.909/1.000/0.952|13/14|6/14|
+
+La cobertura ylos errores automáticos se puntúan por conjunto de decisiones, no solo por riesgo. Los cuatro casos indeterminados se registran aparte; no tienen etiqueta negativa inventada.
 
 ## Consumo y conservación
 
@@ -36,6 +54,14 @@ Esta última hipótesis utilizó14 peticiones de desarrollo y105 en la comparaci
 Acumulado de la ventana antes del smoke RSS del nuevo perfil:441 peticiones locales y11 enRailway =452, con dosHTTP400 previamente diagnosticados y cero reintentos. No se borran ni reinician contadores. RSS periódico de pago sigue desactivado. La prueba final de RSS registra cualquier consumo adicional por separado.
 
 Los18 controles nuevos quedan inspeccionados para futuras versiones; su medición original congelada se conserva y no se reutiliza como otra evaluación independiente. No hubo ajuste con validation, test, LiveDay ni answer key.
+
+## Smoke real de la versión seleccionable
+
+A2e962f,web yworker compatibles. Un GDACS pendiente nuevo deNamibia completó análisis con preguntas3.4.2/revisión1.3.1/modelo1.13:dosHTTP200,cero reintentos,contadorRSS60→62. ResultadoN/N,sin proveedor,categoríaIncendio forestal. Se conserva la lectura solo de resumen porque no hubo texto editorial extraíble; no se hace pasar como afectación ni precisiónRSS independiente.
+
+8,428s mide clic→estado de trabajo completado observado,con cola ysondeo; no primer pintado del resultado. No se repitió el resultado válido para comprobar interfaz. El uso reportado por ambas peticiones figura en `rss-smoke-342.json`. **Total final de la ventana:454peticiones nuevas (441locales+13Railway),452HTTP200/2HTTP400diagnosticados,0reintentos.** Contadores595→1036 y49→62 conservados.
+
+La asociación falsa del control nuevo aparece en la noticia sintética de reducción de transporte por carretera deS030:se añadeS031,servicio logístico relacionado no acreditado por la noticia. Está revisada en ambas versiones. No es una nuevaFPderiesgo por noticia porqueS030síestá expuesto; las métricas de proveedores yconjuntos exactos muestran ese error. Antes de mitigar,la acción sigue siendo verificar operador/servicio yentregas; no se supone capacidad del alternativo.
 
 ## Reversión
 

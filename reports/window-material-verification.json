@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-19T01:38:43.530Z",
+  "widths": [
+    {
+      "width": 390,
+      "material_data_loaded": true,
+      "products_visible": true,
+      "material_id": "M01",
+      "alternate_own_offering_visible": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "material_data_loaded": true,
+      "products_visible": true,
+      "material_id": "M01",
+      "alternate_own_offering_visible": true,
+      "overflow": false
+    }
+  ],
+  "new_jev_requests": 0,
+  "scope": "Read-only: replaces captures taken before material data loaded.",
+  "revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
+  "products": [
+    "Amoxira 500 mg capsules"
+  ],
+  "passed": true
+}

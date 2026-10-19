@@ -1,0 +1,118 @@
+{
+  "started_at": "2026-10-19T01:33:16.991Z",
+  "widths": [
+    {
+      "width": 360,
+      "passed": true,
+      "filters_and_focus": true,
+      "modal_escape_and_focus": true,
+      "uncertain_links_visible_on_request": true,
+      "known_exclusions_separate": true,
+      "context_preserved": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "passed": true,
+      "filters_and_focus": true,
+      "modal_escape_and_focus": true,
+      "uncertain_links_visible_on_request": true,
+      "known_exclusions_separate": true,
+      "context_preserved": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "passed": true,
+      "filters_and_focus": true,
+      "modal_escape_and_focus": true,
+      "uncertain_links_visible_on_request": true,
+      "known_exclusions_separate": true,
+      "context_preserved": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "passed": true,
+      "filters_and_focus": true,
+      "modal_escape_and_focus": true,
+      "uncertain_links_visible_on_request": true,
+      "known_exclusions_separate": true,
+      "context_preserved": true,
+      "overflow": false
+    }
+  ],
+  "new_jev_requests": 0,
+  "errors": [],
+  "exports": [
+    {
+      "width": 390,
+      "http": 200,
+      "rows_from_batch_metadata": 14,
+      "new_analysis": false,
+      "source": "Existing completed LiveDay export; not a new A20 measurement."
+    },
+    {
+      "width": 1440,
+      "http": 200,
+      "rows_from_batch_metadata": 14,
+      "new_analysis": false,
+      "source": "Existing completed LiveDay export; not a new A20 measurement."
+    }
+  ],
+  "revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
+  "browser": "155.0.8059.84",
+  "catalogue_count": 40,
+  "initial_js": [
+    {
+      "asset": "/assets/index-BCNBhBBO.js",
+      "encoded_bytes": 55833,
+      "transfer_bytes": 56133
+    },
+    {
+      "asset": "/assets/_commonjsHelpers-CqkleIqs.js",
+      "encoded_bytes": 116,
+      "transfer_bytes": 416
+    },
+    {
+      "asset": "/assets/react-vendor-C7qHzZhZ.js",
+      "encoded_bytes": 59265,
+      "transfer_bytes": 59565
+    },
+    {
+      "asset": "/assets/icons-DTN_LyQ6.js",
+      "encoded_bytes": 3683,
+      "transfer_bytes": 3983
+    }
+  ],
+  "initial_js_encoded_bytes": 118897,
+  "jev_before": 62,
+  "exercise_story": {
+    "supplier_id": "S001",
+    "material_id": "M01",
+    "origin": "batch:73440b8a-60c2-4cbf-a0ca-71eaea21d540",
+    "scope": "Existing normalized validation demo only; no references opened or reevaluation/tuning."
+  },
+  "source_checked_at": "2026-10-18T23:31:37.499154+00:00",
+  "draft_after_redeploy": true,
+  "analytics_chart_rendered": true,
+  "reading_snapshot_not_misrepresented_as_new_query": true,
+  "jev_after": 62,
+  "completed_at": "2026-10-19T01:33:49.958Z",
+  "passed": true,
+  "export_structural_verification": [
+    {
+      "width": 390,
+      "data_rows": 14,
+      "valid_xlsx_zip": true,
+      "read_cell_values": false
+    },
+    {
+      "width": 1440,
+      "data_rows": 14,
+      "valid_xlsx_zip": true,
+      "read_cell_values": false
+    }
+  ],
+  "material_capture_followup": "window-material-verification.json"
+}

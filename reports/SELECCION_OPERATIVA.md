@@ -1,3 +1,5 @@
+> **Histórico:** la selección operativa vigente y sus límites están en [CANDIDATA_OPERATIVA.md](CANDIDATA_OPERATIVA.md). Se conservan aquí los resultados anteriores, sin promoción del default.
+
 # Selección operativa · 18-10-2026
 
 **Preferido:3.0 para descubrimiento asistido con revisión humana. Referencia de precisión:2.2. Predeterminado reproducible:1.0.0, sin promoción automática.** No se decide por una regresión aislada ni por F1. El coste de omitir proveedores críticos/fuente única y el soporte de las acciones importan; no se inventan ponderaciones monetarias ni ahorros.

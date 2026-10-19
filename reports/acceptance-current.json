@@ -1,5 +1,5 @@
 {
-  "revision": "93365de7a03b991c8fc3bc6b399629f50fd8e56a",
+  "revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
   "default_profile": "1.0.0",
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
@@ -12,112 +12,113 @@
     {
       "id": "A01",
       "status": "pasa",
-      "evidence_and_limit": "Actual: catálogo40 y ficha/ruta200 en701f2b0. Se heredan20materiales/6productos y40Noul porque catálogo/importador/base no cambian. No se releen originales."
+      "evidence_and_limit": "Catálogo público actual:40 proveedores y fichas accesibles.20 materiales y6 productos heredados del catálogo sin cambios;40 Noul y proveedores sin Materials cubiertos por integración. No se reabrieron originales."
     },
     {
       "id": "A02",
       "status": "pasa",
-      "evidence_and_limit": "Importación idempotente de los cuatro esquemas heredada; ampliaciones posteriores verificaron News_Feed y LiveDay habilitado. Importador sin cambios desde la integración amplia. No se reabrieron los originales para esta tarea."
+      "evidence_and_limit": "Importador y cuatro esquemas heredados sin cambios. La prueba UI sintética conserva carga→origen→progreso→exportación y usa un buffer MOCK, no LiveDay real. No se repiten importaciones retenidas."
     },
     {
       "id": "A03",
       "status": "pasa",
-      "evidence_and_limit": "Exclusión de cinco etiquetas en payload HTTP probada previamente; whitelists intactas. Nuevas pruebas unitarias de preparación de duración conservan la separación. Se hereda la prueba con centinela; no se envían etiquetas a JEV."
+      "evidence_and_limit": "Unit/integración inspecciona el payload efectivo con cinco centinelas de etiquetas excluidos. El candidato, soporte, RSS y transporte mantienen whitelists; las particiones conservan el mismo estado sin añadir etiquetas."
     },
     {
       "id": "A04",
       "status": "pasa",
-      "evidence_and_limit": "Se heredan negativos geográficos/homónimos del motor predeterminado sin cambios. Nuevos controles de desarrollo3.1/4.0.1 incluyen multiubicación, alias inocuos y mar/rail; sus errores no se ocultan ni se promueven al estable."
+      "evidence_and_limit": "Controles de homónimos y geografía inocua heredados y nueva muestra controlada pre-referenciada. Los cinco negativos de training liberados por revisión1.2 conservan exclusión factual; rutas desconocidas no se convierten en exclusiones ciertas."
     },
     {
       "id": "A05",
       "status": "pasa",
-      "evidence_and_limit": "Positivas con identidad y riesgo/urgencia negativos cubiertas por integración; soporte negativo verificado en19unit de contrato. Puertas y polaridad intactas."
+      "evidence_and_limit": "Dos controles positivos nuevos conservan identidad y N/N automáticamente; integración verifica este contrato en la candidata. No se impone riesgo por identificar un proveedor."
     },
     {
       "id": "A06",
       "status": "falla",
-      "evidence_and_limit": "Falla en predeterminado1.0.0: enriquecimiento no resuelve por sí solo exposición respaldada. Capacidad multiselección40Noul acreditada.3.0 reduce omisiones críticas/únicas pero pierde un servicio declarado y añade2FP;3.1 recupera ese vínculo y todas22asociacionestraining, añade2FP no disruptivos y mantiene problemas de riesgo/urgencia sintéticos. No promovidos; ver SELECCION_OPERATIVA.md. S003provincia desconocida sigue siendo limitación de datos; no se inventa ni se fuerza por referencia. Sin ajuste con validation/test/LiveDay. Política1.1de revisión mejora cobertura7→12/30sin cambiar predicciones; los5casos erróneos continúan revisados. A06no se cierra mediante cambio de revisión."
+      "evidence_and_limit": "Falla conocida del default1.0: omite exposición regional respaldada de S024. La multiselección funciona, pero no basta para aprobar cobertura geográfica/material. Candidata3.4.2 conserva22/22 asociaciones training y3FP revisadas. La nueva muestra propia conserva una FPde proveedor revisada; no demuestra generalizaciónRSS. S003 provincia desconocida es una limitación de datos separada. N044 solo retrospectiva, sin excepciones por noticia ni promoción del default."
     },
     {
       "id": "A07",
       "status": "pasa",
-      "evidence_and_limit": "Agrupación de titulares e incidentes/máximo por proveedor heredada de integración y sondeos reales. Incidentes y deduplicación sin cambios; no se suma la nueva duración al score como factor independiente."
+      "evidence_and_limit": "Reconciliación afectada por reanálisis comprobada en PG aislado: no suma titulares, retira solo efectos de la generación sustituida y mantiene máximo de incidentes activos. No se llama recuperación a una clasificación sustituida."
     },
     {
       "id": "A08",
       "status": "pasa",
-      "evidence_and_limit": "Recuperación compatible, historial y recepción tardía cubiertos por integración. Código de reconciliación y cierre intacto; evidencia heredada, sin cerrar incidentes reales para probar otra vez."
+      "evidence_and_limit": "Pruebas dirigidas conservan recuperación compatible, historia y cierre manual autoritativo; una noticia antigua tardía no reabre por sí sola. Reanálisis compartido no cierra otro incidente. No se fuerzan cierres en producción para probar."
     },
     {
       "id": "A09",
       "status": "pasa",
-      "evidence_and_limit": "Inventario físico desconocido/no aplicable/cero probado previamente; scoring intacto. El extractor no inventa stock o lead time. Pruebas nuevas conservan duración desconocida cuando no es utilizable."
+      "evidence_and_limit": "Inventario físico desconocido, cero y servicio no aplicable conservados. Las advertencias de prioridad quedan localizadas en candidata; no se inventan stock, lead time o capacidad. La falta de datos relevantes para la decisión sigue revisada."
     },
     {
       "id": "A10",
       "status": "pasa",
-      "evidence_and_limit": "Fórmula y referencia congeladas, severidad y confianza separadas; hereda suite de referencia/integración.42pruebas originales de duración +2de preparación/caché pasan;6sintéticos JEV verifican dos días exactos/mínimos sin alterar pesos ni puertas."
+      "evidence_and_limit": "Fórmula1.0, umbrales y scoring de referencia intactos. Pruebas mantienen score0–100, fuente única una sola vez y confianza separada. Duración1.1 heredada; ningún ensayo no adoptado cambia el motor operativo."
     },
     {
       "id": "A11",
       "status": "pasa",
-      "evidence_and_limit": "Actual Railway: seis consultasRSS finalizadas,2HTTP200/4HTTP304. Un artículo realLoadstar analizado conJEV1.13/rss2.2,1HTTPnuevo/0caché,jobdone. ResultadoN/N/sinproveedores conservado; consulta manual es hipótesis separada. rss-flow-evidence.json. Periódico de pago false."
+      "evidence_and_limit": "Seis consultas reales terminadas por el worker a2e962f:2HTTP200/4HTTP304; JEV60→60. Fuente y hora en window-final-rss-sync.json;304 no es contenido nuevo. Dos análisis manuales3.3 previos y un nuevo3.4.2 de Namibia:incendio forestal,N/N,sin vínculo,solo resumen identificado,2HTTP200. TotalRSS13peticiones nuevas,12HTTP200/1HTTP400 diagnosticado; contador49→62; pago periódico false."
     },
     {
       "id": "A12",
       "status": "pasa",
-      "evidence_and_limit": "RSS/Atom,304, GUID actualizado, versiones, duplicados y XML peligroso heredados de integración. ParserRSS/versionado sin cambios. Consulta del worker actual confirma operación, sin presentar ese sondeo como nuevo ensayo de todos los casos negativos."
+      "evidence_and_limit": "RSS/Atom,304, GUID actualizado, versiones, duplicados y XML peligroso heredados sin cambios. Parser editorial corregido y probado:elige el artículo propio, no ticker/vecinas. Reanálisis guarda snapshots de versiones anteriores y fecha real de lectura."
     },
     {
       "id": "A13",
       "status": "pasa",
-      "evidence_and_limit": "Adaptador estable/reintentos heredados; desarrollo150HTTP(149éxito/1HTTP400diagnosticado),0reintentos, contador381→531 compartido228.3.1reutiliza57etapas porhash. RSSmanualRailway1HTTP/0caché,contador48→49. Unit/integración sintética83pasan; no se atribuyen métricas retenidas a estos experimentos. Ensayosreview1.0/1.1registran64HTTP200/0reintentos,531→595;35soportes+36A/Breutilizados ypayloadsretienen exclusión de etiquetas. No nueva evaluación retenida."
+      "evidence_and_limit": "Errores no son negativos. DosHTTP400 de la ventana registrados y diagnosticados antes de insistir. Fanout conserva estado/preguntas completos y caché. Guardas persistentes de36intentos por generación y deadline; run_key de generación0 vacío sigue acotado por artículo. Mocks401/429/reintentos y contratos pasan.454peticiones nuevas:452HTTP200/2HTTP400,0reintentos; contadores preservados."
     },
     {
       "id": "A14",
       "status": "pasa",
-      "evidence_and_limit": "Pasa físico confirmado por usuario: ordenador/Firefox, Activar sonido→programarQA5s→una sola emisión automática audible sinProbaralarma. Misma lógica elegibilidad/notificador; no acredita calidadJEV. Códigoaudio intacto yQAautomatizado heredado; no nueva prueba física móvil. Nuevas pruebasPG/navegador:aviso por proveedor sustentado pese a prioridad incierta y otro proveedor revisado; urgencia visual separada del umbral de sonido. audio.ts intacto; no nueva prueba física."
+      "evidence_and_limit": "Cerrado. Evidencia física del usuario:ordenador/Firefox,Activar sonido→programar alertaQA5s→una única alerta automática audible sin Probar alarma. Activar/probar/silenciar/probar también confirmado. Audio y umbrales intactos; pruebas de elegibilidad por proveedor/incidente, historial, foco,cooldown,mute yQA heredadas/mocks. No se atribuye audibilidad a Playwright ni se afirma prueba física móvil; OS/versión deFirefox no informados."
     },
     {
       "id": "A15",
       "status": "pasa",
-      "evidence_and_limit": "ActualRSS: consulta con proveedor/cita literal/hipótesis/confirmación explícitas; snapshot fuente/gen/versión, edición, guardado, TXT y reconexión real. Copia con readback real en4anchos. Se hereda borrador proveedor/alternativo previo; nueva consulta no crea análisis/incidente/alerta ni envío. APIs y persistencia sintéticas probadas."
+      "evidence_and_limit": "ConsultaRSS real con cita e hipótesis:edición,guardado,copia con readback,TXT y recarga a4anchos. Borrador creado en4a818c1 persiste tras autodeploya2e962f. Oferta ferroviaria propia del alternativo visible; se pregunta adecuación antes de disponibilidad/capacidad. Continuidad de edición probada, sin envío externo."
     },
     {
       "id": "A16",
       "status": "pasa",
-      "evidence_and_limit": "Exportador estable sin cambios; comprobación701f2b0 descarga exportación existenteHTTP200/zipválido,14filas segúnmetadatos, sin leer resultados para ajustar. Se heredan orden/IDs/Y-N y bloqueo de errores anteriores. No nuevoLiveDay."
+      "evidence_and_limit": "Dos descargas reales390/1440 desdeResumen,HTTP200,ZIPXLSX válido y14filas contadas por estructura sin leer valores de celdas. Solo exportaciónLiveDay ya completada,0reanálisis; no se usa para ajustar. Contrato de IDs/orden/delimitador y bloqueo de errores heredado del exportador sin cambios."
     },
     {
       "id": "A17",
       "status": "pasa",
-      "evidence_and_limit": "Actual esquema0008 web/worker compatibles. Migración aditiva probada enPGdedicada conserva borradorantiguo y reconecta snapshot nuevo; borradorRSSreal recuperado tras redeploy. Cola/lease/heartbeat herdados sin cambio AST; no se ensayó caída forzada en producción."
+      "evidence_and_limit": "Esquema0008 y migración aditiva heredados; web/worker compatibles observados en HTTPS. Draft y análisis anteriores sobreviven a autodeploy. Pruebas PG aisladas de generaciones y rollback de proyección al fallar. No se simula una caída destructiva del worker en Railway."
     },
     {
       "id": "A18",
       "status": "pasa",
-      "evidence_and_limit": "Actual701f2b0 HTTPS,/,healthz/readyz200,4assets200,catálogo40,ficha/rutaprofunda200; endpoints administrativos nuevos401anónimo y operacionespresentador probadas. AllowlistDocker85archivos sinsecretos/originales; sesiones/permisos heredados más testsnuevos. Endpoint GET/model/review-policy exige presentador y solo entrega agregados;95unit/integración incluyen401anónimo. Paqueteallowlist92sinsecretos/originales."
+      "evidence_and_limit": "a2e962f:web yworker compatibles,HTTPS,/,healthz/readyz,5assets,catálogo40,ficha/rutas profundas200;administración y análisis401 anónimos yoriginales404. Modelo protegido renderiza candidata3.4.2/revisión1.3.1,441llamadas locales yensayos descartados sin erroresJS. Paquete112archivos sin .env,originales ni referencias protegidas; sesiones/permisos probados."
     },
     {
       "id": "A19",
       "status": "pasa",
-      "evidence_and_limit": "RealHTTPS701f2b0 en360/390/768/1440: sin overflow/JS, dialogcentrado,foco yconsulta guardada separados de matchingJEV. Ensayo4min escritorio1440 y móvil390emulado con pausaslectura en6290, luego pulido+revisiónreal701.4E2ERSS yQA pasan; capturasrss-final-*. No estudio de comprensión con compradores ni móvilfísico."
+      "evidence_and_limit": "HTTPSa2e962f en360/390/768/1440:sin overflow/erroresJS;filtros,foco,contexto,Escape yconsulta persistida. Material yproductos esperados cargados,oferta propia del alternativo visible.26E2E distintos con mocks. Guiones4min1440/390 más repetición de pasos afectados; emulación,no estudio de compradores ni móvil físico. JS inicial215653→118897bytes codificados observados,44.87%menos; no es latencia niA20."
     },
     {
       "id": "A20",
       "status": "pasa",
-      "evidence_and_limit": "Pasa heredado: b4d697b,18-10-2026,1.0.0/jev1.13/duration1.1,14LiveDay,7.888295967s hasta exportación,23HTTPnuevos/0caché/0reintentos. rss-a20-inheritance.json:10dependencias intactas y4funciones de ejecución/cola ASTidénticas; gateesquema actualizado0008. No se repiteLiveDay ni se extrapola al candidato o a los4min de lectura. review-inheritance.json:11dependencias estables intactas yreconcileASTigual salvo4metadatos de alerta. No certifica tiempo del candidato con verificaciones adicionales."
+      "evidence_and_limit": "Pasa histórico, no medición actual ni del candidato:b4d697b,18-10-2026,1.0.0/jev1.13/duration1.1,14LiveDay,7.888295967s hasta exportación,23 peticiones nuevas/0caché/0reintentos. Se conservan datos/fecha/perfil; no se repite LiveDay para desarrollo. Preguntas/normalizador/fórmula/duración/exportación default permanecen; la nueva orquestación opcional y UI no renuevan por sí solas esa certificación. No extrapolar tiempo al candidato/RSS."
     }
   ],
-  "a14_physical_auto": "Todavía no la he probado: usuario",
+  "a14_physical_auto": "Confirmado por el usuario: ordenador/Firefox, una alerta automática QA sin Probar alarma.",
   "a20": "a20-current-results.json",
   "new_jev_requests_this_delivery": {
-    "development": 64,
-    "rss_railway": 0,
-    "total": 64,
+    "development": 441,
+    "rss_railway": 13,
+    "total": 454,
     "retries": 0,
-    "http_errors": 0
+    "http_errors": 2,
+    "http200": 452
   },
   "audio_physical_confirmation": {
     "device": "ordenador",
@@ -128,14 +129,15 @@
     "recorded_on": "2026-10-18"
   },
   "new_delivery": {
-    "review_report": "review-policy-results.json",
-    "diagnosis_private": "reports/private/REVISION_23_DIAGNOSTICO.md",
-    "final_public": "review-public-verification.json",
-    "final_ui": "review-public-ui.json"
+    "comparison": "candidate-342-results.json",
+    "candidate_decision": "CANDIDATA_OPERATIVA.md",
+    "final_public": "window-public-verification.json",
+    "final_ui": "window-final-ui.json",
+    "real_rss": "rss-smoke-342.json"
   },
   "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
-  "final_verification": "review-public-verification.json",
-  "evidence_revision_note": "Web/worker93365de y UIreal4anchos comprobados; política1.1evaluada pero no activada en inferencia de producción.",
+  "final_verification": "window-final-verification.json",
+  "evidence_revision_note": "Código a2e962f observado en web y worker; candidata seleccionable3.4.2, default1.0.0. Las observaciones posteriores al commit documental conservan el mismo código funcional.",
   "review_policy_delivery": {
     "candidate": "review-1.1.0-candidate",
     "runtime_enabled": false,
@@ -164,5 +166,54 @@
     "final_ui": "rss-final-ui.json",
     "a20_inheritance": "rss-a20-inheritance.json",
     "calls_are_cumulative_not_reset": true
+  },
+  "revision_scope": "Código funcional comprobado. El commit documental posterior conserva este código; observación final de publicación en window-final-verification.json.",
+  "candidate_profile": "radar-1.0.0-candidate",
+  "candidate_versions": {
+    "matching": "link-3.3.0",
+    "questions": "decision-3.4.2",
+    "review": "review-1.3.1",
+    "risk": "risk-focus-1.2.0",
+    "transport": "fanout-1.0.0"
+  },
+  "candidate_promoted_default": false,
+  "window": {
+    "started_at": "2026-10-18T21:42:32Z",
+    "maximum_until": "2026-10-19T02:42:32Z",
+    "stabilization_started_at": "2026-10-19T00:19:00Z",
+    "local_new_requests": 441,
+    "railway_new_requests": 13,
+    "total_new_requests": 454,
+    "retries": 0,
+    "local_counter": [
+      595,
+      1036
+    ],
+    "railway_rss_counter": [
+      49,
+      62
+    ],
+    "default_unchanged": true,
+    "periodic_paid_rss": false,
+    "tests": {
+      "unit_integration_passed": 124,
+      "e2e_distinct_passed": 26,
+      "e2e_transport": "mocks identified; Chromium",
+      "build": true,
+      "package_files": 112,
+      "warning": "External Anyio deprecation"
+    },
+    "verified_code_revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
+    "experiments_resumed_at": "2026-10-19T01:06:00Z",
+    "final_stabilization_at": "2026-10-19T01:32:00Z"
+  },
+  "physical_audio": {
+    "device": "Ordenador",
+    "browser": "Firefox",
+    "os": "No informado",
+    "browser_version": "No informada",
+    "user_report": "Activar sonido;programar alertaQA5s;una emisión automática audible;no Probar alarma",
+    "inherited": true,
+    "new_physical_test": false
   }
 }

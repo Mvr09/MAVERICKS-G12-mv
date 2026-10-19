@@ -1,5 +1,5 @@
 {
-  "expected_commit": "4a50559462e5ed1bc2b71e1c218391880e73088f",
+  "expected_commit": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
   "requests": [
     {
       "path": "/healthz",
@@ -14,19 +14,23 @@
       "http": 200
     },
     {
-      "path": "/assets/index-BtzWu08-.css",
+      "path": "/assets/index-BGwfiSNd.css",
       "http": 200
     },
     {
-      "path": "/assets/index-YxZQPpot.js",
+      "path": "/assets/_commonjsHelpers-CqkleIqs.js",
       "http": 200
     },
     {
-      "path": "/assets/icons-h47_nvdG.js",
+      "path": "/assets/index-BCNBhBBO.js",
       "http": 200
     },
     {
-      "path": "/assets/charts-Vo4fhvfv.js",
+      "path": "/assets/react-vendor-C7qHzZhZ.js",
+      "http": 200
+    },
+    {
+      "path": "/assets/icons-DTN_LyQ6.js",
       "http": 200
     },
     {
@@ -58,25 +62,83 @@
       "http": 200
     },
     {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
       "path": "/api/sources",
       "http": 200
     }
   ],
   "errors": [],
   "new_analysis": false,
-  "observed_commit": "4a50559462e5ed1bc2b71e1c218391880e73088f",
-  "assets": 4,
+  "observed_commit": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
+  "assets": 5,
   "config": {
     "candidate_versions": {
       "profile": "radar-1.0.0-candidate",
       "matching": "link-3.3.0",
       "retrieval": "link-3.0.0-dev",
-      "questions": "link-3.3.0",
-      "review": "review-1.2.0",
+      "questions": "decision-3.4.2",
+      "risk": "risk-focus-1.2.0",
+      "review": "review-1.3.1",
       "support": "decision-support-1.0.0",
       "facts": "decision-facts-1.0.0",
       "exclusion": "relational-exclusion-1.0.0",
-      "duration": "duration-1.1.0"
+      "duration": "duration-1.1.0",
+      "transport": "fanout-1.0.0"
     },
     "model": "jev-1.13.0",
     "policy_version": "1.0.0",
@@ -120,46 +182,46 @@
   "worker": {
     "online": true,
     "compatible": true,
-    "revision": "4a50559462e5ed1bc2b71e1c218391880e73088f"
+    "revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f"
   },
   "rss_recorded_status": [
     {
       "id": "biopharma_dive",
       "status": "unchanged",
       "http_status": 304,
-      "last_attempt_at": "2026-10-18T22:41:38.567502+00:00"
+      "last_attempt_at": "2026-10-19T01:26:10.803616+00:00"
     },
     {
       "id": "el_pais",
       "status": "ok",
       "http_status": 200,
-      "last_attempt_at": "2026-10-18T22:41:38.566226+00:00"
+      "last_attempt_at": "2026-10-19T01:26:10.714292+00:00"
     },
     {
       "id": "ema",
       "status": "unchanged",
       "http_status": 304,
-      "last_attempt_at": "2026-10-18T22:41:38.618906+00:00"
+      "last_attempt_at": "2026-10-19T01:26:10.800145+00:00"
     },
     {
       "id": "gdacs",
-      "status": "unchanged",
-      "http_status": 304,
-      "last_attempt_at": "2026-10-18T22:41:38.568548+00:00"
+      "status": "ok",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-19T01:26:10.806101+00:00"
     },
     {
       "id": "supply_chain_dive",
       "status": "unchanged",
       "http_status": 304,
-      "last_attempt_at": "2026-10-18T22:41:38.568137+00:00"
+      "last_attempt_at": "2026-10-19T01:26:10.704453+00:00"
     },
     {
       "id": "the_loadstar",
       "status": "ok",
       "http_status": 200,
-      "last_attempt_at": "2026-10-18T22:41:38.602902+00:00"
+      "last_attempt_at": "2026-10-19T01:26:10.802225+00:00"
     }
   ],
-  "checked_at": "2026-10-18T22:43:16.133795+00:00",
+  "checked_at": "2026-10-19T01:27:20.059401+00:00",
   "passed": true
 }

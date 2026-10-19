@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-19T01:42:44.471Z",
+  "errors": [],
+  "new_jev_requests": 0,
+  "scope": "Existing aggregates and retrospective validation UI only; no classification development.",
+  "revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
+  "jev_before": 62,
+  "persisted_history_checked": true,
+  "classification": {
+    "risk": "N",
+    "urgent": "N",
+    "suppliers": []
+  },
+  "article_id": "771ac272-c0c2-4cb9-9449-973528f5d7c1",
+  "jev_after": 62,
+  "passed": true
+}

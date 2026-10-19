@@ -1,0 +1,243 @@
+{
+  "started_at": "2026-10-19T01:30:41.113Z",
+  "maximum_attempts": 36,
+  "hypothesis": "Operational smoke of explicit3.4.2 on the first pending GDACS article; not selected by prediction, no independent accuracy reference, no periodic paid analysis.",
+  "states": [
+    {
+      "at": "2026-10-19T01:30:45.191Z",
+      "state": "queued",
+      "network_requests": 0,
+      "last_completed_step": null
+    },
+    {
+      "at": "2026-10-19T01:30:46.954Z",
+      "state": "running",
+      "network_requests": 0,
+      "last_completed_step": null
+    },
+    {
+      "at": "2026-10-19T01:30:48.653Z",
+      "state": "running",
+      "network_requests": 0,
+      "last_completed_step": null
+    },
+    {
+      "at": "2026-10-19T01:30:50.365Z",
+      "state": "running",
+      "network_requests": 0,
+      "last_completed_step": null
+    },
+    {
+      "at": "2026-10-19T01:30:52.069Z",
+      "state": "done",
+      "network_requests": 2,
+      "last_completed_step": "Identificación y candidatos · grupo 2"
+    }
+  ],
+  "revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
+  "counter_before": 60,
+  "article": {
+    "id": "771ac272-c0c2-4cb9-9449-973528f5d7c1",
+    "headline": "Green forest fire notification in Namibia",
+    "source": "GDACS",
+    "url": "https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1032898",
+    "generation": 0,
+    "version": 2
+  },
+  "clicked_at": "2026-10-19T01:30:44.494Z",
+  "job_id": "ce048410-6bcf-4d7c-abb7-dac6ccb458aa",
+  "result": {
+    "state": "done",
+    "risk": "N",
+    "urgent": "N",
+    "suppliers": [],
+    "versions": {
+      "profile": "radar-1.0.0-candidate",
+      "matching": "link-3.3.0",
+      "retrieval": "link-3.0.0-dev",
+      "questions": "decision-3.4.2",
+      "risk": "risk-focus-1.2.0",
+      "review": "review-1.3.1",
+      "support": "decision-support-1.0.0",
+      "facts": "decision-facts-1.0.0",
+      "exclusion": "relational-exclusion-1.0.0",
+      "duration": "duration-1.1.0",
+      "model": "jev-1.13.0",
+      "transport": "fanout-1.0.0"
+    },
+    "event": {
+      "category": "wildfire",
+      "confidence": 1,
+      "taxonomy_version": "rss-events-1.2.0",
+      "label_es": "Incendio forestal"
+    },
+    "source_reading": {
+      "status": "summary_only",
+      "checked_at": "2026-10-19T01:30:19.835300+00:00",
+      "http_status": 200,
+      "reason": "editorial_text_unavailable"
+    }
+  },
+  "new_requests": 2,
+  "cached_stages": [],
+  "counter_after": 62,
+  "history_updated_without_reload": null,
+  "passed": true,
+  "completed_at": "2026-10-19T01:30:53.474Z",
+  "calls": [
+    {
+      "id": "4b4a0073-5871-4e3a-9d3a-bfdbd9b59a85",
+      "stage": "a.part1",
+      "run_key": "",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.33408578857779503,
+      "budget_id": "manual-unlimited-20261017",
+      "provider_diagnostic": null,
+      "error": null,
+      "diagnosed_at": null,
+      "usage": {
+        "input_tokens": 20954,
+        "output_tokens": 1013
+      }
+    },
+    {
+      "id": "6fdf5d26-7ede-48e5-8d16-8be72f53d423",
+      "stage": "a.part2",
+      "run_key": "",
+      "attempt": 1,
+      "model": "jev-1.13.0",
+      "status": 200,
+      "seconds": 0.22619041800498962,
+      "budget_id": "manual-unlimited-20261017",
+      "provider_diagnostic": null,
+      "error": null,
+      "diagnosed_at": null,
+      "usage": {
+        "input_tokens": 15820,
+        "output_tokens": 42
+      }
+    }
+  ],
+  "execution_runs": [
+    {
+      "id": "cc8f0002-7778-4601-b936-84c823857044",
+      "generation": 0,
+      "created_at": "2026-10-19T01:30:26.181075+00:00",
+      "versions": {
+        "profile": "radar-1.0.0-candidate",
+        "matching": "link-3.3.0",
+        "retrieval": "link-3.0.0-dev",
+        "questions": "decision-3.4.2",
+        "risk": "risk-focus-1.2.0",
+        "review": "review-1.3.1",
+        "support": "decision-support-1.0.0",
+        "facts": "decision-facts-1.0.0",
+        "exclusion": "relational-exclusion-1.0.0",
+        "duration": "duration-1.1.0",
+        "model": "jev-1.13.0",
+        "transport": "fanout-1.0.0"
+      },
+      "status": "done",
+      "error": null,
+      "seconds": 6.363398045301437,
+      "new_requests": 2,
+      "cached_stages": [],
+      "stages": [
+        {
+          "stage": "a.part1",
+          "bytes": 59854,
+          "state_bytes": 33704,
+          "questions": 41,
+          "max_question_bytes": 4427,
+          "max_choice_options": 16,
+          "payload_hash": "8c6b9cc56cc5ab6f0ee0dd7b3fab223e9bd0a370fef40f3f083c56bf4043f0b7"
+        },
+        {
+          "stage": "a.part2",
+          "bytes": 34688,
+          "state_bytes": 33704,
+          "questions": 2,
+          "max_question_bytes": 525,
+          "max_choice_options": 0,
+          "payload_hash": "737713f2ad32e1541f3ba177b9301339f6a0c9cd4fb203e1001adfc261dfbf5f"
+        }
+      ],
+      "transport": [
+        {
+          "stage": "a",
+          "version": "fanout-1.0.0",
+          "mode": "partitioned",
+          "logical_payload_hash": "03d6861944a1b15751bb48d5e09b255b5e694bef51aee640bcf5f1ed98302570",
+          "logical_bytes": 60793,
+          "parts": [
+            {
+              "stage": "a.part1",
+              "payload_hash": "8c6b9cc56cc5ab6f0ee0dd7b3fab223e9bd0a370fef40f3f083c56bf4043f0b7",
+              "bytes": 59854,
+              "question_ids": [
+                "event_type",
+                "event_state",
+                "candidate_S001",
+                "candidate_S002",
+                "candidate_S003",
+                "candidate_S004",
+                "candidate_S005",
+                "candidate_S006",
+                "candidate_S007",
+                "candidate_S008",
+                "candidate_S009",
+                "candidate_S010",
+                "candidate_S011",
+                "candidate_S012",
+                "candidate_S013",
+                "candidate_S014",
+                "candidate_S015",
+                "candidate_S016",
+                "candidate_S017",
+                "candidate_S018",
+                "candidate_S019",
+                "candidate_S020",
+                "candidate_S021",
+                "candidate_S022",
+                "candidate_S023",
+                "candidate_S024",
+                "candidate_S025",
+                "candidate_S026",
+                "candidate_S027",
+                "candidate_S028",
+                "candidate_S029",
+                "candidate_S030",
+                "candidate_S031",
+                "candidate_S032",
+                "candidate_S033",
+                "candidate_S034",
+                "candidate_S035",
+                "candidate_S036",
+                "candidate_S037",
+                "candidate_S038",
+                "candidate_S039"
+              ]
+            },
+            {
+              "stage": "a.part2",
+              "payload_hash": "737713f2ad32e1541f3ba177b9301339f6a0c9cd4fb203e1001adfc261dfbf5f",
+              "bytes": 34688,
+              "question_ids": [
+                "candidate_S040",
+                "article_threat"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "retries": 0,
+  "click_to_job_completion_status_visible_seconds": 8.428,
+  "timing_note": "Click until observed completed-job status; includes queue/polling. Not a measurement of first result paint or A20.",
+  "history_note": "This smoke did not directly assert the history update. No-reload behavior is separately verified with mocks and the earlier live3.3 run; current persisted history is checked read-only.",
+  "persisted_history_checked_readonly": true,
+  "persisted_history_questions": "decision-3.4.2"
+}
