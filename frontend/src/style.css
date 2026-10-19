@@ -3407,3 +3407,226 @@ main > *,
   background: #635bff;
   border-radius: 999px;
 }
+
+/* Final handoff: shared operation feedback, bounded panels and informative model. */
+.loading-block {
+  padding: var(--panel-padding);
+  min-height: 300px;
+  display: grid;
+  gap: 22px;
+  align-content: start;
+}
+.loading-block p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.skeleton-row,
+.skeleton-grid span {
+  background: #efedf7;
+  border-radius: 9px;
+  height: 52px;
+}
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.skeleton-grid span {
+  height: 110px;
+}
+.operation-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  flex: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .operation-spinner {
+    animation: operation-spin 750ms linear infinite;
+  }
+}
+@keyframes operation-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.async-control {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 7px;
+  max-width: 100%;
+  min-width: 0;
+}
+.async-control [role="alert"] {
+  color: #a12b44;
+  overflow-wrap: anywhere;
+}
+.final-model {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+}
+.final-model .card {
+  padding: var(--panel-padding);
+  overflow: visible;
+}
+.final-model .section-heading {
+  padding: 0 0 14px;
+}
+.final-model :is(h2, h3, p, details) {
+  margin-bottom: 14px;
+}
+.final-model :is(section, article, div, label) {
+  min-width: 0;
+}
+.final-model :is(p, dt, dd, strong) {
+  overflow-wrap: anywhere;
+}
+.final-model summary {
+  padding: 10px 0;
+  min-height: 44px;
+  cursor: pointer;
+}
+.final-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.final-model label {
+  display: grid;
+  gap: 8px;
+}
+.final-model select,
+.final-model input {
+  width: 100%;
+  min-height: 44px;
+}
+.final-quality-grid,
+.final-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-block: 18px;
+}
+.final-quality-grid article {
+  background: #f7f6ff;
+  padding: 16px;
+  border-radius: 10px;
+}
+.final-metric {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  margin-block: 14px;
+}
+.final-metric meter {
+  grid-column: 1/-1;
+  width: 100%;
+  height: 10px;
+}
+.final-stat-grid > div {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  background: #f7f6ff;
+  border-radius: 10px;
+  align-content: start;
+}
+.final-stat-grid strong {
+  font-size: clamp(19px, 2vw, 26px);
+}
+.final-stat-grid span {
+  color: #52647a;
+}
+.final-matrices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.final-matrix table {
+  table-layout: fixed;
+  width: 100%;
+  border-spacing: 8px;
+  font-size: 12px;
+}
+.final-matrix th {
+  width: 26%;
+  overflow-wrap: anywhere;
+}
+.final-matrix td {
+  padding: 16px 8px;
+  background: #f0edff;
+  border-radius: 9px;
+  text-align: center;
+}
+.final-matrix td strong {
+  display: block;
+  font-size: 24px;
+}
+.final-matrix td span {
+  display: block;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.final-matrix caption {
+  text-align: left;
+  margin-block: 12px;
+}
+.version-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 12px;
+  margin-block: 14px;
+}
+.version-grid dd {
+  margin: 0;
+  color: #52647a;
+}
+.simulator-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-block: 18px;
+}
+@container workspace (max-width:780px) {
+  .final-quality-grid,
+  .final-matrices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .final-stat-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  }
+}
+@container workspace (max-width:480px) {
+  .simulator-inputs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .final-section-heading > label {
+    width: 100%;
+  }
+  .final-matrix table {
+    border-spacing: 4px;
+  }
+  .final-matrix td {
+    padding: 12px 6px;
+  }
+}
+@media print {
+  .final-model .card {
+    margin-bottom: 18px;
+  }
+  .final-matrices,
+  .final-quality-grid,
+  .final-stat-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .final-matrix {
+    break-inside: avoid;
+  }
+}

@@ -1,6 +1,6 @@
 {
   "revision": "77d8581cd8ad73c66a106c9da74cfbb5a88fa025",
-  "default_profile": "1.0.0",
+  "default_profile": "radar-1.0.0-candidate",
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
   "counts": {
@@ -328,5 +328,8 @@
     ],
     "schema": "0010",
     "rss_manual_jobs_completed": 6
-  }
+  },
+  "final_profile_manifest": "config/final_profile.json",
+  "promotion": "Decisión de producto expresamente autorizada; preguntas 3.4.2/revisión1.3.1 de campaña completa148. No cierra A06 ni renueva A20.",
+  "revision_note": "Implementación de cierre; SHA publicado y verificaciones posteriores en PROGRESS.md. revision original conserva procedencia de evidencia heredada."
 }

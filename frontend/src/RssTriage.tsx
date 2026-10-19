@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "./api";
-import { AnalysisProfile, CANDIDATE } from "./AnalysisProfile";
+import {
+  AnalysisProfile,
+  CANDIDATE,
+  DEFAULT_ANALYSIS_PROFILE,
+} from "./AnalysisProfile";
 export function RssTriage({ articles }: { articles: any[] }) {
   const [selected, setSelected] = useState<string[]>([]),
     [selectedTitles, setSelectedTitles] = useState<Record<string, string>>({}),
-    [profile, setProfile] = useState("1.0.0"),
+    [profile, setProfile] = useState(DEFAULT_ANALYSIS_PROFILE),
     [ack, setAck] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -13,17 +17,27 @@ export function RssTriage({ articles }: { articles: any[] }) {
     [ids, setIds] = useState<string[]>([]);
   useEffect(() => {
     if (!ids.length) return;
-    let active = true;
+    let active = true,
+      inFlight = false;
+    let timer: ReturnType<typeof setInterval>;
     async function update() {
+      if (inFlight || document.hidden) return;
+      inFlight = true;
       try {
         const values = await Promise.all(ids.map((id) => api("/jobs/" + id)));
         if (active) setJobs(values);
+        if (
+          values.every((j) => ["done", "error", "cancelled"].includes(j.state))
+        )
+          clearInterval(timer);
       } catch (e) {
         if (active) setError((e as Error).message);
+      } finally {
+        inFlight = false;
       }
     }
     void update();
-    const timer = setInterval(update, 3000);
+    timer = setInterval(update, 3000);
     return () => {
       active = false;
       clearInterval(timer);

@@ -1,3 +1,16 @@
+# Cierre final · implementación verificada
+
+- Base350e95f. Plan:1)verificar manifiesto y promover perfil completoevaluado3.4.2/revisión1.3.1 preservando trabajos/históricos y rollback1.0.0;2)Modelo informativo con métricaspersistidas,telemetríaindividual ysimuladorhistórico;3)layout/feedbackglobal,pruebasdemora/error yrecorridosrealesExcel/RSS;4)publicación,comprobación yhandoffúnico.
+- Sin repetircampaña148 niLiveDay. Sin modificar preguntas/umbrales. RSSperiódicopagooff. A06/S003abiertos;A14/A20heredados. Cambios ajenos excluidos.
+
+- Perfil completo de campaña148 promovido por autorización expresa: preguntas3.4.2/revisión1.3.1, componentes congelados enconfig/final_profile.json. Excel/RSS/API/worker alineados;1.0.0 avanzado/rollback. Instantánea por trabajo y namespace de caché; trabajos antiguos e históricos conservados.
+- Modelo normal informativo: métricas de40etiquetadas, matrices,74duraciones individuales locales(media2,14067s), medicionesRailway separadas y simulador sininferencias. Tarifa histórica editable0,03941248835$/millón(nooficial),tokensaproximadosdeentrada+salida. Comparador/histórico privados conservados enadministración.
+- Feedback compartido: carga inicial reservada, timeout30s, errores/reintento, botones asíncronos, importación/guardado/descargas; recuperación de lote consulta manifiesto antes de repetir envío. Formularios/filtros preservados.
+- Pruebas:163unit/integraciónPGaislado y38E2Econmocks/Chrome pasan;build/paquete130archivos sinsecretos/originales/diffcheck pasan. No se repitió campaña niLiveDay. Pendienteinmediato: publicar, comprobar UIreal8×5anchos y nuevas ejecucionesExcel/RSS contelemetría.
+- Handoff único:docs/HANDOFF_FINAL.md. A06abierto/S003sinprovincia;A14/A20conservados;RSSperiódicopagooff.
+
+## Historial conservado
+
 # Todas las pendientes y progreso · 19-10-2026
 
 - Base3c0d6c0 publicada y comprobada. El botón ahora abarca todas las noticias pendientes de la vista/filtros,sin límite artificial de10. La selección se registra atómicamente enPostgreSQL como manifiesto de solicitud(Jobanalysis_selection finalizado,no tarea delworker);los trabajos reales siguen en la cola existente,con leases/reintentos/cupos técnicos intactos.

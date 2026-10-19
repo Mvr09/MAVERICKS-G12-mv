@@ -192,7 +192,7 @@ def normalize(article, suppliers, a, b, candidates):
 
 def process_article(
     db, article_id, transport=None, diagnostic_ack_at=None, run_key=None, publish=True, profile=DEFAULT_PROFILE,
-    campaign_article=None, campaign_suppliers=None, campaign_grant=None, campaign_audit=None
+    campaign_article=None, campaign_suppliers=None, campaign_grant=None, campaign_audit=None, profile_snapshot=None
 ):
     a = campaign_article if campaign_article is not None else db.get(Article, article_id)
     if campaign_article is not None and publish:
@@ -210,6 +210,8 @@ def process_article(
     candidate = profile == CANDIDATE_PROFILE
     client_type = PayloadCacheClient if candidate and campaign_article is None else JevClient
     client_options = {}
+    if profile_snapshot:
+        client_options["cache_namespace"] = digest(profile_snapshot)
     if campaign_article is not None:
         client_options.update(grant_id=campaign_grant, isolated_cache=True, request_ceiling=36 if candidate else 6)
     if candidate:

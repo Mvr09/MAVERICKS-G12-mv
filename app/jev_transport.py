@@ -45,6 +45,7 @@ class BoundedFanoutClient:
 
     def ask(self,payload,stage,deadline):
         key=digest({'payload':payload,'questions':POLICY['question_version']})
+        if getattr(self.client,'cache_namespace',None): key=digest({"request":key,"profile_snapshot":getattr(self.client,'cache_namespace',None)})
         keys = ([] if getattr(self.client,'isolated_cache',False) else [key]) + [digest({'request':key,'run_key':run}) for run in (self.run_key, *getattr(self.client,'reuse_runs',())) if run]
         cached = next((row for cache_key in keys if (row := self.db.get(RequestCache,cache_key)) is not None),None)
         if cached:

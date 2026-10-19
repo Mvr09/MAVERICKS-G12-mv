@@ -14,6 +14,7 @@ from app.models import (
     now,
 )
 from app.settings import RSS, settings
+from app.profiles import DEFAULT_PROFILE, profile_snapshot
 
 
 def analysis_key(article):
@@ -24,9 +25,9 @@ def analysis_key(article):
     )
 
 
-def analysis_payload(article, profile="1.0.0"):
+def analysis_payload(article, profile=DEFAULT_PROFILE):
     from app.profiles import CANDIDATE_PROFILE
-    data = {"article_id": article.id, "generation": article.generation, "analysis_profile": profile}
+    data = {"article_id": article.id, "generation": article.generation, "analysis_profile": profile, "profile_snapshot": profile_snapshot(profile, article.context), "queued_at": now().isoformat()}
     if profile == CANDIDATE_PROFILE:
         from app.profiles import candidate_versions
         data["analysis_versions"] = candidate_versions()
@@ -135,7 +136,7 @@ def budget_available(db, budget_id):
     )
 
 
-def enqueue_rss_analysis(db, limit=None, article_ids=None, profile="1.0.0"):
+def enqueue_rss_analysis(db, limit=None, article_ids=None, profile=DEFAULT_PROFILE):
     db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     query = select(Article).where(Article.context == "rss", Article.state == "pending")
     if article_ids is not None:
@@ -160,7 +161,7 @@ def enqueue_rss_analysis(db, limit=None, article_ids=None, profile="1.0.0"):
     return jobs
 
 
-def enqueue_batch(db, bid, profile="1.0.0"):
+def enqueue_batch(db, bid, profile=DEFAULT_PROFILE):
     db.execute(text("SELECT pg_advisory_xact_lock_shared(72642, 4)"))
     b = db.get(Batch, bid)
     if not b:

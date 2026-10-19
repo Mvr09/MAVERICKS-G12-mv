@@ -17,6 +17,7 @@ class PayloadCacheClient(JevClient):
 
     def ask(self,payload,stage,deadline):
         key=digest({'payload':payload,'questions':POLICY['question_version']})
+        if self.cache_namespace: key=digest({"request":key,"profile_snapshot":self.cache_namespace})
         keys=[('effective_payload',key)]+[(run,digest({'request':key,'run_key':run})) for run in self.reuse_runs]
         for origin,cache_key in keys:
             cached=self.db.get(RequestCache,cache_key)

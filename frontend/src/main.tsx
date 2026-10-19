@@ -1,3 +1,4 @@
+import { LoadingBlock, AsyncButton, downloadFile } from "./OperationFeedback";
 import { PendingAnalysis } from "./PendingAnalysis";
 import { RssTriage } from "./RssTriage";
 import { HumanReview } from "./HumanReview";
@@ -9,7 +10,11 @@ import {
   rememberNews,
 } from "./NewsContinuity";
 import { ReviewGuidance } from "./ReviewGuidance";
-import { AnalysisProfile, CANDIDATE } from "./AnalysisProfile";
+import {
+  AnalysisProfile,
+  CANDIDATE,
+  DEFAULT_ANALYSIS_PROFILE,
+} from "./AnalysisProfile";
 import {
   VerificationDraft,
   RssArticleAnalysis,
@@ -75,6 +80,9 @@ const ModelPage = React.lazy(() =>
   import("./ModelPage").then((module) => ({ default: module.ModelPage })),
 );
 import { ChartBoundary } from "./ChartBoundary";
+const AdministrativeModels = React.lazy(() =>
+  import("./ModelArchive").then((m) => ({ default: m.AdministrativeModels })),
+);
 const SourceVolumeChart = React.lazy(() => import("./SourceVolumeChart"));
 import { EventTag, eventNames } from "./EventTag";
 
@@ -267,6 +275,8 @@ function App() {
     [message, setMessage] = useState(""),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(true),
+    [uploading, setUploading] = useState(false),
+    [refreshError, setRefreshError] = useState(""),
     [sound, setSound] = useState("Desactivado"),
     [more, setMore] = useState(false),
     [qaStatus, setQaStatus] = useState(""),
@@ -352,6 +362,7 @@ function App() {
       ]);
       if (activeScope.current !== scope) return;
       nextRefreshAt.current = 0;
+      setRefreshError("");
       setOverview(o);
       setSuppliers(s.items);
       setArticles(a);
@@ -390,7 +401,7 @@ function App() {
     } catch (e) {
       if (activeScope.current === scope) {
         nextRefreshAt.current = Date.now() + 30000;
-        setError((e as Error).message);
+        setRefreshError((e as Error).message);
       }
     } finally {
       refreshInFlight.current.delete(scope);
@@ -432,21 +443,27 @@ function App() {
     }
   }
   async function upload(f: File) {
-    const data = new FormData();
-    data.append("file", f);
-    const imported = await action(
-      () => api("/imports", { method: "POST", body: data }),
-      "Archivo importado. Revisa el lote antes de analizar.",
-    );
-    if (imported?.batch_id) {
-      setContext("exercise");
-      setOrigin("batch:" + imported.batch_id);
-      navigate(
-        scopedPath(
-          "/?origen=" + encodeURIComponent("batch:" + imported.batch_id),
-          "exercise",
-        ),
+    if (uploading) return;
+    setUploading(true);
+    try {
+      const data = new FormData();
+      data.append("file", f);
+      const imported = await action(
+        () => api("/imports", { method: "POST", body: data }),
+        "Archivo importado. Revisa el lote antes de analizar.",
       );
+      if (imported?.batch_id) {
+        setContext("exercise");
+        setOrigin("batch:" + imported.batch_id);
+        navigate(
+          scopedPath(
+            "/?origen=" + encodeURIComponent("batch:" + imported.batch_id),
+            "exercise",
+          ),
+        );
+      }
+    } finally {
+      setUploading(false);
     }
   }
   const shared = { context, presenter, action, refresh };
@@ -603,6 +620,7 @@ function App() {
                     "/fuentes": "Fuentes",
                     "/analitica": "Analítica",
                     "/modelo": "Modelo",
+                    "/administracion": "Herramientas de modelo",
                   } as Record<string, string>
                 )["/" + (location.pathname.split("/")[1] || "")] || "Resumen"}
                 <span className="heading-dot">.</span>
@@ -630,12 +648,14 @@ function App() {
                 <>
                   <button
                     className="button primary"
+                    disabled={uploading}
+                    aria-busy={uploading}
                     onClick={() =>
                       presenter ? file.current?.click() : setLoginOpen(true)
                     }
                   >
                     <Upload size={17} />
-                    Importar Excel
+                    {uploading ? "Validando e importando…" : "Importar Excel"}
                   </button>
                 </>
               )}
@@ -645,6 +665,17 @@ function App() {
             <div className="notice warning">
               Demostración de interfaz · MOCKS IDENTIFICADOS. Estos resultados
               no proceden de JEV real.
+            </div>
+          )}
+          {refreshError && (
+            <div className="notice warning" role="alert">
+              <span>{refreshError} Los datos ya visibles se conservan.</span>
+              <AsyncButton
+                onAction={() => refresh(true)}
+                busyLabel="Consultando…"
+              >
+                Reintentar consulta
+              </AsyncButton>
             </div>
           )}
           {error && (
@@ -711,6 +742,9 @@ function App() {
           {presenter && (
             <details className="qa-control">
               <summary>Herramientas del presentador</summary>
+              <Link className="button" to="/administracion/modelo">
+                Auditar campañas y perfiles anteriores
+              </Link>
               {presenter && (
                 <DemoControl
                   onClean={async (result) => {
@@ -786,10 +820,25 @@ function App() {
               </section>
             </details>
           )}
-          {loading && !overview ? (
-            <div className="loading" role="status">
-              Cargando datos del radar…
-            </div>
+          {!overview ? (
+            loading ? (
+              <LoadingBlock label="Cargando datos del radar…" />
+            ) : (
+              <section className="card detail-card" role="alert">
+                <h2>No se pudieron cargar los datos</h2>
+                <p>
+                  Reintenta la consulta. No se ha mostrado una lista vacía como
+                  si no hubiera registros.
+                </p>
+                <AsyncButton
+                  className="button primary"
+                  onAction={() => refresh(true)}
+                  busyLabel="Recuperando…"
+                >
+                  Recuperar datos
+                </AsyncButton>
+              </section>
+            )
           ) : (
             <Routes>
               <Route
@@ -1213,10 +1262,10 @@ function App() {
               <Route
                 path="/modelo"
                 element={
-                  <ChartBoundary message="No se pudo cargar el comparador. Las vistas operativas siguen disponibles.">
+                  <ChartBoundary message="No se pudo cargar la información del perfil. Las vistas operativas siguen disponibles.">
                     <React.Suspense
                       fallback={
-                        <p role="status">Cargando comparador de modelos…</p>
+                        <p role="status">Cargando perfil y métricas…</p>
                       }
                     >
                       <ModelPage
@@ -1228,6 +1277,29 @@ function App() {
                       />
                     </React.Suspense>
                   </ChartBoundary>
+                }
+              />
+              <Route
+                path="/administracion/modelo"
+                element={
+                  presenter ? (
+                    <React.Suspense
+                      fallback={<LoadingBlock label="Cargando auditoría…" />}
+                    >
+                      <AdministrativeModels
+                        presenter={presenter}
+                        context={context}
+                        config={config}
+                        batches={batches}
+                        sources={sources}
+                      />
+                    </React.Suspense>
+                  ) : (
+                    <p role="status">
+                      Accede como presentador para consultar la auditoría
+                      privada.
+                    </p>
+                  )
                 }
               />
               <Route
@@ -2011,10 +2083,15 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
     };
   }, [id, context]);
   if (!a)
-    return (
-      <div role={error ? "alert" : "status"}>
-        {error || "Cargando noticia…"}
-      </div>
+    return error ? (
+      <section className="card detail-card" role="alert">
+        <p>{error}</p>
+        <button className="button" onClick={() => window.location.reload()}>
+          Recuperar noticia
+        </button>
+      </section>
+    ) : (
+      <LoadingBlock label="Cargando noticia y evidencia…" />
     );
   const renderAssessment = (
     s: NonNullable<Article["analysis"]>["assessments"][number],
@@ -2404,7 +2481,7 @@ function RetryAnalysis({ article, action }: any) {
             className="modal-body"
             onSubmit={async (e) => {
               e.preventDefault();
-              await action(
+              const accepted = await action(
                 () =>
                   api("/articles/" + article.id + "/retry", {
                     method: "POST",
@@ -2419,7 +2496,7 @@ function RetryAnalysis({ article, action }: any) {
                   }),
                 "Diagnóstico registrado. Ejecución encolada con historial y consumo conservados.",
               );
-              setOpen(false);
+              if (accepted) setOpen(false);
             }}
           >
             <p>
@@ -2452,8 +2529,11 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
   const [s, setS] = useState<Supplier | null>(null),
     [draft, setDraft] = useState<{ id: string; text: string } | null>(null),
     [error, setError] = useState(""),
+    [draftMessage, setDraftMessage] = useState(""),
     [resolution, setResolution] = useState<string | null>(null),
-    [reason, setReason] = useState("");
+    [reason, setReason] = useState(""),
+    [resolving, setResolving] = useState(false),
+    [resolutionError, setResolutionError] = useState("");
   useEffect(() => {
     let active = true,
       inFlight = false;
@@ -2506,7 +2586,17 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
       setError((e as Error).message);
     }
   }
-  if (!s) return <div role="status">{error || "Cargando proveedor…"}</div>;
+  if (!s)
+    return error ? (
+      <section className="card detail-card" role="alert">
+        <p>{error}</p>
+        <button className="button" onClick={() => window.location.reload()}>
+          Recargar ficha
+        </button>
+      </section>
+    ) : (
+      <LoadingBlock label="Cargando proveedor y evidencias…" />
+    );
   return (
     <>
       <Link className="text-link" to={scopedPath("/proveedores", context)}>
@@ -2645,20 +2735,22 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     Máximo histórico: {number(i.historical_priority)} / 100
                   </small>
                   <div className="inline">
-                    <button
+                    <AsyncButton
                       className="button primary"
                       disabled={!presenter}
-                      onClick={() => create("supplier", i.id)}
+                      busyLabel="Preparando borrador…"
+                      onAction={() => create("supplier", i.id)}
                     >
                       Consultar proveedor
-                    </button>
-                    <button
+                    </AsyncButton>
+                    <AsyncButton
                       className="button"
                       disabled={!presenter || !s.alternate_id}
-                      onClick={() => create("alternate", i.id)}
+                      busyLabel="Preparando borrador…"
+                      onAction={() => create("alternate", i.id)}
                     >
                       Consultar alternativo
-                    </button>
+                    </AsyncButton>
                     {i.state !== "resolved" && (
                       <button
                         className="button"
@@ -2815,6 +2907,9 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
             className="modal-body"
             onSubmit={async (e) => {
               e.preventDefault();
+              if (resolving) return;
+              setResolving(true);
+              setResolutionError("");
               try {
                 await api("/incidents/" + resolution + "/resolve", {
                   method: "POST",
@@ -2824,10 +2919,11 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                 setS(await api("/suppliers/" + id + "?context=" + context));
                 refresh();
               } catch (e) {
-                setError((e as Error).message);
-              }
+                setResolutionError((e as Error).message);
+              } finally { setResolving(false); }
             }}
           >
+            {resolutionError && <p role="alert">{resolutionError}</p>}
             <label htmlFor="reason">Motivo y evidencia de resolución</label>
             <textarea
               id="reason"
@@ -2837,8 +2933,8 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             />
-            <button className="button primary" type="submit">
-              Registrar resolución
+            <button className="button primary" type="submit" disabled={resolving} aria-busy={resolving}>
+              {resolving ? "Guardando resolución…" : "Registrar resolución"}
             </button>
           </form>
         </Modal>
@@ -2849,6 +2945,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
             <div className="notice info">
               Borrador editable. No se envía a ningún destinatario.
             </div>
+            {draftMessage && <p role="status">{draftMessage}</p>}
             <label htmlFor="draft">Texto de la consulta</label>
             <textarea
               id="draft"
@@ -2857,24 +2954,27 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
               onChange={(e) => setDraft({ ...draft, text: e.target.value })}
             />
             <div className="inline">
-              <button
+              <AsyncButton
                 className="button primary"
-                onClick={() =>
-                  action(() =>
-                    api("/drafts/" + draft.id, {
-                      method: "PATCH",
-                      body: JSON.stringify({ text: draft.text }),
-                    }),
-                  )
-                }
+                busyLabel="Guardando…"
+                onAction={async () => {
+                  await api("/drafts/" + draft.id, {
+                    method: "PATCH",
+                    body: JSON.stringify({ text: draft.text }),
+                  });
+                  setDraftMessage("Borrador guardado.");
+                }}
               >
                 Guardar
-              </button>
+              </AsyncButton>
               <button
                 className="button"
                 onClick={() =>
                   navigator.clipboard
                     .writeText(draft.text)
+                    .then(() =>
+                      setDraftMessage("Texto copiado al portapapeles."),
+                    )
                     .catch(() =>
                       setError(
                         "No se pudo copiar. Selecciona y copia el texto.",
@@ -3014,7 +3114,7 @@ function MaterialDetail() {
 }
 function Batches({ batches, presenter, action }: any) {
   const [busy, setBusy] = useState<string | null>(null),
-    [profile, setProfile] = useState("1.0.0");
+    [profile, setProfile] = useState(DEFAULT_ANALYSIS_PROFILE);
   return (
     <section className="card batches">
       <div className="section-heading">
@@ -3108,18 +3208,20 @@ function Batches({ batches, presenter, action }: any) {
                   onClean={async () => {}}
                 />
               )}
-              <button
-                className="button"
+              <AsyncButton
                 disabled={!presenter || b.done !== b.count || b.errors > 0}
-                onClick={() =>
-                  window.location.assign(
+                onAction={() =>
+                  downloadFile(
                     "/api/batches/" + b.id + "/export.xlsx",
+                    (b.filename || "resultados") + ".xlsx",
                   )
                 }
+                busyLabel="Preparando descarga…"
+                successLabel="Archivo preparado. Comprueba las descargas del navegador."
               >
                 <Download size={16} />
                 Exportar
-              </button>
+              </AsyncButton>
             </div>
           </div>
         ))
@@ -3350,7 +3452,7 @@ function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
             Especificaciones, productos y proveedores del catálogo importado
           </p>
         </div>
-        <Badge>{materials.length} materiales</Badge>
+        <Badge>{loading ? "Cargando catálogo…" : error ? "Catálogo no disponible" : `${materials.length} materiales`}</Badge>
       </div>
       <div className="ranking-toolbar material-filters">
         <label>
@@ -3390,8 +3492,8 @@ function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
         </p>
       )}
       {loading ? (
-        <p role="status">Cargando materiales…</p>
-      ) : rows.length ? (
+        <LoadingBlock label="Cargando materiales…" />
+      ) : error ? <button className="button" onClick={() => window.location.reload()}>Reintentar carga</button> : rows.length ? (
         <div className="materials-grid">
           {rows.map((m) => (
             <article className="source-card" key={m.material_id}>
@@ -3789,7 +3891,7 @@ function DemoControl({
     [options, setOptions] = useState<any[]>([]),
     [selection, setSelection] = useState<string[]>([]),
     [mode, setMode] = useState<"delete" | "rerun">(initialMode),
-    [analysisProfile, setAnalysisProfile] = useState("1.0.0"),
+    [analysisProfile, setAnalysisProfile] = useState(DEFAULT_ANALYSIS_PROFILE),
     [preview, setPreview] = useState<any>(null),
     [confirmation, setConfirmation] = useState(""),
     [busy, setBusy] = useState(false),
@@ -3806,7 +3908,7 @@ function DemoControl({
     invalidate();
     setLoading(true);
     setMode(initialMode);
-    setAnalysisProfile("1.0.0");
+    setAnalysisProfile(DEFAULT_ANALYSIS_PROFILE);
     setSelection(initialSelection);
     try {
       const rows = await api("/demo/options");
@@ -3953,20 +4055,20 @@ function DemoControl({
                   disabled={busy}
                 >
                   <option value="1.0.0">
-                    1.0.0 · predeterminado (RSS actual 2.2)
+                    1.0.0 · anterior / rollback (RSS 2.2)
                   </option>
                   <option value="link-2.2.0">
                     link-2.2.0 · vínculo y revisión experimental
                   </option>
                   <option value={CANDIDATE}>
-                    Candidata · exposición 3.3 / revisión 1.2
+                    Perfil actual · 3.4.2 / revisión 1.3.1
                   </option>
                 </select>
                 <small>
-                  Conserva versiones anteriores y borradores. La candidata se
-                  aplica también al RSS seleccionado; 1.0 conserva el motor RSS
-                  actual. Validación inspeccionada: comparación retrospectiva.
-                  No ejecutar Test/LiveDay como desarrollo.
+                  Conserva versiones anteriores y borradores. El perfil actual
+                  se aplica también al RSS seleccionado; 1.0 conserva el motor
+                  RSS actual. Validación inspeccionada: comparación
+                  retrospectiva. No ejecutar Test/LiveDay como desarrollo.
                 </small>
               </label>
             )}

@@ -1,3 +1,4 @@
+import { DEFAULT_ANALYSIS_PROFILE } from "./AnalysisProfile";
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { api } from "./api";
@@ -100,7 +101,9 @@ function SinglePendingAnalysis({
               ) {
                 const r = await api("/articles/" + item.id + "/analyze", {
                   method: "POST",
-                  body: JSON.stringify({ analysis_profile: "1.0.0" }),
+                  body: JSON.stringify({
+                    analysis_profile: DEFAULT_ANALYSIS_PROFILE,
+                  }),
                 });
                 id = r.job_ids[0];
               }
@@ -176,12 +179,21 @@ function BulkPendingAnalysis({
       return "";
     }
   };
+  const savedRequest = useRef<any>(null);
+  const [trackingVersion, setTrackingVersion] = useState(0);
   const [id, setId] = useState(readId),
     [group, setGroup] = useState<any>(null),
     [busy, setBusy] = useState(false),
     [preparingTotal, setPreparingTotal] = useState(0),
     [error, setError] = useState("");
   useEffect(() => {
+    try {
+      savedRequest.current = JSON.parse(
+        sessionStorage.getItem(storageKey + ":request") || "null",
+      );
+    } catch {
+      savedRequest.current = null;
+    }
     setId(readId());
     setGroup(null);
     setError("");
@@ -191,6 +203,7 @@ function BulkPendingAnalysis({
       return;
     let alive = true,
       inFlight = false;
+    let timer: ReturnType<typeof window.setInterval>;
     const load = async () => {
       if (inFlight) return;
       inFlight = true;
@@ -203,19 +216,20 @@ function BulkPendingAnalysis({
       } catch (e) {
         if (alive)
           setError("No se pudo recuperar el progreso: " + (e as Error).message);
+        clearInterval(timer);
       } finally {
         inFlight = false;
       }
     };
     void load();
-    const timer = window.setInterval(() => {
+    timer = window.setInterval(() => {
       if (document.visibilityState !== "hidden") void load();
     }, 2000);
     return () => {
       alive = false;
       clearInterval(timer);
     };
-  }, [id, presenter, group?.state]);
+  }, [id, presenter, group?.state, trackingVersion]);
   useEffect(() => {
     if (group && focusAfterStart.current) {
       focusAfterStart.current = false;
@@ -242,25 +256,44 @@ function BulkPendingAnalysis({
         }
         onClick={async () => {
           focusAfterStart.current = true;
-          const requestId = crypto.randomUUID();
+          const recovering = Boolean(error && savedRequest.current);
+          const request = recovering
+            ? savedRequest.current
+            : {
+                request_id: crypto.randomUUID(),
+                article_ids: pending.map((a) => a.id),
+                context,
+                analysis_profile: DEFAULT_ANALYSIS_PROFILE,
+              };
+          const requestId = request.request_id;
+          savedRequest.current = request;
           setPreparingTotal(pending.length);
           setBusy(true);
           setError("");
           setGroup(null);
           try {
             sessionStorage.setItem(storageKey, requestId);
+            sessionStorage.setItem(
+              storageKey + ":request",
+              JSON.stringify(request),
+            );
           } catch {
             /* Optional browser continuity. */
           }
           try {
+            if (recovering) {
+              try {
+                const recovered = await api("/analysis/pending/" + requestId);
+                setGroup(recovered);
+                setId(recovered.id);
+                return;
+              } catch (e) {
+                if ((e as { status?: number }).status !== 404) throw e;
+              }
+            }
             const result = await api("/analysis/pending", {
               method: "POST",
-              body: JSON.stringify({
-                request_id: requestId,
-                article_ids: pending.map((a) => a.id),
-                context,
-                analysis_profile: "1.0.0",
-              }),
+              body: JSON.stringify(request),
             });
             setGroup(result);
             setId(result.id);
@@ -345,7 +378,15 @@ function BulkPendingAnalysis({
       )}
       {error && (
         <p role="alert">
-          {error} La cola se conserva; recarga para recuperar su estado.
+          {error} La cola se conserva.
+          <button
+            className="button"
+            onClick={() => {
+              setTrackingVersion((n) => n + 1);
+            }}
+          >
+            Recuperar progreso guardado
+          </button>
         </p>
       )}
     </div>

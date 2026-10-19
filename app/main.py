@@ -14,7 +14,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.db import get_db, DatabaseConfigurationError
 from app.settings import settings, ROOT, POLICY, RSS
 from app.rss_questions import VERSION as RSS_QUESTION_VERSION
-from app.profiles import DEFAULT_PROFILE, PUBLIC_EXERCISE_PROFILES
+from app.profiles import DEFAULT_PROFILE, PUBLIC_EXERCISE_PROFILES, LEGACY_PROFILE
 from app.models import *
 from app.auth import presenter, identity, login, codec
 from app.importer import import_excel, export_batch, digest
@@ -190,6 +190,8 @@ def config():
         "model": settings.jev_model,
         "policy_version": POLICY["version"],
         "question_version": DEFAULT_PROFILE,
+        "default_profile": DEFAULT_PROFILE,
+        "default_components": __import__("app.profiles",fromlist=["profile_snapshot"]).profile_snapshot(DEFAULT_PROFILE),
         "rss_question_version": RSS_QUESTION_VERSION,
         "exercise_profiles": list(PUBLIC_EXERCISE_PROFILES),
         "engine_configured": bool(settings.typesafe_api_key.get_secret_value()),
@@ -411,7 +413,7 @@ def article(aid: str, db: Session = Depends(get_db)):
         raise HTTPException(404, "Noticia no encontrada")
     from app.queue import analysis_key
     current_job = db.scalar(select(Job).where(Job.key == analysis_key(a)))
-    return {**article_view(db, a), "analysis_job": {"id": current_job.id, "state": current_job.state, "error": current_job.error, "analysis_profile": current_job.payload.get("analysis_profile", DEFAULT_PROFILE)} if current_job else None}
+    return {**article_view(db, a), "analysis_job": {"id": current_job.id, "state": current_job.state, "error": current_job.error, "analysis_profile": current_job.payload.get("analysis_profile", LEGACY_PROFILE)} if current_job else None}
 
 
 @app.get("/api/sources")
@@ -512,7 +514,9 @@ def job(jid: str, db: Session = Depends(get_db)):
     return {
         "id": j.id,
         "kind": j.kind,
-        "analysis_profile": j.payload.get("analysis_profile", DEFAULT_PROFILE),
+        "analysis_profile": j.payload.get("analysis_profile", LEGACY_PROFILE),
+        "profile_snapshot": j.payload.get("profile_snapshot"),
+        "telemetry": j.payload.get("telemetry"),
         "last_completed_step": (steps.get(last.stage.split(".part")[0], last.stage.split(".part")[0]) + (" · grupo " + last.stage.split(".part")[1] if ".part" in last.stage else "")) if last else None,
         "state": j.state,
         "attempts": j.attempts,
@@ -846,8 +850,6 @@ def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
     require_current_worker(db)
     if db.scalar(select(func.count()).select_from(Supplier)) != 40:
         raise HTTPException(409, "Importa primero las 40 identidades de la cartera.")
-    if body.analysis_profile != DEFAULT_PROFILE and not body.article_ids:
-        raise HTTPException(422, "Selecciona explícitamente hasta10noticias para la candidata.")
     if body.article_ids:
         if len(set(body.article_ids)) != len(body.article_ids): raise HTTPException(422, "Selección con IDs repetidos")
         chosen = db.scalars(select(Article).where(Article.id.in_(body.article_ids))).all()
@@ -865,7 +867,7 @@ def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
 
 
 @app.post("/api/articles/{aid}/analyze", status_code=202, dependencies=[Depends(presenter)])
-def analyze_article(aid: str, body: AnalysisSelection, db: Session = Depends(get_db)):
+def analyze_article(aid: str, body: AnalysisSelection = AnalysisSelection(), db: Session = Depends(get_db)):
     from app.reanalysis import enqueue_article
     from app.profiles import maximum_requests
     require_current_worker(db)
@@ -1352,6 +1354,12 @@ def campaign_diagnose(cid: str, body: CampaignDiagnosis, db: Session = Depends(g
     c.freeze={**c.freeze,'diagnosis_history':[ *c.freeze.get('diagnosis_history',[]),{'at':stamp,'note':body.note}]}
     c.state='prepared';db.commit()
     return {'state':c.state,'message':'Fallos conservados; reanudar solo ejecuta entradas pendientes, nunca repite predicciones válidas.'}
+
+
+@app.get("/api/model/final")
+def final_profile_report(sample: Literal["training", "validation", "labelled"] = "labelled", db: Session = Depends(get_db)):
+    from app.final_model import report
+    return report(db, sample)
 
 static = ROOT / "frontend/dist"
 if (static / "assets").exists():

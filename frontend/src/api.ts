@@ -11,21 +11,40 @@ export async function api<T = any>(
     headers.set("Content-Type", "application/json");
   if (options.method && options.method !== "GET")
     headers.set("X-CSRF-Token", csrf);
-  const response = await fetch("/api" + path, {
-    ...options,
-    headers,
-    credentials: "same-origin",
-  });
-  if (!response.ok) {
-    const e = await response
-      .json()
-      .catch(() => ({ message: "Error de conexión" }));
-    throw new Error(
-      (typeof e.detail === "string" ? e.detail : e.message) ||
-        "No se pudo completar la operación",
-    );
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), 30000);
+  try {
+    const response = await fetch("/api" + path, {
+      ...options,
+      headers,
+      credentials: "same-origin",
+      signal: options.signal
+        ? AbortSignal.any([options.signal, controller.signal])
+        : controller.signal,
+    });
+    if (!response.ok) {
+      const e = await response.json().catch(() => ({}));
+      const error = new Error(
+        (typeof e.detail === "string" ? e.detail : e.message) ||
+          "No se pudo completar la operación",
+      ) as Error & { status: number };
+      error.status = response.status;
+      throw error;
+    }
+    return await response.json();
+  } catch (e) {
+    if (controller.signal.aborted)
+      throw new Error(
+        "La operación tardó demasiado. Consulta su estado guardado antes de reintentar.",
+      );
+    if (e instanceof TypeError)
+      throw new Error(
+        "No se pudo conectar. Conservamos los datos visibles; vuelve a consultar el estado.",
+      );
+    throw e;
+  } finally {
+    clearTimeout(timer);
   }
-  return response.json();
 }
 export const date = (v?: string) =>
   v

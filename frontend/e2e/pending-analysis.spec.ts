@@ -29,7 +29,7 @@ for (const width of [360, 390, 768, 1024, 1440])
         posts.push(p);
         const body = route.request().postDataJSON();
         expect(body.article_ids).toEqual(["B"]);
-        expect(body.analysis_profile).toBe("1.0.0");
+        expect(body.analysis_profile).toBe("radar-1.0.0-candidate");
         queued = true;
         selection = {
           id: body.request_id,
@@ -288,7 +288,7 @@ for (const state of ["pending", "done"])
       if (route.request().method() === "POST") {
         expect(p).toBe("/articles/EXCEL-MOCK/analyze");
         expect(route.request().postDataJSON()).toEqual({
-          analysis_profile: "1.0.0",
+          analysis_profile: "radar-1.0.0-candidate",
         });
         posted = true;
         return route.fulfill({

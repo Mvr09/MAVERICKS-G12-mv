@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { api, date } from "./api";
-import { AnalysisProfile, CANDIDATE } from "./AnalysisProfile";
+import {
+  AnalysisProfile,
+  CANDIDATE,
+  DEFAULT_ANALYSIS_PROFILE,
+} from "./AnalysisProfile";
 import { procurement } from "./procurement";
 import type { Article, Supplier } from "./types";
 
@@ -9,8 +13,10 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
   const [job, setJob] = useState<any>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
-    [profile, setProfile] = useState("1.0.0"),
-    [ack, setAck] = useState(false);
+    [profile, setProfile] = useState(DEFAULT_ANALYSIS_PROFILE),
+    [ack, setAck] = useState(false),
+    [trackingPaused, setTrackingPaused] = useState(false),
+    [trackingVersion, setTrackingVersion] = useState(0);
   const focusAfterRun = useRef(false);
   const resultStatus = useRef<HTMLSpanElement>(null);
   const analyzeButton = useRef<HTMLButtonElement>(null);
@@ -23,7 +29,10 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
             : { ...previous, ...a.analysis_job }
           : a.analysis_job,
       );
-      if (a.analysis_job.analysis_profile)
+      if (
+        a.analysis_job.analysis_profile &&
+        ["queued", "running"].includes(a.analysis_job.state)
+      )
         setProfile(a.analysis_job.analysis_profile);
     }
   }, [a.id, a.analysis_job?.id, a.analysis_job?.state]);
@@ -54,8 +63,11 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
   }, [a.id]);
   useEffect(() => {
     if (!job?.id || ["done", "error", "cancelled"].includes(job.state)) return;
-    let active = true;
+    let active = true,
+      inFlight = false;
     const timer = setInterval(() => {
+      if (inFlight || document.hidden) return;
+      inFlight = true;
       api("/jobs/" + job.id)
         .then((j) => {
           if (active) {
@@ -65,14 +77,21 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
           }
         })
         .catch(() => {
-          if (active) setError("No se pudo actualizar el trabajo.");
+          if (active) {
+            setError("No se pudo actualizar el trabajo. La cola se conserva.");
+            setTrackingPaused(true);
+          }
+          clearInterval(timer);
+        })
+        .finally(() => {
+          inFlight = false;
         });
     }, 1500);
     return () => {
       active = false;
       clearInterval(timer);
     };
-  }, [job?.id, job?.state]);
+  }, [job?.id, job?.state, trackingVersion]);
   const activeJob =
     !!job && !["done", "error", "cancelled"].includes(job.state);
   const rerun = a.state !== "pending";
@@ -116,9 +135,7 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
                     : {
                         limit: 1,
                         article_ids: [a.id],
-                        ...(profile === CANDIDATE
-                          ? { analysis_profile: profile }
-                          : {}),
+                        analysis_profile: profile,
                       },
                 ),
               },
@@ -140,17 +157,19 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
             : "Reanalizar con este perfil"}
       </button>
       <span role="status" ref={resultStatus} tabIndex={-1}>
-        {job?.state === "queued"
-          ? "En cola · esperando worker"
-          : job?.state === "running"
-            ? job.network_requests === 0
-              ? "Preparando lectura y contexto de la noticia"
-              : "JEV está analizando esta noticia"
-            : job?.state === "done"
-              ? "Trabajo completado · resultado actualizado"
-              : job?.state === "error"
-                ? "El análisis falló; revisa el diagnóstico"
-                : ""}
+        {trackingPaused
+          ? "Seguimiento interrumpido; estado pendiente de recuperar"
+          : job?.state === "queued"
+            ? "En cola · esperando worker"
+            : job?.state === "running"
+              ? job.network_requests === 0
+                ? "Preparando lectura y contexto de la noticia"
+                : "JEV está analizando esta noticia"
+              : job?.state === "done"
+                ? "Trabajo completado · resultado actualizado"
+                : job?.state === "error"
+                  ? "El análisis falló; revisa el diagnóstico"
+                  : ""}
       </span>
       {job?.state === "running" && job.last_completed_step && (
         <small role="status">
@@ -158,7 +177,23 @@ export function RssArticleAnalysis({ article: a }: { article: Article }) {
           {job.network_requests} peticiones nuevas en esta ejecución.
         </small>
       )}
-      {error && <p role="alert">{error}</p>}
+      {error && (
+        <p role="alert">
+          {error}{" "}
+          {trackingPaused && (
+            <button
+              className="button"
+              onClick={() => {
+                setError("");
+                setTrackingPaused(false);
+                setTrackingVersion((n) => n + 1);
+              }}
+            >
+              Recuperar seguimiento
+            </button>
+          )}
+        </p>
+      )}
     </div>
   );
 }

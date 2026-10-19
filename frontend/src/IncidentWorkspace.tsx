@@ -1,3 +1,4 @@
+import { AsyncButton } from "./OperationFeedback";
 import { useEffect, useRef, useState } from "react";
 import { api, date } from "./api";
 const labels: Record<string, string> = {
@@ -75,6 +76,7 @@ export function IncidentWorkspace({ incidentId }: { incidentId: string }) {
             className="operation-form"
             onSubmit={async (e) => {
               e.preventDefault();
+              if (busy) return;
               setBusy(true);
               setError("");
               try {
@@ -226,9 +228,10 @@ export function IncidentWorkspace({ incidentId }: { incidentId: string }) {
                 onChange={(e) => setDraft({ ...draft, text: e.target.value })}
               />
             </label>
-            <button
+            <AsyncButton
               className="button primary"
-              onClick={async () => {
+              busyLabel="Guardando consulta…"
+              onAction={async () => {
                 try {
                   await api("/drafts/" + draft.id, {
                     method: "PATCH",
@@ -238,11 +241,12 @@ export function IncidentWorkspace({ incidentId }: { incidentId: string }) {
                   dialog.current?.close();
                 } catch (e) {
                   setError((e as Error).message);
+                  throw e;
                 }
               }}
             >
               Guardar consulta
-            </button>
+            </AsyncButton>
           </>
         )}
       </dialog>

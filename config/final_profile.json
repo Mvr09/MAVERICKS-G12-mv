@@ -1,0 +1,33 @@
+{
+  "profile": "radar-1.0.0-candidate",
+  "label": "Perfil actual · 3.4.2",
+  "campaign_id": "6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7",
+  "freeze_hash": "9d4ebfa15bf99f620dbd06e9ec4489b08fe31eabe0749b0b4146d20803cc993f",
+  "evaluation_commit": "db5d078",
+  "components": {
+    "profile": "radar-1.0.0-candidate",
+    "matching": "link-3.3.0",
+    "retrieval": "link-3.0.0-dev",
+    "questions": "decision-3.4.2",
+    "risk": "risk-focus-1.2.0",
+    "review": "review-1.3.1",
+    "support": "decision-support-1.0.0",
+    "facts": "decision-facts-1.0.0",
+    "exclusion": "relational-exclusion-1.0.0",
+    "duration": "duration-1.1.0",
+    "transport": "fanout-1.0.0",
+    "policy": "1.0.0",
+    "model": "jev-1.13.0"
+  },
+  "historical_rate": {
+    "per_million_tokens": 0.03941248835,
+    "symbol": "$",
+    "date": "2026-10-19",
+    "source": "Totales aportados por el usuario; mismo ámbito y periodo asumidos",
+    "spend": 2.6045,
+    "tokens": 66083115,
+    "requests": 5157,
+    "official_tariff": false
+  },
+  "simulation_time_source": "campaign"
+}

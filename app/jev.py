@@ -238,9 +238,11 @@ class JevClient:
         request_ceiling=None,
         grant_id=None,
         isolated_cache=False,
+        cache_namespace=None,
     ):
         self.grant_id = grant_id
         self.isolated_cache = isolated_cache
+        self.cache_namespace = cache_namespace
         self.request_ceiling = request_ceiling
         self.run_key = run_key
         self.diagnostic_ack_at = diagnostic_ack_at
@@ -254,6 +256,7 @@ class JevClient:
     def ask(self, payload, stage, deadline):
         # Cache includes the entire effective payload plus question version.
         key = digest({"payload": payload, "questions": POLICY["question_version"]})
+        if self.cache_namespace: key=digest({"request":key,"profile_snapshot":self.cache_namespace})
         if self.run_key:
             key = digest({"request": key, "run_key": self.run_key})
         cached = self.db.get(RequestCache, key)

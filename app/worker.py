@@ -64,15 +64,33 @@ def run_job(jid):
                     article.state = "error"
                     db.commit()
                     return
+                snapshot = j.payload.get("profile_snapshot")
+                if snapshot:
+                    from app.profiles import profile_snapshot
+                    if snapshot != profile_snapshot(j.payload.get("analysis_profile", "1.0.0"), article.context):
+                        j.state = "error"; j.error = "PROFILE_CONFIG_CHANGED"; article.state = "error"
+                        j.lease_until = None; db.commit(); return
+                j.payload = {**j.payload, "telemetry": {**j.payload.get("telemetry", {}), "started_at": j.payload.get("telemetry", {}).get("started_at") or now().isoformat(), "environment": "Railway" if os.environ.get("RAILWAY_GIT_COMMIT_SHA") else "local", "revision": os.environ.get("RAILWAY_GIT_COMMIT_SHA", "local")}}
+                db.commit()
                 r = process_article(
                     db,
                     j.payload["article_id"],
                     diagnostic_ack_at=j.payload.get("diagnostic_ack_at"),
                     profile=j.payload.get("analysis_profile", "1.0.0"),
+                    profile_snapshot=snapshot,
                 )
                 j = db.get(Job, jid)
                 j.state = "error" if r["analysis_status"] == "error" else "done"
                 j.error = r["error"]
+                from app.models import Analysis, ApiCall
+                from app.queue import analysis_key
+                generation=j.payload.get("generation",0)
+                result_row=db.scalar(select(Analysis).where(Analysis.article_id==article.id,Analysis.generation==generation).order_by(Analysis.created_at.desc()))
+                calls=db.scalars(select(ApiCall).where(ApiCall.article_id==article.id,ApiCall.run_key==(f"{article.id}:generation:{generation}" if generation else ""))).all()
+                j.payload = {**j.payload, "telemetry": {**j.payload.get("telemetry", {}), "completed_at": now().isoformat(),
+                    "queued_at":j.payload.get("queued_at"),"new_requests":len(calls),
+                    "cached_stages":result_row.raw.get("_cache_stages",[]) if result_row else [],
+                    "usage":{k:sum(c.usage.get(k,0) for c in calls) if calls and all(isinstance(c.usage.get(k),(int,float)) for c in calls) else None for k in ("input_tokens","output_tokens","total_tokens")}}}
             elif j.kind == "campaign":
                 from app.campaigns import process
                 result = process(db, j.payload["run_id"])

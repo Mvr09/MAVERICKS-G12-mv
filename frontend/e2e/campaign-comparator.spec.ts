@@ -167,7 +167,7 @@ for (const width of [360, 390, 768, 1024, 1440])
             : defaults[p] || {},
       });
     });
-    await page.goto("/modelo?context=exercise");
+    await page.goto("/administracion/modelo?context=exercise");
     await expect(
       page.getByRole("heading", { name: "Dos perfiles. Las mismas noticias." }),
     ).toBeVisible();
