@@ -1,0 +1,183 @@
+{
+  "expected_commit": "43f1d66e5dc8d833a192e6c07c947cc2a4c1839c",
+  "requests": [
+    {
+      "path": "/healthz",
+      "http": 200
+    },
+    {
+      "path": "/readyz",
+      "http": 200
+    },
+    {
+      "path": "/",
+      "http": 200
+    },
+    {
+      "path": "/assets/icons-DTN_LyQ6.js",
+      "http": 200
+    },
+    {
+      "path": "/assets/_commonjsHelpers-CqkleIqs.js",
+      "http": 200
+    },
+    {
+      "path": "/assets/react-vendor-C7qHzZhZ.js",
+      "http": 200
+    },
+    {
+      "path": "/assets/index-DkJQxMUT.js",
+      "http": 200
+    },
+    {
+      "path": "/assets/index-BbWCQlxc.css",
+      "http": 200
+    },
+    {
+      "path": "/api/config",
+      "http": 200
+    },
+    {
+      "path": "/api/suppliers?context=rss",
+      "http": 200
+    },
+    {
+      "path": "/api/suppliers/S024?context=rss",
+      "http": 200
+    },
+    {
+      "path": "/proveedores/S024",
+      "http": 200
+    },
+    {
+      "path": "/noticias",
+      "http": 200
+    },
+    {
+      "path": "/modelo",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/worker",
+      "http": 200
+    },
+    {
+      "path": "/api/sources",
+      "http": 200
+    }
+  ],
+  "errors": [],
+  "new_analysis": false,
+  "observed_commit": "43f1d66e5dc8d833a192e6c07c947cc2a4c1839c",
+  "assets": 5,
+  "config": {
+    "candidate_versions": {
+      "profile": "radar-1.0.0-candidate",
+      "matching": "link-3.3.0",
+      "retrieval": "link-3.0.0-dev",
+      "questions": "decision-3.4.2",
+      "risk": "risk-focus-1.2.0",
+      "review": "review-1.3.1",
+      "support": "decision-support-1.0.0",
+      "facts": "decision-facts-1.0.0",
+      "exclusion": "relational-exclusion-1.0.0",
+      "duration": "duration-1.1.0",
+      "transport": "fanout-1.0.0"
+    },
+    "model": "jev-1.13.0",
+    "policy_version": "1.0.0",
+    "question_version": "1.0.0",
+    "rss_question_version": "rss-2.2.0",
+    "exercise_profiles": [
+      "1.0.0",
+      "link-2.2.0",
+      "radar-1.0.0-candidate"
+    ],
+    "engine_configured": true,
+    "bands": [
+      {
+        "id": "low",
+        "label_es": "Baja",
+        "min": 0
+      },
+      {
+        "id": "medium",
+        "label_es": "Media",
+        "min": 35
+      },
+      {
+        "id": "high",
+        "label_es": "Alta",
+        "min": 65
+      },
+      {
+        "id": "critical",
+        "label_es": "Crítica",
+        "min": 80
+      }
+    ],
+    "cooldown_seconds": 30,
+    "fixtures": false,
+    "rss_paid_analysis": false,
+    "jev_budget_limits_enabled": false
+  },
+  "catalog_count": 40,
+  "administration_protected": true,
+  "worker": {
+    "online": true,
+    "compatible": true,
+    "revision": "43f1d66e5dc8d833a192e6c07c947cc2a4c1839c"
+  },
+  "rss_recorded_status": [
+    {
+      "id": "biopharma_dive",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-19T15:15:12.918654+00:00"
+    },
+    {
+      "id": "el_pais",
+      "status": "ok",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-19T15:15:12.574303+00:00"
+    },
+    {
+      "id": "ema",
+      "status": "ok",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-19T15:15:12.650205+00:00"
+    },
+    {
+      "id": "gdacs",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-19T15:15:12.640046+00:00"
+    },
+    {
+      "id": "supply_chain_dive",
+      "status": "unchanged",
+      "http_status": 304,
+      "last_attempt_at": "2026-10-19T15:15:12.623715+00:00"
+    },
+    {
+      "id": "the_loadstar",
+      "status": "ok",
+      "http_status": 200,
+      "last_attempt_at": "2026-10-19T15:15:12.917310+00:00"
+    }
+  ],
+  "checked_at": "2026-10-19T15:16:23.087224+00:00",
+  "passed": true
+}

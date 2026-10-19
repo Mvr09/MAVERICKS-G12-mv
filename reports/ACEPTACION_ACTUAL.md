@@ -1,6 +1,15 @@
 # Aceptación actual · Supplier Risk Radar
 
-Registro:19-10-2026. **19 pasa /1 falla (A06).** Default **1.0.0**; única candidata seleccionable **3.4.2/revisión1.3.1**, sin promoción. Versión funcional y HTTP observados en `window-final-verification.json`; esta matriz distingue herencia de ejecución nueva.
+Registro:19-10-2026. **19 pasa /1 falla (A06).** Default **1.0.0**; única candidata seleccionable **3.4.2/revisión1.3.1**, sin promoción. Versión funcional **43f1d66** y HTTP observados en `operational-public.json`; esta matriz distingue herencia de ejecución nueva.
+
+## Entrega operativa verificada · 19-10-2026
+
+- **146 pruebas unitarias/integración y 26 E2E dirigidas distintas** pasan; mocks identificados a360/390/768/1440. Build, paquete119archivos y migración0009/24tablas comprobados. Una deprecación externaAnyio.
+- Railway web/worker43f1d66 compatibles. /,/healthz,/readyz,5assets,catálogo40,ficha y rutas profundas200; administración401 yoriginales404. Revisión→decisión→consulta→acción completada→seguimiento persistidos trasredeploy,390/1440 sin overflow. El control humano está identificado como ejercicio ficticio,sin confirmación externa del proveedor.
+- Original JEV y métricas conservados; exportación3training idéntica celda a celda. Notas privadas no aparecen en lectura pública. Se conserva incertidumbre en proveedores nuevos,la urgencia sustentada por otras fuentes y el historial de versiones. Pruebas de actualización de fuente sintéticas/mocked;no se fuerza actualizaciónRSS en producción.
+- Seis fuentesRSS consultadas;2noticias reales analizadas,12peticiones200/0reintentos,RSS62→74,ejercicio95 intacto. Una automáticaN/Nsinvínculo;otraN/Nsinvínculo requiere revisión legítima. No son etiquetas de evaluación. Periódico de pago false.
+- Mejora medida exclusivamente de recuperación preliminar en30training:19→20pares relevantes de22,5candidatos adicionales enambos,2omisiones restantes. No acredita mejor clasificación ni generalizaciónRSS.
+- **A06 abierto**,A14físico heredado yA20histórico conservados. Evidencia actual:operational-live.json,operational-public.json,operational-source-audit.json yoperational-quality.json. La tabla conserva historia y alcance;las nuevas comprobaciones complementan los criterios afectados.
 
 | ID | Estado | Evidencia y límite |
 |---|---|---|

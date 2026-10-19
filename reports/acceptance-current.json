@@ -1,5 +1,5 @@
 {
-  "revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f",
+  "revision": "43f1d66e5dc8d833a192e6c07c947cc2a4c1839c",
   "default_profile": "1.0.0",
   "experimental_profile": "link-2.2.0",
   "rejected_proposal": "geo-1.0.1",
@@ -42,7 +42,7 @@
     {
       "id": "A07",
       "status": "pasa",
-      "evidence_and_limit": "Reconciliación afectada por reanálisis comprobada en PG aislado: no suma titulares, retira solo efectos de la generación sustituida y mantiene máximo de incidentes activos. No se llama recuperación a una clasificación sustituida."
+      "evidence_and_limit": "Reconciliación afectada por reanálisis comprobada en PG aislado: no suma titulares, retira solo efectos de la generación sustituida y mantiene máximo de incidentes activos. No se llama recuperación a una clasificación sustituida. Nueva evidencia: retiro de versiones de fuente solo tras análisis válido, sin cerrar evidencia compartida; PG sintético y pipeline model mock. Auditoría RSS pública43f1d66:0 contribuciones activas fuera de las100 noticias vigentes inspeccionadas, sin llamadasJEV."
     },
     {
       "id": "A08",
@@ -62,7 +62,7 @@
     {
       "id": "A11",
       "status": "pasa",
-      "evidence_and_limit": "Seis consultas reales terminadas por el worker a2e962f:2HTTP200/4HTTP304; JEV60→60. Fuente y hora en window-final-rss-sync.json;304 no es contenido nuevo. Dos análisis manuales3.3 previos y un nuevo3.4.2 de Namibia:incendio forestal,N/N,sin vínculo,solo resumen identificado,2HTTP200. TotalRSS13peticiones nuevas,12HTTP200/1HTTP400 diagnosticado; contador49→62; pago periódico false."
+      "evidence_and_limit": "Seis consultas reales terminadas por el worker a2e962f:2HTTP200/4HTTP304; JEV60→60. Fuente y hora en window-final-rss-sync.json;304 no es contenido nuevo. Dos análisis manuales3.3 previos y un nuevo3.4.2 de Namibia:incendio forestal,N/N,sin vínculo,solo resumen identificado,2HTTP200. TotalRSS13peticiones nuevas,12HTTP200/1HTTP400 diagnosticado; contador49→62; pago periódico false. Entrega operativa:6 consultas manuales completadas desde worker;2RSS reales con candidata3.4.2,12HTTP200/0reintentos,contador62→74. Uno doneN/N sin vínculo y otro reviewN/N sin vínculo;sin referencia independiente. Periódico de pago false."
     },
     {
       "id": "A12",
@@ -82,27 +82,27 @@
     {
       "id": "A15",
       "status": "pasa",
-      "evidence_and_limit": "ConsultaRSS real con cita e hipótesis:edición,guardado,copia con readback,TXT y recarga a4anchos. Borrador creado en4a818c1 persiste tras autodeploya2e962f. Oferta ferroviaria propia del alternativo visible; se pregunta adecuación antes de disponibilidad/capacidad. Continuidad de edición probada, sin envío externo. Workspace persistente por incidente,consultas reabribles,contexto conservado yadvertencia de cambio. Notas humanas privadas;Analysis/etiquetas/exportaciónoriginal intactos."
+      "evidence_and_limit": "ConsultaRSS real con cita e hipótesis:edición,guardado,copia con readback,TXT y recarga a4anchos. Borrador creado en4a818c1 persiste tras autodeploya2e962f. Oferta ferroviaria propia del alternativo visible; se pregunta adecuación antes de disponibilidad/capacidad. Continuidad de edición probada, sin envío externo. Workspace persistente por incidente,consultas reabribles,contexto conservado yadvertencia de cambio. Notas humanas privadas;Analysis/etiquetas/exportaciónoriginal intactos. 43f1d66:revisión funcional identificada de ejercicio ficticio→confirmación→borrador editable→acción completada→seguimiento persistidos en Railway. Reapertura390/1440 y trasredeploy. Sin confirmar entregas externas ni enviar comunicaciones."
     },
     {
       "id": "A16",
       "status": "pasa",
-      "evidence_and_limit": "Dos descargas reales390/1440 desdeResumen,HTTP200,ZIPXLSX válido y14filas contadas por estructura sin leer valores de celdas. Solo exportaciónLiveDay ya completada,0reanálisis; no se usa para ajustar. Contrato de IDs/orden/delimitador y bloqueo de errores heredado del exportador sin cambios. Candidata3.4.2:exportación real200 de3training,sin etiquetas de entrada,News_ID/orden ycolumnas verificados;noA20."
+      "evidence_and_limit": "Dos descargas reales390/1440 desdeResumen,HTTP200,ZIPXLSX válido y14filas contadas por estructura sin leer valores de celdas. Solo exportaciónLiveDay ya completada,0reanálisis; no se usa para ajustar. Contrato de IDs/orden/delimitador y bloqueo de errores heredado del exportador sin cambios. Candidata3.4.2:exportación real200 de3training,sin etiquetas de entrada,News_ID/orden ycolumnas verificados;noA20. Exportación de3training idéntica celda a celda antes/después de revisión humana. Analysis,EvaluationLabel y métricas originales conservados."
     },
     {
       "id": "A17",
       "status": "pasa",
-      "evidence_and_limit": "Esquema0008 y migración aditiva heredados; web/worker compatibles observados en HTTPS. Draft y análisis anteriores sobreviven a autodeploy. Pruebas PG aisladas de generaciones y rollback de proyección al fallar. No se simula una caída destructiva del worker en Railway. Migración0009aditiva,24tablas comprobadas enbase aislada;histórico humano protegido de limpieza ydowngrade con datos."
+      "evidence_and_limit": "Esquema0008 y migración aditiva heredados; web/worker compatibles observados en HTTPS. Draft y análisis anteriores sobreviven a autodeploy. Pruebas PG aisladas de generaciones y rollback de proyección al fallar. No se simula una caída destructiva del worker en Railway. Migración0009aditiva,24tablas comprobadas enbase aislada;histórico humano protegido de limpieza ydowngrade con datos. Nueva migración aditiva0009 con24tablas probada. Web yworker43f1d66 compatibles; persistencia real de decisión/acción/consulta trasredeploy. Sin borrado ni migración irreversible."
     },
     {
       "id": "A18",
       "status": "pasa",
-      "evidence_and_limit": "a2e962f:web yworker compatibles,HTTPS,/,healthz/readyz,5assets,catálogo40,ficha/rutas profundas200;administración y análisis401 anónimos yoriginales404. Modelo protegido renderiza candidata3.4.2/revisión1.3.1,441llamadas locales yensayos descartados sin erroresJS. Paquete112archivos sin .env,originales ni referencias protegidas; sesiones/permisos probados."
+      "evidence_and_limit": "a2e962f:web yworker compatibles,HTTPS,/,healthz/readyz,5assets,catálogo40,ficha/rutas profundas200;administración y análisis401 anónimos yoriginales404. Modelo protegido renderiza candidata3.4.2/revisión1.3.1,441llamadas locales yensayos descartados sin erroresJS. Paquete112archivos sin .env,originales ni referencias protegidas; sesiones/permisos probados. 146unit/integración,build ypaquete119archivos comprobados. Notas humanas privadas; administración401/originales404 en43f1d66."
     },
     {
       "id": "A19",
       "status": "pasa",
-      "evidence_and_limit": "HTTPSa2e962f en360/390/768/1440:sin overflow/erroresJS;filtros,foco,contexto,Escape yconsulta persistida. Material yproductos esperados cargados,oferta propia del alternativo visible.26E2E distintos con mocks. Guiones4min1440/390 más repetición de pasos afectados; emulación,no estudio de compradores ni móvil físico. JS inicial215653→118897bytes codificados observados,44.87%menos; no es latencia niA20. Nuevo recorrido3.4.2 real390/1440,Excel→noticia→proveedor→M02/Glucora→borrador;8E2E mock dirigidos yerror real422sin lote ni consumo. Flujo operativo nuevo:resolver revisión sin perder texto poractualizaciones;acciones yRSSseleccionado,mocks en360/390/768/1440. Pendiente verificación deldespliegue deesta ampliación."
+      "evidence_and_limit": "HTTPSa2e962f en360/390/768/1440:sin overflow/erroresJS;filtros,foco,contexto,Escape yconsulta persistida. Material yproductos esperados cargados,oferta propia del alternativo visible.26E2E distintos con mocks. Guiones4min1440/390 más repetición de pasos afectados; emulación,no estudio de compradores ni móvil físico. JS inicial215653→118897bytes codificados observados,44.87%menos; no es latencia niA20. Nuevo recorrido3.4.2 real390/1440,Excel→noticia→proveedor→M02/Glucora→borrador;8E2E mock dirigidos yerror real422sin lote ni consumo. Flujo operativo nuevo:resolver revisión sin perder texto poractualizaciones;acciones yRSSseleccionado,mocks en360/390/768/1440. Pendiente verificación deldespliegue deesta ampliación. Entrega operativa:26E2E dirigidos distintos con mocks a360/390/768/1440;fuente sustituida,mensajesconflicto,errores,lote ydiálogos. UI real390/1440 sin overflow,contexto yborrador conservados. Emulación,no nuevoensayo físico."
     },
     {
       "id": "A20",
@@ -136,8 +136,8 @@
     "real_rss": "rss-smoke-342.json"
   },
   "a20_measured_revision": "b4d697ba138fd63fdf8a219644fe89c66f5eb711",
-  "final_verification": "window-final-verification.json",
-  "evidence_revision_note": "Código a2e962f observado en web y worker; candidata seleccionable3.4.2, default1.0.0. Las observaciones posteriores al commit documental conservan el mismo código funcional.",
+  "final_verification": "operational-public.json",
+  "evidence_revision_note": "Entrega operativa43f1d66 observada en web y worker. Históricos anteriores conservados; publicación documental posterior no modifica código.",
   "review_policy_delivery": {
     "candidate": "review-1.1.0-candidate",
     "runtime_enabled": false,
@@ -167,7 +167,7 @@
     "a20_inheritance": "rss-a20-inheritance.json",
     "calls_are_cumulative_not_reset": true
   },
-  "revision_scope": "Código funcional comprobado. El commit documental posterior conserva este código; observación final de publicación en window-final-verification.json.",
+  "revision_scope": "Entrega operativa43f1d66 observada en web y worker. Históricos anteriores conservados; publicación documental posterior no modifica código.",
   "candidate_profile": "radar-1.0.0-candidate",
   "candidate_versions": {
     "matching": "link-3.3.0",
@@ -244,8 +244,41 @@
     "migration_tables": 24,
     "paid_periodic_rss": false,
     "new_jev_calls_development": 0,
-    "live_verification": "pending publication",
+    "live_verification": "operational-live.json",
     "source_versions_protected": true,
-    "shared_urgent_evidence_preserved": true
-  }
+    "shared_urgent_evidence_preserved": true,
+    "verified_revision": "43f1d66e5dc8d833a192e6c07c947cc2a4c1839c",
+    "public_verification": "operational-public.json",
+    "source_projection_read_only_audit": "operational-source-audit.json",
+    "new_jev_calls_railway": 12,
+    "new_jev_retries": 0,
+    "rss_counter": [
+      62,
+      74
+    ],
+    "exercise_counter_unchanged": 95,
+    "rss_synced_sources": 6,
+    "real_rss_analysed": 2,
+    "real_rss_outputs": {
+      "automatic_no_link": 1,
+      "review_no_link": 1
+    },
+    "real_widths": [
+      390,
+      1440
+    ],
+    "mock_widths": [
+      360,
+      390,
+      768,
+      1440
+    ],
+    "training_export_rows_unchanged": 3,
+    "private_notes_not_public": true,
+    "original_prediction_unchanged": true,
+    "original_model_metrics_unchanged": true,
+    "package_files": 119,
+    "a20_renewed": false
+  },
+  "previous_verified_revision": "a2e962f6f92d5b04c21e5a400022cf638c9b997f"
 }

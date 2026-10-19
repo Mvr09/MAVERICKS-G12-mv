@@ -1,0 +1,512 @@
+{
+  "started_at": "2026-10-19T14:37:24.854Z",
+  "protocol": {
+    "rss_max_articles": 2,
+    "rss_max_attempts": 72,
+    "hypothesis": "Verify new explicit batch + operational review/workspace on existing exercise. No classifier tuning. Reuse all valid results.",
+    "human_scope": "Controlled functional review of fictitious training N001, no external supplier confirmation, no communication sent."
+  },
+  "errors": [],
+  "revision": "43f1d66e5dc8d833a192e6c07c947cc2a4c1839c",
+  "sync": {
+    "job_ids": [
+      "575449eb-5fc0-47e5-9c39-fe2a015caabb",
+      "0bd59da9-034d-47da-bef6-b0953b802caf",
+      "40fa0f81-ee24-4d25-babe-37af6881e3fa",
+      "296b3169-49ca-4671-b82e-acec8d93e8d8",
+      "3e572041-9388-49d3-b9d3-7d557b964195",
+      "ab71c438-ca5e-4810-bdbf-20c1aaaf8dd3"
+    ],
+    "jev_before": 62,
+    "jobs": [
+      {
+        "id": "575449eb-5fc0-47e5-9c39-fe2a015caabb",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "0bd59da9-034d-47da-bef6-b0953b802caf",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "40fa0f81-ee24-4d25-babe-37af6881e3fa",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "296b3169-49ca-4671-b82e-acec8d93e8d8",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "3e572041-9388-49d3-b9d3-7d557b964195",
+        "state": "done",
+        "error": null
+      },
+      {
+        "id": "ab71c438-ca5e-4810-bdbf-20c1aaaf8dd3",
+        "state": "done",
+        "error": null
+      }
+    ],
+    "sources": [
+      {
+        "id": "biopharma_dive",
+        "status": "unchanged",
+        "http": 304,
+        "queried_at": "2026-10-19T15:15:12.918654+00:00"
+      },
+      {
+        "id": "el_pais",
+        "status": "ok",
+        "http": 200,
+        "queried_at": "2026-10-19T15:15:12.574303+00:00"
+      },
+      {
+        "id": "ema",
+        "status": "ok",
+        "http": 200,
+        "queried_at": "2026-10-19T15:15:12.650205+00:00"
+      },
+      {
+        "id": "gdacs",
+        "status": "unchanged",
+        "http": 304,
+        "queried_at": "2026-10-19T15:15:12.640046+00:00"
+      },
+      {
+        "id": "supply_chain_dive",
+        "status": "unchanged",
+        "http": 304,
+        "queried_at": "2026-10-19T15:15:12.623715+00:00"
+      },
+      {
+        "id": "the_loadstar",
+        "status": "ok",
+        "http": 200,
+        "queried_at": "2026-10-19T15:15:12.917310+00:00"
+      }
+    ],
+    "jev_after": 62
+  },
+  "rss": {
+    "selected": [
+      {
+        "id": "5bc87a36-7b76-4e1d-872f-2af0661c3582",
+        "headline": "Yang Chen: From ships to ports – inside the Mærsk family’s infrastructure buying spree",
+        "reasons": [
+          "Lugar o región del catálogo citado en la fuente"
+        ]
+      },
+      {
+        "id": "5ded600d-6990-4e33-a991-247edd4a44dd",
+        "headline": "‘Redeployment and agility’ key to continued success of LNG transition, says CMA",
+        "reasons": [
+          "Lugar o región del catálogo citado en la fuente"
+        ]
+      }
+    ],
+    "before": 62,
+    "states": [
+      {
+        "at": "2026-10-19T14:37:35.797Z",
+        "states": [
+          "queued",
+          "queued"
+        ],
+        "new_requests": 0
+      },
+      {
+        "at": "2026-10-19T14:37:37.498Z",
+        "states": [
+          "running",
+          "running"
+        ],
+        "new_requests": 4
+      },
+      {
+        "at": "2026-10-19T14:37:39.200Z",
+        "states": [
+          "done",
+          "running"
+        ],
+        "new_requests": 12
+      },
+      {
+        "at": "2026-10-19T14:37:40.894Z",
+        "states": [
+          "done",
+          "done"
+        ],
+        "new_requests": 12
+      },
+      {
+        "at": "2026-10-19T14:56:52.940Z",
+        "states": [
+          "done",
+          "done"
+        ],
+        "new_requests": 12
+      },
+      {
+        "at": "2026-10-19T15:19:42.762Z",
+        "states": [
+          "done",
+          "done"
+        ],
+        "new_requests": 12
+      }
+    ],
+    "job_ids": [
+      "ab0771e5-9160-4047-8c02-e264ad7cd281",
+      "41652780-2c24-44c7-bdfe-fb04f2923c3b"
+    ],
+    "accepted": 2,
+    "jobs": [
+      {
+        "id": "ab0771e5-9160-4047-8c02-e264ad7cd281",
+        "state": "done",
+        "error": null,
+        "article_id": "5bc87a36-7b76-4e1d-872f-2af0661c3582",
+        "requests": 5
+      },
+      {
+        "id": "41652780-2c24-44c7-bdfe-fb04f2923c3b",
+        "state": "done",
+        "error": null,
+        "article_id": "5ded600d-6990-4e33-a991-247edd4a44dd",
+        "requests": 7
+      }
+    ],
+    "results": [
+      {
+        "id": "5bc87a36-7b76-4e1d-872f-2af0661c3582",
+        "state": "done",
+        "risk": "N",
+        "urgent": "N",
+        "suppliers": [],
+        "versions": {
+          "profile": "radar-1.0.0-candidate",
+          "matching": "link-3.3.0",
+          "retrieval": "link-3.0.0-dev",
+          "questions": "decision-3.4.2",
+          "risk": "risk-focus-1.2.0",
+          "review": "review-1.3.1",
+          "support": "decision-support-1.0.0",
+          "facts": "decision-facts-1.0.0",
+          "exclusion": "relational-exclusion-1.0.0",
+          "duration": "duration-1.1.0",
+          "model": "jev-1.13.0",
+          "transport": "fanout-1.0.0"
+        },
+        "source_reading": {
+          "status": "public_text",
+          "checked_at": "2026-10-19T14:37:10.045680+00:00",
+          "http_status": 200,
+          "source_url": "https://theloadstar.com/yang-chen-from-ships-to-ports-inside-the-maersk-familys-infrastructure-buying-spree/",
+          "method": "editorial_main_fallback@editorial-scope-1.0.0",
+          "text_hash": "4a35f5ef2bb66b54b4e4979385bd1b9dfe61e2b2c9a13148a7583132a2e7fcce",
+          "characters": 1577
+        },
+        "cache_stages": []
+      },
+      {
+        "id": "5ded600d-6990-4e33-a991-247edd4a44dd",
+        "state": "review",
+        "risk": "N",
+        "urgent": "N",
+        "suppliers": [],
+        "versions": {
+          "profile": "radar-1.0.0-candidate",
+          "matching": "link-3.3.0",
+          "retrieval": "link-3.0.0-dev",
+          "questions": "decision-3.4.2",
+          "risk": "risk-focus-1.2.0",
+          "review": "review-1.3.1",
+          "support": "decision-support-1.0.0",
+          "facts": "decision-facts-1.0.0",
+          "exclusion": "relational-exclusion-1.0.0",
+          "duration": "duration-1.1.0",
+          "model": "jev-1.13.0",
+          "transport": "fanout-1.0.0"
+        },
+        "source_reading": {
+          "status": "public_text",
+          "checked_at": "2026-10-19T14:37:10.045929+00:00",
+          "http_status": 200,
+          "source_url": "https://theloadstar.com/redeployment-and-agility-key-to-continued-success-of-lng-transition-says-cma/",
+          "method": "editorial_article_container@editorial-scope-1.0.0",
+          "text_hash": "6dd133db8039e1440f1eebec46a2ec478fbfe60cd1b075d5c5f32ef09694ba7e",
+          "characters": 3196
+        },
+        "cache_stages": []
+      }
+    ],
+    "calls": [
+      {
+        "id": "eea6bfe3-8f9a-4b3f-a7f4-db29b37594f3",
+        "stage": "a.part1",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.235135518014431,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 20914,
+          "output_tokens": 937
+        }
+      },
+      {
+        "id": "4072239e-dc88-4605-bdc0-57fcacc8db7f",
+        "stage": "a.part2",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.2232963889837265,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 16628,
+          "output_tokens": 122
+        }
+      },
+      {
+        "id": "abb6c4d3-9678-42f7-bfc0-3235060e08e7",
+        "stage": "b",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.1695273593068123,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 6301,
+          "output_tokens": 743
+        }
+      },
+      {
+        "id": "f30cd43d-fadf-471a-be62-686693910613",
+        "stage": "candidate_support",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.15861442685127258,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 2335,
+          "output_tokens": 213
+        }
+      },
+      {
+        "id": "f5814a9f-c429-4e76-bdab-51025c07d308",
+        "stage": "candidate_followup",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.12263131141662598,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 2527,
+          "output_tokens": 266
+        }
+      },
+      {
+        "id": "3abd0791-e947-47cb-baf9-0fd10c3ecf31",
+        "stage": "a.part1",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.22688032686710358,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 21019,
+          "output_tokens": 875
+        }
+      },
+      {
+        "id": "038e0e09-cd85-447d-b98e-f021f27e2a8d",
+        "stage": "a.part2",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.21426628530025482,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 17369,
+          "output_tokens": 182
+        }
+      },
+      {
+        "id": "2e5404fa-7938-4711-bc75-5ac1a1a38932",
+        "stage": "b.part1",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.21186407655477524,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 16537,
+          "output_tokens": 2050
+        }
+      },
+      {
+        "id": "b428cd07-5776-44a7-b840-f3ecd9643594",
+        "stage": "b.part2",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.20000843331217766,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 16495,
+          "output_tokens": 2137
+        }
+      },
+      {
+        "id": "55e94830-e3ad-4631-97e8-3c28beb08502",
+        "stage": "b.part3",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.15848595649003983,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 5695,
+          "output_tokens": 64
+        }
+      },
+      {
+        "id": "452d69c9-9ee8-407f-a4ca-af16c809bce2",
+        "stage": "candidate_support",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.18211718276143074,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 10951,
+          "output_tokens": 1323
+        }
+      },
+      {
+        "id": "cf839fe3-f7dd-42dc-8ddc-c5af226a515c",
+        "stage": "candidate_followup",
+        "run_key": "",
+        "attempt": 1,
+        "model": "jev-1.13.0",
+        "status": 200,
+        "seconds": 0.1946829855442047,
+        "budget_id": "manual-unlimited-20261017",
+        "provider_diagnostic": null,
+        "error": null,
+        "diagnosed_at": null,
+        "usage": {
+          "input_tokens": 10166,
+          "output_tokens": 1271
+        }
+      }
+    ],
+    "after": 74,
+    "new_requests": 12,
+    "retries": 0,
+    "execution_revision": "55098e11ca8fc756ae4bb7be5eeda44ef2b8185e"
+  },
+  "exercise_story": {
+    "id": "93456605-e83d-4adf-8ee5-c2f52bba7478",
+    "split": "training",
+    "source": "Regional News"
+  },
+  "human": {
+    "pending_persisted": true,
+    "closed_id": "98128bd0-cc90-4260-858e-8045630017ab",
+    "completed": true,
+    "review_persisted": true
+  },
+  "incident_id": "a1a2de82-556b-4f43-94bf-8411a15774bd",
+  "incident_before_work": "active",
+  "draft_id": "3291941a-9411-4b7e-b07d-01a24d24d128",
+  "workspace": {
+    "completed": true,
+    "history_states": [
+      "followup",
+      "done",
+      "verifying"
+    ],
+    "incident_not_falsely_resolved": true
+  },
+  "widths": [
+    {
+      "width": 390,
+      "review_workspace_persisted": true,
+      "draft_reopened": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "review_workspace_persisted": true,
+      "draft_reopened": true,
+      "overflow": false
+    }
+  ],
+  "prior_verification_issue": "Initial check opened an older saved query. The list now distinguishes current/previous context with previews, and verification selects the intended query. Valid RSS analyses were not repeated.",
+  "initial_runtime_revision": "55098e11ca8fc756ae4bb7be5eeda44ef2b8185e",
+  "observation": {
+    "id": "2a918dbb-e124-488f-a0cc-03450f7f538e",
+    "decision_preserved": true
+  },
+  "original_model_metrics_unchanged": true,
+  "metric_assertion_scope": "Live before/after the additional human observation on resume; full original prediction equality was also asserted after initial human closure, before workspace stage.",
+  "original_prediction_unchanged": true,
+  "private_notes_not_public": true,
+  "passed": true,
+  "completed_at": "2026-10-19T15:19:51.783Z",
+  "original_export_comparison": {
+    "scope": "existing three-row training exercise only",
+    "rows": 3,
+    "cell_values_identical": true,
+    "heldout_opened": false
+  }
+}
