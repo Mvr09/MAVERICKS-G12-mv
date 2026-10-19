@@ -236,3 +236,47 @@ def test_job_progress_uses_its_generation_while_metrics_keep_consumption_history
         metrics=model_metrics(db,'exercise');assert metrics['execution']['requests']==5
         assert metrics['execution']['versions'][0]['review']=='review-1.2.0'
         rows=batches(db);assert not rows[0]['mixed_profiles'] and rows[0]['analysis_profiles'][0]['questions']=='link-3.3.0'
+
+
+@pytest.mark.skipif(make_url(str(engine.url)).database!='radar_test',reason='Requires isolated radar_test')
+def test_supported_partial_loss_is_automatic_nonurgent_with_local_impact_warning(monkeypatch):
+    import json,httpx
+    from pydantic import SecretStr
+    from app.analysis import process_article
+    from app.models import Analysis,ApiCall
+    from app.settings import settings
+    from tests.helpers import answer
+    from tests.unit.test_support_contract import SUPPLIER
+    Base.metadata.drop_all(engine);Base.metadata.create_all(engine)
+    monkeypatch.setattr(settings,'typesafe_api_key',SecretStr('MOCK-ONLY'))
+    with Session() as db:
+        db.add_all(Supplier(id=f'S{i:03}',data=dict(SUPPLIER,supplier_id=f'S{i:03}'))for i in range(1,41));db.commit()
+        article=synthetic(db,'MOCK supplier confirms a partial output reduction','MOCK: a definite20% production reduction for two days during planned repairs. Deliveries remain covered and on time.')
+        seen=[]
+        def fetch(req):
+            p=json.loads(req.content);seen.append(p);r=answer(p,linked=('S024',),risk=.48,urgent=.1)
+            for k,q in p['questions'].items():
+                a=r['answers'][k];sid=k.rsplit('_',1)[-1]
+                if q['type']=='noul':
+                    if k.startswith(('candidate_','identity_','area_','operation_','joint_exposure_')):a['noul']=.98 if sid=='S024'else .02
+                    elif k=='article_threat':a['noul']=.95
+                    elif k.startswith(('inclusion_support_','exclusion_support_')):a['noul']=.98
+                    elif k.startswith('risk_support_'):a['noul']=.2
+                    elif k.startswith('focus_risk_'):a['noul']=.81
+                    elif k.startswith(('focus_support_','focus_current_','urgency_support_')):a['noul']=.95
+                elif q['type']=='choice':
+                    value=('partial_or_full_output_loss'if k.startswith('focus_fact_')else 'identified_supplier'if k.startswith('focus_scope_')else 'active'if k.startswith(('focus_impact_','impact_state_'))else 'supplier_reported'if k.startswith('impact_scope_')else 'e1'if k.startswith(('focus_passage_','evidence_','link_evidence_','urgency_passage_'))else 'unknown'if k.startswith('duration_')else next(iter(q['criteria'])))
+                    if value not in q['criteria']:value=next(iter(q['criteria']))
+                    a['choice']=value;a['probabilities']={x:float(x==value)for x in q['criteria']}
+                    if k.startswith(('impact_state_','focus_impact_')):a['confidence']=.4
+                elif q['type']=='score':a['score']=3;a['probabilities']={str(i):float(i==3)for i in range(len(q['criteria']))}
+            return httpx.Response(200,json=r)
+        result=process_article(db,article.id,httpx.MockTransport(fetch),profile='radar-1.0.0-candidate')
+        assert result['analysis_status']=='done' and result['is_risk']=='Y' and result['urgent']=='N',result
+        own=next(a for a in result['assessments']if a['supplier_id']=='S024')
+        assert own['p_risk']==.81 and own['p_urgent']==.1 and not own['needs_review']
+        assert 'impact_state_local_uncertainty:S024'in result['context_notes']
+        stored=db.scalar(select(Analysis));assert stored.raw['b']['answers']['risk_S024']['noul']==.48
+        assert stored.raw['_risk_projection'][0]['current_threat_support']==.95
+        assert all(not a.data['sound_eligible']for a in db.scalars(select(Alert)))
+        assert db.scalar(select(func.count()).select_from(ApiCall))==len(seen)

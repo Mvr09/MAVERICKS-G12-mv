@@ -1,0 +1,332 @@
+{
+  "authored_at": "2026-10-19T01:09:06.513521+00:00",
+  "kind": "Author-generated controlled sample, not independent RSS generalisation",
+  "cases": [
+    {
+      "case": "academic_chemical",
+      "data": {
+        "news_id": "QA-FRESH342-academic_chemical",
+        "headline": "Ludwigshafen hosts a chemistry history seminar",
+        "summary": "Students discussed historical chemistry publications at a university seminar. No production, delivery, regulation or commercial change occurred.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reason": "Academic subject is not an operating restriction, despite city/sector overlap.",
+      "must_review": false
+    },
+    {
+      "case": "passenger_leipzig",
+      "data": {
+        "news_id": "QA-FRESH342-passenger_leipzig",
+        "headline": "Leipzig passenger airport releases holiday statistics",
+        "summary": "Leipzig airport counted more holiday passengers. These are passenger figures; cargo, rail, roads and manufacturing are unchanged.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reason": "Passenger counts are unrelated to declared freight operations or manufacturing.",
+      "must_review": false
+    },
+    {
+      "case": "orchestra_oslo",
+      "data": {
+        "news_id": "QA-FRESH342-orchestra_oslo",
+        "headline": "Oslo youth wind orchestra receives an award",
+        "summary": "Young musicians won a cultural prize. No energy, utility, factory or delivery event is reported.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reason": "Musical wind is not utility disruption or lipid-supplier exposure.",
+      "must_review": false
+    },
+    {
+      "case": "festival_guangzhou",
+      "data": {
+        "news_id": "QA-FRESH342-festival_guangzhou",
+        "headline": "Guangzhou celebrates a traditional arts festival",
+        "summary": "Visitors watched traditional paintings and dance at an arts festival. Industrial operations and commercial transport continued normally.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": ""
+      },
+      "reason": "Harmless city mention, no compatible adverse operations.",
+      "must_review": false
+    },
+    {
+      "case": "planned_succession",
+      "data": {
+        "news_id": "QA-FRESH342-planned_succession",
+        "headline": "Aurum Gelatin Capsules completes an orderly leadership handover",
+        "summary": "Aurum Gelatin Capsules completed a long-announced planned CEO retirement. The permanent successor was appointed six months ago and has assumed the role. Operations, contracts and deliveries remain unchanged; there is no vacancy or instability.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S036"
+      },
+      "reason": "Named identity retained; explicitly orderly completed succession is not leadership instability.",
+      "must_review": false
+    },
+    {
+      "case": "positive_approval",
+      "data": {
+        "news_id": "QA-FRESH342-positive_approval",
+        "headline": "Stellar Elastomers Inc. wins approval for a capacity expansion",
+        "summary": "Stellar Elastomers Inc. obtained regulatory approval to add production capacity. Current output and deliveries continue unchanged and no adverse inspection or recall is involved.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "N",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S017"
+      },
+      "reason": "Named positive identity, no operational/strategic threat.",
+      "must_review": false
+    },
+    {
+      "case": "partial_cartons",
+      "data": {
+        "news_id": "QA-FRESH342-partial_cartons",
+        "headline": "Benelux Print & Pack announces a definite temporary reduction in output",
+        "summary": "Benelux Print & Pack has confirmed a 15% production-capacity reduction beginning tomorrow for two days during scheduled maintenance. It is an actual reduction, not a proposal. Current delivery commitments remain covered and on schedule; no major stoppage or lost shipment is expected.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S022"
+      },
+      "reason": "Definite upcoming partial output loss supports risk at publication. Planned limited timing and preserved deliveries support nonurgent follow-up; inventory/stockout is not the risk definition.",
+      "must_review": false
+    },
+    {
+      "case": "partial_api",
+      "data": {
+        "news_id": "QA-FRESH342-partial_api",
+        "headline": "Orion Synthesis AG announces a definite temporary reduction in output",
+        "summary": "Orion Synthesis AG has confirmed a 10% production-capacity reduction beginning tomorrow for three days during scheduled maintenance. It is an actual reduction, not a proposal. Current delivery commitments remain covered and on schedule; no major stoppage or lost shipment is expected.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S004"
+      },
+      "reason": "Definite upcoming partial output loss supports risk at publication. Planned limited timing and preserved deliveries support nonurgent follow-up; inventory/stockout is not the risk definition.",
+      "must_review": false
+    },
+    {
+      "case": "partial_excipient",
+      "data": {
+        "news_id": "QA-FRESH342-partial_excipient",
+        "headline": "Lombardia Polymers SpA announces a definite temporary reduction in output",
+        "summary": "Lombardia Polymers SpA has confirmed a 12% production-capacity reduction beginning tomorrow for two days during scheduled maintenance. It is an actual reduction, not a proposal. Current delivery commitments remain covered and on schedule; no major stoppage or lost shipment is expected.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S010"
+      },
+      "reason": "Definite upcoming partial output loss supports risk at publication. Planned limited timing and preserved deliveries support nonurgent follow-up; inventory/stockout is not the risk definition.",
+      "must_review": false
+    },
+    {
+      "case": "named_road_slowdown",
+      "data": {
+        "news_id": "QA-FRESH342-named_road_slowdown",
+        "headline": "PolarChain Logistics reports a limited freight slowdown",
+        "summary": "PolarChain Logistics reports that its temperature-controlled EU road-freight service is operating at reduced capacity for two days during scheduled vehicle checks. Its existing delivery commitments remain covered and on time. This is a minor temporary restriction, without a serious stoppage.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S030"
+      },
+      "reason": "Named actual service restriction; road mode explicit, limited timing and preserved deliveries mean nonurgent risk.",
+      "must_review": false
+    },
+    {
+      "case": "debt_watchlist",
+      "data": {
+        "news_id": "QA-FRESH342-debt_watchlist",
+        "headline": "Pacific Magnesium Co. misses a debt repayment",
+        "summary": "Pacific Magnesium Co. missed a scheduled debt repayment and disclosed negotiations with lenders over its financial viability. Manufacturing and shipments continue normally with no immediate delivery cancellation.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S013"
+      },
+      "reason": "Actual financial distress is a slow strategic risk despite maintained output; no immediate serious stoppage.",
+      "must_review": false
+    },
+    {
+      "case": "competitor_takeover",
+      "data": {
+        "news_id": "QA-FRESH342-competitor_takeover",
+        "headline": "Kansai PreFill Co. is acquired by a direct competitor",
+        "summary": "Kansai PreFill Co. has been acquired by a direct competitor, which announced a review of third-party supply contracts. Current output and deliveries continue unchanged and no near-term interruption has been announced.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "N",
+        "Affected_Supplier_IDs": "S020"
+      },
+      "reason": "Competitor acquisition plus sourcing-contract review is a strategic supply threat; no immediate operating interruption supports nonurgent follow-up.",
+      "must_review": false
+    },
+    {
+      "case": "urgent_bags",
+      "data": {
+        "news_id": "QA-FRESH342-urgent_bags",
+        "headline": "Celsius Bioprocess Systems abruptly stops all output after a destructive fire",
+        "summary": "Celsius Bioprocess Systems stopped all production and all shipments after a severe unplanned factory fire. Upcoming deliveries have been cancelled immediately and no restart date or alternate capacity is known.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "Y",
+        "Affected_Supplier_IDs": "S025"
+      },
+      "reason": "Named serious unplanned output/shipments stoppage and immediate cancellations require procurement coordination, without assuming alternates.",
+      "must_review": false
+    },
+    {
+      "case": "urgent_recall",
+      "data": {
+        "news_id": "QA-FRESH342-urgent_recall",
+        "headline": "Aurum Gelatin Capsules suspends all deliveries during a major recall",
+        "summary": "Aurum Gelatin Capsules has recalled all current commercial batches for confirmed contamination and immediately suspended all production and deliveries. Customers must quarantine forthcoming deliveries; no restart date is given.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": {
+        "Is_Risk": "Y",
+        "Urgent": "Y",
+        "Affected_Supplier_IDs": "S036"
+      },
+      "reason": "Named major recall and active stoppage require immediate procurement coordination. No inventory/alternate is invented.",
+      "must_review": false
+    },
+    {
+      "case": "unknown_province",
+      "data": {
+        "news_id": "QA-FRESH342-unknown_province",
+        "headline": "Jiangsu announces restrictions on material manufacturers",
+        "summary": "Material manufacturers in Jiangsu will reduce output. No individual firms are named. The source does not establish which province any Taizhou supplier occupies.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reason": "Catalog Taizhou has unresolved province. Other known Jiangsu suppliers may be potentially exposed, but this essential ambiguity must not disappear.",
+      "must_review": true
+    },
+    {
+      "case": "unknown_transport_mode",
+      "data": {
+        "news_id": "QA-FRESH342-unknown_transport_mode",
+        "headline": "Asia-Europe commercial transport disruption has an unspecified mode",
+        "summary": "A report describes an actual commercial transport interruption between Asia and Europe but does not say whether it affects ships, trains, aircraft or specific operators.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reason": "Shared corridor without mode cannot establish sea/rail supplier exposure.",
+      "must_review": true
+    },
+    {
+      "case": "unknown_plant",
+      "data": {
+        "news_id": "QA-FRESH342-unknown_plant",
+        "headline": "An unnamed API factory halts production after equipment failure",
+        "summary": "An API factory has stopped production after a serious equipment failure. The operator, country and city have been withheld; no affected supplier or route is identified.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reason": "Concrete industry threat with missing essential identity/location cannot establish or confidently exclude portfolio exposure.",
+      "must_review": true
+    },
+    {
+      "case": "unverified_named",
+      "data": {
+        "news_id": "QA-FRESH342-unverified_named",
+        "headline": "Hsinchu Membrane Tech is mentioned in an unverified operational rumour",
+        "summary": "An unverified anonymous message says Hsinchu Membrane Tech may have a problem. It provides no actual event, output effect, affected site, delivery change or timing.",
+        "published_date": "2026-10-19T01:00:00+00:00",
+        "source": "SINTÉTICO CONTROLADO NUEVO · no noticia RSS real",
+        "language": "en",
+        "context_id": "exercise"
+      },
+      "reference": null,
+      "reason": "Identity is known but risk facts and timing are missing; name alone cannot establish a threat or safety.",
+      "must_review": true
+    }
+  ]
+}

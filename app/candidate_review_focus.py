@@ -6,7 +6,7 @@ possible recovery. Current-threat check is same-source semantic consistency.
 from app import candidate_review as previous
 from app.settings import POLICY
 
-VERSION='review-1.3.0'
+VERSION='review-1.3.1'
 
 
 def apply(base,support=None,facts=None,exclusions=None,focus=None,changes=()):

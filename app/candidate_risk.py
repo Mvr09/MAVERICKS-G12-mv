@@ -8,9 +8,9 @@ from copy import deepcopy
 from app.settings import POLICY
 from app.geography import payload_location
 
-VERSION='risk-focus-1.1.0'
+VERSION='risk-focus-1.2.0'
 CONTEXT_VERSION='risk-focus-1.0.0'
-QUESTIONS='decision-3.4.1'
+QUESTIONS='decision-3.4.2'
 
 
 def eligible(base):
@@ -18,7 +18,8 @@ def eligible(base):
     for a in base['assessments']:
         association_doubts=any(d['supplier_id']==a['supplier_id'] and d['requires_review'] and d['relevance']=='association' for d in base['review_details'])
         if a['p_link']<=t['review_high'] or association_doubts:continue
-        if t['review_low']<=a['p_risk']<=t['review_high'] or (a['is_risk']=='N' and base['event_type'] in ('leadership_change','acquisition','financial_distress')):
+        unsupported_negative = a['is_risk']=='N' and any(d['supplier_id']==a['supplier_id'] and d['code']=='risk_evidence_insufficient' and d['requires_review'] for d in base['review_details'])
+        if t['review_low']<=a['p_risk']<=t['review_high'] or unsupported_negative:
             out.append(a['supplier_id'])
     return out
 
@@ -41,12 +42,12 @@ def payload(base,article,suppliers,model):
         q['focus_scope_'+sid]={'type':'choice','instructions':prefix+'What relationship does the factual event have to the supplier? Do not derive this from conditional risk. A city alone is not an affected route.', 'criteria':{'identified_supplier':'The source identifies the actual supplier organisation as the subject of this event.','compatible_class':'The source affected activity/area or explicitly declared service includes compatible catalog operations; only potential individual exposure.','different_subject':'Another organisation/activity or an incompatible known location/mode.','unknown':'Essential location, activity, route or relationship is missing.'}}
         q['focus_passage_'+sid]={'type':'choice','criteria':evidence,'instructions':prefix+'Choose the literal source passage reporting the concrete adverse fact, or none. A quotation alone is not association support.'}
         q['focus_impact_'+sid]={'type':'choice','criteria':POLICY['impact_states'],'instructions':prefix+'What is the current impact state supported by the source? Actual reduced output/deliveries can be active while nonurgent. Slow strategic instability is monitoring unless immediate operational interruption is actually stated. Do not infer interruption from leadership changes.'}
-        q['focus_current_'+sid]={'type':'noul','instructions':prefix+'Does the source substantiate a currently ongoing or still unresolved adverse operational/strategic threat, whether active or requiring monitoring, rather than a recovered, positive, merely hypothetical or unrelated event? A small actual output reduction can be ongoing and nonurgent. Unknown timing or a resolved past event is insufficient. Do not infer ongoing damage to an individual firm from a regional fact.'}
+        q['focus_current_'+sid]={'type':'noul','instructions':prefix+'At the article PUBLICATION TIME, does the source substantiate an actual ongoing OR definitely announced upcoming adverse change to compatible output/delivery capacity or strategic continuity? A definite scheduled partial reduction remains an adverse change even when small, short, planned, covered by inventory, and not urgent. A described unresolved strategic threat can merit monitoring without a shutdown. A restored/completed event, a merely speculative possibility, harmless development or essential unknown timing is insufficient. Do not ask whether an old event is still happening on the reading date; do not invent individual damage or an affected shipment.'}
     return p
 
 
 def project(base,b,response):
-    """Only accept supported positive risk; cannot clear exclusion/unknown review.
+    """Refine actual risk probability after supported adverse facts; cannot clear exclusion/unknown review.
 
     Existing final link, identity, urgency, severity and duration remain exactly
     unchanged. Raw responses are retained separately; this is a typed adapter.
@@ -58,14 +59,16 @@ def project(base,b,response):
         a=next(x for x in base['assessments'] if x['supplier_id']==sid)
         # Urgency remains the original independently asked decision. Ambiguous
         # urgency stays reviewed; the refinement cannot invent a negative.
-        strong=(pr>t['review_high'] and support>t['review_high'] and
+        strong=(support>t['review_high'] and
             all(x['confidence']>=t['choice_score_confidence'] for x in (fact,scope,passage)) and get('focus_current')['noul']>t['review_high'] and
             fact['choice'] in ('partial_or_full_output_loss','delivery_obstruction','strategic_instability') and
             scope['choice'] in ('identified_supplier','compatible_class') and
             (scope['choice']!='identified_supplier' or a['p_identity']>t['review_high']) and
-            passage['choice'] in {e['id'] for e in base['evidence']} and impact['choice'] in ('active','monitoring'))
+            passage['choice'] in {e['id'] for e in base['evidence']})
         if not strong:continue
-        answers=out['answers'];answers['risk_'+sid]={'type':'noul','noul':pr};answers['risk_support_'+sid]={'type':'noul','noul':support}
-        answers['evidence_'+sid]=deepcopy(passage);answers['impact_state_'+sid]=deepcopy(impact)
-        changes.append({'supplier_id':sid,'p_risk_before':a['p_risk'],'p_risk_after':pr,'fact':fact['choice'],'scope':scope['choice'],'passage':passage['choice'],'impact':impact['choice'],'same_source_check':True,'current_threat_support':get('focus_current')['noul']})
+        answers=out['answers'];answers['risk_'+sid]={'type':'noul','noul':pr}
+        if pr>=t['risk']:answers['risk_support_'+sid]={'type':'noul','noul':support}
+        answers['evidence_'+sid]=deepcopy(passage)
+        if pr>=t['risk'] and impact['choice'] in ('active','monitoring'):answers['impact_state_'+sid]=deepcopy(impact)
+        changes.append({'supplier_id':sid,'p_risk_before':a['p_risk'],'p_risk_after':pr,'fact':fact['choice'],'scope':scope['choice'],'passage':passage['choice'],'impact':impact['choice'],'same_source_check':True,'current_threat_support':get('focus_current')['noul'],'fact_prediction_conflict':pr<t['risk']})
     return out,changes

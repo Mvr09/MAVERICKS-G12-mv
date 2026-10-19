@@ -31,8 +31,8 @@ export function AnalysisProfile({
       </select>
       {value === CANDIDATE && (
         <small>
-          Candidata experimental 3.3 / revisión 1.2. Conserva dudas que pueden
-          cambiar la decisión; no sustituye al predeterminado.
+          Candidata 3.4.2 · matching 3.3 / revisión 1.3.1. Conserva dudas que
+          pueden cambiar la decisión; no sustituye al predeterminado.
         </small>
       )}
     </label>

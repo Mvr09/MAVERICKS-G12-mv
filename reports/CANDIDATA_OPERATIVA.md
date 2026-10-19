@@ -1,3 +1,52 @@
+# Candidata seleccionable · 3.4.2 / revisión 1.3.1
+
+**Default 1.0.0 se conserva.** La única candidata seleccionable es `radar-1.0.0-candidate`: matching `link-3.3.0`, preguntas `decision-3.4.2`, revisión `review-1.3.1`, riesgo `risk-focus-1.2.0`, transporte `fanout-1.0.0` y modelo `jev-1.13.0`. Disponible para Excel y RSS individual, con versiones fijadas por trabajo e historial conservado. No se promociona al default.
+
+## Corrección y decisión
+
+El ensayo anterior solo refinaba probabilidades de riesgo en la banda gris; omitía negativos fuera de ella aunque faltase soporte de decisión. Además, su pregunta sobre amenaza «actual» no fijaba la fecha y excluía reducciones futuras definidas. Se amplía la comprobación al negativo sin evidencia suficiente, **solo con asociación previamente sustentada**, y se ancla el hecho a la publicación. Una reducción parcial anunciada sigue siendo riesgo aunque sea pequeña, planificada y con entregas cubiertas.
+
+Se utiliza la probabilidad real del refinamiento con los umbrales originales. Una probabilidad gris permanece revisada. El soporte de un hecho adverso nunca se interpreta como soporte de «sin riesgo»; una contradicción queda en revisión. Una cita seleccionada no prueba asociación. Ubicación, ruta o modo esenciales desconocidos siguen bloqueando su confirmación.
+
+La duda entre impacto activo y seguimiento se localiza únicamente cuando hay soporte de amenaza, asociación y seguimiento no urgente. Se conserva como observación. No cambia la probabilidad de urgencia ni sus umbrales; no habilita sonido ante una urgencia dudosa. Las comprobaciones sobre la misma fuente no constituyen corroboración externa.
+
+## Comparación antes/después
+
+Todas las predicciones revisadas están incluidas. Los conjuntos indeterminados se evalúan aparte; no se convierten en verdaderos negativos.
+
+| Muestra | Versión | Riesgo TP/FP/FN | Urgencia TP/FP/FN | Proveedores TP/FP/FN | Revisadas | Automáticas / errores |
+|---|---|---|---|---|---|---|
+| Training30 | 1.0 | 10/0/4 | 5/3/0 | 13/1/9 | 16 | 14/30 · 2/14 |
+| Training30 | 3.3 | 13/0/1 | 5/2/0 | 22/3/0 | 14 | 16/30 · 0/16 |
+| Training30 | 3.4.2 | 13/0/1 | 5/2/0 | 22/3/0 | 14 | 16/30 · 0/16 |
+| Controles18 ya inspeccionados, desarrollo | 3.3 | 8/0/2 | 4/0/0 | 13/3/0 | 6 | 12/18 · 0/12 |
+| Controles18 ya inspeccionados, desarrollo | 3.4.2 | 10/0/0 | 4/0/0 | 13/3/0 | 2 | 16/18 · 0/16 |
+| Controles14 nuevos puntuables | 1.0 | 4/0/4 | 2/0/0 | 9/0/1 | 11 | 3/14 · 0/3 |
+| Controles14 nuevos puntuables | 3.3 | 7/0/1 | 2/0/0 | 10/1/0 | 9 | 5/14 · 0/5 |
+| Controles14 nuevos puntuables | 3.4.2 | 8/0/0 | 2/0/0 | 10/1/0 | 8 | 6/14 · 0/6 |
+
+La muestra nueva se redactó a01:09UTC antes de consultar JEV, con referencias razonadas y versiones/criterios congelados. Tiene18 entradas:14 puntuables y4 indeterminadas. Sobre las18, la candidata automatiza6 y revisa12; las cuatro indeterminadas siguen revisadas sin atribuir daños individuales. Sobre las14 puntuables: F1 riesgo1,000, urgencia1,000 y proveedores0,952. Son controles propios, no evidencia independiente de precisión RSS. La comparación utiliza fanout para conservar estado/preguntas dentro del contexto del proveedor; sus tiempos locales incluyen caché y no son rendimiento del default desplegado ni A20.
+
+Se adopta como **opción experimental** porque corrige omisiones de interrupciones limitadas y automatiza más riesgos correctos, manteniendo proveedores y probabilidades de urgencia, sin nuevas falsas urgencias o casos automáticos erróneos. Training no mejora en esta última corrección: conserva una omisión de riesgo, tres asociaciones falsas y dos falsas urgencias, todas revisadas. El nuevo control conserva una asociación falsa heredada y revisada. A06 sigue abierto; S003 no tiene provincia confirmada. La decisión no depende solo de F1 ni de reducir revisión.
+
+## Consumo y conservación
+
+Esta última hipótesis utilizó14 peticiones de desarrollo y105 en la comparación nueva:119HTTP200, cero reintentos, contador local917→1036. Se reutilizan A/B válidos y preguntas de soporte cuya definición y estado coinciden exactamente. `candidate-342-results.json` registra métricas, causas, uso reportado, caché y latencias; los payloads y las referencias protegidas del reto permanecen privados.
+
+Acumulado de la ventana antes del smoke RSS del nuevo perfil:441 peticiones locales y11 enRailway =452, con dosHTTP400 previamente diagnosticados y cero reintentos. No se borran ni reinician contadores. RSS periódico de pago sigue desactivado. La prueba final de RSS registra cualquier consumo adicional por separado.
+
+Los18 controles nuevos quedan inspeccionados para futuras versiones; su medición original congelada se conserva y no se reutiliza como otra evaluación independiente. No hubo ajuste con validation, test, LiveDay ni answer key.
+
+## Reversión
+
+Seleccionar **1.0.0** para una ejecución nueva conserva el historial y desactiva el candidato en ese recorrido. La candidata3.3 anterior está archivada en `scripts/candidate_engine_33.py` y en el commitb995383. Si se necesita restaurarla, hacer un commit hacia delante que recupere motor, versiones, UI y reportes de ese snapshot; comprobar y publicar. No usar force-push, reset destructivo ni borrar resultados. Los trabajos con versión obsoleta requieren diagnóstico y reencolado explícito.
+
+---
+
+## Historial documentado hasta b995383 · candidata anterior 3.3
+
+Las decisiones siguientes son históricas. La selección vigente y la evidencia nueva están arriba.
+
 # Candidata operativa: exposición y revisión focalizada
 
 ## Decisión
@@ -37,7 +86,7 @@ La comprobación controlada cumple las guardas definidas, pero **no demuestra ge
 
 ## Consumo y límites
 
-307 peticiones locales nuevas: 17 exclusión relativa, 82 intento3.2, 40 potencial3.3, 168 comparación congelada. 306HTTP200/1HTTP400 diagnosticado; cero reintentos. Contador conservado **595→902**. Se reutilizaron A/B y verificaciones solo mediante igualdad del payload efectivo y validación del contrato; los reintentos mantienen su run_key y contador. Uso reportado por API, latencias y reutilización por ensayo en `window-candidate-results.json`; cuerpos y respuestas completas privados. El techo técnico de esta ventana es1500intentos, no una obligación de consumo.
+322 peticiones locales nuevas:17 exclusión relativa,82 intento3.2,40 potencial3.3,168 comparación congelada y15 en dos intentos adicionales descartados.321HTTP200/1HTTP400 diagnosticado; cero reintentos. Contador conservado **595→917**. Se reutilizaron A/B y verificaciones solo mediante igualdad del payload efectivo y validación del contrato; los reintentos mantienen su run_key y contador. Uso reportado por API, latencias y reutilización por ensayo en `window-candidate-results.json`; cuerpos y respuestas completas privados. El techo técnico de esta ventana es1500intentos, no una obligación de consumo.
 
 No se consultaron validation, test, LiveDay ni answer key para iterar. La comparación histórica2.2 tiene el confusor de preceder al extractor1.1; no se atribuyen sus diferencias solo a matching. RSS periódico de pago permanece desactivado. Ninguna segunda respuesta del mismo modelo/fuente se llama corroboración externa independiente.
 
@@ -50,3 +99,24 @@ En el primer recorrido real de esta ventana, A respondió200 y B400 sobre la not
 Hay una guarda operativa de36intentos por generación/artículo, persistida y comprobada antes de cada llamada; convive con el deadline de60segundos y tres intentos por etapa/grupo. No es una autorización ni un presupuesto monetario nuevo. Las versiones quedan fijadas al encolar. Recuperar un trabajo con versión anterior crea una ejecución nueva mediante diagnóstico explícito, conservando el error, resultados e intentos previos. La API de diagnóstico es exclusiva del presentador y no captura headers ni credenciales.
 
 La regresión desde cachés reproduce60casos (30training,6sintéticos anteriores,24controles propios):141etapas cacheadas y60respuestasA con hash efectivo comprobado;0peticiones nuevas, contador902→902. Predicciones, prioridades y revisión permanecen idénticas. Esto no es una evaluación nueva ni demuestra invariancia estadística de respuestas futuras; la partición conserva cada proposición y el mismo estado por pregunta, y se prueba aparte con mocks. La lectura RSS sí cambia cuando se corrige un contexto contaminado; se registran versión de extractor, hash y fecha real de consulta.
+
+
+## Ensayos adicionales y decisión final
+
+Se conservan como desarrollo, separados del perfil operativo:
+
+- **risk-focus1.0 / decision3.4:**6 peticiones. Separó amenaza de stockout e inventario; sobre training mantuvo14 revisadas y16 automáticas sin reparar la omisión de riesgo. En los18 controles previamente inspeccionados pasó de12 a13 automáticos, sin errores entre ellos. El cambio no justificó una etapa adicional de pago ni una promoción.
+- **risk-focus1.1 / review1.3:**9 peticiones. Permitió partir de asociación acreditada por el soporte ya existente y preguntó si la amenaza seguía actual, para localizar la duda activo/seguimiento. No recuperó omisiones ni mejoró cobertura. La propia pregunta sobre actualidad quedó incierta en amenazas limitadas o estratégicas. Se descarta; no se bajan umbrales para hacerla pasar.
+- Una corrección posterior de serialización utiliza el enum de revisión ya permitido.60 casos reproducidos exclusivamente desde caché,110 etapas reutilizadas,0 peticiones nuevas, contador917→917; predicciones, prioridades y revisión idénticas. El supuesto camino de resolución también valida el contrato estricto en una prueba sintética. No se presenta como mejora del clasificador.
+
+Los24 controles ya inspeccionados pasan a ser desarrollo para cualquier candidato posterior. Su comparación original de3.3 permanece congelada; no se anuncia otra evaluación independiente. **Se mantiene3.3/revisión1.2 como única candidata operativa seleccionable y1.0.0 como predeterminada.** No hubo promoción ni requiere rollback de datos. Elegir1.0.0 afecta una ejecución nueva y conserva todo el historial.
+
+## Recorrido real de esta entrega
+
+Railway consultó las seis fuentes:2 respuestas200 y4 respuestas304 en el primer sondeo de la ventana.304 significa consulta real sin contenido modificado, no una noticia nueva. El worker terminó los dos análisis manuales preparados con3.3: fletes Asia–Europa en revisión, sin riesgo/urgencia ni proveedores vinculados; incendio forestal clasificado como tal, automático sin vínculo con la cartera. No hay referencias independientes de precisión para esosRSS.
+
+El recorrido usó11 peticiones:2 del intento inicial fallido y diagnosticado,7 de la recuperación con contexto editorial correcto y2 del incendio.10HTTP200/1HTTP400,0 reintentos; contadorRSS49→60, separado del local. El incendio tardó4,42s desde clic hasta resultado visible. El tiempo exacto del clic de fletes no quedó persistido antes de fallar un selector del verificador; se conserva nulo y no se repite análisis válido para fabricar una medición.
+
+La noticia de fletes sustenta una **consulta manual** a Oceanbridge con cita literal e hipótesis explícita: confirmar exposición comercial del servicio marítimo, sin afirmar entregas afectadas. Edición, guardado, copia con readback, TXT y reconexión están comprobados enRailway; no cambian clasificación, score ni alertas. El alternativo ferroviario necesita confirmar adecuación antes de disponibilidad/capacidad. Productos no mapeados sigue siendo un dato desconocido.
+
+**Consumo total de esta ventana:**333 peticiones nuevas entre ambos entornos,331HTTP200/2HTTP400 diagnosticados y0 reintentos. No se suman sus contadores históricos entre sí. Uso reportado, duración y reutilización por ensayo enJSON; no se infiere saldo monetario. RSS periódico de pago permanece desactivado.

@@ -1,0 +1,55 @@
+{
+  "run": "night-risk-publication-03",
+  "hypothesis": "Broaden followup to strongly linked negative risk lacking evidence, not only the gray band. Anchor threat timing at publication and definite upcoming events, not unspecified now. Use actual focused risk probability with original risk/review gates; adverse facts never support no-risk, contradictions remain reviewed. Matching, urgency probability and business formula unchanged. Same-source checks, not external corroboration.",
+  "sample": "30training+6synthetics+24previously inspected controlled cases, all development",
+  "risk_version": "risk-focus-1.2.0",
+  "questions": "decision-3.4.2",
+  "matching": "link-3.3.0",
+  "review": "review-1.3.1",
+  "max_attempts": 180,
+  "targets": {
+    "training:N014": [
+      "S017"
+    ],
+    "training:N018": [
+      "S020"
+    ],
+    "training:N025": [
+      "S030"
+    ],
+    "training:N054": [
+      "S037"
+    ],
+    "controlled:partial_leaflets": [
+      "S024"
+    ],
+    "controlled:partial_filters": [
+      "S027"
+    ],
+    "controlled:short_delivery": [
+      "S009"
+    ],
+    "controlled:sea_not_rail": [
+      "S032"
+    ],
+    "controlled:lodz_alias": [
+      "S019"
+    ]
+  },
+  "adoption": [
+    "No additional riskFP or urgentFP/FN; supplier predictions invariant; reduce riskFN or correctly automate more true risks; no newly wrong automatic case",
+    "All supplier predictions invariant",
+    "No new automatic joint errors",
+    "Concrete correctly automated risk or reduced omission",
+    "Unknown province/route and false links still reviewed",
+    "Before selectable adoption: freeze new18controls14scorable+4unknown; preserve safety, no newly wrong automatic case and improve development riskFN/automatic burden. Default unchanged regardless; no independent RSS accuracy claim."
+  ],
+  "files": {
+    "app/candidate_risk.py": "199a0716e33daa958538b43510d1bbba32be78d560391cbe6afd6dd59d8f93f0",
+    "scripts/risk_engine_342.py": "c72ac565849f4896051102c9a3b3fed661252733a49bcd8602d9512f67188538",
+    "app/candidate_matching.py": "78f7432bd5c6ffe4b8238837b19ed973fcfd2ee6d2f0676bc370d43d25f31626",
+    "app/candidate_review.py": "d1a1dadbe775f7dbd2c4836fe2d67e1e28117d8787755aa57d1214f4f0e480ce",
+    "app/candidate_review_focus.py": "c93a01943f45a0de092d14c736a8a80821963ad3e7a154220049e1cad8ba4893",
+    "config/risk_policy.json": "5e891c9c076e60b98b0a7b5b28eec1e5c7c21c7196c64ad7840d46b96f5e1b4c"
+  }
+}

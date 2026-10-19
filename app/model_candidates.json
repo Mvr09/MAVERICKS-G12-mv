@@ -628,6 +628,84 @@
       },
       "automatic_joint_errors": 0,
       "automatic_joint_error_rate": 0.0
+    },
+    "3.4.2 + review1.3.1": {
+      "n": 30,
+      "risk": {
+        "tp": 13,
+        "fp": 0,
+        "fn": 1,
+        "tn": 16,
+        "precision": 1.0,
+        "recall": 0.9285714285714286,
+        "f1": 0.9629629629629629,
+        "n": 30,
+        "positives": 14
+      },
+      "urgent": {
+        "tp": 5,
+        "fp": 2,
+        "fn": 0,
+        "tn": 23,
+        "precision": 0.7142857142857143,
+        "recall": 1.0,
+        "f1": 0.8333333333333334,
+        "n": 30,
+        "positives": 5
+      },
+      "suppliers": {
+        "exact": 29,
+        "n": 30,
+        "precision": 0.88,
+        "recall": 1.0,
+        "exact_set_accuracy": 0.9666666666666667,
+        "tp": 22,
+        "fp": 3,
+        "fn": 0,
+        "f1": 0.9361702127659575
+      },
+      "review_count": 14,
+      "includes_review_predictions": true,
+      "automatic_coverage": 0.5333333333333333,
+      "automatic": {
+        "n": 16,
+        "risk": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 13,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 16,
+          "positives": 3
+        },
+        "urgent": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 13,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 16,
+          "positives": 3
+        },
+        "suppliers": {
+          "exact": 16,
+          "n": 16,
+          "precision": 1.0,
+          "recall": 1.0,
+          "exact_set_accuracy": 1.0,
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "review_count": 0
+      },
+      "automatic_joint_errors": 0,
+      "automatic_joint_error_rate": 0.0
     }
   },
   "new_requests": 0,
@@ -700,10 +778,18 @@
       "fp": 3,
       "fp_high": 2,
       "fp_single_source": 0
+    },
+    "3.4.2 + review1.3.1": {
+      "fn": 0,
+      "fn_high": 0,
+      "fn_single_source": 0,
+      "fp": 3,
+      "fp_high": 2,
+      "fp_single_source": 0
     }
   },
   "selected_for": "supervised discovery/recall, not automatic mitigation or default inference",
-  "preferred_candidate": "radar-1.0.0-candidate · opt-in",
+  "preferred_candidate": "radar-1.0.0-candidate · decision3.4.2/review1.3.1 · opt-in",
   "precision_reference": "link-2.2.0",
   "default_profile": "1.0.0",
   "promoted_default": false,

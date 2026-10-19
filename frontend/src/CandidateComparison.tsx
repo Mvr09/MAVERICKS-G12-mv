@@ -73,8 +73,9 @@ export function CandidateComparison() {
         ))}
       </div>
       <p>
-        3.3 / revisión1.2 es la candidata seleccionable para descubrimiento
-        asistido: recupera asociaciones omitidas y reconoce interrupciones
+        La candidata seleccionable3.4.2 conserva matching3.3 y utiliza
+        revisión1.3.1. La comparación anterior3.3/revisión1.2 permanece como
+        historial: recupera asociaciones omitidas y reconoce interrupciones
         parciales, pero conserva falsos vínculos y urgencias en revisión. El
         predeterminado sigue en1.0. La política1.2 sobre3.0 aísla la reducción
         de revisión sin cambiar predicciones. Los demás perfiles se conservan

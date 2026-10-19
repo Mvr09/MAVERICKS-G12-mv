@@ -37,11 +37,13 @@ export function ReviewGuidance({
     const hint =
       (strategic
         ? "Verifica si el cambio organizativo o financiero descrito supone una amenaza para la continuidad estratégica; no implica por sí mismo una parada de producción."
-        : d.code === "risk_ambiguous"
-          ? "Interpretación de riesgo por confirmar: contrasta si la reducción, demora o cambio descritos amenazan la continuidad, aunque el inventario cubra las entregas."
-          : d.code === "urgency_ambiguous"
-            ? "El modelo duda entre seguimiento y acción inmediata. Verifica el estado y el plazo del impacto; la criticidad o la fuente única no demuestran urgencia por sí solas."
-            : d.resolution_hint) ||
+        : d.code === "risk_fact_prediction_conflict"
+          ? "La fuente describe un hecho adverso respaldado, pero la clasificación es negativa. Contrasta esa interpretación antes de tratarlo como ausencia de riesgo."
+          : d.code === "risk_ambiguous"
+            ? "Interpretación de riesgo por confirmar: contrasta si la reducción, demora o cambio descritos amenazan la continuidad, aunque el inventario cubra las entregas."
+            : d.code === "urgency_ambiguous"
+              ? "El modelo duda entre seguimiento y acción inmediata. Verifica el estado y el plazo del impacto; la criticidad o la fuente única no demuestran urgencia por sí solas."
+              : d.resolution_hint) ||
       (/source_text|evidence_missing|no_evidence/.test(d.code)
         ? "Completa la lectura de la fuente y conserva un fragmento literal que respalde la conclusión."
         : /inventory/.test(d.code)

@@ -73,6 +73,10 @@ const SourceVolumeChart = React.lazy(() => import("./SourceVolumeChart"));
 import { EventTag, eventNames } from "./EventTag";
 
 const names: Record<string, string> = {
+  impact_state_local_uncertainty:
+    "Estado concreto por precisar: activo o seguimiento; se conserva una acción no urgente respaldada.",
+  risk_fact_prediction_conflict:
+    "El hecho adverso respaldado y la decisión de riesgo discrepan; confirmar su interpretación.",
   model_check_same_source_not_independent_corroboration:
     "Las comprobaciones del modelo contrastan la misma fuente; no son una corroboración externa independiente.",
   potential_exposure_is_not_confirmed_damage:
@@ -1805,7 +1809,12 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
           ?.name || s.supplier_id}
       </Link>
       <Score value={s.priority} />
-      <BuyerDecision assessment={s} />
+      <BuyerDecision
+        assessment={s}
+        impactStateUncertain={a.analysis?.context_notes?.includes(
+          "impact_state_local_uncertainty:" + s.supplier_id,
+        )}
+      />
       <span>
         {s.needs_review ? "Propuesta por confirmar · " : ""}
         {presenter ? `Vínculo ${number(s.p_link * 100)}% · ` : ""}

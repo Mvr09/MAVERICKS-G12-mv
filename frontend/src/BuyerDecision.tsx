@@ -1,6 +1,12 @@
 import type { Assessment } from "./types";
 
-export function BuyerDecision({ assessment: a }: { assessment: Assessment }) {
+export function BuyerDecision({
+  assessment: a,
+  impactStateUncertain = false,
+}: {
+  assessment: Assessment;
+  impactStateUncertain?: boolean;
+}) {
   return (
     <div
       className="buyer-decision"
@@ -36,6 +42,13 @@ export function BuyerDecision({ assessment: a }: { assessment: Assessment }) {
           La compatibilidad de ubicación y actividad no prueba que una planta,
           ruta o entrega de este proveedor esté afectada. Confirmar el alcance
           con el proveedor.
+        </small>
+      )}
+      {impactStateUncertain && (
+        <small>
+          Queda precisar si el impacto está activo o en seguimiento. Esta duda
+          no cambia por sí sola la acción recomendada y se conserva como
+          observación.
         </small>
       )}
       {a.priority_requires_review && (

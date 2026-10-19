@@ -30,7 +30,7 @@ def test_projection_uses_actual_risk_not_evidence_probability_and_preserves_raw_
  out,changes=focus.project(base,b,r)
  assert changes and out['answers']['risk_'+sid]['noul']==.9
  assert b==before and out['answers']['urgent_'+sid]==before['answers']['urgent_'+sid]
- for field,value in [('focus_risk',{'type':'noul','noul':.6}),('focus_scope',{'type':'choice','choice':'unknown','confidence':1}),('focus_fact',{'type':'choice','choice':'positive_or_no_threat','confidence':1}),('focus_passage',{'type':'choice','choice':'none','confidence':1})]:
+ for field,value in [('focus_scope',{'type':'choice','choice':'unknown','confidence':1}),('focus_fact',{'type':'choice','choice':'positive_or_no_threat','confidence':1}),('focus_passage',{'type':'choice','choice':'none','confidence':1})]:
   bad=deepcopy(r);bad['answers'][field+'_'+sid]=value
   assert focus.project(base,b,bad)==(b,[])
 
@@ -50,3 +50,28 @@ def test_current_threat_is_not_recovery_and_nonurgent_action_must_be_supported()
  assert review.apply(base,focus=r,changes=[{'supplier_id':sid}])['analysis_status']=='review'
  bad=deepcopy(r);bad['answers']['focus_current_'+sid]['noul']=.2
  assert review.apply(base,support=support,focus=bad,changes=[{'supplier_id':sid}])['analysis_status']=='review'
+
+
+
+def test_focused_probability_is_not_silently_thresholded_at_review_high():
+ c,base,sid,r=fixture();b={'model':'jev-1.13.0','answers':{'risk_'+sid:{'type':'noul','noul':.48},'urgent_'+sid:{'type':'noul','noul':.12}}}
+ r['answers']['focus_risk_'+sid]['noul']=.58
+ out,changes=focus.project(base,b,r)
+ assert out['answers']['risk_'+sid]['noul']==.58 and changes
+ # Original policy still flags this probability as ambiguous; neither factual
+ # support nor a quote authorises automatic clearance of risk uncertainty.
+ from app.settings import POLICY
+ assert POLICY['thresholds']['review_low'] <= .58 <= POLICY['thresholds']['review_high']
+ r['answers']['focus_risk_'+sid]['noul']=.2
+ out,changes=focus.project(base,b,r)
+ assert out['answers']['risk_'+sid]['noul']==.2 and changes[0]['fact_prediction_conflict']
+ # It is not valid to relabel support for an adverse fact as support for no risk.
+ assert 'risk_support_'+sid not in out['answers']
+
+
+def test_supported_negative_outside_gray_band_is_still_eligible_when_decision_evidence_missing():
+ c,base,sid,r=fixture();a=base['assessments'][0];a['p_risk']=.2
+ base['review_details']=[{'supplier_id':sid,'code':'risk_evidence_insufficient','requires_review':True,'relevance':'risk'}]
+ assert focus.eligible(base)==[sid]
+ base['review_details']=[]
+ assert focus.eligible(base)==[]

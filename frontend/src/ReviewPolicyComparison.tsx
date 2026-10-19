@@ -95,10 +95,11 @@ export function ReviewPolicyComparison() {
       </details>
       <small>
         Este ensayo conserva la recomendación histórica de1.1 sobre3.0. La
-        candidata operativa actual utiliza3.3/revisión1.2 y se selecciona
-        explícitamente en Excel o RSS;1.0.0 sigue predeterminada. Estos doce
-        automáticos históricos no son el resultado actual ni garantizan
-        precisión fuera de la muestra.
+        candidata operativa actual utiliza
+        matching3.3/preguntas3.4.2/revisión1.3.1 y se selecciona explícitamente
+        en Excel o RSS;1.0.0 sigue predeterminada. Estos doce automáticos
+        históricos no son el resultado actual ni garantizan precisión fuera de
+        la muestra.
       </small>
     </section>
   );

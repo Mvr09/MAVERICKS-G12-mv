@@ -12,8 +12,8 @@ for (const width of [360, 390, 768, 1440])
     const posts: string[] = [];
     const result = (candidate = false) => ({
       analysis_profile: candidate ? "radar-1.0.0-candidate" : "1.0.0",
-      question_version: candidate ? "link-3.3.0" : "rss-2.2.0",
-      analysis_versions: candidate ? { review: "review-1.2.0" } : {},
+      question_version: candidate ? "decision-3.4.2" : "rss-2.2.0",
+      analysis_versions: candidate ? { matching: "link-3.3.0", review: "review-1.3.1" } : {},
       analysis_status: "review",
       event_type: "logistics_disruption",
       is_risk: "Y",
