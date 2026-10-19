@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-for (const width of [360, 390, 768, 1440])
+for (const width of [360, 390, 768, 1024, 1440])
   test(`Filtros, contexto y retorno conservados ${width}px · MOCK`, async ({
     page,
   }) => {
@@ -31,6 +31,20 @@ for (const width of [360, 390, 768, 1440])
       await route.fulfill({ json: data[path] ?? {} });
     });
     await page.goto("/noticias?context=rss");
+    const alignment = await page.locator(".news-page").evaluate((e) => {
+      const heading = e.querySelector(".section-heading")!;
+      const filters = e.querySelector(".news-filters")!;
+      return [
+        getComputedStyle(heading).paddingLeft,
+        getComputedStyle(filters).paddingLeft,
+      ];
+    });
+    expect(alignment[0]).toBe(alignment[1]);
+    for (const label of ["Fecha desde", "Fecha hasta", "Tipo de evento"]) {
+      const box = await page.getByLabel(label, { exact: true }).boundingBox();
+      expect(box!.width).toBeGreaterThanOrEqual(130);
+      expect(box!.height).toBeGreaterThanOrEqual(44);
+    }
     await page
       .getByRole("combobox", { name: "Fuente", exact: true })
       .selectOption("MOCK Loadstar");

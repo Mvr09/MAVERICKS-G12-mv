@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-19",
+  "base_revision": "934c8f8778f60a0605996ae3546feccff708eabf",
+  "scope": "Reparación visual exclusiva; sin cambios de inferencia, perfiles, datos operativos o campaña",
+  "causes": [
+    "Modelo: tarjetas nuevas sin padding de escritorio",
+    "Grids por viewport ignoraban el espacio ocupado por sidebar",
+    "Filtros flex con distribución irregular y padding interior duplicado",
+    "Analítica: eje numérico demasiado estrecho y etiquetas inclinadas recortables",
+    "Impresión sin reglas: navegación fija y ancho reservado de sidebar"
+  ],
+  "local_real_api": {
+    "frontend": "Compilación local de producción; API y datos reales de Railway, sin mocks API",
+    "sections": 8,
+    "widths": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "matrix_cases": 40,
+    "continuous_resize_checks": 312,
+    "sweep_widths": "350–1490 en pasos de30px",
+    "global_overflow": false,
+    "javascript_errors": [],
+    "api_write_requests": [],
+    "jev_before": {
+      "exercise": 95,
+      "rss": 74
+    },
+    "jev_after": {
+      "exercise": 95,
+      "rss": 74
+    },
+    "filters_and_comparator_persisted": true
+  },
+  "final_visual_inspection": {
+    "sections": [
+      "Resumen",
+      "Proveedores",
+      "Materiales",
+      "Noticias",
+      "Alertas",
+      "Fuentes",
+      "Analítica",
+      "Modelo"
+    ],
+    "graphs_filters_final_widths": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "print": [
+      "Modelo A4, gráfico y matrices completos",
+      "Noticias A4 con datos cargados; sin navegación fija"
+    ],
+    "limits": "Chrome emulado; no prueba física móvil ni nueva prueba audible"
+  },
+  "tests": {
+    "mock_e2e": 20,
+    "build": "pasa",
+    "allowlisted_package_files": 123,
+    "package_originals_or_secrets": false,
+    "git_diff_check": "pasa"
+  },
+  "public_verification": "Pendiente del autodeploy de este commit; observación posterior en.runtime/layout-public-verification.json para evitar otro despliegue documental",
+  "preserved": {
+    "campaign_rows": 148,
+    "campaign_repeat": false,
+    "new_jev_calls": 0,
+    "default_profile": "1.0.0",
+    "recommended_profile_decision": "pendiente de cierre con campaña existente",
+    "A06": "abierto: motor/S024 separado de provincia desconocida deS003",
+    "A14": "evidencia física previa y alcance conservados",
+    "A20": "evidencia histórica conservada, no renovada",
+    "rss_paid_periodic": false
+  }
+}

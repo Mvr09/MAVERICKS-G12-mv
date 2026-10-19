@@ -135,7 +135,7 @@ function response(sample = "training") {
     rows,
   };
 }
-for (const width of [360, 390, 768, 1440])
+for (const width of [360, 390, 768, 1024, 1440])
   test(`Comparador gráfico, drill-down y consulta sin JEV ${width} · MOCK`, async ({
     page,
   }) => {
@@ -177,6 +177,41 @@ for (const width of [360, 390, 768, 1440])
         exact: true,
       }),
     ).toBeVisible();
+    // Exercise the same mounted chart across sidebar and mobile breakpoints.
+    for (const resized of [width, 650, 820, 1100, 390, width]) {
+      await page.setViewportSize({ width: resized, height: 940 });
+      await expect
+        .poll(async () =>
+          page.locator(".compare-chart").evaluate((e) => {
+            const svg = e.querySelector("svg.recharts-surface");
+            return Boolean(
+              svg &&
+                svg.getBoundingClientRect().width > 0 &&
+                svg.getBoundingClientRect().width <=
+                  e.getBoundingClientRect().width + 1,
+            );
+          }),
+        )
+        .toBe(true);
+      expect(
+        await page
+          .locator(".campaign-page > .card")
+          .first()
+          .evaluate((e) => parseFloat(getComputedStyle(e).paddingLeft)),
+      ).toBeGreaterThanOrEqual(16);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+    }
+    await expect(
+      page.getByRole("region", { name: /Tabla de métricas/ }),
+    ).toHaveAttribute("tabindex", "0");
+    await page.emulateMedia({ media: "print" });
+    await expect(page.locator(".sidebar")).toBeHidden();
+    await expect(page.locator(".mobile-nav")).toBeHidden();
+    await page.emulateMedia({ media: "screen" });
     await page
       .getByRole("button", { name: "A riesgo fn: 1 noticias", exact: true })
       .click();

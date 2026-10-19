@@ -1,3 +1,12 @@
+# Reparación visual · 19-10-2026
+
+- Base934c8f8; reparación exclusiva de layout. Padding unificado22px(16móvil), ancho explícito y máximo1570px, grids según espacio útil junto a sidebar; filtros Noticias alineados, estados envolventes y tablas con scroll local accesible. Analítica sin ejes recortados; Modelo leyenda HTML legible y gráficos redimensionables. Impresión A4 sin navegación fija y sin reservar ancho de sidebar.
+- Chrome real, frontend compilado/API real Railway:8secciones×360/390/768/1024/1440=40casos y312comprobaciones de redimensionado350–1490px. Sin overflow global ni JSerrors; filtros/matrices/evidencia/recarga conservados. Últimos ajustes revisados visualmente en5anchos y PDFsModelo/Noticias cargados.20E2E dirigidos con mocks pasan;build/paquete123archivos/sinsecretos/originales/diffcheck pasan. Evidencia:reports/layout-repair-verification.json;capturas yPDFprivados en.runtime.
+-0inferencias/0escriturasAPI en verificación;95peticionesEjercicio/74RSS intactas. No se repite campaña148 ni se cambia default1.0.0. Persistencia/backend/métricas/umbrales no modificados. Publicación autorizada por pushmain; SHA yrevisión pública posteriores se registran en.runtime/layout-public-verification.json.
+- Pendientes explícitos:decisión de perfil recomendado por cerrar con campaña existente;A06 abierto(erroresmotor/S024 y provinciaS003 desconocida separados);A14 físicoPC/Firefox yA20histórico conservan evidencia/alcance;RSSperiódicopago desactivado. No se ha realizado prueba física móvil/audio nueva.
+
+## Estado anterior conservado
+
 # Estado actual · comparador y operación · 19-10-2026
 
 - Código funcional publicado **77d8581**,GitHubmain,web/workerRailwayonline/compatibles,esquema0010. https://mavericks-g12-mv-production.up.railway.app. Informe medido:reports/campaign-20261019-summary.json;verificación:reports/campaign-20261019-verification.json. El commit documentalposterior conservaeste código.

@@ -8,7 +8,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 const BASE = "1.0.0",
@@ -598,6 +597,19 @@ export function CampaignCompare({
                     {A.quality || B.quality ? (
                       <>
                         <div
+                          className="compare-legend"
+                          aria-label="Perfiles de las barras"
+                        >
+                          <span>
+                            <i className="series-a" aria-hidden="true" />A ·{" "}
+                            {label(a)}
+                          </span>
+                          <span>
+                            <i className="series-b" aria-hidden="true" />B ·{" "}
+                            {label(b)}
+                          </span>
+                        </div>
+                        <div
                           className="compare-chart"
                           role="img"
                           aria-label="Barras agrupadas de precisión, recall y F1; valores exactos en la tabla siguiente"
@@ -606,24 +618,37 @@ export function CampaignCompare({
                             <BarChart
                               data={chart}
                               layout="vertical"
-                              margin={{ left: 5, right: 22 }}
+                              margin={{
+                                left: 0,
+                                right: 28,
+                                top: 12,
+                                bottom: 12,
+                              }}
                               accessibilityLayer
                             >
                               <CartesianGrid
                                 horizontal={false}
                                 strokeDasharray="3 3"
                               />
-                              <XAxis type="number" domain={[0, 100]} unit="%" />
+                              <XAxis
+                                type="number"
+                                domain={[0, 100]}
+                                ticks={[0, 25, 50, 75, 100]}
+                                interval={0}
+                                minTickGap={0}
+                                unit="%"
+                                tick={{ fontSize: 11 }}
+                              />
                               <YAxis
                                 type="category"
                                 dataKey="name"
-                                width={138}
+                                width={142}
                                 tick={{ fontSize: 11 }}
                               />
                               <Tooltip
                                 formatter={(v: any) => number(v) + "%"}
                               />
-                              <Legend />
+
                               <Bar
                                 name={"A · " + label(a)}
                                 dataKey="A"
@@ -639,7 +664,16 @@ export function CampaignCompare({
                             </BarChart>
                           </ResponsiveContainer>
                         </div>
-                        <div className="table-wrap">
+                        <p className="small-note">
+                          Tabla de valores · desplázala horizontalmente si no
+                          cabe completa.
+                        </p>
+                        <div
+                          className="table-wrap"
+                          role="region"
+                          aria-label="Tabla de métricas; desplazamiento horizontal si es necesario"
+                          tabIndex={0}
+                        >
                           <table>
                             <caption>
                               Valores exactos y diferencias B−A en puntos

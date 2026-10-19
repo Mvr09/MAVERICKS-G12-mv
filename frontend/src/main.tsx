@@ -1790,7 +1790,7 @@ function NewsPage({
   );
   useNewsReturn(context, filtered.length);
   return (
-    <section className="card">
+    <section className="card news-page">
       <div className="section-heading">
         <div>
           <h2>Noticias y evidencias</h2>
@@ -1799,7 +1799,7 @@ function NewsPage({
         <Badge>{articles.length} recibidas</Badge>
       </div>
       <ProcessingPulse articles={articles} />
-      <div className="ranking-toolbar">
+      <div className="ranking-toolbar news-primary-filters">
         <div className="search">
           <Search size={18} />
           <input

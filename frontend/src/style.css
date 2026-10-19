@@ -187,6 +187,8 @@ textarea {
   font-size: 10px;
 }
 .main-shell {
+  --page-gutter: 36px;
+  --panel-padding: 22px;
   margin-left: 230px;
   width: calc(100% - 230px);
   min-width: 0;
@@ -281,9 +283,12 @@ textarea {
   background: #f3f0ff;
 }
 main {
+  width: 100%;
+  min-width: 0;
+  container: workspace / inline-size;
   max-width: 1570px;
   margin: 0 auto;
-  padding: 34px 36px 24px;
+  padding: 34px var(--page-gutter) 24px;
 }
 .page-heading {
   display: flex;
@@ -1137,6 +1142,7 @@ dialog header {
     padding: 26px 14px;
   }
   .main-shell {
+    --page-gutter: 24px;
     margin-left: 195px;
     width: calc(100% - 195px);
   }
@@ -1189,6 +1195,7 @@ dialog header {
     padding: 12px 10px;
   }
   .main-shell {
+    --page-gutter: 20px;
     margin-left: 170px;
     width: calc(100% - 170px);
   }
@@ -1273,6 +1280,8 @@ dialog header {
     display: none;
   }
   .main-shell {
+    --page-gutter: 16px;
+    --panel-padding: 16px;
     width: 100%;
     margin: 0;
   }
@@ -2832,7 +2841,12 @@ dialog > header {
 /* Comparative quality: consistent scales, keyboard drill-down, mobile cards. */
 .campaign-page {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
+}
+.campaign-page .card {
+  padding: var(--panel-padding);
+  overflow: visible;
 }
 .comparator-heading {
   display: flex;
@@ -2859,7 +2873,8 @@ dialog > header {
   border-color: #7160df;
 }
 .compare-controls {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   gap: 14px;
   flex-wrap: wrap;
   align-items: end;
@@ -2867,8 +2882,7 @@ dialog > header {
 .compare-controls label {
   display: grid;
   gap: 7px;
-  min-width: 180px;
-  flex: 1;
+  min-width: 0;
 }
 .compare-controls select,
 .compare-controls input {
@@ -2912,6 +2926,31 @@ dialog > header {
   width: 100%;
   min-width: 0;
 }
+.compare-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin-top: 18px;
+}
+.compare-legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.compare-legend i {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border-radius: 2px;
+}
+.series-a {
+  background: #635bff;
+}
+.series-b {
+  background: #0891b2;
+}
 .confusion-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2934,6 +2973,8 @@ dialog > header {
 .table-wrap {
   overflow: auto;
   max-width: 100%;
+  min-width: 0;
+  overscroll-behavior-inline: contain;
 }
 .comparison-news article {
   padding: 18px 0;
@@ -3082,5 +3123,223 @@ dialog > header {
   }
   .sound-actions button {
     min-height: 44px;
+  }
+}
+
+/* Workspace layout: grids follow available content width, including the sidebar. */
+main > *,
+.section-heading > *,
+.page-heading > *,
+.news-item > *,
+.news-page .ranking-toolbar > * {
+  min-width: 0;
+}
+.section-heading,
+.page-heading,
+.sound-bar,
+.news-item .inline {
+  flex-wrap: wrap;
+}
+.section-heading > div,
+.page-heading > div:first-child {
+  flex: 1 1 220px;
+}
+.news-page :is(.section-heading, .news-item) {
+  padding-inline: var(--panel-padding);
+}
+.news-page .ranking-toolbar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  align-items: end;
+  padding-inline: var(--panel-padding);
+  gap: 16px;
+}
+.news-page .news-primary-filters {
+  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+}
+.news-page > .small-note {
+  padding: 0 var(--panel-padding) 12px;
+}
+.news-page .processing-pulse {
+  margin-inline: var(--panel-padding);
+}
+.news-page .ranking-toolbar label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  max-width: none;
+  font-size: 12px;
+}
+.news-page .ranking-toolbar :is(input, select) {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+}
+.news-page .ranking-toolbar .checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.news-page .ranking-toolbar input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  flex: none;
+}
+.news-page :is(h3, p, small),
+.campaign-page :is(p, small, strong, label),
+.badge {
+  overflow-wrap: anywhere;
+}
+.news-item .inline {
+  justify-content: flex-start;
+  gap: 8px;
+}
+.campaign-page .section-heading {
+  padding: 0 0 18px;
+}
+@container workspace (max-width: 780px) {
+  .comparator-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .comparison-summary,
+  .comparison-predictions,
+  .confusion-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .comparison-numbers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container workspace (max-width: 480px) {
+  .compare-controls,
+  .news-page .ranking-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .compare-controls label {
+    min-width: 0;
+  }
+  .compare-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .compare-tabs button {
+    padding-inline: 6px;
+  }
+  .compare-chart {
+    height: 560px;
+  }
+}
+/* Fixed navigation must never consume printable width or cover subsequent pages. */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+  :root {
+    background: white;
+  }
+  .sidebar,
+  .topbar,
+  .mobile-nav,
+  .more-menu,
+  .sound-bar,
+  .qa-control,
+  .heading-actions,
+  .toast,
+  .skip {
+    display: none !important;
+  }
+  .app {
+    display: block;
+    min-height: 0;
+  }
+  .main-shell {
+    width: 100%;
+    margin: 0;
+    --panel-padding: 16px;
+  }
+  main {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  .card {
+    box-shadow: none;
+    overflow: visible;
+  }
+  .campaign-page {
+    display: block;
+  }
+  .campaign-page > *,
+  .comparison-summary > *,
+  .confusion-grid > * {
+    margin-bottom: 16px;
+  }
+  .comparison-summary,
+  .comparison-predictions,
+  .confusion-grid,
+  .charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .compare-chart {
+    height: 490px;
+    break-inside: avoid;
+  }
+  .compare-legend,
+  .interactive-confusion,
+  .news-item,
+  .comparison-predictions {
+    break-inside: avoid;
+  }
+  .table-wrap,
+  .metric-table-wrap {
+    overflow: visible;
+  }
+  .campaign-page table {
+    table-layout: fixed;
+    font-size: 11px;
+  }
+  .campaign-page :is(td, th) {
+    padding: 6px;
+    overflow-wrap: anywhere;
+  }
+  .page-footer {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  thead {
+    display: table-header-group;
+  }
+  .badge,
+  .compare-legend,
+  .recharts-wrapper {
+    print-color-adjust: exact;
+  }
+}
+
+/* Padded panels own their inset; nested headings must not add it a second time. */
+.detail-card {
+  padding: var(--panel-padding);
+}
+.detail-card > .section-heading {
+  padding: 0 0 18px;
+}
+.detail-card > .ranking-toolbar {
+  padding-inline: 0;
+}
+.chart {
+  height: 330px;
+  min-width: 0;
+}
+@container workspace (max-width: 780px) {
+  .charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .notice {
+    flex-wrap: wrap;
   }
 }

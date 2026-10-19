@@ -16,16 +16,21 @@ export default function SourceVolumeChart({
 }) {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} margin={{ left: 0, right: 10, bottom: 40 }}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis
+      <BarChart
+        data={data}
+        layout="vertical"
+        margin={{ left: 0, right: 24, top: 12, bottom: 12 }}
+        accessibilityLayer
+      >
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+        <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} />
+        <YAxis
+          type="category"
           dataKey="name"
-          angle={-25}
-          textAnchor="end"
-          height={70}
-          tick={{ fontSize: 10 }}
+          width={138}
+          tick={{ fontSize: 11 }}
+          interval={0}
         />
-        <YAxis allowDecimals={false} width={30} />
         <Tooltip />
         <Bar
           isAnimationActive={false}

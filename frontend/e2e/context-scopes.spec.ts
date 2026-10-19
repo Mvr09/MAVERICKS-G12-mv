@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-for (const width of [360, 390, 768, 1440])
+for (const width of [360, 390, 768, 1024, 1440])
   test(`Fuentes distingue almacenadas y novedades en Ejercicio ${width} · MOCK`, async ({
     page,
   }) => {

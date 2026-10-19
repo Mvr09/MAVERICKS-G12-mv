@@ -1,3 +1,9 @@
+## Reparación visual · 19-10-2026
+
+Sin cambios de aceptación semántica ni promoción. La recomendación del perfil sigue pendiente de cierre con la campaña existente; default1.0.0 intacto. A06 abierto, separando errores del motor/S024 de la provincia desconocidaS003. A14/A20 conservan evidencia y alcance previos. RSS periódico de pago desactivado.
+
+Layout:40casos sobre API real en8secciones a360/390/768/1024/1440 y312redimensionados intermedios;20E2E con mocks pasan. Revisión visual final de gráficos/filtros en5anchos e impresión A4Modelo/Noticias. Ninguna inferencia o modificación de resultados. Evidencia y límites: `layout-repair-verification.json`. Publicación y persistencia se comprueban después del push; el registro posterior queda local para no provocar otro autodeploy documental.
+
 # Aceptación actual · Supplier Risk Radar
 
 Registro:19-10-2026. **19 pasa /1 falla (A06).** Default **1.0.0**; única candidata seleccionable **3.4.2/revisión1.3.1**, sin promoción. Versión funcional **77d8581** y HTTP observados en `campaign-20261019-verification.json`; esta matriz distingue herencia de ejecución nueva.
