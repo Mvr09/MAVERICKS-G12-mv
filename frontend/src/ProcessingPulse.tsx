@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { scopedPath } from "./NewsContinuity";
 import { Activity, ArrowUpRight } from "lucide-react";
 import type { Article } from "./types";
 
 /** Arrival signals follow real API state transitions; initial history is not new. */
 export function ProcessingPulse({ articles }: { articles: Article[] }) {
+  const location = useLocation();
+  const context =
+    new URLSearchParams(location.search).get("context") === "rss"
+      ? "rss"
+      : "exercise";
   const previous = useRef<Map<string, string> | null>(null);
   const [updates, setUpdates] = useState<
     { id: string; headline: string; state: string }[]
@@ -87,7 +93,7 @@ export function ProcessingPulse({ articles }: { articles: Article[] }) {
           <small>Sin cambios nuevos desde que abriste esta vista.</small>
         )}
         {updates.map((a) => (
-          <Link key={a.id} to={"/noticias/" + a.id}>
+          <Link key={a.id} to={scopedPath("/noticias/" + a.id, context)}>
             <span>
               {a.state === "review"
                 ? "Revisar"

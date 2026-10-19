@@ -164,7 +164,7 @@ for (const width of [360, 390, 768, 1440])
       ),
     ).toBe(true);
     await page.screenshot({
-      path: `../reports/procurement-mock-${width}.png`,
+      path: `../reports/${process.env.SCREENSHOT_PREFIX || "procurement-mock"}-${width}.png`,
       fullPage: true,
     });
     await page
@@ -181,7 +181,7 @@ for (const width of [360, 390, 768, 1440])
     ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Prospectos MOCK · Principal" }),
-    ).toHaveAttribute("href", "/materiales/M001");
+    ).toHaveAttribute("href", "/materiales/M001?context=rss");
     await page
       .locator(".incident-card")
       .filter({ hasText: "MOCK restricción regional" })
@@ -199,7 +199,7 @@ for (const width of [360, 390, 768, 1440])
       .toBeGreaterThanOrEqual(2);
     await expect(draft).toHaveValue("MOCK edición conservada");
     await expect(draft).toBeFocused();
-    await page.goto("/noticias");
+    await page.goto("/noticias?context=rss");
     const search = page.getByRole("textbox", {
       name: "Buscar noticias",
       exact: true,
@@ -218,7 +218,7 @@ for (const width of [360, 390, 768, 1440])
     expect(Math.abs((await search.boundingBox())!.y - position)).toBeLessThan(
       5,
     );
-    await page.goto("/alertas");
+    await page.goto("/alertas?context=rss");
     await expect(
       page.getByText(
         "Confirmar la normalización de entregas y conservar el historial.",
@@ -227,7 +227,7 @@ for (const width of [360, 390, 768, 1440])
     ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Ver evidencia: MOCK recuperación" }),
-    ).toHaveAttribute("href", "/noticias/A2");
+    ).toHaveAttribute("href", "/noticias/A2?context=rss");
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

@@ -116,7 +116,7 @@ export function AttentionDesk({
             ficticia.
           </p>
         </div>
-        <Link className="text-link" to="/alertas">
+        <Link className="text-link" to={scopedPath("/alertas", context)}>
           Ver alertas <ArrowRight size={16} />
         </Link>
       </div>
@@ -149,11 +149,12 @@ export function AttentionDesk({
               </div>
               <Link
                 className="attention-name"
-                to={
+                to={scopedPath(
                   "/proveedores/" +
-                  s.supplier_id +
-                  (origin ? "?origen=" + encodeURIComponent(origin) : "")
-                }
+                    s.supplier_id +
+                    (origin ? "?origen=" + encodeURIComponent(origin) : ""),
+                  context,
+                )}
               >
                 {s.name}
                 <ArrowUpRight size={18} />
@@ -163,11 +164,12 @@ export function AttentionDesk({
               <ProcurementBrief supplier={s} context={context} compact />
               <Link
                 className="button"
-                to={
+                to={scopedPath(
                   "/proveedores/" +
-                  s.supplier_id +
-                  (origin ? "?origen=" + encodeURIComponent(origin) : "")
-                }
+                    s.supplier_id +
+                    (origin ? "?origen=" + encodeURIComponent(origin) : ""),
+                  context,
+                )}
               >
                 Revisar suministro <ArrowRight size={15} />
               </Link>

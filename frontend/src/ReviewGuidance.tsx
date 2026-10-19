@@ -9,17 +9,46 @@ export function ReviewGuidance({
 }) {
   if (analysis.analysis_status !== "review") return null;
   const groups = new Map<string, Set<string>>();
-  for (const d of analysis.review_details || []) {
+  const causes = [...(analysis.review_details || [])];
+  for (const reason of analysis.review_reasons || []) {
+    const [code, sid] = reason.split(":");
+    if (
+      !causes.some(
+        (d) => d.code === code && (d.supplier_id || "") === (sid || ""),
+      )
+    )
+      causes.push({
+        code,
+        supplier_id: sid || null,
+        field: "legacy",
+        relevance: "unknown",
+        requires_review: true,
+        value: null,
+        threshold: null,
+      });
+  }
+  for (const d of causes) {
     if (!d.requires_review) continue;
     const hint =
       d.resolution_hint ||
-      (d.relevance === "association"
-        ? "Confirma que la ubicación, actividad o ruta del proveedor estén dentro del alcance de la noticia."
-        : d.relevance === "urgency"
-          ? "Confirma el estado actual y el plazo del impacto antes de dar por sustentada una acción inmediata."
-          : d.relevance === "risk"
-            ? "Aclara qué operación, material o entrega amenaza el hecho publicado."
-            : "Completa el dato indicado con evidencia de la fuente o del proveedor.");
+      (/source_text|evidence_missing|no_evidence/.test(d.code)
+        ? "Completa la lectura de la fuente y conserva un fragmento literal que respalde la conclusión."
+        : /inventory/.test(d.code)
+          ? "Confirma el inventario físico que falta; desconocido no significa cero."
+          : /severity|duration/.test(d.code)
+            ? "Confirma gravedad y duración para afinar la prioridad; no se han supuesto días ni stock."
+            : /event_type/.test(d.code)
+              ? "Contrasta el tipo de suceso con la fuente. La versión guardada dejó esta categoría pendiente; eso no demuestra urgencia."
+              : /impact_state|event_state|recovered/.test(d.code)
+                ? "Confirma si la interrupción sigue activa, es preventiva o se ha recuperado."
+                : d.relevance === "association" ||
+                    /link|association|geography/.test(d.code)
+                  ? "Confirma que la ubicación, actividad o ruta del proveedor estén dentro del alcance de la noticia."
+                  : d.relevance === "urgency" || /urgency|urgent/.test(d.code)
+                    ? "Confirma el estado actual y el plazo del impacto antes de dar por sustentada una acción inmediata."
+                    : d.relevance === "risk" || /risk/.test(d.code)
+                      ? "Aclara qué operación, material o entrega amenaza el hecho publicado."
+                      : "Completa el dato indicado con evidencia de la fuente o del proveedor.");
     if (!groups.has(hint)) groups.set(hint, new Set());
     if (d.supplier_id)
       groups
@@ -53,6 +82,27 @@ export function ReviewGuidance({
           </li>
         ))}
       </ul>
+      {analysis.assessments.some(
+        (a) =>
+          a.needs_review &&
+          !analysis.affected_supplier_ids.includes(a.supplier_id),
+      ) && (
+        <a
+          className="text-link"
+          href="#provider-hypotheses"
+          onClick={() => {
+            const group = document.getElementById(
+              "provider-hypotheses",
+            ) as HTMLDetailsElement | null;
+            if (group) {
+              group.open = true;
+              group.querySelector("summary")?.focus({ preventScroll: true });
+            }
+          }}
+        >
+          Ver hipótesis y datos pendientes por proveedor →
+        </a>
+      )}
     </section>
   );
 }

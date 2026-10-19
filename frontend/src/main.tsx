@@ -54,15 +54,7 @@ import {
   Menu,
   LogOut,
 } from "lucide-react";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
+
 import { api, setCsrf, date, number } from "./api";
 import type {
   Material,
@@ -76,9 +68,15 @@ import { audio } from "./audio";
 import { setBands, getBands, bandFor } from "./policy";
 import "./style.css";
 import { ModelPage } from "./ModelPage";
+import { ChartBoundary } from "./ChartBoundary";
+const SourceVolumeChart = React.lazy(() => import("./SourceVolumeChart"));
 import { EventTag, eventNames } from "./EventTag";
 
 const names: Record<string, string> = {
+  model_check_same_source_not_independent_corroboration:
+    "Las comprobaciones del modelo contrastan la misma fuente; no son una corroboración externa independiente.",
+  potential_exposure_is_not_confirmed_damage:
+    "La compatibilidad del catálogo no confirma daño individual ni entregas afectadas.",
   training: "Entrenamiento",
   validation: "Validación · retrospectiva",
   test: "Test final",
@@ -451,7 +449,7 @@ function App() {
         Saltar al contenido
       </a>
       <aside className="sidebar">
-        <Link to="/" className="brand">
+        <Link to={scopedPath("/", context)} className="brand">
           <span className="brand-icon">
             <Activity />
           </span>
@@ -1337,9 +1335,9 @@ function Ranking({
             </select>
           </label>
           <label>
-            Alternativo aprobado
+            Alternativo registrado
             <select
-              aria-label="Alternativo aprobado"
+              aria-label="Alternativo registrado"
               value={alternate}
               onChange={(e) => setAlternate(e.target.value)}
             >
@@ -1755,6 +1753,68 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
         {error || "Cargando noticia…"}
       </div>
     );
+  const renderAssessment = (
+    s: NonNullable<Article["analysis"]>["assessments"][number],
+  ) => (
+    <div className="assessment" key={s.supplier_id}>
+      <Link
+        to={scopedPath(
+          "/proveedores/" + s.supplier_id,
+          a.split === "rss" ? "rss" : "exercise",
+        )}
+      >
+        {suppliers.find((p: Supplier) => p.supplier_id === s.supplier_id)
+          ?.name || s.supplier_id}
+      </Link>
+      <Score value={s.priority} />
+      <BuyerDecision assessment={s} />
+      <span>
+        {s.needs_review ? "Propuesta por confirmar · " : ""}
+        {presenter ? `Vínculo ${number(s.p_link * 100)}% · ` : ""}
+        {riskLabel(s.is_risk)} · {urgencyLabel(s.urgent)}
+      </span>
+      {presenter && s.p_candidate != null && (
+        <small>
+          Candidatura inicial: {number(s.p_candidate * 100)}% · Asociación
+          final:{" "}
+          {s.association_status === "confirmed"
+            ? "Sustentada"
+            : s.association_status === "excluded"
+              ? "Exclusión sustentada"
+              : "Por confirmar"}{" "}
+          · {s.geography_version}
+        </small>
+      )}
+      {presenter && s.p_identity != null && (
+        <small>
+          Señal de identidad: {number(s.p_identity * 100)}% · Compatibilidad de
+          exposición: {number((s.p_exposure || 0) * 100)}%. La asociación puede
+          indicar identidad o exposición potencial; no confirma afectación
+          individual ni embarques de Helixa. Cartera simulada.
+        </small>
+      )}
+      {s.needs_review && <Badge tone="warning">Requiere revisión</Badge>}
+      {s.review_reasons.map((r) => (
+        <small key={r}>{reviewLabel(r)}</small>
+      ))}
+    </div>
+  );
+  const accepted =
+    a.analysis?.assessments.filter((s) =>
+      a.analysis!.affected_supplier_ids.includes(s.supplier_id),
+    ) || [];
+  const uncertain =
+    a.analysis?.assessments.filter(
+      (s) =>
+        !a.analysis!.affected_supplier_ids.includes(s.supplier_id) &&
+        s.needs_review,
+    ) || [];
+  const excluded =
+    a.analysis?.assessments.filter(
+      (s) =>
+        !a.analysis!.affected_supplier_ids.includes(s.supplier_id) &&
+        !s.needs_review,
+    ) || [];
   return (
     <section className="card detail-card">
       <Link
@@ -1803,6 +1863,9 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
                     ? "Conserva la fuente y su fecha para seguimiento. La identificación de un proveedor no demuestra interrupción de suministro."
                     : "El análisis no ha vinculado la noticia a un proveedor. Una consulta manual debe explicar por qué podría ser relevante y qué falta por confirmar."}
         </p>
+        {a.analysis && (
+          <ReviewGuidance analysis={a.analysis} suppliers={suppliers} />
+        )}
         {a.split === "rss" && (
           <small>
             Noticias reales · exposición potencial de una cartera ficticia, sin
@@ -1886,11 +1949,20 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
       )}
       {a.analysis ? (
         <>
-          {a.analysis.review_reasons.map((r) => (
-            <p className="notice warning" key={r}>
-              {reviewLabel(r)}
-            </p>
-          ))}
+          {!a.analysis.review_details?.length &&
+            a.analysis.review_reasons.length > 0 && (
+              <details>
+                <summary>
+                  Motivos registrados por el motor (
+                  {a.analysis.review_reasons.length})
+                </summary>
+                {a.analysis.review_reasons.map((r) => (
+                  <p className="notice warning" key={r}>
+                    {reviewLabel(r)}
+                  </p>
+                ))}
+              </details>
+            )}
           <div className="event-classification">
             <strong>
               Tipo de evento:{" "}
@@ -1913,7 +1985,7 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
               categorías.
             </small>
           </div>
-          <ReviewGuidance analysis={a.analysis} suppliers={suppliers} />
+
           {presenter && !!a.analysis.review_details?.length && (
             <details>
               <summary>Revisión por campo y relevancia</summary>
@@ -1976,50 +2048,41 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
           {a.analysis.assessments.length > 0 && (
             <h3>Evaluación por proveedor</h3>
           )}
-          {a.analysis.assessments.map((s) => (
-            <div className="assessment" key={s.supplier_id}>
-              <Link to={"/proveedores/" + s.supplier_id}>
-                {suppliers.find(
-                  (p: Supplier) => p.supplier_id === s.supplier_id,
-                )?.name || s.supplier_id}
-              </Link>
-              <Score value={s.priority} />
-              <BuyerDecision assessment={s} />
-              <span>
-                {s.needs_review ? "Propuesta por confirmar · " : ""}
-                {presenter ? `Vínculo ${number(s.p_link * 100)}% · ` : ""}
-                {riskLabel(s.is_risk)} · {urgencyLabel(s.urgent)}
-              </span>
-              {presenter && s.p_candidate != null && (
-                <small>
-                  Candidatura inicial: {number(s.p_candidate * 100)}% ·
-                  Asociación final:{" "}
-                  {s.association_status === "confirmed"
-                    ? "Sustentada"
-                    : s.association_status === "excluded"
-                      ? "Exclusión sustentada"
-                      : "Por confirmar"}{" "}
-                  · {s.geography_version}
-                </small>
-              )}
-              {presenter && s.p_identity != null && (
-                <small>
-                  Señal de identidad: {number(s.p_identity * 100)}% ·
-                  Compatibilidad de exposición:{" "}
-                  {number((s.p_exposure || 0) * 100)}%. La asociación puede
-                  indicar identidad o exposición potencial; no confirma
-                  afectación individual ni embarques de Helixa. Cartera
-                  simulada.
-                </small>
-              )}
-              {s.needs_review && (
-                <Badge tone="warning">Requiere revisión</Badge>
-              )}
-              {s.review_reasons.map((r) => (
-                <small key={r}>{reviewLabel(r)}</small>
-              ))}
-            </div>
-          ))}
+          {accepted.map(renderAssessment)}
+          {!accepted.length && (
+            <p className="small-note">
+              No hay proveedores vinculados por la decisión actual. Las
+              hipótesis siguientes no son afectaciones confirmadas.
+            </p>
+          )}
+          {uncertain.length > 0 && (
+            <details className="association-group" id="provider-hypotheses">
+              <summary>
+                {uncertain.length}{" "}
+                {uncertain.length === 1
+                  ? "hipótesis de proveedor por confirmar"
+                  : "hipótesis de proveedores por confirmar"}
+              </summary>
+              <p>
+                Falta soporte para confirmar o descartar estos vínculos.
+                Consulta los datos pendientes antes de decidir; una exclusión
+                incierta puede ocultar una exposición relevante.
+              </p>
+              {uncertain.map(renderAssessment)}
+            </details>
+          )}
+          {excluded.length > 0 && (
+            <details className="association-group">
+              <summary>
+                {excluded.length}{" "}
+                {excluded.length === 1
+                  ? "candidato descartado"
+                  : "candidatos descartados"}{" "}
+                · sin revisión pendiente
+              </summary>
+              {excluded.map(renderAssessment)}
+            </details>
+          )}
           <small>
             Modelo: {a.analysis.model_id} · Versión de noticia {a.version} ·{" "}
             {a.cached
@@ -2386,7 +2449,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                   <p key={m.material_id}>
                     <Link
                       className="text-link"
-                      to={"/materiales/" + m.material_id}
+                      to={scopedPath("/materiales/" + m.material_id, context)}
                     >
                       {m.name} →
                     </Link>
@@ -2403,10 +2466,15 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
               )}
             </div>
             <div className="fact-box">
-              <h3>Alternativo aprobado</h3>
+              <h3>Alternativo registrado</h3>
               {s.alternate ? (
                 <>
-                  <Link to={"/proveedores/" + s.alternate.supplier_id}>
+                  <Link
+                    to={scopedPath(
+                      "/proveedores/" + s.alternate.supplier_id,
+                      context,
+                    )}
+                  >
                     {s.alternate.name}
                   </Link>
                   <p>
@@ -2415,7 +2483,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                   <Badge tone="warning">Stock sin confirmar</Badge>
                 </>
               ) : (
-                <p>Sin alternativo aprobado</p>
+                <p>Sin alternativo registrado</p>
               )}
             </div>
           </aside>
@@ -2523,6 +2591,11 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
   );
 }
 function MaterialDetail() {
+  const materialLocation = useLocation();
+  const context =
+    new URLSearchParams(materialLocation.search).get("context") === "rss"
+      ? "rss"
+      : "exercise";
   const { id } = useParams();
   const [m, setM] = useState<Material | null>(null),
     [error, setError] = useState("");
@@ -2581,7 +2654,10 @@ function MaterialDetail() {
           <div className="fact-box">
             <h3>Proveedor principal</h3>
             {m.primary ? (
-              <Link className="text-link" to={"/proveedores/" + m.primary_id}>
+              <Link
+                className="text-link"
+                to={scopedPath("/proveedores/" + m.primary_id, context)}
+              >
                 {m.primary.name}
               </Link>
             ) : (
@@ -2589,19 +2665,19 @@ function MaterialDetail() {
             )}
           </div>
           <div className="fact-box">
-            <h3>Alternativo aprobado</h3>
+            <h3>Alternativo registrado</h3>
             {m.alternate ? (
               <>
                 <Link
                   className="text-link"
-                  to={"/proveedores/" + m.alternate_id}
+                  to={scopedPath("/proveedores/" + m.alternate_id, context)}
                 >
                   {m.alternate.name}
                 </Link>
                 <Badge tone="warning">Stock sin confirmar</Badge>
               </>
             ) : (
-              <p>Sin alternativo aprobado</p>
+              <p>Sin alternativo registrado</p>
             )}
           </div>
         </aside>
@@ -2781,30 +2857,13 @@ function Analytics({
           <div>
             <h3>Volumen RSS por fuente</h3>
             <div className="chart">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={data}
-                  margin={{ left: 0, right: 10, bottom: 40 }}
+              <ChartBoundary>
+                <React.Suspense
+                  fallback={<p role="status">Cargando gráfico de fuentes…</p>}
                 >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="name"
-                    angle={-25}
-                    textAnchor="end"
-                    height={70}
-                    tick={{ fontSize: 10 }}
-                  />
-                  <YAxis allowDecimals={false} width={30} />
-                  <Tooltip />
-                  <Bar
-                    isAnimationActive={false}
-                    name="Recibidas"
-                    dataKey="recibidas"
-                    fill="#635bff"
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+                  <SourceVolumeChart data={data} />
+                </React.Suspense>
+              </ChartBoundary>
             </div>
             <p className="small-note">
               {sources
@@ -2900,6 +2959,11 @@ createRoot(document.getElementById("root")!).render(
 );
 
 function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
+  const materialsLocation = useLocation();
+  const context =
+    new URLSearchParams(materialsLocation.search).get("context") === "rss"
+      ? "rss"
+      : "exercise";
   const [materials, setMaterials] = useState<Material[]>([]),
     [query, setQuery] = useState(""),
     [category, setCategory] = useState(""),
@@ -2995,7 +3059,10 @@ function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
                 {m.material_id} · {m.category}
               </div>
               <h3>
-                <Link className="text-link" to={"/materiales/" + m.material_id}>
+                <Link
+                  className="text-link"
+                  to={scopedPath("/materiales/" + m.material_id, context)}
+                >
                   {m.name}
                 </Link>
               </h3>
@@ -3007,7 +3074,10 @@ function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
               </p>
               <p>
                 Proveedor principal:{" "}
-                <Link className="text-link" to={"/proveedores/" + m.primary_id}>
+                <Link
+                  className="text-link"
+                  to={scopedPath("/proveedores/" + m.primary_id, context)}
+                >
                   {supplier(m.primary_id)?.name || m.primary_id}
                 </Link>
               </p>
@@ -3018,7 +3088,7 @@ function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
               </p>
               <Link
                 className="button small"
-                to={"/materiales/" + m.material_id}
+                to={scopedPath("/materiales/" + m.material_id, context)}
               >
                 Ver especificaciones <ChevronRight size={16} />
               </Link>
