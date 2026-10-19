@@ -50,7 +50,8 @@ export function procurement(s: Supplier, context: string, incidentId?: string) {
     : s.needs_review;
   const urgent = incidentId ? entry?.assessment?.urgent === "Y" : s.urgent;
   const superseded = incident?.state === "superseded";
-  const action = superseded
+  const work = (incident as any)?.procurement_work;
+  const action = work && work.status !== "done" ? work.action : superseded
     ? "Análisis anterior sustituido: consultar el último resultado antes de decidir medidas."
     : isResolved
       ? "Confirmar la normalización de entregas y conservar el historial."
@@ -69,7 +70,9 @@ export function procurement(s: Supplier, context: string, incidentId?: string) {
                   : "Mantener seguimiento; sin riesgo activo detectado en las noticias procesadas.";
   const exposure = superseded
     ? "Evidencia anterior · conservada en el historial"
-    : entry?.assessment?.exposure_kind === "reported"
+    : entry?.assessment?.exposure_kind === "reported" && (entry as any)?.decision_origin === "human"
+      ? "Afectación individual confirmada por el presentador · cartera ficticia"
+      : entry?.assessment?.exposure_kind === "reported"
       ? "Afectación reportada por la fuente · cartera ficticia"
       : isResolved
         ? "Evento recuperado · cartera ficticia"
@@ -89,6 +92,7 @@ export function procurement(s: Supplier, context: string, incidentId?: string) {
     lead,
     drivers,
     action,
+    work,
     exposure,
     materials,
     alternative: s.alternate_id

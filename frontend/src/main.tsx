@@ -1,3 +1,6 @@
+import { RssTriage } from "./RssTriage";
+import { HumanReview } from "./HumanReview";
+import { IncidentWorkspace } from "./IncidentWorkspace";
 import {
   scopedPath,
   useNewsFilters,
@@ -959,7 +962,7 @@ function App() {
               <Route
                 path="/noticias"
                 element={
-                  <NewsPage key={scope} articles={articles} context={context} />
+                  <NewsPage key={scope} articles={articles} context={context} presenter={presenter} />
                 }
               />
               <Route
@@ -1541,7 +1544,9 @@ function NewsList({
               {label(a.state)}
             </Badge>
             <EventTag analysis={a.analysis} state={a.state} />
+            {a.human_review?.state === "resolved" && <Badge>Revisión humana resuelta</Badge>}
           </div>
+          {(a as any).preliminary_relevance && <p className="small-note">{(a as any).preliminary_relevance.level === "none" ? "Sin indicio preliminar de cartera; no es un descarte" : "Por qué leer: " + (a as any).preliminary_relevance.reasons.join(" · ")} · No confirma afectación.</p>}
           <h3>
             <Link
               id={"news-link-" + a.id}
@@ -1585,12 +1590,14 @@ function NewsList({
 function NewsPage({
   articles,
   context,
+  presenter,
 }: {
   articles: Article[];
   context: string;
+  presenter: boolean;
 }) {
   const [filters, patch] = useNewsFilters(context);
-  const { q, state, source, split, from, to, event, relevant } = filters;
+  const { q, state, source, split, from, to, event, relevant, human, preliminary } = filters;
   const setQ = (q: string) => patch({ q }),
     setState = (state: string) => patch({ state }),
     setSource = (source: string) => patch({ source }),
@@ -1606,6 +1613,8 @@ function NewsPage({
           .toLowerCase()
           .includes(q.toLowerCase())) &&
       (!state || a.state === state) &&
+      (!human || (human === "dismissed" ? Boolean((a as any).human_review?.state === "resolved" && (a as any).human_review?.decisions.length && (a as any).human_review.decisions.every((d:any)=>d.association === "rejected")) : human === "pending" ? (a.state === "review" && a.human_review?.state !== "resolved") : a.human_review?.state === human)) &&
+      (!preliminary || (a as any).preliminary_relevance?.level !== "none") &&
       (!source || a.source === source) &&
       (!split || a.split === split) &&
       (!from || a.published_date >= from) &&
@@ -1740,14 +1749,20 @@ function NewsPage({
             setTo("");
             setEvent("");
             setRelevant(false);
+            patch({human:"",preliminary:""});
           }}
         >
           Limpiar
         </button>
       </div>
+      <div className="ranking-toolbar">
+        <label>Trabajo de revisión<select aria-label="Trabajo de revisión" value={human} onChange={e=>patch({human:e.target.value})}><option value="">Todas las noticias</option><option value="pending">Revisión pendiente</option><option value="in_verification">En verificación humana</option><option value="resolved">Revisión humana resuelta</option><option value="dismissed">Asociaciones rechazadas con evidencia</option></select></label>
+        {context === "rss" && <label className="checkbox"><input type="checkbox" checked={!!preliminary} onChange={e=>patch({preliminary:e.target.checked?"yes":""})}/>Con indicios preliminares de cartera · no confirma exposición</label>}
+      </div>
       <p className="small-note" role="status">
         {filtered.length} de {articles.length} noticias
       </p>
+      {context === "rss" && presenter && <RssTriage articles={filtered} />}
       {filtered.length ? (
         <NewsList articles={filtered} />
       ) : (
@@ -1880,7 +1895,9 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
       </div>
       <h2>{a.headline}</h2>
       <small>Origen: {a.origin_label || a.source}</small>
+      {(a as any).human_review?.state === "resolved" && <p className="notice">Revisión humana resuelta. La lectura de JEV que se conserva abajo es su predicción original; consulta las decisiones operativas y su procedencia en «Resolver la revisión».</p>}
       <p className="article-summary">{a.summary}</p>
+      {(a as any).human_review?.decisions?.length > 0 && <section className="notice" aria-label="Decisiones operativas humanas"><strong>Decisiones humanas · separadas de JEV</strong>{(a as any).human_review.decisions.map((d:any)=><p key={d.supplier_id}>{suppliers.find((s:any)=>s.supplier_id===d.supplier_id)?.name||d.supplier_id}: {d.association === "rejected" ? "asociación rechazada" : d.association === "unknown" ? "en verificación; falta información" : `asociación confirmada · ${d.risk === "Y" ? "riesgo detectado" : "sin riesgo"} · ${d.urgent === "Y" ? "acción inmediata" : "seguimiento no urgente"}`}.</p>)}</section>}
       <section className="article-decision" aria-label="Lectura para compras">
         <strong>
           {!a.analysis
@@ -1988,6 +2005,7 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
         <RetryAnalysis article={a} action={action} />
       )}
 
+      {presenter && <HumanReview article={a} suppliers={suppliers} />}
       {presenter && <AnalysisHistory article={a} />}
       {presenter && a.split === "rss" && <ComparisonControl article={a} />}
       {a.url && /^https?:\/\//.test(a.url) && (
@@ -2254,12 +2272,8 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
   }, [id, context, origin]);
   async function create(kind: string, iid: string) {
     try {
-      setDraft(
-        await api("/drafts", {
-          method: "POST",
-          body: JSON.stringify({ supplier_id: id, incident_id: iid, kind }),
-        }),
-      );
+      setDraft(await api("/drafts", {method:"POST",body:JSON.stringify({supplier_id:id,incident_id:iid,kind})}));
+      window.dispatchEvent(new CustomEvent("radar:incident-drafts", {detail:iid}));
     } catch (e) {
       setError((e as Error).message);
     }
@@ -2395,6 +2409,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     .map((h, n) => (
                       <p key={n}>Resolución registrada: {h.reason}</p>
                     ))}
+                  {presenter && <IncidentWorkspace incidentId={i.id} />}
                   <small>
                     Máximo histórico: {number(i.historical_priority)} / 100
                   </small>
@@ -2544,6 +2559,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
           </aside>
         </div>
       </section>
+      {(s as any).review_work?.length > 0 && <section className="card"><h3>Revisiones pendientes de este proveedor</h3><p>Estas noticias conservan dudas operativas; una revisión de otra noticia no las cierra automáticamente.</p>{(s as any).review_work.map((w:any)=><p key={w.article_id}><Link className="text-link" to={scopedPath("/noticias/"+w.article_id,context)}>{w.headline} → Resolver revisión</Link></p>)}</section>}
       {resolution && (
         <Modal title="Resolver incidente" close={() => setResolution(null)}>
           <form

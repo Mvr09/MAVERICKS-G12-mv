@@ -10,6 +10,11 @@ def make_draft(db, supplier, incident, kind):
     if not assessment or assessment.get("needs_review"):
         raise ValueError("Revisa primero las evidencias y los datos del incidente")
     facts = entry.get("explanation", "").strip()
+    if entry.get("human_review_id"):
+        from app.models import HumanDecision
+        decision = db.get(HumanDecision, entry["human_review_id"])
+        if decision:
+            facts = "Validación humana del presentador: " + decision.data["evidence"] + " (Procedencia: " + decision.data["evidence_source"] + "). " + facts
     if not facts:
         raise ValueError("Falta evidencia validada para redactar la consulta")
     if entry.get("published_date"):

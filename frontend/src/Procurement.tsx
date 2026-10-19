@@ -71,6 +71,7 @@ export function ProcurementBrief({
         <div>
           <strong>Siguiente acción</strong>
           <p>{p.action}</p>
+          {p.work && <small>Acción registrada: {p.work.action} · {p.work.status === "done" ? "Completada" : p.work.status === "verifying" ? "En verificación" : p.work.status === "followup" ? "Seguimiento" : "Pendiente"}{p.work.due_date ? " · " + p.work.due_date : ""}</small>}
         </div>
       </div>
       {!compact && (

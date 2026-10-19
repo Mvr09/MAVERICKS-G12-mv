@@ -72,7 +72,7 @@
     {
       "id": "A13",
       "status": "pasa",
-      "evidence_and_limit": "Errores no son negativos. DosHTTP400 de la ventana registrados y diagnosticados antes de insistir. Fanout conserva estado/preguntas completos y caché. Guardas persistentes de36intentos por generación y deadline; run_key de generación0 vacío sigue acotado por artículo. Mocks401/429/reintentos y contratos pasan.454peticiones nuevas:452HTTP200/2HTTP400,0reintentos; contadores preservados. Cierre:ambosHTTP400auditados. El caso localpendiente se corrigió aerror explícito/riesgo-urgencianull,sin sobrescribir respuestas válidas ni gastarJEV;126tests pasan. Railway conserva job ygeneraciónerror,recuperación3.3 revisada separada."
+      "evidence_and_limit": "Errores no son negativos. DosHTTP400 de la ventana registrados y diagnosticados antes de insistir. Fanout conserva estado/preguntas completos y caché. Guardas persistentes de36intentos por generación y deadline; run_key de generación0 vacío sigue acotado por artículo. Mocks401/429/reintentos y contratos pasan.454peticiones nuevas:452HTTP200/2HTTP400,0reintentos; contadores preservados. Cierre:ambosHTTP400auditados. El caso localpendiente se corrigió aerror explícito/riesgo-urgencianull,sin sobrescribir respuestas válidas ni gastarJEV;126tests pasan. Railway conserva job ygeneraciónerror,recuperación3.3 revisada separada. Revisión/acciones con control optimista, fuente y análisis fijados, sin convertir errores en decisiones. RSSmanual hasta10seleccionadas;sin periódico."
     },
     {
       "id": "A14",
@@ -82,7 +82,7 @@
     {
       "id": "A15",
       "status": "pasa",
-      "evidence_and_limit": "ConsultaRSS real con cita e hipótesis:edición,guardado,copia con readback,TXT y recarga a4anchos. Borrador creado en4a818c1 persiste tras autodeploya2e962f. Oferta ferroviaria propia del alternativo visible; se pregunta adecuación antes de disponibilidad/capacidad. Continuidad de edición probada, sin envío externo."
+      "evidence_and_limit": "ConsultaRSS real con cita e hipótesis:edición,guardado,copia con readback,TXT y recarga a4anchos. Borrador creado en4a818c1 persiste tras autodeploya2e962f. Oferta ferroviaria propia del alternativo visible; se pregunta adecuación antes de disponibilidad/capacidad. Continuidad de edición probada, sin envío externo. Workspace persistente por incidente,consultas reabribles,contexto conservado yadvertencia de cambio. Notas humanas privadas;Analysis/etiquetas/exportaciónoriginal intactos."
     },
     {
       "id": "A16",
@@ -92,7 +92,7 @@
     {
       "id": "A17",
       "status": "pasa",
-      "evidence_and_limit": "Esquema0008 y migración aditiva heredados; web/worker compatibles observados en HTTPS. Draft y análisis anteriores sobreviven a autodeploy. Pruebas PG aisladas de generaciones y rollback de proyección al fallar. No se simula una caída destructiva del worker en Railway."
+      "evidence_and_limit": "Esquema0008 y migración aditiva heredados; web/worker compatibles observados en HTTPS. Draft y análisis anteriores sobreviven a autodeploy. Pruebas PG aisladas de generaciones y rollback de proyección al fallar. No se simula una caída destructiva del worker en Railway. Migración0009aditiva,24tablas comprobadas enbase aislada;histórico humano protegido de limpieza ydowngrade con datos."
     },
     {
       "id": "A18",
@@ -102,7 +102,7 @@
     {
       "id": "A19",
       "status": "pasa",
-      "evidence_and_limit": "HTTPSa2e962f en360/390/768/1440:sin overflow/erroresJS;filtros,foco,contexto,Escape yconsulta persistida. Material yproductos esperados cargados,oferta propia del alternativo visible.26E2E distintos con mocks. Guiones4min1440/390 más repetición de pasos afectados; emulación,no estudio de compradores ni móvil físico. JS inicial215653→118897bytes codificados observados,44.87%menos; no es latencia niA20. Nuevo recorrido3.4.2 real390/1440,Excel→noticia→proveedor→M02/Glucora→borrador;8E2E mock dirigidos yerror real422sin lote ni consumo."
+      "evidence_and_limit": "HTTPSa2e962f en360/390/768/1440:sin overflow/erroresJS;filtros,foco,contexto,Escape yconsulta persistida. Material yproductos esperados cargados,oferta propia del alternativo visible.26E2E distintos con mocks. Guiones4min1440/390 más repetición de pasos afectados; emulación,no estudio de compradores ni móvil físico. JS inicial215653→118897bytes codificados observados,44.87%menos; no es latencia niA20. Nuevo recorrido3.4.2 real390/1440,Excel→noticia→proveedor→M02/Glucora→borrador;8E2E mock dirigidos yerror real422sin lote ni consumo. Flujo operativo nuevo:resolver revisión sin perder texto poractualizaciones;acciones yRSSseleccionado,mocks en360/390/768/1440. Pendiente verificación deldespliegue deesta ampliación."
     },
     {
       "id": "A20",
@@ -231,5 +231,19 @@
     "real_runtime": "demo-selected-runtime.json",
     "error_audit": "demo-failure-outcomes.json",
     "a20_renewed": false
+  },
+  "operational_delivery": {
+    "schema": "0009",
+    "classifier_unchanged": true,
+    "default": "1.0.0",
+    "candidate": "decision-3.4.2/review-1.3.1",
+    "human_policy": "human-review-1.0.0",
+    "unit_integration_passed": 141,
+    "ui_directed_passed": 26,
+    "ui_mock": true,
+    "migration_tables": 24,
+    "paid_periodic_rss": false,
+    "new_jev_calls_development": 0,
+    "live_verification": "pending publication"
   }
 }

@@ -149,6 +149,11 @@ def scope(db, selection=None, mode="delete"):
     elif "catalog" in selection and len(aids) != len(all_articles):
         blocked = "Para borrar el catálogo selecciona también todas las noticias; hay resultados que lo necesitan."
     iids = [i.id for i in incidents]
+    if mode == "delete":
+        from app.models import HumanDecision, IncidentWork
+        if db.scalar(select(HumanDecision.id).where(HumanDecision.article_id.in_(aids)).limit(1)) or db.scalar(select(IncidentWork.id).where(IncidentWork.incident_id.in_(iids)).limit(1)):
+            blocked = "La selección contiene decisiones humanas o acciones. Se conserva su historial; usa reanálisis sin borrar."
+
     alerts = db.scalars(select(Alert).where(Alert.incident_id.in_(iids))).all()
     drafts = db.scalars(select(Draft).where(or_(Draft.incident_id.in_(iids), Draft.article_id.in_(aids) if mode == "delete" else False))).all()
     analyses = db.scalars(select(Analysis).where(Analysis.article_id.in_(aids))).all()

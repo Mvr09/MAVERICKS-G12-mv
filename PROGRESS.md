@@ -1,3 +1,16 @@
+# Desarrollo de producto · revisión y operación diaria
+
+- Base publicada5858b3a. Plan: cerrar revisión humana con trazabilidad; enlazar decisiones/acciones/borradores al incidente; bandejaRSS con indicios y selección explícita; pruebas, migración y publicación. Se reutilizan guías, reconciliación, permisos, alertas y borradores existentes.
+- Implementado: decisiones humanas append-only por noticia/proveedor/análisis/fuente; confirmar,rechazar,solicitar información y añadir nota sin cambiar decisión. Probabilidades,Analysis,EvaluationLabel y exportación original intactos. Notas privadas; decisiones normalizadas públicas. Conflictos y revisiones obsoletas explícitos. El rechazo no borra evidencia compartida ni equivale a recuperación.
+- Acciones por incidente:pendiente/verificación/seguimiento/completada,fecha y resultados conhistorial; consulta guardada reabrible con contexto. Completar acción no cierra incidente; no reabre casos resueltos. Alertas humanas visuales,sin inflar confianza/audio.
+- RSS:indicios de nombre,ciudad/región y corredor/modo declarados, nunca afectación confirmada. País solo no prioriza. Lote manual explícito hasta10,confirmación yprogreso por trabajo/errores. Rechazos conservados yfiltrables. Periódico de pago false.
+- Calidad:clasificador3.4.2/revisión1.3.1 ydefault1.0.0 congelados,sin promoción. Solo recuperación preliminar mejorada:training19/22→20/22 pares recuperados,5candidatos adicionales enambos,2omisiones restantes;7controles de recuperación pasan. No es mejora de clasificación ni evaluación independienteRSS.0llamadasJEV de desarrollo,contadores preservados.
+- Esquema0009 aditivo probado enbase de migraciones:24tablas. Borrado de demo protege decisiones/acciones;downgrade con datos bloqueado. Sin variables nuevas. Documentación operativa:docs/10_OPERACION_Y_REVISION.md.
+- Pruebas:141unit/integración y26E2E dirigidos distintos pasan(22enlote final+4procurement trasactualizar una aserción altexto nuevo),mocks identificados,360/390/768/1440. Build ypaquete119archivos sinsecretos/originales pasan. Pendiente:publicar,comprobarHTTPS/worker0009 yciclo real;máximo2RSSnuevas(72intentos),sin repetirrespuestasválidas. A06abierto;A14/A20heredados,noLiveDay/test/answerkey.
+- Cambios ajenos,credenciales,originales,históricos ycontadores preservados. Guiones ycapturas no son objetivo de esta entrega.
+
+## Historial conservado
+
 # Selección de demo cerrada · 19-10-2026
 
 - Recomendación: **radar-1.0.0-candidate**, preguntasdecision-3.4.2/matching3.3/revisión1.3.1/riesgo1.2/JEV1.13.0. **Default1.0.0 intacto**; criterios previos no autorizan inferir generalizaciónRSS a partir de training/controles propios. Hashes congelados en reports/demo-selection-freeze.json; sin cambios semánticos.
@@ -6,7 +19,7 @@
 - Auditoría dosHTTP400:localprior3.0 quedópending,sin negativo;corregido idempotentemente aerror/risk-urgentnull yrunner registra fallos futuros. Railwayconserva job/errorantiguo yrecuperación3.3 revisada separada. No repetir cuerpos rechazados ni declarar causa exacta no comunicada.
 - Recorrido real candidato:Excelprivado3training sin etiquetas→análisis→exportación3filas enorden→N001/S003nombrado→M02/Glucora→borradoreditable guardado,a390/1440.4peticiones200,0reintentos,ceroetapas cacheadas,Railwayejercicio91→95;RSS62→62,reutilizadoNamibia3.4.2. Ensayo funcional,no nuevaevaluación niA20.
 - Cierre: **8peticiones nuevas200,0reintentos**;uso porAPI yversiones guardados. RSSperiódicopago false.126unit/integración pasan (deprecaciónAnyio externa),8E2E mock dirigidos,estado real422deExcelinválido comprobado sincrear lote. A14físico heredadoPC/Firefox cerrado;A20histórico conservado,noLiveDay/test/answerkey.
-- Guion definitivo:docs/09_DEMO_PROCUREMENT.md. Próximo:revisar ypublicar únicamente estos cambios/evidencias,comprobarSHAweb/worker ypersistencia. Cambios ajenos yobservaciones históricas locales preservados.
+- Cierre publicado **5858b3a**,GitHubmain yweb/worker observados enmismoSHA,online/compatibles. /,/healthz,/readyz,5assets,catálogo40 y ficha200;administración401. Trasredeploy persistenlote3training,resultado,borrador editado yRSS3.4.2;JEVejercicio95→95/RSS62→62. Observación posterior local:reports/demo-selection-public.json. Guion:docs/09_DEMO_PROCUREMENT.md. No requierepanel. Cambios ajenos preservados.
 
 ## Historial de la ventana anterior
 

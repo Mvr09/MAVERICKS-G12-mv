@@ -66,8 +66,10 @@ def article_view(db, a):
         "generation": a.generation,
         "fetched_at": a.fetched_at,
         "source_id": a.source_id,
+        "preliminary_relevance": __import__("app.relevance",fromlist=["preliminary"]).preliminary(db,a) if a.context == "rss" else None,
         **a.data,
         "analysis": result.result if result else None,
+        "human_review": __import__("app.human_review",fromlist=["summary"]).summary(db,a,result) if result else None,
         "event_type_confidence": result.raw.get("a", {})
         .get("answers", {})
         .get("event_type", {})
@@ -146,9 +148,15 @@ def suppliers_view(db, context="exercise", origin=""):
                 )
             )
         incidents = projected
+    from app.models import IncidentWork
+    work_by_incident = {}
+    for work in db.scalars(select(IncidentWork).order_by(IncidentWork.created_at.desc(),IncidentWork.id.desc())):
+        work_by_incident.setdefault(work.incident_id,{k:work.data.get(k) for k in ("status","action","due_date")})
     known = {}
     doubts = {}
     processed = 0
+    human_pending = set()
+    review_work = {}
     analyzed = db.execute(
         select(Article, Analysis.result)
         .join(Analysis, Analysis.article_id == Article.id)
@@ -160,15 +168,20 @@ def suppliers_view(db, context="exercise", origin=""):
     for article_row, result in analyzed:
         if not origin_matches(article_row, origin):
             continue
+        from app.human_review import effective_result
+        result = effective_result(db, article_row, result)
         article_data = article_row.data
         if result["analysis_status"] == "error":
             continue
+        from app.human_review import current_decisions
+        human_pending.update(sid for sid,r in current_decisions(db,article_row).items() if r.data["association"] == "unknown")
         processed += 1
         uncertain_links = {d["supplier_id"] for d in result.get("review_details", []) if d["requires_review"] and d["relevance"] == "association"}
         for assessment in result["assessments"]:
             sid = assessment["supplier_id"]
             if assessment.get("needs_review") and (sid in uncertain_links or assessment["p_link"] >= POLICY["thresholds"]["review_low"]):
                 doubts[sid] = article_data["published_date"]
+                review_work.setdefault(sid,[]).append({"article_id":article_row.id,"headline":article_data["headline"]})
             if sid not in result["affected_supplier_ids"]:
                 continue
             sid = assessment["supplier_id"]
@@ -190,6 +203,7 @@ def suppliers_view(db, context="exercise", origin=""):
                 "revision": i.revision,
                 "history": i.history,
                 "current_headline": current(i).get("headline"),
+                "procurement_work": work_by_incident.get(i.id),
                 "event_tag": current(i).get("event_tag")
                 or article_tags.get(current(i).get("article_id")),
                 "stale": (
@@ -228,12 +242,13 @@ def suppliers_view(db, context="exercise", origin=""):
                     current(i).get("assessment", {}).get("urgent") == "Y"
                     for i in active
                 ),
-                "needs_review": any(
+                "needs_review": s.id in doubts or s.id in human_pending or any(
                     current(i).get("assessment", {}).get("needs_review") for i in active
                 )
                 or bool(not active and s.id in doubts)
                 or bool(not hist and known.get(s.id, {}).get("assessment", {}).get("needs_review")),
                 "incidents": rows,
+                "review_work": review_work.get(s.id, []),
                 "incident_count": len(active),
                 "latest_evidence": latest.event_date
                 if latest

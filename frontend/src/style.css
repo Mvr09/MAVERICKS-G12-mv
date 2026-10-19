@@ -2742,3 +2742,18 @@ dialog > header {
   margin-top: 16px;
   background: #fff;
 }
+
+.operation-form { display:grid;gap:1rem;margin-block:1rem;min-width:0; }
+.operation-form label,.operational-review>label { display:grid;gap:.4rem;min-width:0; }
+.operation-form textarea { min-height:6rem; }
+.operation-form input,.operation-form select,.operation-form textarea,.operational-review select { width:100%;max-width:100%;min-width:0; }
+.operational-review { margin-block:1.5rem; }
+.operational-review .fact-box { margin-block:.7rem;overflow-wrap:anywhere; }
+.incident-work,.rss-triage { margin-block:1rem;border:1px solid #ddd7ff;border-radius:12px;padding:1rem; }
+.workspace-dialog { margin:auto;width:min(680px,calc(100vw - 32px));max-height:90dvh;overflow-y:auto;border:1px solid #ddd7ff;border-radius:18px;padding:1.2rem;color:#142342; }
+.workspace-dialog::backdrop { background:#14234280; }
+.workspace-dialog textarea { display:block;width:100%;min-height:45vh; }
+.triage-option { display:flex;align-items:flex-start;gap:.75rem;padding:.65rem 0;min-width:0; }
+.triage-option input { flex:0 0 auto;min-width:22px;min-height:22px; }
+.triage-option span { min-width:0;overflow-wrap:anywhere; }
+.triage-option small { display:block; }

@@ -58,3 +58,7 @@ Se conservan los límites de cada evidencia:un HTTP200 de rutaHTML no demuestra 
 ## Selección de demo cerrada · 19-10-2026
 
 Usar3.4.2/revisión1.3.1 explícitamente;default1.0.0 conservado. Comparación pareada30training y14controles ya inspeccionados en [SELECCION_DEMO_FINAL.md](SELECCION_DEMO_FINAL.md).126unit/integración y8E2E dirigidos pasan;recorrido real Excel/exportación/proveedor/material/borrador yRSS válido en390/1440. Ocho nuevas peticiones200,cero reintentos. A06permanece abierto,A14cerrado,A20histórico sin renovar.
+
+## Ampliación operativa · revisión y seguimiento
+
+Esquema0009aditivo,24tablas verificadas enbase aislada;141unit/integración y26E2E dirigidos con mocks pasan. Decisiones humanas,notas yacciones separadas deAnalysis,etiquetas yexportación delreto. Recuperación preliminar medida solo entraining:19→20TPde22referencias,5candidatos adicionales iguales;7controles dedesarrollo pasan,sin nueva precisiónJEV. Publicación ypersistencia externas se registrarán enoperational-public.json. A06abierto;A14yA20conservan evidencia yalcance.

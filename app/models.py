@@ -248,3 +248,25 @@ class RssDailyUsage(Base):
     __tablename__ = "rss_daily_usage"
     id: Mapped[str] = mapped_column(String, primary_key=True)
     reserved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class HumanDecision(Base):
+    """Append-only operational decisions, never labels or JEV analyses."""
+    __tablename__ = 'human_decisions'
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
+    article_id: Mapped[str] = mapped_column(ForeignKey('articles.id'), index=True)
+    supplier_id: Mapped[str] = mapped_column(ForeignKey('suppliers.id'), index=True)
+    analysis_id: Mapped[str] = mapped_column(ForeignKey('analyses.id'))
+    generation: Mapped[int] = mapped_column(Integer)
+    source_version: Mapped[int] = mapped_column(Integer)
+    content_hash: Mapped[str] = mapped_column(String)
+    data: Mapped[dict] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class IncidentWork(Base):
+    __tablename__ = 'incident_work'
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
+    incident_id: Mapped[str] = mapped_column(ForeignKey('incidents.id'), index=True)
+    data: Mapped[dict] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)

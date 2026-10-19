@@ -9,6 +9,8 @@ export function scopedPath(path: string, context: string) {
 const defaults = {
   q: "",
   state: "",
+  human: "",
+  preliminary: "",
   source: "",
   split: "",
   from: "",
@@ -29,6 +31,8 @@ export function useNewsFilters(context: string) {
       for (const key of [
         "q",
         "state",
+        "human",
+        "preliminary",
         "source",
         "split",
         "from",

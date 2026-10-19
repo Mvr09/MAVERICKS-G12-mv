@@ -1,0 +1,67 @@
+{
+  "version": "inbox-retrieval-1.0.0",
+  "scope": "30 stored training, all reviewed included; seven controlled retrieval-only development probes. No validation/test/LiveDay.",
+  "training": {
+    "n": 30,
+    "candidate_pair_tp": 20,
+    "candidate_pair_fp": 5,
+    "candidate_pair_fn": 2,
+    "precision": 0.8,
+    "recall": 0.9090909090909091,
+    "levels": {
+      "none": 10,
+      "named": 9,
+      "geography": 10,
+      "service": 1
+    }
+  },
+  "synthetic": [
+    {
+      "case": "regional",
+      "expected_retrieval": "geography",
+      "actual": "geography",
+      "passed": true
+    },
+    {
+      "case": "name_positive",
+      "expected_retrieval": "named",
+      "actual": "named",
+      "passed": true
+    },
+    {
+      "case": "unrelated",
+      "expected_retrieval": "none",
+      "actual": "none",
+      "passed": true
+    },
+    {
+      "case": "country_only",
+      "expected_retrieval": "none",
+      "actual": "none",
+      "passed": true
+    },
+    {
+      "case": "sea_route",
+      "expected_retrieval": "service",
+      "actual": "service",
+      "passed": true
+    },
+    {
+      "case": "rail_route",
+      "expected_retrieval": "service",
+      "actual": "service",
+      "passed": true
+    },
+    {
+      "case": "harmless_city",
+      "expected_retrieval": "geography",
+      "actual": "geography",
+      "passed": true
+    }
+  ],
+  "new_jev_requests": 0,
+  "classification_prediction_changes": 0,
+  "priority_formula_changes": 0,
+  "seconds_offline": 1.761101210009656,
+  "limits": "Geography-only candidates include innocuous events and are explicitly hypotheses. Pair FP/FN measure retrieval only, not risk/urgency or final supplier decisions. No generalisation claim or before/after classifier gain."
+}

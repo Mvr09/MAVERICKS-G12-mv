@@ -26,7 +26,7 @@ export function AnalysisProfile({
           <option value="link-2.2.0">2.2 · experimental anterior</option>
         )}
         <option value={CANDIDATE}>
-          Candidata · exposición y revisión focalizada
+          Candidata · exposición y revisión focalizada · recomendada para trabajo asistido
         </option>
       </select>
       {value === CANDIDATE && (

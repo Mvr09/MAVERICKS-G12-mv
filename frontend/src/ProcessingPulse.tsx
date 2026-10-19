@@ -16,8 +16,10 @@ export function ProcessingPulse({ articles }: { articles: Article[] }) {
     { id: string; headline: string; state: string }[]
   >([]);
   const [total, setTotal] = useState(0);
-  const done = articles.filter(
-    (a) => a.state === "done" || a.state === "review",
+  const done = articles.filter((a) =>
+    a.state === "done" || a.state === "human_resolved"
+      ? "Revisión humana resuelta"
+      : a.state === "review",
   ).length;
   const errors = articles.filter((a) => a.state === "error").length;
   const pending = articles.length - done - errors;
@@ -26,9 +28,19 @@ export function ProcessingPulse({ articles }: { articles: Article[] }) {
     const current = new Map(
       articles.map((a) => [
         a.id,
-        `${a.generation || 0}:${a.version || 1}:${a.state}`,
+        `${a.generation || 0}:${a.version || 1}:${a.state}:${a.human_review?.updated_at || ""}:${a.human_review?.state || ""}`,
       ]),
     );
+    if (!previous.current) {
+      try {
+        const saved = JSON.parse(
+          localStorage.getItem("radar:last-news:" + context) || "null",
+        );
+        if (Array.isArray(saved)) previous.current = new Map(saved);
+      } catch {
+        /* Storage is optional. */
+      }
+    }
     if (previous.current) {
       const changed = articles.filter(
         (a) => current.get(a.id) !== previous.current!.get(a.id),
@@ -40,7 +52,10 @@ export function ProcessingPulse({ articles }: { articles: Article[] }) {
             ...changed.map((a) => ({
               id: a.id,
               headline: a.headline,
-              state: a.state,
+              state:
+                a.human_review?.state === "resolved"
+                  ? "human_resolved"
+                  : a.state,
             })),
             ...old.filter((a) => !changed.some((b) => a.id === b.id)),
           ].slice(0, 3),
@@ -48,6 +63,14 @@ export function ProcessingPulse({ articles }: { articles: Article[] }) {
       }
     }
     previous.current = current;
+    try {
+      localStorage.setItem(
+        "radar:last-news:" + context,
+        JSON.stringify([...current].slice(0, 2000)),
+      );
+    } catch {
+      /* Optional browser continuity. */
+    }
   }, [articles]);
   return (
     <section className="processing-pulse" aria-label="Actividad de análisis">
@@ -70,7 +93,7 @@ export function ProcessingPulse({ articles }: { articles: Article[] }) {
         </div>
         <span className="processing-new" role="status" aria-live="polite">
           {total
-            ? `${total} ${total === 1 ? "actualización" : "actualizaciones"} desde que abriste esta vista`
+            ? `${total} ${total === 1 ? "actualización" : "actualizaciones"} desde la última consulta en este navegador`
             : "Las novedades aparecerán aquí"}
         </span>
       </div>
@@ -90,18 +113,22 @@ export function ProcessingPulse({ articles }: { articles: Article[] }) {
       </div>
       <div className="processing-updates" aria-label="Últimos cambios">
         {!updates.length && (
-          <small>Sin cambios nuevos desde que abriste esta vista.</small>
+          <small>
+            Sin cambios nuevos desde la última consulta en este navegador.
+          </small>
         )}
         {updates.map((a) => (
           <Link key={a.id} to={scopedPath("/noticias/" + a.id, context)}>
             <span>
-              {a.state === "review"
-                ? "Revisar"
-                : a.state === "done"
-                  ? "Analizada"
-                  : a.state === "error"
-                    ? "Error"
-                    : "Pendiente"}
+              {a.state === "human_resolved"
+                ? "Revisión humana resuelta"
+                : a.state === "review"
+                  ? "Revisar"
+                  : a.state === "done"
+                    ? "Analizada"
+                    : a.state === "error"
+                      ? "Error"
+                      : "Pendiente"}
             </span>
             {a.headline}
             <ArrowUpRight size={14} />

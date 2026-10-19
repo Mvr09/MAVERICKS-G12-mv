@@ -1,0 +1,42 @@
+{
+  "classifier_changed": false,
+  "classifier_frozen_files_unchanged": true,
+  "default": "1.0.0",
+  "candidate": "decision-3.4.2/review-1.3.1",
+  "human_policy": "human-review-1.0.0",
+  "inbox_retrieval": "inbox-retrieval-1.0.0",
+  "classification_new_jev_calls": 0,
+  "training_retrieval_before": {
+    "n": 30,
+    "candidate_pair_tp": 19,
+    "candidate_pair_fp": 5,
+    "candidate_pair_fn": 3,
+    "precision": 0.7916666666666666,
+    "recall": 0.8636363636363636,
+    "levels": {
+      "none": 11,
+      "named": 9,
+      "geography": 10
+    }
+  },
+  "training_retrieval_after": {
+    "n": 30,
+    "candidate_pair_tp": 20,
+    "candidate_pair_fp": 5,
+    "candidate_pair_fn": 2,
+    "precision": 0.8,
+    "recall": 0.9090909090909091,
+    "levels": {
+      "none": 10,
+      "named": 9,
+      "geography": 10,
+      "service": 1
+    }
+  },
+  "limits": [
+    "Training-only retrieval, including reviewed cases; controlled probes are development evidence.",
+    "Five extra candidate pairs persist and two reference pairs are still missed; a filter is optional and never drops articles.",
+    "No new classifier precision/recall claim; human decisions never enter EvaluationLabel or Analysis.",
+    "A06 remains open. A14 physical and A20 historical evidence unchanged."
+  ]
+}

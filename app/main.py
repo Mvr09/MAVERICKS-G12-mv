@@ -134,7 +134,7 @@ def ready(db: Session = Depends(get_db)):
         revision = db.execute(
             text("select version_num from alembic_version")
         ).scalar_one()
-        if revision != "0008":
+        if revision != "0009":
             raise ValueError()
     except Exception:
         raise HTTPException(503, "Base de datos o esquema no disponible")
@@ -250,7 +250,9 @@ def overview(
         "processed": len(processed),
         "pending": sum(a["state"] == "pending" for a in articles),
         "errors": sum(a["state"] == "error" for a in articles),
-        "review": sum(a["state"] == "review" for a in articles),
+        "review_model": sum(a["state"] == "review" for a in articles),
+        "review": sum((a["state"] == "review" and (a.get("human_review") or {}).get("state") != "resolved") or (a.get("human_review") or {}).get("state") == "in_verification" for a in articles),
+        "human_review_completed": sum((a.get("human_review") or {}).get("state") == "resolved" for a in articles),
         "linked": sum(
             bool(a["analysis"] and a["analysis"]["affected_supplier_ids"])
             for a in processed
@@ -832,7 +834,7 @@ def batch_execution(bid: str, db: Session = Depends(get_db)):
 class ManualRssAnalysis(BaseModel):
     model_config = ConfigDict(extra="forbid")
     limit: int | None = Field(default=None, ge=1)
-    article_ids: list[str] | None = Field(default=None, min_length=1, max_length=6)
+    article_ids: list[str] | None = Field(default=None, min_length=1, max_length=10)
     analysis_profile: Literal["1.0.0", "radar-1.0.0-candidate"] = DEFAULT_PROFILE
 
 
@@ -843,8 +845,13 @@ def analyze_rss(body: ManualRssAnalysis, db: Session = Depends(get_db)):
     require_current_worker(db)
     if db.scalar(select(func.count()).select_from(Supplier)) != 40:
         raise HTTPException(409, "Importa primero las 40 identidades de la cartera.")
-    if body.analysis_profile != DEFAULT_PROFILE and (not body.article_ids or len(body.article_ids) != 1):
-        raise HTTPException(422, "La candidata RSS se elige para una noticia concreta.")
+    if body.analysis_profile != DEFAULT_PROFILE and not body.article_ids:
+        raise HTTPException(422, "Selecciona explícitamente hasta10noticias para la candidata.")
+    if body.article_ids:
+        if len(set(body.article_ids)) != len(body.article_ids): raise HTTPException(422, "Selección con IDs repetidos")
+        chosen = db.scalars(select(Article).where(Article.id.in_(body.article_ids))).all()
+        if len(chosen) != len(body.article_ids) or any(a.context != "rss" or a.state != "pending" for a in chosen):
+            raise HTTPException(409, "La selección cambió: selecciona solo noticias RSS pendientes y recarga antes de analizar.")
     jobs = enqueue_rss_analysis(db, body.limit, article_ids=body.article_ids, profile=body.analysis_profile)
     if not jobs:
         db.rollback()
@@ -1085,6 +1092,8 @@ def draft(body: DraftInput, db: Session = Depends(get_db)):
     d = Draft(
         supplier_id=s.id,
         incident_id=inc.id,
+        article_id=__import__("app.views",fromlist=["current"]).current(inc).get("article_id"),
+        evidence_snapshot={"incident_id":inc.id,"revision":inc.revision,"entry":__import__("app.views",fromlist=["current"]).current(inc)},
         kind=body.kind,
         text=content,
         context_hash=digest(inc.history),
@@ -1200,6 +1209,42 @@ def evaluate(bid: str, db: Session = Depends(get_db)):
     except ValueError as e:
         raise HTTPException(409, str(e))
 
+
+# Human operations are deliberately separate from Analysis/EvaluationLabel.
+from app.human_review import DecisionInput, ReviewConflict
+from app.incident_work import WorkInput
+
+@app.get("/api/articles/{aid}/review", dependencies=[Depends(presenter)])
+def read_human_review(aid: str, db: Session = Depends(get_db)):
+    from app.human_review import view
+    article = db.get(Article, aid)
+    if not article: raise HTTPException(404, "Noticia no encontrada")
+    return view(db, article)
+
+@app.post("/api/articles/{aid}/review", status_code=201, dependencies=[Depends(presenter)])
+def write_human_review(aid: str, body: DecisionInput, db: Session = Depends(get_db)):
+    from app.human_review import save, view
+    try:
+        save(db, aid, body); db.commit()
+        return view(db, db.get(Article, aid))
+    except ValueError as exc:
+        db.rollback(); raise HTTPException(409 if isinstance(exc, ReviewConflict) else 422, str(exc))
+
+@app.get("/api/incidents/{iid}/workspace", dependencies=[Depends(presenter)])
+def read_incident_work(iid: str, db: Session = Depends(get_db)):
+    from app.incident_work import view
+    inc = db.get(Incident, iid)
+    if not inc: raise HTTPException(404, "Incidente no encontrado")
+    return view(db, inc)
+
+@app.post("/api/incidents/{iid}/workspace", status_code=201, dependencies=[Depends(presenter)])
+def write_incident_work(iid: str, body: WorkInput, db: Session = Depends(get_db)):
+    from app.incident_work import save, view
+    try:
+        save(db, iid, body); db.commit()
+        return view(db, db.get(Incident, iid))
+    except ValueError as exc:
+        db.rollback(); raise HTTPException(409 if isinstance(exc, ReviewConflict) else 422, str(exc))
 
 static = ROOT / "frontend/dist"
 if (static / "assets").exists():
