@@ -144,6 +144,7 @@ def sync_source(db, source_id, transport=None, check_dns=True):
                         source.status = "unchanged"
                         source.last_success_at = now()
                         source.error = None
+                        source.data = {**source.data, "last_poll": {"received": 0, "new": 0, "duplicates": 0, "not_modified": True}}
                         return {"http": 304, "new": 0}
                     if response.status_code != 200:
                         raise FeedError(f"HTTP {response.status_code}")
@@ -172,5 +173,6 @@ def sync_source(db, source_id, transport=None, check_dns=True):
             else "Error de conexión o resolución DNS"
         )
         result = {"error": source.error}
+    source.data = {**source.data, "last_poll": result}
     db.flush()
     return {"http": source.http_status, **result}

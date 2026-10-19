@@ -134,7 +134,7 @@ def ready(db: Session = Depends(get_db)):
         revision = db.execute(
             text("select version_num from alembic_version")
         ).scalar_one()
-        if revision != "0009":
+        if revision != "0010":
             raise ValueError()
     except Exception:
         raise HTTPException(503, "Base de datos o esquema no disponible")
@@ -1245,6 +1245,67 @@ def write_incident_work(iid: str, body: WorkInput, db: Session = Depends(get_db)
         return view(db, db.get(Incident, iid))
     except ValueError as exc:
         db.rollback(); raise HTTPException(409 if isinstance(exc, ReviewConflict) else 422, str(exc))
+
+# Private comparative campaigns. Public routes never expose evaluation references.
+class CampaignInput(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    name: str = Field(min_length=5, max_length=120)
+    inputs: list[dict] = Field(min_length=1, max_length=200)
+    suppliers: list[dict] = Field(min_length=40, max_length=40)
+    materials: list[dict] = Field(default_factory=list, max_length=100)
+    manifest: dict
+
+@app.get('/api/campaigns', dependencies=[Depends(presenter)])
+def campaign_list(db: Session = Depends(get_db)):
+    from app.campaigns import listing
+    return listing(db)
+
+@app.post('/api/campaigns', status_code=201, dependencies=[Depends(presenter)])
+def campaign_prepare(body: CampaignInput, db: Session = Depends(get_db)):
+    from app.campaigns import prepare
+    try:
+        c=prepare(db,body.model_dump());return {'id':c.id,'state':c.state,'freeze':{k:v for k,v in c.freeze.items() if k not in ('inputs','suppliers','materials')}}
+    except (ValueError,KeyError,TypeError):
+        db.rollback();raise HTTPException(422,'Entradas o catálogo no válidos para congelar la campaña.')
+
+@app.post('/api/campaigns/{cid}/start', status_code=202, dependencies=[Depends(presenter)])
+def campaign_start(cid: str, db: Session = Depends(get_db)):
+    from app.campaigns import start
+    try:
+        c=start(db,cid);return {'id':c.id,'state':c.state}
+    except ValueError as exc:
+        db.rollback();raise HTTPException(409,str(exc))
+
+@app.get('/api/campaigns/{cid}', dependencies=[Depends(presenter)])
+def campaign_report(cid: str, split: Literal['training','validation','test','liveday','labelled','all']='training', db: Session = Depends(get_db)):
+    from app.campaigns import report
+    try:return report(db,cid,split)
+    except ValueError:raise HTTPException(404,'Campaña no encontrada')
+
+@app.get('/api/campaigns/{cid}/export', dependencies=[Depends(presenter)])
+def campaign_export(cid: str, db: Session = Depends(get_db)):
+    from app.campaigns import report
+    try: result=report(db,cid,'all',full=True)
+    except ValueError:raise HTTPException(404,'Campaña no encontrada')
+    return Response(json.dumps(result,default=str,ensure_ascii=False),media_type='application/json',headers={'Content-Disposition':f'attachment; filename="campana-{cid}.json"'})
+
+
+
+class CampaignDiagnosis(BaseModel):
+    note: str = Field(min_length=15, max_length=1000)
+
+@app.post('/api/campaigns/{cid}/diagnose', dependencies=[Depends(presenter)])
+def campaign_diagnose(cid: str, body: CampaignDiagnosis, db: Session = Depends(get_db)):
+    c=db.get(EvaluationCampaign,cid)
+    if not c or c.state!='paused':raise HTTPException(409,'La campaña no está pausada')
+    stamp=now().isoformat()
+    # Mark the acknowledged machine errors; retain every failed result and attempt.
+    for call in db.scalars(select(ApiCall).where(ApiCall.budget_id=='campaign:'+cid)):
+        if call.status in (400,401,403,422) or str(call.usage.get('_error','')).startswith('CONTRACT'):
+            call.usage={**call.usage,'_diagnosed_at':stamp,'_diagnosis':body.note}
+    c.freeze={**c.freeze,'diagnosis_history':[ *c.freeze.get('diagnosis_history',[]),{'at':stamp,'note':body.note}]}
+    c.state='prepared';db.commit()
+    return {'state':c.state,'message':'Fallos conservados; reanudar solo ejecuta entradas pendientes, nunca repite predicciones válidas.'}
 
 static = ROOT / "frontend/dist"
 if (static / "assets").exists():

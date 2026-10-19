@@ -299,6 +299,9 @@ def suppliers_view(db, context="exercise", origin=""):
 
 
 def sources_view(db):
+    counts = {}
+    for source_id, versions, unique in db.execute(select(Article.source_id,func.count(Article.id),func.count(func.distinct(Article.origin_key))).where(Article.context=="rss").group_by(Article.source_id)):
+        counts[source_id] = {"stored_versions": versions, "stored_unique": unique}
     latest = {}
     source_key = Job.payload["source_id"].as_string()
     for j in db.scalars(
@@ -317,6 +320,10 @@ def sources_view(db):
             "last_success_at": s.last_success_at,
             "http_status": s.http_status,
             "item_count": s.item_count,
+            **counts.get(s.id, {"stored_versions":0,"stored_unique":0}),
+            "scope": "rss",
+            "cumulative_unit": "recepciones de feed elegibles acumuladas; pueden repetir GUID",
+            "last_poll": s.data.get("last_poll"),
             "received_count": s.received_count,
             "duplicates": s.duplicates,
             "error_count": s.error_count,

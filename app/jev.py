@@ -236,7 +236,11 @@ class JevClient:
         diagnostic_ack_at=None,
         run_key="",
         request_ceiling=None,
+        grant_id=None,
+        isolated_cache=False,
     ):
+        self.grant_id = grant_id
+        self.isolated_cache = isolated_cache
         self.request_ceiling = request_ceiling
         self.run_key = run_key
         self.diagnostic_ack_at = diagnostic_ack_at
@@ -257,7 +261,7 @@ class JevClient:
             self.cached_stages.append(stage)
             return validate_response(payload, cached.response)
         reservation = self.db.get(GrantArticle, self.article_id)
-        grant = self.db.get(Grant, reservation.grant_id) if reservation else None
+        grant = self.db.get(Grant, self.grant_id or (reservation.grant_id if reservation else ""))
         if self.transport is None:
             if not grant:
                 raise ProviderError("CONSUMPTION_NOT_AUTHORIZED")

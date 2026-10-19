@@ -45,7 +45,7 @@ class BoundedFanoutClient:
 
     def ask(self,payload,stage,deadline):
         key=digest({'payload':payload,'questions':POLICY['question_version']})
-        keys = [key] + [digest({'request':key,'run_key':run}) for run in (self.run_key, *getattr(self.client,'reuse_runs',())) if run]
+        keys = ([] if getattr(self.client,'isolated_cache',False) else [key]) + [digest({'request':key,'run_key':run}) for run in (self.run_key, *getattr(self.client,'reuse_runs',())) if run]
         cached = next((row for cache_key in keys if (row := self.db.get(RequestCache,cache_key)) is not None),None)
         if cached:
             self.transport_records.append({'stage':stage,'mode':'cached_complete','version':VERSION,'origin_transport':cached.response.get('_transport')})
@@ -70,5 +70,6 @@ class BoundedFanoutClient:
         merged=validate_response(payload,{'model':payload['model'],'answers':answers,'usage':dict(usage)})
         # A combined response is explicitly labelled; each original response and
         # request remains in the private audit/cache and durable ApiCall ledger.
-        self.db.merge(RequestCache(id=key,response={**merged,'_transport':record}));self.db.commit()
+        save_key=digest({'request':key,'run_key':self.run_key}) if getattr(self.client,'isolated_cache',False) else key
+        self.db.merge(RequestCache(id=save_key,response={**merged,'_transport':record}));self.db.commit()
         return merged

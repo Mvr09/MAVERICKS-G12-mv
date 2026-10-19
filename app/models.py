@@ -270,3 +270,31 @@ class IncidentWork(Base):
     incident_id: Mapped[str] = mapped_column(ForeignKey('incidents.id'), index=True)
     data: Mapped[dict] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class EvaluationCampaign(Base):
+    __tablename__ = "evaluation_campaigns"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
+    name: Mapped[str] = mapped_column(String)
+    freeze: Mapped[dict] = mapped_column(JSON)
+    state: Mapped[str] = mapped_column(String, default="prepared")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class CampaignRun(Base):
+    __tablename__ = "campaign_runs"
+    __table_args__ = (UniqueConstraint("campaign_id", "profile", "input_key"),)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
+    campaign_id: Mapped[str] = mapped_column(ForeignKey("evaluation_campaigns.id"), index=True)
+    profile: Mapped[str] = mapped_column(String)
+    input_key: Mapped[str] = mapped_column(String)
+    split: Mapped[str] = mapped_column(String)
+    source: Mapped[dict] = mapped_column(JSON)
+    reference: Mapped[dict | None] = mapped_column(JSON)
+    state: Mapped[str] = mapped_column(String, default="queued")
+    result: Mapped[dict | None] = mapped_column(JSON)
+    audit: Mapped[dict] = mapped_column(JSON, default=dict)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

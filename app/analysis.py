@@ -191,10 +191,13 @@ def normalize(article, suppliers, a, b, candidates):
 
 
 def process_article(
-    db, article_id, transport=None, diagnostic_ack_at=None, run_key=None, publish=True, profile=DEFAULT_PROFILE
+    db, article_id, transport=None, diagnostic_ack_at=None, run_key=None, publish=True, profile=DEFAULT_PROFILE,
+    campaign_article=None, campaign_suppliers=None, campaign_grant=None, campaign_audit=None
 ):
-    a = db.get(Article, article_id)
-    suppliers = [s.data for s in db.scalars(select(Supplier).order_by(Supplier.id))]
+    a = campaign_article if campaign_article is not None else db.get(Article, article_id)
+    if campaign_article is not None and publish:
+        raise ValueError("Campaign cannot publish operational effects")
+    suppliers = campaign_suppliers if campaign_suppliers is not None else [s.data for s in db.scalars(select(Supplier).order_by(Supplier.id))]
     if len(suppliers) != 40:
         raise ProviderError("CATALOG_REQUIRES_40_SUPPLIERS")
     start = time.monotonic()
@@ -205,8 +208,10 @@ def process_article(
     )
     from app.payload_cache import PayloadCacheClient
     candidate = profile == CANDIDATE_PROFILE
-    client_type = PayloadCacheClient if candidate else JevClient
+    client_type = PayloadCacheClient if candidate and campaign_article is None else JevClient
     client_options = {}
+    if campaign_article is not None:
+        client_options.update(grant_id=campaign_grant, isolated_cache=True, request_ceiling=36 if candidate else 6)
     if candidate:
         from app.jev_transport import CONFIG as TRANSPORT_CONFIG
         client_options["request_ceiling"] = TRANSPORT_CONFIG["max_http_attempts_per_article"]
@@ -222,6 +227,9 @@ def process_article(
         from app.jev_audit import CapturingClient
         from app.jev_transport import BoundedFanoutClient
         client = BoundedFanoutClient(CapturingClient(client))
+    elif campaign_article is not None:
+        from app.jev_audit import CapturingClient
+        client = CapturingClient(client)
     raw = {}
     rss = a.context == "rss"
     if rss:
@@ -370,6 +378,12 @@ def process_article(
         from app.profiles import candidate_versions
         result.setdefault("analysis_versions", {**candidate_versions(), "model": settings.jev_model})
     if not publish:
+        if campaign_audit is not None:
+            campaign_audit.update(raw)
+            campaign_audit.update(client.audit() if hasattr(client, "audit") else {})
+            campaign_audit["_cache_stages"] = client.cached_stages
+            campaign_audit["_new_requests"] = client.network_requests
+            campaign_audit["_duration"] = time.monotonic() - start
         return result
     if candidate:
         from app.profiles import candidate_versions

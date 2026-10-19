@@ -1,3 +1,10 @@
+# Iteración actual · comparador y campaña nueva
+
+- Base real de partida deba7c5. Prioridad: coherencia de ámbitos/contadores, campaña aislada nueva74×2 y comparador visual; después jerarquía de pantallas. Se conservan revisión humana,acciones,borradores,RSSmanual yexportación.
+- Diagnóstico observable:47artículos ejercicio y101RSS(50pendientes). Seis fuentes consultadas;0novedades de última consulta no significa0almacenadas. No se reproduce pérdidaRSS ni fallo delworker. Las recepciones acumuladas son otra unidad. Cambios ajenos excluidos.
+- Entradas originales explícitas verificadas contra manifiesto:30training/10validation con referencias,20test/14LiveDay sinreferencias. No answerkey. Autorización nueva permite campaña completa,sin usarla para ajustar. Presupuesto técnico máximo3108intentos(74×(6+36));baselinemáximo148iniciales,otras etapas condicionales de candidata registradas. Concurrencia4,deadline60s/artículo,3intentos por etapa;sinpagoRSSperiódico.
+- Ejecutor preparado con tablas aisladas0010,fuente/catalogo/referencias/hashes congelados yregistros de intentos persistentes. Caché solo dereanudación misma campaña/registro,ninguna respuesta histórica. Predicciones no crean incidentes,alertas,Analysis ni artículosoperativos. Pendiente:pruebas/publicar ejecutor,iniciar explícitamente campaña,comparador ycomprobación final.
+
 # Desarrollo de producto · cierre operativo 19-10-2026
 
 - Código funcional publicado **43f1d66**, main, web/worker Railway en el mismoSHA, online/compatibles, esquema0009. URL https://mavericks-g12-mv-production.up.railway.app. /,/healthz,/readyz,5assets,catálogo40,ficha y rutas profundas200; administración401,originales404. Evidencia:reports/operational-public.json. El commit documental posterior conserva este código.

@@ -1,3 +1,4 @@
+import { CampaignCompare } from "./CampaignCompare";
 import { WindowEvaluation } from "./WindowEvaluation";
 import { CandidateComparison } from "./CandidateComparison";
 import { ReviewPolicyComparison } from "./ReviewPolicyComparison";
@@ -94,7 +95,7 @@ function Confusion({ title, metric }: { title: string; metric: any }) {
   );
 }
 
-export function ModelPage({
+function HistoricalModelPage({
   presenter,
   context,
   config,
@@ -488,3 +489,5 @@ export function ModelPage({
     </div>
   );
 }
+
+export function ModelPage(props: Parameters<typeof HistoricalModelPage>[0]) { return <CampaignCompare presenter={props.presenter} history={<HistoricalModelPage {...props} />} />; }

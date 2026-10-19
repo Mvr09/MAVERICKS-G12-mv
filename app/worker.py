@@ -73,6 +73,12 @@ def run_job(jid):
                 j = db.get(Job, jid)
                 j.state = "error" if r["analysis_status"] == "error" else "done"
                 j.error = r["error"]
+            elif j.kind == "campaign":
+                from app.campaigns import process
+                result = process(db, j.payload["run_id"])
+                j = db.get(Job, jid)
+                j.state = "done" if result.state in ("done", "review") else "error" if result.state == "error" else "cancelled"
+                j.error = (result.result or {}).get("error")
             elif j.kind == "comparison":
                 from app.comparison import process_comparison
 
@@ -129,7 +135,7 @@ def main():
                 revision = db.execute(
                     text("select version_num from alembic_version")
                 ).scalar_one()
-                if revision == "0009":
+                if revision == "0010":
                     break
         except Exception:
             pass
