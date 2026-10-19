@@ -61,7 +61,7 @@ test("QA identificada usa el sondeo y notify automático, sin JEV ni noticias nu
     .click();
   await expect(page.getByText("Activado", { exact: true })).toBeVisible();
   await page
-    .getByText("Prueba de aviso automático · presentador", { exact: true })
+    .getByText("Herramientas del presentador", { exact: true })
     .click();
   await page
     .getByRole("button", { name: "Programar alerta QA (5 s)", exact: true })

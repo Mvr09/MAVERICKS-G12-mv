@@ -51,6 +51,9 @@ for (const width of [360, 1440]) {
     });
     await page.goto("/");
     await page
+      .getByText("Herramientas del presentador", { exact: true })
+      .click();
+    await page
       .getByRole("button", { name: "Preparar demo", exact: true })
       .click();
     await expect(
@@ -348,7 +351,7 @@ test("reanálisis actualiza el historial abierto sin recargar y usa palabras en 
   await expect(page.getByText(/Riesgo [YN]|Urgencia [YN]/)).toHaveCount(0);
 });
 
-test("RSS sin presupuesto: permite todas las pendientes aunque los contadores antiguos estén agotados", async ({
+test("RSS sin presupuesto: selección explícita hasta10 aunque los contadores antiguos estén agotados", async ({
   page,
 }) => {
   let requestBody: any = null;
@@ -399,26 +402,24 @@ test("RSS sin presupuesto: permite todas las pendientes aunque los contadores an
     requestBody = r.request().postDataJSON();
     return r.fulfill({
       status: 202,
-      json: { articles: 12, job_ids: [], maximum_requests: 72 },
+      json: { articles: 10, job_ids: [], maximum_requests: 60 },
     });
   });
   await page.goto("/fuentes");
   await expect(
-    page.getByText("Sin límites locales de presupuesto", { exact: false }),
+    page.getByText(/12 noticias pendientes de analizar/),
   ).toBeVisible();
-  const button = page.getByRole("button", {
-    name: "Analizar 12 noticias pendientes con JEV",
-    exact: true,
-  });
-  await expect(button).toBeEnabled();
-  await expect(
-    page.getByText("0 de 200 peticiones disponibles", { exact: false }),
-  ).toHaveCount(0);
-  await expect(
-    page.getByText(
-      "El cupo agotado no se restablece al reiniciar ni desplegar.",
-    ),
-  ).toHaveCount(0);
-  await button.click();
-  expect(requestBody).toEqual({});
+  await page
+    .getByRole("link", { name: "Seleccionar noticias y perfil", exact: true })
+    .click();
+  await page.getByText(/Seleccionar noticias para análisis manual/).click();
+  for (let n = 0; n < 10; n++)
+    await page.locator(`input[data-article-id="MOCK-${n}"]`).check();
+  await expect(page.locator('input[data-article-id="MOCK-10"]')).toBeDisabled();
+  await page.getByRole("checkbox", { name: /Confirmo esta selección/ }).check();
+  await page
+    .getByRole("button", { name: "Analizar selección", exact: true })
+    .click();
+  expect(requestBody.article_ids).toHaveLength(10);
+  expect(requestBody.analysis_profile).toBe("1.0.0");
 });

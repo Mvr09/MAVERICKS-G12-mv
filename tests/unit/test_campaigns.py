@@ -89,3 +89,48 @@ def test_authentication_failure_pauses_and_remains_null(monkeypatch):
   assert db.get(EvaluationCampaign,c.id).state=='paused'
   with pytest.raises(ValueError):start(db,c.id)
   assert len(seen)==1
+
+def test_private_import_is_idempotent_preserves_infrastructure_and_never_infers(monkeypatch):
+ from app.campaigns import import_completed
+ from copy import deepcopy
+ Base.metadata.create_all(engine);monkeypatch.setattr('app.settings.settings.typesafe_api_key',SecretStr('MOCK'))
+ with Session() as db:
+  c=prepare(db,payload());start(db,c.id)
+  row=db.scalar(select(CampaignRun).where(CampaignRun.campaign_id==c.id,CampaignRun.profile=='1.0.0'))
+  from app.settings import settings
+  row.state='done';row.started_at=now();row.completed_at=now();row.result={'article_id':row.id,'news_id':row.source['news_id'],'context_id':'exercise','analysis_status':'done','is_risk':'N','urgent':'N','affected_supplier_ids':[],'assessments':[],'model_id':settings.jev_model,'question_version':'1.0.0','policy_version':'1.0.0','error':None,'event_type':'other','evidence':[],'review_reasons':[],'analysis_profile':row.profile}
+  other=db.scalar(select(CampaignRun).where(CampaignRun.campaign_id==c.id,CampaignRun.profile!='1.0.0'))
+  other.state=row.state;other.result={**row.result,'article_id':other.id,'analysis_profile':other.profile};other.started_at=row.started_at;other.completed_at=row.completed_at;c.state='complete';c.completed_at=now();db.commit()
+  bundle=report(db,c.id,'all',full=True)
+  import json
+  bundle=json.loads(json.dumps(bundle,default=str));bundle['id']=uid()
+  for r in bundle['rows']:r['id']=uid();r['result']['article_id']=r['id']
+  n=db.scalar(select(func.count()).select_from(ApiCall));imported=import_completed(db,bundle);iid=imported.id
+  assert imported.freeze['infrastructure']==c.freeze['infrastructure']
+  assert import_completed(db,bundle).id==iid
+  assert db.scalar(select(func.count()).select_from(ApiCall))==n
+  assert len(report(db,iid)['rows'])==2
+  modified=deepcopy(bundle);modified['rows'][0]['result']['is_risk']='Y'
+  with pytest.raises(ValueError):import_completed(db,modified)
+
+
+def test_alert_revisions_are_not_all_current():
+ from app.alert_scope import current,reason
+ from types import SimpleNamespace as S
+ inc=S(state='active',revision=2)
+ old=S(revision=1,data={'state':'active'});new=S(revision=2,data={'state':'active'})
+ assert not current(old,inc) and 'anterior' in reason(old,inc) and current(new,inc)
+ inc.state='resolved';assert not current(new,inc)
+
+def test_failed_lease_is_terminal_not_silent_pending():
+ from app.campaigns import fail_run
+ from app.schemas import NormalizedAnalysis
+ Base.metadata.create_all(engine)
+ with Session() as db:
+  c=prepare(db,payload());start(db,c.id)
+  rows=list(db.scalars(select(CampaignRun).where(CampaignRun.campaign_id==c.id)))
+  for r in rows:fail_run(db,r.id,'LEASE_ATTEMPTS_EXHAUSTED')
+  db.commit();assert db.get(EvaluationCampaign,c.id).state=='complete'
+  for r in rows:
+   assert r.state=='error';NormalizedAnalysis.model_validate(r.result)
+   assert r.result['is_risk'] is None

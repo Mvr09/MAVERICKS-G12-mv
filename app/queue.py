@@ -250,6 +250,9 @@ def claim(db):
     for job in exhausted:
         job.state = "error"
         job.error = "LEASE_ATTEMPTS_EXHAUSTED"
+        if job.kind == "campaign":
+            from app.campaigns import fail_run
+            fail_run(db,job.payload.get("run_id"),job.error)
         if job.kind == "comparison":
             row = db.get(Comparison, job.payload.get("comparison_id"))
             if row:

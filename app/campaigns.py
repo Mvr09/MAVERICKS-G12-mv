@@ -34,7 +34,7 @@ def prepare(db, payload):
         if x['split'] in ('test','liveday') and x.get('reference') is not None:raise ValueError('Sin etiquetas para test/LiveDay')
         ref=x.get('reference')
         if x['split'] in ('training','validation') and (not ref or any(ref.get(k) not in ('Y','N') for k in ('Is_Risk','Urgent'))):raise ValueError('Referencia conocida incompleta')
-    freeze={'inputs':inputs,'suppliers':suppliers,'materials':payload.get('materials',[]),'manifest':payload['manifest'],'versions':versions(),'semantic_hashes':semantic_hashes(),'model':settings.jev_model,'original_baseline':True,'cache_policy':'new campaign-scoped inference; resume only same record/stage','references_scope':'evaluation only; training and validation already inspected, not independent','concurrency':4,'order':'original row order; interleaved profiles A then B per input','expected_complete_analyses':len(inputs)*2,'request_estimate':{'baseline_initial_range':[len(inputs),len(inputs)*2],'candidate_initial_minimum':sum(len(__import__('app.jev_transport',fromlist=['partition']).partition(__import__('app.candidate_matching',fromlist=['stage_a']).stage_a(x['data'],suppliers,settings.jev_model,'exercise'))) for x in inputs),'candidate_conditional_stages':'B, pre_support, risk_focus/current_threat, support and followup, independently partitioned as required','max_http_attempts_including_retries':len(inputs)*(6+maximum_requests(CANDIDATE_PROFILE)),'max_attempts_per_http_stage':3,'article_deadline_seconds':60},'created_commit':os.getenv('RAILWAY_GIT_COMMIT_SHA','local'),'infrastructure':{'service':'Railway worker','python':__import__('platform').python_version(),'region':os.getenv('RAILWAY_REPLICA_REGION','not reported')}}
+    freeze={'inputs':inputs,'suppliers':suppliers,'materials':payload.get('materials',[]),'manifest':payload['manifest'],'versions':versions(),'semantic_hashes':semantic_hashes(),'model':settings.jev_model,'original_baseline':True,'cache_policy':'new campaign-scoped inference; resume only same record/stage','references_scope':'evaluation only; training and validation already inspected, not independent','concurrency':4,'order':'original row order; interleaved profiles A then B per input','expected_complete_analyses':len(inputs)*2,'request_estimate':{'baseline_initial_range':[len(inputs),len(inputs)*2],'candidate_initial_minimum':sum(len(__import__('app.jev_transport',fromlist=['partition']).partition(__import__('app.candidate_matching',fromlist=['stage_a']).stage_a(x['data'],suppliers,settings.jev_model,'exercise'))) for x in inputs),'candidate_conditional_stages':'B, pre_support, risk_focus/current_threat, support and followup, independently partitioned as required','max_http_attempts_including_retries':len(inputs)*(6+maximum_requests(CANDIDATE_PROFILE)),'max_attempts_per_http_stage':3,'article_deadline_seconds':60},'created_commit':os.getenv('RAILWAY_GIT_COMMIT_SHA') or os.getenv('CAMPAIGN_RUN_COMMIT','local'),'infrastructure':{'service':'Railway worker' if os.getenv('RAILWAY_GIT_COMMIT_SHA') else 'Local PostgreSQL isolated campaign executor','python':__import__('platform').python_version(),'region':os.getenv('RAILWAY_REPLICA_REGION','not reported')}}
     freeze['hash']=digest(freeze)
     existing=db.scalar(select(EvaluationCampaign).where(EvaluationCampaign.name==payload['name']))
     if existing:
@@ -75,12 +75,26 @@ def process(db,rid,transport=None):
     finally:
         lock.execute(text('SELECT pg_advisory_unlock(72648,hashtext(:id))'),{'id':rid});lock.close()
 
+def error_result(r,code):
+    return {'article_id':r.id,'news_id':r.source['news_id'],'context_id':'exercise','analysis_status':'error','is_risk':None,'urgent':None,'affected_supplier_ids':[],'assessments':[],'model_id':settings.jev_model,'question_version':'1.0.0' if r.profile=='1.0.0' else 'decision-3.4.2','policy_version':POLICY['version'],'error':code,'event_type':None,'evidence':[],'review_reasons':[],'analysis_profile':r.profile}
+
+def fail_run(db,rid,code):
+    r=db.get(CampaignRun,rid)
+    if not r or r.state in ('done','review','error'):return
+    r.state='error';r.result=error_result(r,code);r.completed_at=now()
+    calls=db.scalars(select(ApiCall).where(ApiCall.run_key=='campaign:'+rid)).all()
+    r.audit={**r.audit,'failure':code,'new_requests':len(calls),'retries':sum(x.attempt>1 for x in calls),'usage':{k:(sum(x.usage[k] for x in calls if isinstance(x.usage.get(k),(int,float))) if any(isinstance(x.usage.get(k),(int,float)) for x in calls) else None) for k in ('input_tokens','output_tokens','total_tokens')},'calls':[{'id':x.id,'stage':x.stage,'attempt':x.attempt,'status':x.status,'seconds':x.duration,'model':x.model,'usage':x.usage} for x in calls]}
+    c=db.get(EvaluationCampaign,r.campaign_id);db.flush()
+    if not db.scalar(select(CampaignRun.id).where(CampaignRun.campaign_id==c.id,CampaignRun.state.in_(('queued','running','prepared'))).limit(1)):
+        c.state='complete';c.completed_at=now()
+
+
 def _process(db,rid,transport=None):
     r=db.get(CampaignRun,rid);c=db.get(EvaluationCampaign,r.campaign_id)
     if r.state in ('done','review','error'):return r
     if c.state=='paused':return r
     if c.freeze['semantic_hashes']!=semantic_hashes() or c.freeze['versions']!=versions():
-        r.state='error';r.result={'analysis_status':'error','is_risk':None,'urgent':None,'affected_supplier_ids':[],'error':'FROZEN_PROFILE_CHANGED'};r.completed_at=now();c.state='paused';db.commit();return r
+        r.state='error';r.result=error_result(r,'FROZEN_PROFILE_CHANGED');r.completed_at=now();c.state='paused';db.commit();return r
     r.started_at=r.started_at or now();r.state='running';db.commit()
     article=SimpleNamespace(id=r.id,news_id=r.source['news_id'],context='exercise',data=r.source,generation=0,version=1,batch_id=None)
     audit={};begin=time.monotonic()
@@ -88,12 +102,13 @@ def _process(db,rid,transport=None):
     try:
         result=process_article(db,r.id,transport=transport,run_key='campaign:'+r.id,publish=False,profile=r.profile,campaign_article=article,campaign_suppliers=c.freeze['suppliers'],campaign_grant='campaign:'+c.id,campaign_audit=audit)
     except Exception as exc:
+        audit['_exception_class']=type(exc).__name__
         # Persist a null decision; never convert an exception into N.
-        result={'article_id':r.id,'news_id':r.source['news_id'],'analysis_status':'error','is_risk':None,'urgent':None,'affected_supplier_ids':[],'assessments':[],'error':getattr(exc,'code','CAMPAIGN_INTERNAL_ERROR')}
+        result=error_result(r,getattr(exc,'code','CAMPAIGN_INTERNAL_ERROR'))
     r=db.get(CampaignRun,rid);c=db.get(EvaluationCampaign,r.campaign_id)
     calls=db.scalars(select(ApiCall).where(ApiCall.run_key=='campaign:'+rid).order_by(ApiCall.created_at)).all()
     r.result=result;r.state=result['analysis_status'];r.completed_at=now()
-    r.audit={**r.audit,**audit,'wall_seconds':time.monotonic()-begin,'runtime_commit':os.getenv('RAILWAY_GIT_COMMIT_SHA','local'),'new_requests':len(calls),'retries':sum(x.attempt>1 for x in calls),'usage':{k:sum(x.usage.get(k,0) for x in calls if isinstance(x.usage.get(k),(float,int))) for k in ('input_tokens','output_tokens','total_tokens')},'calls':[{'id':x.id,'stage':x.stage,'attempt':x.attempt,'status':x.status,'seconds':x.duration,'model':x.model,'at':x.created_at.isoformat(),'usage':x.usage} for x in calls]}
+    r.audit={**r.audit,**audit,'wall_seconds':time.monotonic()-begin,'runtime_commit':(os.getenv('RAILWAY_GIT_COMMIT_SHA') or os.getenv('CAMPAIGN_RUN_COMMIT','local')),'new_requests':len(calls),'retries':sum(x.attempt>1 for x in calls),'usage':{k:(sum(x.usage[k] for x in calls if isinstance(x.usage.get(k),(float,int))) if any(isinstance(x.usage.get(k),(float,int)) for x in calls) else None) for k in ('input_tokens','output_tokens','total_tokens')},'calls':[{'id':x.id,'stage':x.stage,'attempt':x.attempt,'status':x.status,'seconds':x.duration,'model':x.model,'at':x.created_at.isoformat(),'usage':x.usage} for x in calls]}
     error=result.get('error') or ''
     if any(x in error for x in ('401','403','400','422','CONTRACT','MODEL_MISMATCH','FROZEN_PROFILE')):c.state='paused'
     db.flush()
@@ -101,15 +116,18 @@ def _process(db,rid,transport=None):
     if not pending and c.state!='paused':c.state='complete';c.completed_at=now()
     db.commit();return r
 
-def expected_ids(label):return set(str(label.get('Affected_Supplier_IDs') or '').replace(',',';').split(';'))-{''}
+def expected_ids(label):return {s.strip() for s in str(label.get('Affected_Supplier_IDs') or '').replace(',',';').split(';') if s.strip()}
 def exact(label,result):return label['Is_Risk']==result['is_risk'] and label['Urgent']==result['urgent'] and expected_ids(label)==set(result['affected_supplier_ids'])
 
 def aggregate(rows):
+    from datetime import datetime
+    from app.model_metrics import percentiles
+    queue_wait=[max(0,(r.started_at-datetime.fromisoformat(r.audit['queued_at'])).total_seconds()) for r in rows if r.started_at and r.audit.get('queued_at')]
     valid=[r for r in rows if r.state in ('done','review') and r.result and r.result.get('is_risk') in ('Y','N')]
     labelled=[r for r in valid if r.reference]
     automatic=[r for r in valid if r.state=='done'];auto=[r for r in automatic if r.reference]
     pairs=[(r.reference,r.result) for r in labelled]
-    return {'total':len(rows),'completed':len(valid),'errors':sum(r.state=='error' for r in rows),'pending':sum(r.state not in ('done','review','error') for r in rows),'labelled_completed':len(pairs),'quality':metrics(pairs) if pairs else None,'quality_limit':'Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte' if pairs else 'No disponible: sin etiquetas' if all(not r.reference for r in rows) else 'No disponible: sin predicciones válidas','automatic':len(automatic),'review':sum(r.state=='review' for r in valid),'automatic_rate':ratio(len(automatic),len(rows)),'review_rate':ratio(sum(r.state=='review' for r in valid),len(rows)),'automatic_errors':sum(not exact(r.reference,r.result) for r in auto) if auto else None,'automatic_labelled':len(auto),'automatic_positive':{'n':sum(r.reference['Is_Risk']=='Y' for r in auto),'errors':sum(not exact(r.reference,r.result) for r in auto if r.reference['Is_Risk']=='Y')},'automatic_negative':{'n':sum(r.reference['Is_Risk']=='N' for r in auto),'errors':sum(not exact(r.reference,r.result) for r in auto if r.reference['Is_Risk']=='N')},'automatic_risks':sum(r.reference['Is_Risk']=='Y' and exact(r.reference,r.result) for r in auto),'automatic_urgencies':sum(r.reference['Urgent']=='Y' and exact(r.reference,r.result) for r in auto),'new_requests':sum(r.audit.get('new_requests',0) for r in rows),'cache_stages':sum(len(r.audit.get('_cache_stages',[])) for r in rows),'retries':sum(r.audit.get('retries',0) for r in rows),'http_errors':sum(c.get('status')!=200 for r in rows for c in r.audit.get('calls',[])),'tokens':{k:sum(r.audit.get('usage',{}).get(k,0) for r in rows) for k in ('input_tokens','output_tokens','total_tokens')},'analysis_wall_seconds_sum':sum(r.audit.get('wall_seconds',0) for r in rows),'elapsed_seconds':(max(r.completed_at for r in rows if r.completed_at)-min(r.started_at for r in rows if r.started_at)).total_seconds() if any(r.completed_at for r in rows) else None}
+    return {'queue_wait_seconds':percentiles(queue_wait),'total':len(rows),'completed':len(valid),'errors':sum(r.state=='error' for r in rows),'pending':sum(r.state not in ('done','review','error') for r in rows),'labelled_completed':len(pairs),'quality':metrics(pairs) if pairs else None,'quality_limit':'Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte' if pairs else 'No disponible: sin etiquetas' if all(not r.reference for r in rows) else 'No disponible: sin predicciones válidas','automatic':len(automatic),'review':sum(r.state=='review' for r in valid),'automatic_rate':ratio(len(automatic),len(rows)),'review_rate':ratio(sum(r.state=='review' for r in valid),len(rows)),'automatic_errors':sum(not exact(r.reference,r.result) for r in auto) if auto else None,'automatic_labelled':len(auto),'automatic_positive':{'n':sum(r.reference['Is_Risk']=='Y' for r in auto),'errors':sum(not exact(r.reference,r.result) for r in auto if r.reference['Is_Risk']=='Y')},'automatic_negative':{'n':sum(r.reference['Is_Risk']=='N' for r in auto),'errors':sum(not exact(r.reference,r.result) for r in auto if r.reference['Is_Risk']=='N')},'automatic_risks':sum(r.reference['Is_Risk']=='Y' and exact(r.reference,r.result) for r in auto),'automatic_urgencies':sum(r.reference['Urgent']=='Y' and exact(r.reference,r.result) for r in auto),'new_requests':sum(r.audit.get('new_requests',0) for r in rows),'cache_stages':sum(len(r.audit.get('_cache_stages',[])) for r in rows),'retries':sum(r.audit.get('retries',0) for r in rows),'http_errors':sum(c.get('status')!=200 for r in rows for c in r.audit.get('calls',[])),'tokens':{k:(sum(call['usage'][k] for r in rows for call in r.audit.get('calls',[]) if isinstance(call.get('usage',{}).get(k),(int,float))) if any(isinstance(call.get('usage',{}).get(k),(int,float)) for r in rows for call in r.audit.get('calls',[])) else None) for k in ('input_tokens','output_tokens','total_tokens')},'analysis_wall_seconds_sum':sum(r.audit.get('wall_seconds',0) for r in rows),'elapsed_seconds':(max(r.completed_at for r in rows if r.completed_at)-min(r.started_at for r in rows if r.started_at)).total_seconds() if any(r.completed_at for r in rows) and any(r.started_at for r in rows) else None}
 
 def listing(db):
     return [{'id':c.id,'name':c.name,'state':c.state,'created_at':c.created_at,'started_at':c.started_at,'completed_at':c.completed_at,'profiles':list(c.freeze['versions'])} for c in db.scalars(select(EvaluationCampaign).order_by(EvaluationCampaign.created_at.desc()))]
@@ -126,4 +144,36 @@ def report(db,cid,split='training',full=False):
         p=set(result.get('affected_supplier_ids',[]));e=expected_ids(ref) if ref else None
         items.append({'id':r.id,'key':r.input_key,'news_id':r.source['news_id'],'headline':r.source['headline'],'source':r.source['source'],'split':r.split,'profile':r.profile,'state':r.state,'reference':ref,'result':result,'supplier_added':sorted(p-e) if e is not None else None,'supplier_omitted':sorted(e-p) if e is not None else None,'critical_errors':[{'supplier_id':sid,'criticality':suppliers[sid]['criticality'],'single_source':suppliers[sid]['single_source']} for sid in sorted(p^e if e is not None else []) if sid in suppliers],'started_at':r.started_at,'completed_at':r.completed_at,'audit':r.audit if full else {k:v for k,v in r.audit.items() if not k.startswith('_') and k!='calls'},'input':r.source if full else None})
     elapsed=(c.completed_at-c.started_at).total_seconds() if c.completed_at and c.started_at else None
-    return {'id':c.id,'name':c.name,'state':c.state,'created_at':c.created_at,'started_at':c.started_at,'completed_at':c.completed_at,'elapsed_seconds':elapsed,'split':split,'freeze':c.freeze if full else {k:v for k,v in c.freeze.items() if k not in ('inputs','suppliers','materials')},'aggregate':{p:aggregate([r for r in chosen if r.profile==p]) for p in PROFILES},'progress':dict(Counter(r.state for r in rows)),'rows':items,'note':'Comparación de pipelines completos; referencias solo en evaluación privada. Test/LiveDay sin precisión. No modifica métricas/decisiones operativas ni renueva A20.'}
+    return {'id':c.id,'name':c.name,'state':c.state,'created_at':c.created_at,'started_at':c.started_at,'completed_at':c.completed_at,'elapsed_seconds':elapsed,'exportable_since':c.completed_at,'split':split,'freeze':c.freeze if full else {k:v for k,v in c.freeze.items() if k not in ('inputs','suppliers','materials')},'aggregate':{p:aggregate([r for r in chosen if r.profile==p]) for p in PROFILES},'progress':dict(Counter(r.state for r in rows)),'rows':items,'note':'Comparación de pipelines completos; referencias solo en evaluación privada. Test/LiveDay sin precisión. No modifica métricas/decisiones operativas ni renueva A20.'}
+
+
+def import_completed(db, bundle):
+    """Private presenter import of measured offline runs; never fake HTTP ledger rows."""
+    from datetime import datetime
+    from app.schemas import NormalizedAnalysis
+    f=bundle['freeze']
+    if bundle['state']!='complete' or digest({k:v for k,v in f.items() if k!='hash'})!=f['hash']:
+        raise ValueError('Exportación incompleta o congelación alterada')
+    expected={(p,f'{i:03}:{x["data"]["news_id"]}'):x for i,x in enumerate(f['inputs']) for p in f['versions']}
+    rows=bundle['rows']
+    if len(rows)!=len(expected) or len({(r['profile'],r['key']) for r in rows})!=len(expected):raise ValueError('Entradas repetidas o incompletas')
+    for r in rows:
+        x=expected.get((r['profile'],r['key']))
+        if not x or r['input']!=x['data'] or r['reference']!=x.get('reference'):raise ValueError('Entrada o referencia distinta de congelación')
+        if r['split'] in ('test','liveday') and r['reference'] is not None:raise ValueError('Etiquetas no permitidas')
+        if r['state'] not in ('done','review','error') or r['result']['analysis_status']!=r['state']:raise ValueError('Estado incompatible')
+        NormalizedAnalysis.model_validate(r['result'])
+        if r['result'].get('is_risk') is None and r['state']!='error':raise ValueError('Decisión nula no completada')
+        if r['result'].get('model_id')!=f['model']:raise ValueError('Modelo no coincide')
+    prior=db.get(EvaluationCampaign,bundle['id'])
+    if prior:
+        if prior.freeze.get('hash')!=f['hash']:raise ValueError('ID existente con otra campaña')
+        existing=db.scalars(select(CampaignRun).where(CampaignRun.campaign_id==prior.id)).all()
+        if {r.id:digest(r.result) for r in existing}!={r['id']:digest(r['result']) for r in rows}:raise ValueError('Resultados existentes distintos; no se sobrescriben')
+        return prior
+    parse=lambda s:datetime.fromisoformat(s) if s else None
+    c=EvaluationCampaign(id=bundle['id'],name=bundle['name'],freeze=f,state='complete',created_at=parse(bundle['created_at']),started_at=parse(bundle['started_at']),completed_at=parse(bundle['completed_at']))
+    db.add(c);db.flush()
+    for r in rows:
+        db.add(CampaignRun(id=r['id'],campaign_id=c.id,profile=r['profile'],input_key=r['key'],split=r['split'],source=r['input'],reference=r['reference'],state=r['state'],result=r['result'],audit={**r['audit'],'imported_at':now().isoformat(),'execution_location':'offline original infrastructure; imported without new inference'},started_at=parse(r['started_at']),completed_at=parse(r['completed_at'])))
+    db.commit();return c

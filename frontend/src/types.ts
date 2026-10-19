@@ -95,8 +95,12 @@ export type EventInfo = Partial<
   >
 >;
 export interface Article {
-  human_review?: {state: string; updated_at?: string};
-  preliminary_relevance?: {level: string; reasons: string[]; suppliers?: any[]};
+  human_review?: { state: string; updated_at?: string };
+  preliminary_relevance?: {
+    level: string;
+    reasons: string[];
+    suppliers?: any[];
+  };
   analysis_job?: {
     id: string;
     state: string;
@@ -231,6 +235,8 @@ export interface Batch {
   elapsed_seconds: number | null;
 }
 export interface Alert {
+  is_current?: boolean;
+  historical_reason?: string | null;
   article_id?: string;
   generation?: number;
   analysis_profile?: string;

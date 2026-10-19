@@ -2743,23 +2743,344 @@ dialog > header {
   background: #fff;
 }
 
-.operation-form { display:grid;gap:1rem;margin-block:1rem;min-width:0; }
-.operation-form label,.operational-review>label { display:grid;gap:.4rem;min-width:0; }
-.operation-form textarea { min-height:6rem; }
-.operation-form input,.operation-form select,.operation-form textarea,.operational-review select { width:100%;max-width:100%;min-width:0; }
-.operational-review { margin-block:1.5rem; }
-.operational-review .fact-box { margin-block:.7rem;overflow-wrap:anywhere; }
-.incident-work,.rss-triage { margin-block:1rem;border:1px solid #ddd7ff;border-radius:12px;padding:1rem; }
-.workspace-dialog { margin:auto;width:min(680px,calc(100vw - 32px));max-height:90dvh;overflow-y:auto;border:1px solid #ddd7ff;border-radius:18px;padding:1.2rem;color:#142342; }
-.workspace-dialog::backdrop { background:#14234280; }
-.workspace-dialog textarea { display:block;width:100%;min-height:45vh; }
-.triage-option { display:flex;align-items:flex-start;gap:.75rem;padding:.65rem 0;min-width:0; }
-.triage-option input { flex:0 0 auto;min-width:22px;min-height:22px; }
-.triage-option span { min-width:0;overflow-wrap:anywhere; }
-.triage-option small { display:block; }
+.operation-form {
+  display: grid;
+  gap: 1rem;
+  margin-block: 1rem;
+  min-width: 0;
+}
+.operation-form label,
+.operational-review > label {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.operation-form textarea {
+  min-height: 6rem;
+}
+.operation-form input,
+.operation-form select,
+.operation-form textarea,
+.operational-review select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.operational-review {
+  margin-block: 1.5rem;
+}
+.operational-review .fact-box {
+  margin-block: 0.7rem;
+  overflow-wrap: anywhere;
+}
+.incident-work,
+.rss-triage {
+  margin-block: 1rem;
+  border: 1px solid #ddd7ff;
+  border-radius: 12px;
+  padding: 1rem;
+}
+.workspace-dialog {
+  margin: auto;
+  width: min(680px, calc(100vw - 32px));
+  max-height: 90dvh;
+  overflow-y: auto;
+  border: 1px solid #ddd7ff;
+  border-radius: 18px;
+  padding: 1.2rem;
+  color: #142342;
+}
+.workspace-dialog::backdrop {
+  background: #14234280;
+}
+.workspace-dialog textarea {
+  display: block;
+  width: 100%;
+  min-height: 45vh;
+}
+.triage-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  min-width: 0;
+}
+.triage-option input {
+  flex: 0 0 auto;
+  min-width: 22px;
+  min-height: 22px;
+}
+.triage-option span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.triage-option small {
+  display: block;
+}
 
-.incident-work .saved-query {display:flex;flex-direction:column;align-items:flex-start;white-space:normal;max-width:100%;overflow-wrap:anywhere;text-align:left;margin-block:.5rem;}
+.incident-work .saved-query {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  white-space: normal;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: left;
+  margin-block: 0.5rem;
+}
 
 /* Comparative quality: consistent scales, keyboard drill-down, mobile cards. */
-.campaign-page{display:grid;gap:18px}.comparator-heading{display:flex;justify-content:space-between;align-items:center;gap:20px}.compare-tabs{display:flex;gap:6px;flex-wrap:wrap}.compare-tabs button{padding:10px 14px;border:1px solid #dedaf1;border-radius:10px;background:white;color:#253357;min-height:44px}.compare-tabs .selected{background:#efecff;color:#4c34bf;border-color:#7160df}.compare-controls{display:flex;gap:14px;flex-wrap:wrap;align-items:end}.compare-controls label{display:grid;gap:7px;min-width:180px;flex:1}.compare-controls select,.compare-controls input{width:100%;min-width:0;min-height:44px}.compare-provenance pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-height:380px;overflow:auto}.comparison-summary,.comparison-predictions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.comparison-numbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.comparison-numbers div{display:grid;gap:5px}.comparison-numbers strong{font-size:25px;color:#26345c}.comparison-numbers small,.comparison-numbers span{font-size:12px;color:#54617a}.compare-chart{height:490px;width:100%;min-width:0}.confusion-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.interactive-confusion button{display:grid;gap:6px;min-height:72px;width:100%;background:#f2efff;color:#273454;border-radius:8px;font-size:22px;border:1px solid #d9d2f4}.interactive-confusion small{font-size:11px}.table-wrap{overflow:auto;max-width:100%}.comparison-news article{padding:18px 0;border-top:1px solid #e6e5ef}.comparison-evidence{background:#f7f8fe;border-radius:12px;padding:14px;margin-top:14px}.comparison-evidence blockquote{margin:12px 0;padding:10px;border-left:3px solid #7c66ef;overflow-wrap:anywhere}.comparison-evidence blockquote small{display:block}.campaign-page :is(.card,section,article,div){min-width:0}.campaign-page h4{overflow-wrap:anywhere}.campaign-page table{width:100%;font-size:13px}.campaign-page td,.campaign-page th{padding:9px;text-align:left}.campaign-page .check-label{display:flex;align-items:center;gap:10px}.campaign-page .check-label input{width:20px;min-height:20px;flex:none}
-@media(max-width:700px){.comparator-heading{display:grid}.comparison-summary,.comparison-predictions,.confusion-grid{grid-template-columns:1fr}.comparison-numbers{grid-template-columns:1fr 1fr}.compare-controls label{min-width:100%}.compare-chart{height:540px}.campaign-page .section-heading{align-items:start;flex-wrap:wrap}.campaign-page .card{padding:16px}.compare-tabs button{flex:1}}
+.campaign-page {
+  display: grid;
+  gap: 18px;
+}
+.comparator-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.compare-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.compare-tabs button {
+  padding: 10px 14px;
+  border: 1px solid #dedaf1;
+  border-radius: 10px;
+  background: white;
+  color: #253357;
+  min-height: 44px;
+}
+.compare-tabs .selected {
+  background: #efecff;
+  color: #4c34bf;
+  border-color: #7160df;
+}
+.compare-controls {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+.compare-controls label {
+  display: grid;
+  gap: 7px;
+  min-width: 180px;
+  flex: 1;
+}
+.compare-controls select,
+.compare-controls input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+}
+.compare-provenance pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  max-height: 380px;
+  overflow: auto;
+}
+.comparison-summary,
+.comparison-predictions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.comparison-numbers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.comparison-numbers div {
+  display: grid;
+  gap: 5px;
+}
+.comparison-numbers strong {
+  font-size: 25px;
+  color: #26345c;
+}
+.comparison-numbers small,
+.comparison-numbers span {
+  font-size: 12px;
+  color: #54617a;
+}
+.compare-chart {
+  height: 490px;
+  width: 100%;
+  min-width: 0;
+}
+.confusion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.interactive-confusion button {
+  display: grid;
+  gap: 6px;
+  min-height: 72px;
+  width: 100%;
+  background: #f2efff;
+  color: #273454;
+  border-radius: 8px;
+  font-size: 22px;
+  border: 1px solid #d9d2f4;
+}
+.interactive-confusion small {
+  font-size: 11px;
+}
+.table-wrap {
+  overflow: auto;
+  max-width: 100%;
+}
+.comparison-news article {
+  padding: 18px 0;
+  border-top: 1px solid #e6e5ef;
+}
+.comparison-evidence {
+  background: #f7f8fe;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 14px;
+}
+.comparison-evidence blockquote {
+  margin: 12px 0;
+  padding: 10px;
+  border-left: 3px solid #7c66ef;
+  overflow-wrap: anywhere;
+}
+.comparison-evidence blockquote small {
+  display: block;
+}
+.campaign-page :is(.card, section, article, div) {
+  min-width: 0;
+}
+.campaign-page h4 {
+  overflow-wrap: anywhere;
+}
+.campaign-page table {
+  width: 100%;
+  font-size: 13px;
+}
+.campaign-page td,
+.campaign-page th {
+  padding: 9px;
+  text-align: left;
+}
+.campaign-page .check-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.campaign-page .check-label input {
+  width: 20px;
+  min-height: 20px;
+  flex: none;
+}
+@media (max-width: 700px) {
+  .comparator-heading {
+    display: grid;
+  }
+  .comparison-summary,
+  .comparison-predictions,
+  .confusion-grid {
+    grid-template-columns: 1fr;
+  }
+  .comparison-numbers {
+    grid-template-columns: 1fr 1fr;
+  }
+  .compare-controls label {
+    min-width: 100%;
+  }
+  .compare-chart {
+    height: 540px;
+  }
+  .campaign-page .section-heading {
+    align-items: start;
+    flex-wrap: wrap;
+  }
+  .campaign-page .card {
+    padding: 16px;
+  }
+  .compare-tabs button {
+    flex: 1;
+  }
+}
+
+.sound-bar {
+  padding: 8px 12px;
+  gap: 10px;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.sound-actions button {
+  min-height: 36px;
+}
+.qa-control {
+  margin: 6px 0 18px;
+}
+.qa-control > summary {
+  font-size: 12px;
+  color: #5b4ba5;
+  min-height: 36px;
+  padding: 10px 0;
+}
+.qa-control > .button,
+.qa-control > button {
+  margin: 8px;
+}
+.priority-unconfirmed {
+  color: #58637a;
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+  max-width: 130px;
+}
+.priority-unconfirmed small {
+  font-size: 11px;
+}
+.ranking-reason.concise {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.daily-work {
+  margin: 18px 0;
+}
+.daily-work article {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid #eceaf4;
+  padding: 12px 0;
+}
+.daily-work h2 {
+  font-size: 18px;
+}
+.material-exposure {
+  background: #f0edff;
+  padding: 9px;
+  border-radius: 8px;
+  color: #43396a;
+}
+.page-heading h1 {
+  font-size: clamp(25px, 3vw, 34px);
+}
+@media (max-width: 700px) {
+  .daily-work article {
+    display: grid;
+  }
+  .sound-bar {
+    flex-wrap: wrap;
+  }
+  .sound-actions {
+    gap: 8px;
+  }
+  .sound-actions button {
+    min-height: 44px;
+  }
+}

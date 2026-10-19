@@ -1005,6 +1005,8 @@ def alerts(
         .where(Incident.context == context)
         .order_by(Alert.id)
     ).all()
+    from app.alert_scope import current as alert_current, reason as alert_reason
+    incidents={i.id:i for i in db.scalars(select(Incident).where(Incident.context==context))}
     # Legacy alerts did not retain the category. Read the linked article,
     # never guess from its headline or the incident's canonical category.
     article_tags = {
@@ -1024,6 +1026,9 @@ def alerts(
                 "acknowledged": a.acknowledged,
                 "created_at": a.created_at,
                 **a.data,
+                "is_current": alert_current(a,incidents.get(a.incident_id)),
+                "historical_reason": alert_reason(a,incidents.get(a.incident_id)),
+                "sound_eligible": bool(a.data.get("sound_eligible")) and alert_current(a,incidents.get(a.incident_id)),
                 "event_tag": a.data.get("event_tag")
                 or article_tags.get(a.data.get("article_id")),
             }
@@ -1031,7 +1036,7 @@ def alerts(
             if a.id > after
         ],
         "cursor": max((a.id for a in rows), default=after),
-        "unread": sum(not a.acknowledged and a.data.get("state") != "superseded" for a in rows),
+        "unread": sum(not a.acknowledged and alert_current(a,incidents.get(a.incident_id)) for a in rows),
     }
 
 
@@ -1267,6 +1272,16 @@ def campaign_prepare(body: CampaignInput, db: Session = Depends(get_db)):
         c=prepare(db,body.model_dump());return {'id':c.id,'state':c.state,'freeze':{k:v for k,v in c.freeze.items() if k not in ('inputs','suppliers','materials')}}
     except (ValueError,KeyError,TypeError):
         db.rollback();raise HTTPException(422,'Entradas o catálogo no válidos para congelar la campaña.')
+
+@app.post('/api/campaigns/import', status_code=201, dependencies=[Depends(presenter)])
+async def campaign_import(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    from app.campaigns import import_completed
+    raw=await file.read(30_000_001)
+    if len(raw)>30_000_000:raise HTTPException(413,'Campaña superior a30MB')
+    try:
+        c=import_completed(db,json.loads(raw));return {'id':c.id,'state':c.state,'new_inference':False}
+    except (ValueError,KeyError,TypeError):
+        db.rollback();raise HTTPException(422,'Campaña no válida o distinta de resultados ya guardados.')
 
 @app.post('/api/campaigns/{cid}/start', status_code=202, dependencies=[Depends(presenter)])
 def campaign_start(cid: str, db: Session = Depends(get_db)):

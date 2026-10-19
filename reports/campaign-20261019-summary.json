@@ -1,0 +1,933 @@
+{
+  "campaign_id": "6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7",
+  "name": "Comparativa nueva 74 × 2 · 19-10-2026",
+  "state": "complete",
+  "execution_commit": "db5d078",
+  "freeze_hash": "9d4ebfa15bf99f620dbd06e9ec4489b08fe31eabe0749b0b4146d20803cc993f",
+  "versions": {
+    "1.0.0": {
+      "profile": "1.0.0",
+      "matching": "1.0.0",
+      "questions": "1.0.0",
+      "review": "legacy-review-1.0.0",
+      "policy": "1.0.0",
+      "duration": "duration-1.1.0",
+      "geography": "original catalog only",
+      "model": "jev-1.13.0"
+    },
+    "radar-1.0.0-candidate": {
+      "profile": "radar-1.0.0-candidate",
+      "matching": "link-3.3.0",
+      "retrieval": "link-3.0.0-dev",
+      "questions": "decision-3.4.2",
+      "risk": "risk-focus-1.2.0",
+      "review": "review-1.3.1",
+      "support": "decision-support-1.0.0",
+      "facts": "decision-facts-1.0.0",
+      "exclusion": "relational-exclusion-1.0.0",
+      "duration": "duration-1.1.0",
+      "transport": "fanout-1.0.0",
+      "policy": "1.0.0",
+      "model": "jev-1.13.0"
+    }
+  },
+  "input_manifest": {
+    "files": [
+      {
+        "path": "inputs/supplier_training.xlsx",
+        "filename": "Copy of Supplier_Risk_1_Training.xlsx",
+        "sha256": "41e992fb46afb742c3dd54b79eb14c9e75863d71be563851f20d62ebd3798007",
+        "sheet": "News",
+        "split": "training",
+        "rows": 30,
+        "labels": true
+      },
+      {
+        "path": "inputs/supplier_validation.xlsx",
+        "filename": "Copy of Supplier_Risk_2_Validation.xlsx",
+        "sha256": "709c6b3a1988350ed84b344aab191153381c071b10ff89a3d8374c80845c2318",
+        "sheet": "News_Validation",
+        "split": "validation",
+        "rows": 10,
+        "labels": true
+      },
+      {
+        "path": "inputs/supplier_test.xlsx",
+        "filename": "Copy of Supplier_Risk_3_Test.xlsx",
+        "sha256": "f3c758c96de441ed8c9e228dd1e26b619b0969793d8c7ca0ccbadec24858411f",
+        "sheet": "News_Test",
+        "split": "test",
+        "rows": 20,
+        "labels": false
+      },
+      {
+        "path": "inputs/supplier_liveday.xlsx",
+        "filename": "Copy of Supplier_Risk_LiveDay_Feed.xlsx",
+        "sha256": "be36ea08220842c8f3a12f823fbce9eaf39f0b879c172bebba27a4c41d232044",
+        "sheet": "News_Feed",
+        "split": "liveday",
+        "rows": 14,
+        "labels": false
+      }
+    ],
+    "original_manifest_hash": "7e8e38b64fd16430d14c6b857b0165f0368d6f7da5eaf6e590d77d81901b93bf",
+    "catalog_hash": "00412884f56a50d5f690d969a26eccc0f01524220618883881a316f288e20b13",
+    "references_hash": "4b4af552a9115caf2ee278102686f0c9e2c8355dc5e31c3d1a9bd16282a15aea",
+    "texts_hash": "d425192815b4c065f377ed7f74254e77010fc7e6600a11eda43441c2d6322fbc",
+    "authorization": "Explicit user campaign: four originals, 74 inputs/profile, no answer key",
+    "independence": "training and validation already inspected; test/LiveDay unlabelled"
+  },
+  "request_estimate_before_execution": {
+    "baseline_initial_range": [
+      74,
+      148
+    ],
+    "candidate_initial_minimum": 74,
+    "candidate_conditional_stages": "B, pre_support, risk_focus/current_threat, support and followup, independently partitioned as required",
+    "max_http_attempts_including_retries": 3108,
+    "max_attempts_per_http_stage": 3,
+    "article_deadline_seconds": 60
+  },
+  "infrastructure": {
+    "service": "Local PostgreSQL isolated campaign executor",
+    "python": "3.12.3",
+    "region": "not reported"
+  },
+  "concurrency": 4,
+  "order": "original row order; interleaved profiles A then B per input",
+  "started_at": "2026-10-19 18:20:51.701117+02:00",
+  "completed_at": "2026-10-19 18:21:51.402910+02:00",
+  "end_to_end_to_results_seconds": 59.701793,
+  "scope_time": "Both profiles interleaved at concurrency4. Not independent single-profile throughput. No A20 renewal.",
+  "completed_analyses": 148,
+  "new_requests": 379,
+  "retries": 0,
+  "http_errors": 0,
+  "cache_stages": 0,
+  "provider_cache": "not reported; no claim about provider internal cache",
+  "reported_tokens": {
+    "input_tokens": 3097788,
+    "output_tokens": 250484,
+    "total_tokens": null
+  },
+  "full_sample": {
+    "1.0.0": {
+      "queue_wait_seconds": {
+        "n": 74,
+        "p50": 28.159672,
+        "p95": 53.554692599999996
+      },
+      "total": 74,
+      "completed": 74,
+      "errors": 0,
+      "pending": 0,
+      "labelled_completed": 40,
+      "quality": {
+        "n": 40,
+        "risk": {
+          "tp": 12,
+          "fp": 0,
+          "fn": 7,
+          "tn": 21,
+          "precision": 1.0,
+          "recall": 0.631578947368421,
+          "f1": 0.7741935483870968,
+          "n": 40,
+          "positives": 19
+        },
+        "urgent": {
+          "tp": 7,
+          "fp": 3,
+          "fn": 0,
+          "tn": 30,
+          "precision": 0.7,
+          "recall": 1.0,
+          "f1": 0.8235294117647058,
+          "n": 40,
+          "positives": 7
+        },
+        "suppliers": {
+          "exact": 32,
+          "n": 40,
+          "precision": 0.95,
+          "recall": 0.59375,
+          "exact_set_accuracy": 0.8,
+          "tp": 19,
+          "fp": 1,
+          "fn": 13,
+          "f1": 0.7307692307692307
+        },
+        "review_count": 26
+      },
+      "quality_limit": "Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte",
+      "automatic": 29,
+      "review": 45,
+      "automatic_rate": 0.3918918918918919,
+      "review_rate": 0.6081081081081081,
+      "automatic_errors": 2,
+      "automatic_labelled": 14,
+      "automatic_positive": {
+        "n": 4,
+        "errors": 2
+      },
+      "automatic_negative": {
+        "n": 10,
+        "errors": 0
+      },
+      "automatic_risks": 2,
+      "automatic_urgencies": 2,
+      "new_requests": 114,
+      "cache_stages": 0,
+      "retries": 0,
+      "http_errors": 0,
+      "tokens": {
+        "input_tokens": 943661,
+        "output_tokens": 85950,
+        "total_tokens": null
+      },
+      "analysis_wall_seconds_sum": 63.64783260096738,
+      "elapsed_seconds": 57.909126
+    },
+    "radar-1.0.0-candidate": {
+      "queue_wait_seconds": {
+        "n": 74,
+        "p50": 28.367135500000003,
+        "p95": 54.023836599999996
+      },
+      "total": 74,
+      "completed": 74,
+      "errors": 0,
+      "pending": 0,
+      "labelled_completed": 40,
+      "quality": {
+        "n": 40,
+        "risk": {
+          "tp": 19,
+          "fp": 0,
+          "fn": 0,
+          "tn": 21,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n": 40,
+          "positives": 19
+        },
+        "urgent": {
+          "tp": 7,
+          "fp": 2,
+          "fn": 0,
+          "tn": 31,
+          "precision": 0.7777777777777778,
+          "recall": 1.0,
+          "f1": 0.875,
+          "n": 40,
+          "positives": 7
+        },
+        "suppliers": {
+          "exact": 37,
+          "n": 40,
+          "precision": 0.8648648648648649,
+          "recall": 1.0,
+          "exact_set_accuracy": 0.925,
+          "tp": 32,
+          "fp": 5,
+          "fn": 0,
+          "f1": 0.927536231884058
+        },
+        "review_count": 21
+      },
+      "quality_limit": "Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte",
+      "automatic": 31,
+      "review": 43,
+      "automatic_rate": 0.4189189189189189,
+      "review_rate": 0.581081081081081,
+      "automatic_errors": 0,
+      "automatic_labelled": 19,
+      "automatic_positive": {
+        "n": 3,
+        "errors": 0
+      },
+      "automatic_negative": {
+        "n": 16,
+        "errors": 0
+      },
+      "automatic_risks": 3,
+      "automatic_urgencies": 3,
+      "new_requests": 265,
+      "cache_stages": 0,
+      "retries": 0,
+      "http_errors": 0,
+      "tokens": {
+        "input_tokens": 2154127,
+        "output_tokens": 164534,
+        "total_tokens": null
+      },
+      "analysis_wall_seconds_sum": 158.0620540699747,
+      "elapsed_seconds": 59.614665
+    }
+  },
+  "samples": {
+    "training": {
+      "1.0.0": {
+        "queue_wait_seconds": {
+          "n": 30,
+          "p50": 10.271215999999999,
+          "p95": 20.676296999999998
+        },
+        "total": 30,
+        "completed": 30,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 30,
+        "quality": {
+          "n": 30,
+          "risk": {
+            "tp": 9,
+            "fp": 0,
+            "fn": 5,
+            "tn": 16,
+            "precision": 1.0,
+            "recall": 0.6428571428571429,
+            "f1": 0.782608695652174,
+            "n": 30,
+            "positives": 14
+          },
+          "urgent": {
+            "tp": 5,
+            "fp": 3,
+            "fn": 0,
+            "tn": 22,
+            "precision": 0.625,
+            "recall": 1.0,
+            "f1": 0.7692307692307693,
+            "n": 30,
+            "positives": 5
+          },
+          "suppliers": {
+            "exact": 24,
+            "n": 30,
+            "precision": 0.9230769230769231,
+            "recall": 0.5454545454545454,
+            "exact_set_accuracy": 0.8,
+            "tp": 12,
+            "fp": 1,
+            "fn": 10,
+            "f1": 0.6857142857142857
+          },
+          "review_count": 18
+        },
+        "quality_limit": "Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte",
+        "automatic": 12,
+        "review": 18,
+        "automatic_rate": 0.4,
+        "review_rate": 0.6,
+        "automatic_errors": 2,
+        "automatic_labelled": 12,
+        "automatic_positive": {
+          "n": 4,
+          "errors": 2
+        },
+        "automatic_negative": {
+          "n": 8,
+          "errors": 0
+        },
+        "automatic_risks": 2,
+        "automatic_urgencies": 2,
+        "new_requests": 45,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 380376,
+          "output_tokens": 34605,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 25.881318188039586,
+        "elapsed_seconds": 22.125664
+      },
+      "radar-1.0.0-candidate": {
+        "queue_wait_seconds": {
+          "n": 30,
+          "p50": 10.594983,
+          "p95": 21.1978938
+        },
+        "total": 30,
+        "completed": 30,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 30,
+        "quality": {
+          "n": 30,
+          "risk": {
+            "tp": 14,
+            "fp": 0,
+            "fn": 0,
+            "tn": 16,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 30,
+            "positives": 14
+          },
+          "urgent": {
+            "tp": 5,
+            "fp": 1,
+            "fn": 0,
+            "tn": 24,
+            "precision": 0.8333333333333334,
+            "recall": 1.0,
+            "f1": 0.9090909090909091,
+            "n": 30,
+            "positives": 5
+          },
+          "suppliers": {
+            "exact": 28,
+            "n": 30,
+            "precision": 0.8461538461538461,
+            "recall": 1.0,
+            "exact_set_accuracy": 0.9333333333333333,
+            "tp": 22,
+            "fp": 4,
+            "fn": 0,
+            "f1": 0.9166666666666666
+          },
+          "review_count": 14
+        },
+        "quality_limit": "Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte",
+        "automatic": 16,
+        "review": 14,
+        "automatic_rate": 0.5333333333333333,
+        "review_rate": 0.4666666666666667,
+        "automatic_errors": 0,
+        "automatic_labelled": 16,
+        "automatic_positive": {
+          "n": 3,
+          "errors": 0
+        },
+        "automatic_negative": {
+          "n": 13,
+          "errors": 0
+        },
+        "automatic_risks": 3,
+        "automatic_urgencies": 3,
+        "new_requests": 104,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 888739,
+          "output_tokens": 68910,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 61.86828715998854,
+        "elapsed_seconds": 24.000457
+      }
+    },
+    "validation": {
+      "1.0.0": {
+        "queue_wait_seconds": {
+          "n": 10,
+          "p50": 26.8514355,
+          "p95": 29.64726605
+        },
+        "total": 10,
+        "completed": 10,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 10,
+        "quality": {
+          "n": 10,
+          "risk": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 2,
+            "tn": 5,
+            "precision": 1.0,
+            "recall": 0.6,
+            "f1": 0.75,
+            "n": 10,
+            "positives": 5
+          },
+          "urgent": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "tn": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 10,
+            "positives": 2
+          },
+          "suppliers": {
+            "exact": 8,
+            "n": 10,
+            "precision": 1.0,
+            "recall": 0.7,
+            "exact_set_accuracy": 0.8,
+            "tp": 7,
+            "fp": 0,
+            "fn": 3,
+            "f1": 0.8235294117647058
+          },
+          "review_count": 8
+        },
+        "quality_limit": "Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte",
+        "automatic": 2,
+        "review": 8,
+        "automatic_rate": 0.2,
+        "review_rate": 0.8,
+        "automatic_errors": 0,
+        "automatic_labelled": 2,
+        "automatic_positive": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_negative": {
+          "n": 2,
+          "errors": 0
+        },
+        "automatic_risks": 0,
+        "automatic_urgencies": 0,
+        "new_requests": 16,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 129900,
+          "output_tokens": 12021,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 9.046883438000805,
+        "elapsed_seconds": 8.654175
+      },
+      "radar-1.0.0-candidate": {
+        "queue_wait_seconds": {
+          "n": 10,
+          "p50": 27.30388,
+          "p95": 29.87208175
+        },
+        "total": 10,
+        "completed": 10,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 10,
+        "quality": {
+          "n": 10,
+          "risk": {
+            "tp": 5,
+            "fp": 0,
+            "fn": 0,
+            "tn": 5,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 10,
+            "positives": 5
+          },
+          "urgent": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 0,
+            "tn": 7,
+            "precision": 0.6666666666666666,
+            "recall": 1.0,
+            "f1": 0.8,
+            "n": 10,
+            "positives": 2
+          },
+          "suppliers": {
+            "exact": 9,
+            "n": 10,
+            "precision": 0.9090909090909091,
+            "recall": 1.0,
+            "exact_set_accuracy": 0.9,
+            "tp": 10,
+            "fp": 1,
+            "fn": 0,
+            "f1": 0.9523809523809523
+          },
+          "review_count": 7
+        },
+        "quality_limit": "Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte",
+        "automatic": 3,
+        "review": 7,
+        "automatic_rate": 0.3,
+        "review_rate": 0.7,
+        "automatic_errors": 0,
+        "automatic_labelled": 3,
+        "automatic_positive": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_negative": {
+          "n": 3,
+          "errors": 0
+        },
+        "automatic_risks": 0,
+        "automatic_urgencies": 0,
+        "new_requests": 38,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 290355,
+          "output_tokens": 22282,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 22.445549078009208,
+        "elapsed_seconds": 9.628412
+      }
+    },
+    "test": {
+      "1.0.0": {
+        "queue_wait_seconds": {
+          "n": 20,
+          "p50": 38.3319345,
+          "p95": 44.54956165
+        },
+        "total": 20,
+        "completed": 20,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 0,
+        "quality": null,
+        "quality_limit": "No disponible: sin etiquetas",
+        "automatic": 10,
+        "review": 10,
+        "automatic_rate": 0.5,
+        "review_rate": 0.5,
+        "automatic_errors": null,
+        "automatic_labelled": 0,
+        "automatic_positive": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_negative": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_risks": 0,
+        "automatic_urgencies": 0,
+        "new_requests": 30,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 252075,
+          "output_tokens": 22738,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 15.666238232966862,
+        "elapsed_seconds": 15.173964
+      },
+      "radar-1.0.0-candidate": {
+        "queue_wait_seconds": {
+          "n": 20,
+          "p50": 38.5999945,
+          "p95": 45.061140550000005
+        },
+        "total": 20,
+        "completed": 20,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 0,
+        "quality": null,
+        "quality_limit": "No disponible: sin etiquetas",
+        "automatic": 9,
+        "review": 11,
+        "automatic_rate": 0.45,
+        "review_rate": 0.55,
+        "automatic_errors": null,
+        "automatic_labelled": 0,
+        "automatic_positive": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_negative": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_risks": 0,
+        "automatic_urgencies": 0,
+        "new_requests": 76,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 580146,
+          "output_tokens": 43944,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 43.164294745991356,
+        "elapsed_seconds": 17.168966
+      }
+    },
+    "liveday": {
+      "1.0.0": {
+        "queue_wait_seconds": {
+          "n": 14,
+          "p50": 51.463313,
+          "p95": 56.413606599999994
+        },
+        "total": 14,
+        "completed": 14,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 0,
+        "quality": null,
+        "quality_limit": "No disponible: sin etiquetas",
+        "automatic": 5,
+        "review": 9,
+        "automatic_rate": 0.35714285714285715,
+        "review_rate": 0.6428571428571429,
+        "automatic_errors": null,
+        "automatic_labelled": 0,
+        "automatic_positive": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_negative": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_risks": 0,
+        "automatic_urgencies": 0,
+        "new_requests": 23,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 181310,
+          "output_tokens": 16586,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 13.053392741960124,
+        "elapsed_seconds": 11.723515
+      },
+      "radar-1.0.0-candidate": {
+        "queue_wait_seconds": {
+          "n": 14,
+          "p50": 51.8323745,
+          "p95": 56.821931649999996
+        },
+        "total": 14,
+        "completed": 14,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 0,
+        "quality": null,
+        "quality_limit": "No disponible: sin etiquetas",
+        "automatic": 3,
+        "review": 11,
+        "automatic_rate": 0.21428571428571427,
+        "review_rate": 0.7857142857142857,
+        "automatic_errors": null,
+        "automatic_labelled": 0,
+        "automatic_positive": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_negative": {
+          "n": 0,
+          "errors": 0
+        },
+        "automatic_risks": 0,
+        "automatic_urgencies": 0,
+        "new_requests": 47,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 394887,
+          "output_tokens": 29398,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 30.58392308598559,
+        "elapsed_seconds": 12.989345
+      }
+    },
+    "labelled": {
+      "1.0.0": {
+        "queue_wait_seconds": {
+          "n": 40,
+          "p50": 13.740223499999999,
+          "p95": 28.48067325
+        },
+        "total": 40,
+        "completed": 40,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 40,
+        "quality": {
+          "n": 40,
+          "risk": {
+            "tp": 12,
+            "fp": 0,
+            "fn": 7,
+            "tn": 21,
+            "precision": 1.0,
+            "recall": 0.631578947368421,
+            "f1": 0.7741935483870968,
+            "n": 40,
+            "positives": 19
+          },
+          "urgent": {
+            "tp": 7,
+            "fp": 3,
+            "fn": 0,
+            "tn": 30,
+            "precision": 0.7,
+            "recall": 1.0,
+            "f1": 0.8235294117647058,
+            "n": 40,
+            "positives": 7
+          },
+          "suppliers": {
+            "exact": 32,
+            "n": 40,
+            "precision": 0.95,
+            "recall": 0.59375,
+            "exact_set_accuracy": 0.8,
+            "tp": 19,
+            "fp": 1,
+            "fn": 13,
+            "f1": 0.7307692307692307
+          },
+          "review_count": 26
+        },
+        "quality_limit": "Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte",
+        "automatic": 14,
+        "review": 26,
+        "automatic_rate": 0.35,
+        "review_rate": 0.65,
+        "automatic_errors": 2,
+        "automatic_labelled": 14,
+        "automatic_positive": {
+          "n": 4,
+          "errors": 2
+        },
+        "automatic_negative": {
+          "n": 10,
+          "errors": 0
+        },
+        "automatic_risks": 2,
+        "automatic_urgencies": 2,
+        "new_requests": 61,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 510276,
+          "output_tokens": 46626,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 34.92820162604039,
+        "elapsed_seconds": 30.841206
+      },
+      "radar-1.0.0-candidate": {
+        "queue_wait_seconds": {
+          "n": 40,
+          "p50": 14.287006,
+          "p95": 28.7900051
+        },
+        "total": 40,
+        "completed": 40,
+        "errors": 0,
+        "pending": 0,
+        "labelled_completed": 40,
+        "quality": {
+          "n": 40,
+          "risk": {
+            "tp": 19,
+            "fp": 0,
+            "fn": 0,
+            "tn": 21,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "n": 40,
+            "positives": 19
+          },
+          "urgent": {
+            "tp": 7,
+            "fp": 2,
+            "fn": 0,
+            "tn": 31,
+            "precision": 0.7777777777777778,
+            "recall": 1.0,
+            "f1": 0.875,
+            "n": 40,
+            "positives": 7
+          },
+          "suppliers": {
+            "exact": 37,
+            "n": 40,
+            "precision": 0.8648648648648649,
+            "recall": 1.0,
+            "exact_set_accuracy": 0.925,
+            "tp": 32,
+            "fp": 5,
+            "fn": 0,
+            "f1": 0.927536231884058
+          },
+          "review_count": 21
+        },
+        "quality_limit": "Training/validation ya inspeccionados; agregado descriptivo sobre completados, fallos visibles aparte",
+        "automatic": 19,
+        "review": 21,
+        "automatic_rate": 0.475,
+        "review_rate": 0.525,
+        "automatic_errors": 0,
+        "automatic_labelled": 19,
+        "automatic_positive": {
+          "n": 3,
+          "errors": 0
+        },
+        "automatic_negative": {
+          "n": 16,
+          "errors": 0
+        },
+        "automatic_risks": 3,
+        "automatic_urgencies": 3,
+        "new_requests": 142,
+        "cache_stages": 0,
+        "retries": 0,
+        "http_errors": 0,
+        "tokens": {
+          "input_tokens": 1179094,
+          "output_tokens": 91192,
+          "total_tokens": null
+        },
+        "analysis_wall_seconds_sum": 84.31383623799775,
+        "elapsed_seconds": 32.743492
+      }
+    }
+  },
+  "effective_payload_label_separation": true,
+  "operational_rows_in_campaign_database": {
+    "articles": 0,
+    "analyses": 0,
+    "incidents": 0,
+    "alerts": 0,
+    "evaluation_labels": 0,
+    "human_decisions": 0
+  },
+  "counter_after_readonly_ui": 379,
+  "output_digest": "57ea4f20a149a2b21386a9bff0c749cf9c785815d7e285bec19b2459386e7d35",
+  "default_promoted": false,
+  "limits": [
+    "Training and validation already inspected; descriptive repeated evaluation, not independent generalisation.",
+    "Test and LiveDay have no references: accuracy unavailable.",
+    "Five candidate supplier false associations and two false urgencies remain among labelled outputs.",
+    "No classifier, threshold or profile changed after examining this campaign.",
+    "A06 open; A14 physical and A20 historical retained."
+  ],
+  "public_ui_verification": "pending next deployment",
+  "local_ui_verification": "real persisted JEV results at360/390/768/1440, drill-down, filters, export; no new JEV calls",
+  "publication": {
+    "presenter_access": "restored HTTP200 after user corrected .env",
+    "status": "pending import after final deployment",
+    "new_inference_on_import": false
+  }
+}

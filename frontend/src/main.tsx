@@ -268,7 +268,7 @@ function App() {
     [more, setMore] = useState(false),
     [qaStatus, setQaStatus] = useState(""),
     [qaBusy, setQaBusy] = useState(false),
-    [alertFilter, setAlertFilter] = useState("all");
+    [alertFilter, setAlertFilter] = useState("current");
   const qaPending = useRef<{
     signal: {
       id: number;
@@ -494,12 +494,18 @@ function App() {
               {n.text}
               {n.to === "/alertas" &&
                 alerts.filter(
-                  (a) => !a.acknowledged && a.state !== "superseded",
+                  (a) =>
+                    !a.acknowledged &&
+                    a.is_current !== false &&
+                    !["superseded", "resolved"].includes(a.state),
                 ).length > 0 && (
                   <span className="nav-count">
                     {
                       alerts.filter(
-                        (a) => !a.acknowledged && a.state !== "superseded",
+                        (a) =>
+                          !a.acknowledged &&
+                          a.is_current !== false &&
+                          !["superseded", "resolved"].includes(a.state),
                       ).length
                     }
                   </span>
@@ -584,36 +590,27 @@ function App() {
             <div>
               <div className="eyebrow">INTELIGENCIA DE SUMINISTRO</div>
               <h1>
-                Radar de proveedores<span className="heading-dot">.</span>
+                {(
+                  {
+                    "/": "Resumen",
+                    "/proveedores": "Proveedores",
+                    "/materiales": "Materiales",
+                    "/noticias": "Noticias",
+                    "/alertas": "Alertas",
+                    "/fuentes": "Fuentes",
+                    "/analitica": "Analítica",
+                    "/modelo": "Modelo",
+                  } as Record<string, string>
+                )["/" + (location.pathname.split("/")[1] || "")] || "Resumen"}
+                <span className="heading-dot">.</span>
               </h1>
               <p>
                 {context === "rss"
                   ? "Exposición potencial de una cartera simulada a noticias reales."
-                  : "Detecta señales, entiende el impacto y prioriza la respuesta."}
+                  : "Cartera ficticia de Helixa · evidencia, decisiones y acciones de compras."}
               </p>
             </div>
             <div className="heading-actions">
-              {presenter && (
-                <DemoControl
-                  onClean={async (result) => {
-                    cursor.current = null;
-                    navigate(
-                      scopedPath(
-                        result?.mode === "rerun" && origin
-                          ? "/?origen=" + encodeURIComponent(origin)
-                          : "/",
-                        context,
-                      ),
-                    );
-                    await refresh(true);
-                    setMessage(
-                      result?.mode === "rerun"
-                        ? `${result.job_ids.length} análisis encolados; los resultados aparecerán conforme terminen.`
-                        : "Selección borrada. Consumo e historial de llamadas conservados.",
-                    );
-                  }}
-                />
-              )}
               <input
                 ref={file}
                 type="file"
@@ -625,15 +622,20 @@ function App() {
                   e.target.value = "";
                 }}
               />
-              <button
-                className="button primary"
-                onClick={() =>
-                  presenter ? file.current?.click() : setLoginOpen(true)
-                }
-              >
-                <Upload size={17} />
-                Importar Excel
-              </button>
+              {(location.pathname === "/" ||
+                location.pathname.startsWith("/noticias")) && (
+                <>
+                  <button
+                    className="button primary"
+                    onClick={() =>
+                      presenter ? file.current?.click() : setLoginOpen(true)
+                    }
+                  >
+                    <Upload size={17} />
+                    Importar Excel
+                  </button>
+                </>
+              )}
             </div>
           </div>
           {config.fixtures && (
@@ -693,17 +695,6 @@ function App() {
                 Activar sonido
               </button>
               <button
-                onClick={() =>
-                  audio
-                    .play()
-                    .catch(() =>
-                      setSound("Bloqueado: activa primero el sonido"),
-                    )
-                }
-              >
-                Probar alarma
-              </button>
-              <button
                 onClick={() => {
                   audio.mute();
                   setSound("Silenciado");
@@ -716,7 +707,40 @@ function App() {
           </div>
           {presenter && (
             <details className="qa-control">
-              <summary>Prueba de aviso automático · presentador</summary>
+              <summary>Herramientas del presentador</summary>
+              {presenter && (
+                <DemoControl
+                  onClean={async (result) => {
+                    cursor.current = null;
+                    navigate(
+                      scopedPath(
+                        result?.mode === "rerun" && origin
+                          ? "/?origen=" + encodeURIComponent(origin)
+                          : "/",
+                        context,
+                      ),
+                    );
+                    await refresh(true);
+                    setMessage(
+                      result?.mode === "rerun"
+                        ? `${result.job_ids.length} análisis encolados; los resultados aparecerán conforme terminen.`
+                        : "Selección borrada. Consumo e historial de llamadas conservados.",
+                    );
+                  }}
+                />
+              )}
+              <button
+                onClick={() =>
+                  audio
+                    .play()
+                    .catch(() =>
+                      setSound("Bloqueado: activa primero el sonido"),
+                    )
+                }
+              >
+                Probar alarma
+              </button>
+
               <section
                 className="notice"
                 aria-label="Prueba controlada de alerta automática"
@@ -833,6 +857,11 @@ function App() {
                       context={context}
                       origin={effectiveOrigin}
                     />
+                    <FollowupDesk
+                      suppliers={suppliers}
+                      context={context}
+                      reviewCount={overview?.review || 0}
+                    />
                     <div className="kpis">
                       <Kpi
                         label="Proveedores urgentes"
@@ -897,7 +926,30 @@ function App() {
                               <ArrowUpRight size={19} />
                             </Link>
                           </div>
-                          <NewsList articles={articles.slice(0, 4)} />
+                          <p className="small-note">
+                            Orden: urgencia, riesgo y revisión; fecha dentro de
+                            cada grupo. Las noticias neutras siguen en Noticias.
+                          </p>
+                          <NewsList
+                            articles={[...articles]
+                              .sort((a, b) => {
+                                const rank = (x: Article) =>
+                                  x.analysis?.urgent === "Y"
+                                    ? 3
+                                    : x.analysis?.is_risk === "Y"
+                                      ? 2
+                                      : x.state === "review"
+                                        ? 1
+                                        : 0;
+                                return (
+                                  rank(b) - rank(a) ||
+                                  b.published_date.localeCompare(
+                                    a.published_date,
+                                  )
+                                );
+                              })
+                              .slice(0, 4)}
+                          />
                         </section>
                         <section className="card sources-mini">
                           <div className="section-heading">
@@ -962,7 +1014,12 @@ function App() {
               <Route
                 path="/noticias"
                 element={
-                  <NewsPage key={scope} articles={articles} context={context} presenter={presenter} />
+                  <NewsPage
+                    key={scope}
+                    articles={articles}
+                    context={context}
+                    presenter={presenter}
+                  />
                 }
               />
               <Route
@@ -976,12 +1033,18 @@ function App() {
                     <div className="section-heading">
                       <div>
                         <h2>Centro de alertas</h2>
-                        <p>Reconocer una alerta conserva el incidente activo</p>
+                        <p>
+                          Vigentes: sin leer primero. Reconocer un aviso no
+                          completa la acción ni recupera al proveedor.
+                        </p>
                       </div>
                       <Badge>
                         {
                           alerts.filter(
-                            (a) => !a.acknowledged && a.state !== "superseded",
+                            (a) =>
+                              !a.acknowledged &&
+                              a.is_current !== false &&
+                              !["superseded", "resolved"].includes(a.state),
                           ).length
                         }{" "}
                         sin leer
@@ -993,46 +1056,36 @@ function App() {
                         value={alertFilter}
                         onChange={(e) => setAlertFilter(e.target.value)}
                       >
-                        <option value="all">Todas las alertas</option>
+                        <option value="current">Vigentes por atender</option>
+                        <option value="history">Histórico de avisos</option>
+                        <option value="all">Todas · incluye histórico</option>
                         <option value="new">Sin leer</option>
                         <option value="ack">Reconocidas</option>
                         <option value="resolved">Recuperadas</option>
                         <option value="superseded">Análisis sustituidos</option>
                       </select>
                     </div>
-                    {alerts.length ? (
-                      alerts
-                        .filter(
-                          (a) =>
-                            alertFilter === "all" ||
-                            (alertFilter === "new" &&
-                              !a.acknowledged &&
-                              a.state !== "superseded") ||
-                            (alertFilter === "ack" && a.acknowledged) ||
-                            (alertFilter === "resolved" &&
-                              a.state === "resolved") ||
-                            (alertFilter === "superseded" &&
-                              a.state === "superseded"),
-                        )
-                        .slice()
-                        .reverse()
-                        .map((a) => (
-                          <article className="alert-item" key={a.id}>
-                            <div className="alert-icon">
-                              <Bell size={20} />
-                            </div>
-                            <div>
-                              <div className="inline">
-                                <Badge
-                                  tone={
-                                    a.state === "resolved"
-                                      ? "success"
-                                      : a.needs_review
-                                        ? "warning"
-                                        : "danger"
-                                  }
-                                >
-                                  {a.state === "superseded"
+                    {visibleAlerts(alerts, alertFilter).length ? (
+                      visibleAlerts(alerts, alertFilter).map((a) => (
+                        <article className="alert-item" key={a.id}>
+                          <div className="alert-icon">
+                            <Bell size={20} />
+                          </div>
+                          <div>
+                            <div className="inline">
+                              <Badge
+                                tone={
+                                  a.state === "resolved"
+                                    ? "success"
+                                    : a.needs_review
+                                      ? "warning"
+                                      : "danger"
+                                }
+                              >
+                                {a.is_current === false &&
+                                !["superseded", "resolved"].includes(a.state)
+                                  ? "Aviso histórico"
+                                  : a.state === "superseded"
                                     ? "Análisis sustituido"
                                     : a.state === "resolved"
                                       ? "Recuperada"
@@ -1041,67 +1094,94 @@ function App() {
                                         : a.urgent === "Y" || a.sound_eligible
                                           ? "Acción inmediata"
                                           : "Atención de compras"}
-                                </Badge>
-                                <small>{date(a.created_at)}</small>
-                              </div>
-                              <h3>
-                                <Link to={"/proveedores/" + a.supplier_id}>
-                                  {a.supplier_name}
-                                </Link>
-                              </h3>
-                              <p>{a.headline}</p>
-                              <EventTag
-                                analysis={a.event_tag}
-                                state="unavailable"
-                              />
-                              <small>
-                                Prioridad {number(a.priority)} ·{" "}
-                                {a.sound_eligible
-                                  ? "Elegible para sonido"
-                                  : "Solo aviso visual"}
-                              </small>
-                              {suppliers.find(
-                                (s) => s.supplier_id === a.supplier_id,
-                              ) && (
-                                <ProcurementBrief
-                                  supplier={
-                                    suppliers.find(
-                                      (s) => s.supplier_id === a.supplier_id,
-                                    )!
-                                  }
-                                  context={context}
-                                  incidentId={a.incident_id}
-                                  compact
-                                />
-                              )}
-                              <div className="inline">
-                                <button
-                                  className="button small"
-                                  disabled={!presenter || a.acknowledged}
-                                  onClick={() =>
-                                    action(() =>
-                                      api(`/alerts/${a.id}/ack`, {
-                                        method: "POST",
-                                      }),
-                                    )
-                                  }
-                                >
-                                  {a.acknowledged ? "Reconocida" : "Reconocer"}
-                                </button>
+                              </Badge>
+                              <small>{date(a.created_at)}</small>
+                            </div>
+                            <h3>
+                              <Link to={"/proveedores/" + a.supplier_id}>
+                                {a.supplier_name}
+                              </Link>
+                            </h3>
+                            <p>{a.headline}</p>
+                            {a.historical_reason && (
+                              <p className="small-note">
+                                {a.historical_reason}
+                              </p>
+                            )}
+                            <div className="inline">
+                              <Link
+                                className="text-link"
+                                to={scopedPath(
+                                  "/proveedores/" + a.supplier_id,
+                                  context,
+                                )}
+                              >
+                                Gestionar acción
+                              </Link>
+                              {a.needs_review && a.article_id && (
                                 <Link
                                   className="text-link"
-                                  to={
-                                    a.article_id
-                                      ? "/noticias/" + a.article_id
-                                      : "/proveedores/" + a.supplier_id
-                                  }
+                                  to={scopedPath(
+                                    "/noticias/" + a.article_id,
+                                    context,
+                                  )}
                                 >
-                                  Ver evidencia →
+                                  Resolver revisión
                                 </Link>
-                              </div>
+                              )}
                             </div>
-                          </article>
-                        ))
+                            <EventTag
+                              analysis={a.event_tag}
+                              state="unavailable"
+                            />
+                            <small>
+                              Prioridad {number(a.priority)} ·{" "}
+                              {a.sound_eligible
+                                ? "Elegible para sonido"
+                                : "Solo aviso visual"}
+                            </small>
+                            {suppliers.find(
+                              (s) => s.supplier_id === a.supplier_id,
+                            ) && (
+                              <ProcurementBrief
+                                supplier={
+                                  suppliers.find(
+                                    (s) => s.supplier_id === a.supplier_id,
+                                  )!
+                                }
+                                context={context}
+                                incidentId={a.incident_id}
+                                compact
+                              />
+                            )}
+                            <div className="inline">
+                              <button
+                                className="button small"
+                                disabled={!presenter || a.acknowledged}
+                                onClick={() =>
+                                  action(() =>
+                                    api(`/alerts/${a.id}/ack`, {
+                                      method: "POST",
+                                    }),
+                                  )
+                                }
+                              >
+                                {a.acknowledged ? "Reconocida" : "Reconocer"}
+                              </button>
+                              <Link
+                                className="text-link"
+                                to={
+                                  a.article_id
+                                    ? "/noticias/" + a.article_id
+                                    : "/proveedores/" + a.supplier_id
+                                }
+                              >
+                                Ver evidencia →
+                              </Link>
+                            </div>
+                          </div>
+                        </article>
+                      ))
                     ) : (
                       <Empty title="Sin alertas registradas">
                         Las noticias pendientes no se consideran libres de
@@ -1462,7 +1542,9 @@ function Ranking({
                   <p>
                     {s.country} <span>·</span> {s.material}
                   </p>
-                  <p className="ranking-reason">{s.reason}</p>
+                  <p className={"ranking-reason" + (full ? " concise" : "")}>
+                    {s.reason}
+                  </p>
                   <small>
                     {s.latest_evidence
                       ? `Evidencia: ${date(s.latest_evidence)}`
@@ -1477,6 +1559,17 @@ function Ranking({
                   Criticidad {label(s.criticality).toLowerCase()}
                 </Badge>
                 {s.single_source === "Y" && <small>Fuente única</small>}
+                <small>
+                  {s.inventory_days == null
+                    ? ["Logistics", "Services"].includes(s.category)
+                      ? "Inventario no aplicable"
+                      : "Inventario desconocido"
+                    : s.inventory_days + " días de cobertura"}{" "}
+                  ·{" "}
+                  {s.alternate_id
+                    ? "Alternativo registrado"
+                    : "Sin alternativo registrado"}
+                </small>
                 {s.status === "resolved" && (
                   <Badge tone="success">Recuperado</Badge>
                 )}
@@ -1490,7 +1583,14 @@ function Ranking({
                 {s.urgent && <Badge tone="danger">Urgente</Badge>}
                 {s.needs_review && <Badge tone="warning">Revisión</Badge>}
               </div>
-              <Score value={s.priority} />
+              {s.priority === 0 && s.needs_review ? (
+                <div className="priority-unconfirmed">
+                  <strong>Por confirmar</strong>
+                  <small>Estimación 0 · decisión en revisión</small>
+                </div>
+              ) : (
+                <Score value={s.priority} />
+              )}
               <ChevronRight size={17} className="row-arrow" />
               <div className="mobile-row-action">
                 <span className="reason-text">{s.reason}</span>
@@ -1541,12 +1641,36 @@ function NewsList({
                     : "neutral"
               }
             >
-              {label(a.state)}
+              {["done", "review"].includes(a.state)
+                ? "Análisis completado"
+                : label(a.state)}
             </Badge>
+            {a.state === "review" && a.human_review?.state !== "resolved" && (
+              <Badge tone="warning">Duda de análisis pendiente</Badge>
+            )}
+            {a.analysis && (
+              <Badge tone={a.analysis.is_risk === "Y" ? "danger" : "neutral"}>
+                {a.analysis.is_risk === "Y"
+                  ? "Riesgo detectado"
+                  : a.analysis.is_risk === "N"
+                    ? "Sin riesgo detectado"
+                    : "Sin decisión"}
+              </Badge>
+            )}
             <EventTag analysis={a.analysis} state={a.state} />
-            {a.human_review?.state === "resolved" && <Badge>Revisión humana resuelta</Badge>}
+            {a.human_review?.state === "resolved" && (
+              <Badge>Revisión humana resuelta</Badge>
+            )}
           </div>
-          {(a as any).preliminary_relevance && <p className="small-note">{(a as any).preliminary_relevance.level === "none" ? "Sin indicio preliminar de cartera; no es un descarte" : "Por qué leer: " + (a as any).preliminary_relevance.reasons.join(" · ")} · No confirma afectación.</p>}
+          {(a as any).preliminary_relevance && (
+            <p className="small-note">
+              {(a as any).preliminary_relevance.level === "none"
+                ? "Sin indicio preliminar de cartera; no es un descarte"
+                : "Por qué leer: " +
+                  (a as any).preliminary_relevance.reasons.join(" · ")}{" "}
+              · No confirma afectación.
+            </p>
+          )}
           <h3>
             <Link
               id={"news-link-" + a.id}
@@ -1574,6 +1698,14 @@ function NewsList({
               {a.headline}
             </Link>
           </h3>
+          {a.analysis?.affected_supplier_ids?.length ? (
+            <p className="small-note">
+              Relacionados: {a.analysis.affected_supplier_ids.join(" · ")}
+              {a.analysis.urgent === "Y"
+                ? " · Atención urgente de compras"
+                : ""}
+            </p>
+          ) : null}
           <small>
             {date(a.published_date)}
             {a.cached ? " · Resultado cacheado" : ""}
@@ -1597,7 +1729,18 @@ function NewsPage({
   presenter: boolean;
 }) {
   const [filters, patch] = useNewsFilters(context);
-  const { q, state, source, split, from, to, event, relevant, human, preliminary } = filters;
+  const {
+    q,
+    state,
+    source,
+    split,
+    from,
+    to,
+    event,
+    relevant,
+    human,
+    preliminary,
+  } = filters;
   const setQ = (q: string) => patch({ q }),
     setState = (state: string) => patch({ state }),
     setSource = (source: string) => patch({ source }),
@@ -1613,7 +1756,18 @@ function NewsPage({
           .toLowerCase()
           .includes(q.toLowerCase())) &&
       (!state || a.state === state) &&
-      (!human || (human === "dismissed" ? Boolean((a as any).human_review?.state === "resolved" && (a as any).human_review?.decisions.length && (a as any).human_review.decisions.every((d:any)=>d.association === "rejected")) : human === "pending" ? (a.state === "review" && a.human_review?.state !== "resolved") : a.human_review?.state === human)) &&
+      (!human ||
+        (human === "dismissed"
+          ? Boolean(
+              (a as any).human_review?.state === "resolved" &&
+                (a as any).human_review?.decisions.length &&
+                (a as any).human_review.decisions.every(
+                  (d: any) => d.association === "rejected",
+                ),
+            )
+          : human === "pending"
+            ? a.state === "review" && a.human_review?.state !== "resolved"
+            : a.human_review?.state === human)) &&
       (!preliminary || (a as any).preliminary_relevance?.level !== "none") &&
       (!source || a.source === source) &&
       (!split || a.split === split) &&
@@ -1749,15 +1903,41 @@ function NewsPage({
             setTo("");
             setEvent("");
             setRelevant(false);
-            patch({human:"",preliminary:""});
+            patch({ human: "", preliminary: "" });
           }}
         >
           Limpiar
         </button>
       </div>
       <div className="ranking-toolbar">
-        <label>Trabajo de revisión<select aria-label="Trabajo de revisión" value={human} onChange={e=>patch({human:e.target.value})}><option value="">Todas las noticias</option><option value="pending">Revisión pendiente</option><option value="in_verification">En verificación humana</option><option value="resolved">Revisión humana resuelta</option><option value="dismissed">Asociaciones rechazadas con evidencia</option></select></label>
-        {context === "rss" && <label className="checkbox"><input type="checkbox" checked={!!preliminary} onChange={e=>patch({preliminary:e.target.checked?"yes":""})}/>Con indicios preliminares de cartera · no confirma exposición</label>}
+        <label>
+          Trabajo de revisión
+          <select
+            aria-label="Trabajo de revisión"
+            value={human}
+            onChange={(e) => patch({ human: e.target.value })}
+          >
+            <option value="">Todas las noticias</option>
+            <option value="pending">Revisión pendiente</option>
+            <option value="in_verification">En verificación humana</option>
+            <option value="resolved">Revisión humana resuelta</option>
+            <option value="dismissed">
+              Asociaciones rechazadas con evidencia
+            </option>
+          </select>
+        </label>
+        {context === "rss" && (
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={!!preliminary}
+              onChange={(e) =>
+                patch({ preliminary: e.target.checked ? "yes" : "" })
+              }
+            />
+            Con indicios preliminares de cartera · no confirma exposición
+          </label>
+        )}
       </div>
       <p className="small-note" role="status">
         {filtered.length} de {articles.length} noticias
@@ -1832,7 +2012,9 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
       />
       <span>
         {s.needs_review ? "Propuesta por confirmar · " : ""}
-        {presenter ? `Vínculo ${s.p_link == null ? "no estimado" : number(s.p_link * 100) + "%"} · ` : ""}
+        {presenter
+          ? `Vínculo ${s.p_link == null ? "no estimado" : number(s.p_link * 100) + "%"} · `
+          : ""}
         {riskLabel(s.is_risk)} · {urgencyLabel(s.urgent)}
       </span>
       {presenter && s.p_candidate != null && (
@@ -1895,9 +2077,32 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
       </div>
       <h2>{a.headline}</h2>
       <small>Origen: {a.origin_label || a.source}</small>
-      {(a as any).human_review?.state === "resolved" && <p className="notice">Revisión humana resuelta. La lectura de JEV que se conserva abajo es su predicción original; consulta las decisiones operativas y su procedencia en «Resolver la revisión».</p>}
+      {(a as any).human_review?.state === "resolved" && (
+        <p className="notice">
+          Revisión humana resuelta. La lectura de JEV que se conserva abajo es
+          su predicción original; consulta las decisiones operativas y su
+          procedencia en «Resolver la revisión».
+        </p>
+      )}
       <p className="article-summary">{a.summary}</p>
-      {(a as any).human_review?.decisions?.length > 0 && <section className="notice" aria-label="Decisiones operativas humanas"><strong>Decisiones humanas · separadas de JEV</strong>{(a as any).human_review.decisions.map((d:any)=><p key={d.supplier_id}>{suppliers.find((s:any)=>s.supplier_id===d.supplier_id)?.name||d.supplier_id}: {d.association === "rejected" ? "asociación rechazada" : d.association === "unknown" ? "en verificación; falta información" : `asociación confirmada · ${d.risk === "Y" ? "riesgo detectado" : "sin riesgo"} · ${d.urgent === "Y" ? "acción inmediata" : "seguimiento no urgente"}`}.</p>)}</section>}
+      {(a as any).human_review?.decisions?.length > 0 && (
+        <section className="notice" aria-label="Decisiones operativas humanas">
+          <strong>Decisiones humanas · separadas de JEV</strong>
+          {(a as any).human_review.decisions.map((d: any) => (
+            <p key={d.supplier_id}>
+              {suppliers.find((s: any) => s.supplier_id === d.supplier_id)
+                ?.name || d.supplier_id}
+              :{" "}
+              {d.association === "rejected"
+                ? "asociación rechazada"
+                : d.association === "unknown"
+                  ? "en verificación; falta información"
+                  : `asociación confirmada · ${d.risk === "Y" ? "riesgo detectado" : "sin riesgo"} · ${d.urgent === "Y" ? "acción inmediata" : "seguimiento no urgente"}`}
+              .
+            </p>
+          ))}
+        </section>
+      )}
       <section className="article-decision" aria-label="Lectura para compras">
         <strong>
           {!a.analysis
@@ -2272,8 +2477,15 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
   }, [id, context, origin]);
   async function create(kind: string, iid: string) {
     try {
-      setDraft(await api("/drafts", {method:"POST",body:JSON.stringify({supplier_id:id,incident_id:iid,kind})}));
-      window.dispatchEvent(new CustomEvent("radar:incident-drafts", {detail:iid}));
+      setDraft(
+        await api("/drafts", {
+          method: "POST",
+          body: JSON.stringify({ supplier_id: id, incident_id: iid, kind }),
+        }),
+      );
+      window.dispatchEvent(
+        new CustomEvent("radar:incident-drafts", { detail: iid }),
+      );
     } catch (e) {
       setError((e as Error).message);
     }
@@ -2377,8 +2589,11 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                             : "Evaluación completada con evidencia."}
                         </p>
                         <p>
-                          Vínculo JEV {h.assessment?.p_link == null ? "no estimado" : number(h.assessment.p_link * 100) + "%"} ·
-                          Severidad {number(h.assessment?.severity)} / 10
+                          Vínculo JEV{" "}
+                          {h.assessment?.p_link == null
+                            ? "no estimado"
+                            : number(h.assessment.p_link * 100) + "%"}{" "}
+                          · Severidad {number(h.assessment?.severity)} / 10
                         </p>
                         <div className="factor-grid">
                           {Object.entries(
@@ -2559,7 +2774,25 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
           </aside>
         </div>
       </section>
-      {(s as any).review_work?.length > 0 && <section className="card"><h3>Revisiones pendientes de este proveedor</h3><p>Estas noticias conservan dudas operativas; una revisión de otra noticia no las cierra automáticamente.</p>{(s as any).review_work.map((w:any)=><p key={w.article_id}><Link className="text-link" to={scopedPath("/noticias/"+w.article_id,context)}>{w.headline} → Resolver revisión</Link></p>)}</section>}
+      {(s as any).review_work?.length > 0 && (
+        <section className="card">
+          <h3>Revisiones pendientes de este proveedor</h3>
+          <p>
+            Estas noticias conservan dudas operativas; una revisión de otra
+            noticia no las cierra automáticamente.
+          </p>
+          {(s as any).review_work.map((w: any) => (
+            <p key={w.article_id}>
+              <Link
+                className="text-link"
+                to={scopedPath("/noticias/" + w.article_id, context)}
+              >
+                {w.headline} → Resolver revisión
+              </Link>
+            </p>
+          ))}
+        </section>
+      )}
       {resolution && (
         <Modal title="Resolver incidente" close={() => setResolution(null)}>
           <form
@@ -2897,7 +3130,7 @@ function Analytics({
   }));
   const distribution = [
     {
-      name: "Sin analizar",
+      name: "Sin prioridad evaluable",
       count: suppliers.filter((s: Supplier) => s.priority === null).length,
     },
     ...getBands().map((b) => ({
@@ -2911,12 +3144,14 @@ function Analytics({
       <section className="card detail-card">
         <h2>Analítica de ingestión</h2>
         <p>
-          Denominador: {overview?.received || 0} artículos del contexto
-          seleccionado.
+          Ámbito: {context === "rss" ? "RSS real" : "Ejercicio"}. Estado
+          almacenado vigente de {overview?.received || 0} artículos únicos;
+          todas las fechas disponibles, con el origen seleccionado. No son
+          recepciones de feed.
         </p>
         <div className="analytics-stats">
           {[
-            ["Recibidas", "received"],
+            ["Artículos vigentes", "received"],
             ["Procesadas", "processed"],
             ["Pendientes", "pending"],
             ["Con error", "errors"],
@@ -2933,7 +3168,15 @@ function Analytics({
         </div>
         <div className="charts">
           <div>
-            <h3>Volumen RSS por fuente</h3>
+            <h3>Recepciones RSS acumuladas · ámbito global</h3>
+            <p className="small-note">
+              Desde el registro de cada fuente; una recepción puede repetir un
+              GUID. No comparte denominador con los artículos del ejercicio ni
+              mide novedades de la última consulta.{" "}
+              <Link to="/fuentes?context=rss">
+                Consultar artículos RSS almacenados
+              </Link>
+            </p>
             <div className="chart">
               <ChartBoundary>
                 <React.Suspense
@@ -2966,7 +3209,8 @@ function Analytics({
               </div>
             ))}
             <p className="small-note">
-              Proveedores únicos. Sin analizar no equivale a prioridad baja.
+              {suppliers.length} proveedores únicos del contexto. Sin prioridad
+              evaluable no equivale a artículo sin procesar ni a prioridad baja.
             </p>
           </div>
         </div>
@@ -3144,6 +3388,26 @@ function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
                   {m.name}
                 </Link>
               </h3>
+              <p className="material-exposure">
+                {supplier(m.primary_id)?.incident_count
+                  ? `${supplier(m.primary_id)?.incident_count} incidentes activos del proveedor principal · exposición por contrastar para este material`
+                  : "Sin incidentes activos vinculados al principal en este contexto"}
+              </p>
+              <p>
+                Cobertura:{" "}
+                {supplier(m.primary_id)?.inventory_days == null
+                  ? "No informada"
+                  : supplier(m.primary_id)?.inventory_days + " días"}{" "}
+                · Lead time:{" "}
+                {supplier(m.primary_id)?.lead_days == null
+                  ? "No informado"
+                  : supplier(m.primary_id)?.lead_days + " días"}
+              </p>
+              <p>
+                {m.alternate_id
+                  ? `Alternativo: ${supplier(m.alternate_id)?.name || m.alternate_id} · confirmar adecuación, capacidad y plazo`
+                  : "Sin alternativo registrado"}
+              </p>
               <p>
                 Necesidad mensual:{" "}
                 <strong>
@@ -3188,16 +3452,22 @@ function MaterialsPage({ suppliers }: { suppliers: Supplier[] }) {
   );
 }
 
-function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
+function SourcesPage({
+  sources,
+  config,
+  presenter,
+  refresh,
+  onRss,
+  context,
+}: any) {
   const [worker, setWorker] = useState<any>(null),
     [stream, setStream] = useState<Article[]>([]),
     [submitting, setSubmitting] = useState(false),
-    [budget, setBudget] = useState<any>(null),
-    [analysisBusy, setAnalysisBusy] = useState(false),
     [notice, setNotice] = useState(""),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [streamLoading, setStreamLoading] = useState(true),
+    [loadError, setLoadError] = useState("");
   const baseline = useRef<Set<string> | null>(null);
-  const noBudgetLimits = budget?.limits_enforced === false;
   const pendingCount = stream.filter((a) => a.state === "pending").length;
   useEffect(() => {
     let active = true,
@@ -3206,21 +3476,21 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
       if (inFlight) return;
       inFlight = true;
       try {
-        const [w, rows, b] = await Promise.all([
+        const [w, rows] = await Promise.all([
           api("/worker"),
           api<Article[]>("/articles?context=rss"),
-          presenter ? api("/analysis/budget") : Promise.resolve(null),
         ]);
         if (active) {
+          setLoadError("");
           setWorker(w);
           setStream(rows);
-          setBudget(b);
           baseline.current ??= new Set(rows.map((a) => a.id));
         }
       } catch (e) {
-        if (active) setError((e as Error).message);
+        if (active) setLoadError((e as Error).message);
       } finally {
         inFlight = false;
+        if (active) setStreamLoading(false);
       }
     }
     load();
@@ -3259,6 +3529,23 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
   }
   return (
     <>
+      {loadError && (
+        <p role="alert" className="notice error">
+          Bandeja RSS: {loadError}.{" "}
+          {stream.length
+            ? "Se conservan los últimos datos consultados; no son una consulta reciente."
+            : "No se conoce el total almacenado."}
+        </p>
+      )}
+      {context !== "rss" && (
+        <div className="notice info">
+          Estás en Ejercicio. Esta sección muestra siempre las seis fuentes y
+          noticias RSS reales, separadas de los archivos.{" "}
+          <Link to="/noticias?context=rss" onClick={onRss}>
+            Abrir bandeja RSS
+          </Link>
+        </div>
+      )}
       <div className="notice info">
         <Radio size={20} />
         <span>
@@ -3332,8 +3619,17 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
           </p>
         )}
         <div className="sync-summary" aria-live="polite">
-          <strong>{stream.length} noticias recibidas</strong>
-          <span>{newCount} nuevas desde esta visita o actualización</span>
+          <strong>
+            {streamLoading
+              ? "Cargando artículos…"
+              : loadError && !stream.length
+                ? "Total RSS no disponible"
+                : `${stream.length} artículos RSS únicos almacenados`}
+          </strong>
+          <span>
+            {newCount} incorporaciones observadas desde esta visita o
+            actualización · no es el total acumulado
+          </span>
           <span>
             {active.length} en cola o consultándose · {completed} fuentes
             completadas · {failures} con error
@@ -3371,9 +3667,24 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
               <p>Última consulta: {date(s.last_attempt_at || undefined)}</p>
               <p>Último éxito: {date(s.last_success_at || undefined)}</p>
               <div className="source-count">
-                <strong>{s.item_count}</strong> nuevas versiones · HTTP{" "}
-                {s.http_status || "—"}
+                <strong>{s.item_count}</strong> versiones incorporadas en última
+                consulta · HTTP {s.http_status || "—"}
               </div>
+              <p>
+                {(s as any).stored_unique ?? "—"} artículos únicos ·{" "}
+                {(s as any).stored_versions ?? "—"} versiones almacenadas
+              </p>
+              <p className="small-note">
+                Acumulado: {s.received_count} recepciones elegibles ·{" "}
+                {s.duplicates} duplicadas
+              </p>
+              <Link
+                className="text-link"
+                to={"/noticias?context=rss"}
+                onClick={onRss}
+              >
+                Consultar noticias RSS
+              </Link>
               {s.error && <p className="error-text">{s.error}</p>}
             </article>
           ))}
@@ -3381,85 +3692,25 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
       </section>
       {presenter && (
         <section className="card detail-card">
-          <div className="section-heading">
-            <div>
-              <h2>Análisis de noticias con JEV</h2>
-              <p>
-                Inicio manual · consultas y reintentos registrados · sin
-                análisis periódico
-              </p>
-            </div>
-          </div>
+          <h2>Analizar y revisar noticias RSS</h2>
           <p>
-            {budget
-              ? noBudgetLimits
-                ? `Sin límites locales de presupuesto · ${pendingCount} noticias pendientes · ${budget.network_requests} peticiones registradas`
-                : `${budget.remaining} artículos disponibles · ${budget.network_requests} peticiones registradas`
-              : "Consultando estado del análisis…"}
+            {streamLoading
+              ? "Consultando pendientes…"
+              : loadError
+                ? "No se conoce el número actual de pendientes."
+                : pendingCount
+                  ? `${pendingCount} noticias pendientes de analizar. Selecciona hasta diez y revisa su alcance y perfil antes de iniciar.`
+                  : "No hay noticias pendientes de analizar. Puedes consultar resultados y resolver revisiones en la bandeja."}
           </p>
-          {budget?.limits_enforced === true &&
-            budget.request_budgets?.map((b: any) => (
-              <div className="notice info" key={b.id}>
-                <span>
-                  Presupuesto compartido:{" "}
-                  <strong>
-                    {b.unlimited
-                      ? "Sin límite de peticiones ni vencimiento"
-                      : `${b.remaining_requests} de ${b.request_limit} peticiones disponibles`}
-                  </strong>{" "}
-                  entre ejercicio y RSS, incluidos reintentos. {b.requests_used}{" "}
-                  registradas.
-                  {b.closes_at && ` Ventana hasta ${date(b.closes_at)}.`}
-                </span>
-              </div>
-            ))}
-          <p>
-            {stream.filter((a) => ["done", "review"].includes(a.state)).length}{" "}
-            noticias procesadas ·{" "}
-            {stream.filter((a) => a.state === "error").length} con error · los
-            fallos permanecen visibles.
-          </p>
-          <button
+          <Link
             className="button primary"
-            disabled={
-              analysisBusy ||
-              !worker?.online ||
-              worker?.compatible === false ||
-              !budget ||
-              (!noBudgetLimits && !budget.remaining) ||
-              !stream.some((a) => a.state === "pending")
-            }
-            onClick={async () => {
-              setAnalysisBusy(true);
-              setError("");
-              try {
-                const r = await api("/analysis/rss", {
-                  method: "POST",
-                  body: JSON.stringify(
-                    noBudgetLimits ? {} : { limit: budget.remaining },
-                  ),
-                });
-                setNotice(
-                  `${r.articles} noticias encoladas para JEV; máximo ${r.maximum_requests} peticiones, reintentos incluidos.`,
-                );
-                setBudget(await api("/analysis/budget"));
-                await refresh(true);
-              } catch (e) {
-                setError((e as Error).message);
-              } finally {
-                setAnalysisBusy(false);
-              }
-            }}
+            to="/noticias?context=rss"
+            onClick={onRss}
           >
-            {analysisBusy
-              ? "Encolando análisis…"
-              : noBudgetLimits
-                ? `Analizar ${pendingCount} noticias pendientes con JEV`
-                : `Analizar hasta ${budget?.remaining || 0} noticias con JEV`}
-          </button>
-          {budget?.limits_enforced === true && !budget.remaining && (
-            <p>El cupo agotado no se restablece al reiniciar ni desplegar.</p>
-          )}
+            {pendingCount
+              ? "Seleccionar noticias y perfil"
+              : "Consultar resultados RSS"}
+          </Link>
         </section>
       )}
       <section className="card detail-card">
@@ -3467,15 +3718,34 @@ function SourcesPage({ sources, config, presenter, refresh, onRss }: any) {
           <div>
             <h2>Noticias que van llegando</h2>
             <p>
-              Últimas incorporaciones reales · fuente y fecha de publicación
-              conservadas
+              Artículos únicos por fuente y GUID · versiones vigentes · fuente y
+              fecha de publicación conservadas
             </p>
           </div>
-          <Link className="text-link" to="/noticias" onClick={onRss}>
+          <Link
+            className="text-link"
+            to="/noticias?context=rss"
+            onClick={onRss}
+          >
             Ver noticias
           </Link>
         </div>
-        <NewsList articles={stream.slice(0, 12)} onOpen={onRss} />
+        {streamLoading ? (
+          <p role="status">Cargando noticias RSS almacenadas…</p>
+        ) : loadError && !stream.length ? (
+          <p role="alert">
+            No se pudo consultar la bandeja. Los estados de fuente no prueban
+            que esté vacía.
+          </p>
+        ) : !stream.length ? (
+          <p>
+            No hay artículos RSS almacenados. Actualizar consulta las fuentes;
+            una respuesta sin novedades no crea noticias. Revisa fechas y estado
+            de cada fuente.
+          </p>
+        ) : (
+          <NewsList articles={stream.slice(0, 12)} onOpen={onRss} />
+        )}
       </section>
     </>
   );
@@ -4034,4 +4304,98 @@ function AnalysisHistory({ article }: { article: Article }) {
       ))}
     </details>
   );
+}
+
+function FollowupDesk({ suppliers, context, reviewCount }: any) {
+  const tasks = suppliers
+    .flatMap((s: any) =>
+      (s.incidents || []).map((i: any) => ({
+        supplier: s,
+        incident: i,
+        work: i.procurement_work,
+      })),
+    )
+    .filter((x: any) => x.work && x.work.status !== "done")
+    .sort((a: any, b: any) =>
+      (a.work.due_date || "9999").localeCompare(b.work.due_date || "9999"),
+    );
+  const list = (rows: any[]) =>
+    rows.map((x: any) => (
+      <article key={x.incident.id}>
+        <div>
+          <strong>{x.work.action}</strong>
+          <p>
+            {x.supplier.name} ·{" "}
+            {x.work.due_date
+              ? "Fecha: " + x.work.due_date
+              : "Sin fecha asignada"}{" "}
+            ·{" "}
+            {x.work.status === "verifying"
+              ? "En verificación"
+              : x.work.status === "followup"
+                ? "Seguimiento"
+                : "Pendiente"}
+          </p>
+        </div>
+        <Link
+          className="text-link"
+          to={scopedPath("/proveedores/" + x.supplier.supplier_id, context)}
+        >
+          Gestionar acción
+        </Link>
+      </article>
+    ));
+  return (
+    <section className="card daily-work">
+      <div className="section-heading">
+        <div>
+          <h2>Trabajo pendiente</h2>
+          <p>
+            Seguimientos por fecha ascendente; sin fecha al final. Completar una
+            acción no declara recuperación.
+          </p>
+        </div>
+        <Link className="text-link" to={scopedPath("/noticias", context)}>
+          {reviewCount} revisiones pendientes →
+        </Link>
+      </div>
+      {tasks.length ? (
+        list(tasks.slice(0, 3))
+      ) : (
+        <p>
+          No hay seguimientos registrados pendientes en este ámbito. Abre un
+          incidente para definir la siguiente acción.
+        </p>
+      )}
+      {tasks.length > 3 && (
+        <details>
+          <summary>Ver los {tasks.length} seguimientos</summary>
+          {list(tasks.slice(3))}
+        </details>
+      )}
+    </section>
+  );
+}
+
+function visibleAlerts(rows: Alert[], filter: string) {
+  const live = (a: Alert) =>
+    a.is_current !== false && !["superseded", "resolved"].includes(a.state);
+  return rows
+    .filter(
+      (a) =>
+        filter === "all" ||
+        (filter === "current" && live(a)) ||
+        (filter === "history" && !live(a)) ||
+        (filter === "new" && live(a) && !a.acknowledged) ||
+        (filter === "ack" && a.acknowledged) ||
+        (filter === "resolved" && a.state === "resolved") ||
+        (filter === "superseded" && a.state === "superseded"),
+    )
+    .sort((a, b) =>
+      filter === "current"
+        ? Number(a.acknowledged) - Number(b.acknowledged) ||
+          (b.priority ?? 0) - (a.priority ?? 0) ||
+          b.id - a.id
+        : b.id - a.id,
+    );
 }

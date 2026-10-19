@@ -175,6 +175,7 @@ test("limpieza: vista previa, confirmación explícita y cancelar no borra datos
     return r.fulfill({ json: { deleted: {} } });
   });
   await page.goto("/");
+  await page.getByText("Herramientas del presentador", {exact:true}).click();
   await page
     .getByRole("button", { name: "Preparar demo", exact: true })
     .click();

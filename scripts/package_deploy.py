@@ -40,17 +40,13 @@ for folder in ["app", "migrations", "contracts", "frontend/src"]:
         if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc"
     )
 values = dotenv_values(ROOT / ".env")
-secrets = [
-    values.get(k)
-    for k in ["TYPESAFE_API_KEY", "ADMIN_PASSWORD", "SESSION_SECRET"]
-    if values.get(k)
-]
+from scripts.secret_scan import credential_match
 for name in files:
     source = ROOT / name
     if not source.is_file():
         raise SystemExit("Falta artefacto requerido: " + name)
     content = source.read_bytes()
-    if any(s.encode() in content for s in secrets):
+    if credential_match(content, values):
         raise SystemExit("Revisión de secreto fallida: " + name)
     destination = TARGET / name
     destination.parent.mkdir(parents=True, exist_ok=True)

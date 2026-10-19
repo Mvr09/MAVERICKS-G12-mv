@@ -490,4 +490,11 @@ function HistoricalModelPage({
   );
 }
 
-export function ModelPage(props: Parameters<typeof HistoricalModelPage>[0]) { return <CampaignCompare presenter={props.presenter} history={<HistoricalModelPage {...props} />} />; }
+export function ModelPage(props: Parameters<typeof HistoricalModelPage>[0]) {
+  return (
+    <CampaignCompare
+      presenter={props.presenter}
+      history={<HistoricalModelPage {...props} />}
+    />
+  );
+}

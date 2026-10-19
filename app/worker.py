@@ -112,6 +112,9 @@ def run_job(jid):
             j = db.get(Job, jid)
             j.state = "error"
             j.error = "WORKER_INTERNAL_ERROR"
+            if j.kind == "campaign":
+                from app.campaigns import fail_run
+                fail_run(db,j.payload.get("run_id"),"WORKER_INTERNAL_ERROR")
             if j.kind == "comparison":
                 comparison = db.get(Comparison, j.payload.get("comparison_id"))
                 if comparison:
