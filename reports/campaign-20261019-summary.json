@@ -926,8 +926,19 @@
   "public_ui_verification": "pending next deployment",
   "local_ui_verification": "real persisted JEV results at360/390/768/1440, drill-down, filters, export; no new JEV calls",
   "publication": {
-    "presenter_access": "restored HTTP200 after user corrected .env",
-    "status": "pending import after final deployment",
-    "new_inference_on_import": false
+    "presenter_access": "restored HTTP200",
+    "campaign_import_http": 201,
+    "stored_in": "Railway PostgreSQL",
+    "campaign_id": "6c4ca3ce-8d4b-44ee-bbd9-6209e7dce3c7",
+    "import_revision": "d9121682d5be52ca874cc53e2b6de9de29f66168",
+    "new_inference_on_import": false,
+    "original_operational_counters": {
+      "exercise": 95,
+      "rss": 74
+    },
+    "after_import_operational_counters": {
+      "exercise": 95,
+      "rss": 74
+    }
   }
 }

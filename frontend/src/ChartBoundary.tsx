@@ -2,7 +2,7 @@ import React from "react";
 
 /** A stale/missing analytics chunk must not break the operational application. */
 export class ChartBoundary extends React.Component<
-  { children: React.ReactNode },
+  { children: React.ReactNode; message?: string },
   { failed: boolean }
 > {
   state = { failed: false };
@@ -14,8 +14,8 @@ export class ChartBoundary extends React.Component<
       <div className="notice warning" role="status">
         <div>
           <p>
-            No se pudo cargar el gráfico. Los recuentos por fuente siguen
-            disponibles debajo.
+            {this.props.message ||
+              "No se pudo cargar el gráfico. Los recuentos por fuente siguen disponibles debajo."}
           </p>
           <button
             className="button small"

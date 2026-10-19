@@ -104,22 +104,31 @@ export function CampaignCompare({
   }, [presenter, cid]);
   useEffect(() => {
     if (!cid || !presenter) return;
-    let alive = true;
+    let alive = true,
+      inFlight = false,
+      terminal = false;
     setData(null);
     setInspect(null);
     async function load() {
+      if (inFlight) return;
+      inFlight = true;
       try {
         const x = await api("/campaigns/" + cid + "?split=" + sample);
         if (alive) {
           setData(x);
+          terminal = x.state === "complete";
           setError("");
         }
       } catch (e) {
         if (alive) setError((e as Error).message);
+      } finally {
+        inFlight = false;
       }
     }
     load();
-    const t = setInterval(load, 4000);
+    const t = setInterval(() => {
+      if (!terminal && document.visibilityState === "visible") void load();
+    }, 4000);
     return () => {
       alive = false;
       clearInterval(t);
@@ -576,6 +585,11 @@ export function CampaignCompare({
                     <h3 id="comparison-quality" tabIndex={-1}>
                       Calidad por decisión
                     </h3>
+                    <p className="small-note">
+                      Una métrica no calculable no equivale a cero: precisión
+                      requiere predicciones positivas; recall requiere positivos
+                      de referencia; F1 requiere algún positivo real o predicho.
+                    </p>
                     <p>
                       Escala común 0–100%. A y B: {A.labelled_completed} y{" "}
                       {B.labelled_completed} predicciones con referencia
@@ -916,7 +930,7 @@ export function CampaignCompare({
                                   {r.critical_errors
                                     .map(
                                       (s: any) =>
-                                        `${s.supplier_id} · criticidad ${s.criticality} · fuente única ${s.single_source === "Y" ? "sí" : "no"}`,
+                                        `${s.supplier_id} · criticidad ${({ High: "Alta", Medium: "Media", Low: "Baja" } as Record<string, string>)[s.criticality] || s.criticality} · fuente única ${s.single_source === "Y" ? "sí" : "no"}`,
                                     )
                                     .join(" · ")}
                                 </p>

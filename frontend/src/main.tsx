@@ -70,7 +70,9 @@ import type {
 import { audio } from "./audio";
 import { setBands, getBands, bandFor } from "./policy";
 import "./style.css";
-import { ModelPage } from "./ModelPage";
+const ModelPage = React.lazy(() =>
+  import("./ModelPage").then((module) => ({ default: module.ModelPage })),
+);
 import { ChartBoundary } from "./ChartBoundary";
 const SourceVolumeChart = React.lazy(() => import("./SourceVolumeChart"));
 import { EventTag, eventNames } from "./EventTag";
@@ -1205,13 +1207,21 @@ function App() {
               <Route
                 path="/modelo"
                 element={
-                  <ModelPage
-                    presenter={presenter}
-                    context={context}
-                    config={config}
-                    batches={batches}
-                    sources={sources}
-                  />
+                  <ChartBoundary message="No se pudo cargar el comparador. Las vistas operativas siguen disponibles.">
+                    <React.Suspense
+                      fallback={
+                        <p role="status">Cargando comparador de modelos…</p>
+                      }
+                    >
+                      <ModelPage
+                        presenter={presenter}
+                        context={context}
+                        config={config}
+                        batches={batches}
+                        sources={sources}
+                      />
+                    </React.Suspense>
+                  </ChartBoundary>
                 }
               />
               <Route
