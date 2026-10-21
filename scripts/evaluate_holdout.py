@@ -232,7 +232,7 @@ def write_markdown(path, rep):
         f"- Web: {meta['url']} · revisión `{meta['revision'][:7]}` · esquema {meta['schema']}",
         f"- Perfil por defecto: `{meta['default_profile']}` · preguntas `{meta['question_version']}` · JEV `{meta.get('jev')}`",
         f"- Lote importado `{meta['batch_id']}` · {meta['analysed']}/{m['n']} analizadas · errores {meta['article_errors']}",
-        f"- Tiempo de lote (servidor): {pct(meta['batch_elapsed_seconds'])} s · peticiones {meta['requests']} (HTTP 200: {meta['http_200']}) · "
+        f"- Tiempo de lote (servidor): {pct(meta['batch_elapsed_seconds'])} s · cliente, importación→fin: {meta.get('client_seconds_import_to_done')} s · peticiones {meta['requests']} (HTTP 200: {meta['http_200']}) · "
         f"tokens entrada {meta['tokens']['input_tokens']} / salida {meta['tokens']['output_tokens']} · "
         f"coste aprox. {meta['approx_cost_usd']:.4f} $ (tasa histórica {RATE_PER_MILLION} $/M, no tarifa oficial)",
         f"- Limpieza: {rep['cleanup']['status']} · cifras públicas de Ejercicio tras limpiar: "
@@ -373,7 +373,12 @@ def main():
                 if time.time() - started > args.timeout:
                     raise RuntimeError("timeout waiting for the analysis")
                 time.sleep(5)
-            articles = api.get("/api/articles", origin="batch:" + bid).json()
+            for _ in range(10):  # completed_at is stamped just after the last job
+                if b["elapsed_seconds"] is not None:
+                    break
+                time.sleep(2)
+                b = next(x for x in api.get("/api/batches").json() if x["id"] == bid)
+            articles =api.get("/api/articles", origin="batch:" + bid).json()
             view = {a["news_id"]: {"state": a["state"], "review_scope": bool(a.get("review_scope")),
                                    "review_reasons": (a.get("analysis") or {}).get("review_reasons", []),
                                    "id": a["id"]} for a in articles}
@@ -404,7 +409,7 @@ def main():
                 "run": {"date": datetime.now(timezone.utc).date().isoformat(), "url": url, "revision": health["revision"],
                         "schema": schema, "default_profile": config["default_profile"],
                         "question_version": prof.get("questions"), "review_version": prof.get("review"),
-                        "jev": (config.get("default_components") or {}).get("jev"),
+                        "jev": (config.get("default_components") or {}).get("model"),
                         "profile_components": config.get("default_components"),
                         "batch_id": bid, "analysed": b["done"], "article_errors": b["errors"],
                         "mixed_profiles": b["mixed_profiles"], "batch_elapsed_seconds": b["elapsed_seconds"],

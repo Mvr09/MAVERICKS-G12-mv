@@ -62,7 +62,20 @@ Resultado: las 30 etiquetas coinciden en Is_Risk, Urgent y proveedores. Como pru
 
 ## Medición sobre la web compartida
 
-**Estado a 21/10: no ejecutada.** El script está listo, pero falta la contraseña de presentador. Para lanzarlo:
+**Ejecutada el 21/10/2026** sobre la revisión 21c92ef (esquema 0010) con el perfil por defecto `radar-1.0.0-candidate` (preguntas decision-3.4.2, revisión review-1.3.1, jev-1.13.0). Informe completo en `reports/holdout_eval_2026-10-21.md` y `.json`.
+
+- 30/30 analizadas sin errores: 95 peticiones, todas HTTP 200, sin reintentos. 13,6 s desde la importación hasta el final (reloj del cliente). Unos 0,036 $ con la tasa histórica.
+- **Is_Risk:** TP17 / FP0 / FN0 / TN13.
+- **Urgent:** TP8 / FP1 / FN0 / TN21; precision 0,89, recall 1,00.
+- **Proveedores:** TP20 / FP1 / FN0; 29/30 conjuntos exactos.
+- **Filas exactas:** 28/30. Las 8 directas, las 7 trampas, las 3 estratégicas y las 3 positivas, sin un solo fallo.
+- **Los dos fallos** quedaron en revisión humana:
+  - H016: retraso de una semana en el tren de Xi'an marcado como urgente.
+  - H015: noticia de ruido sobre el lanzamiento de un competidor, con S015 añadido.
+- **Automáticas:** 14/30, con 0/14 errores. Las otras 16 piden revisión humana; ahí están los 2 errores.
+- **Limpieza:** se borraron el lote, 30 análisis, 16 incidentes y 15 alertas, todo de este lote; no hubo incidentes compartidos. Las cifras públicas de Ejercicio, `/api/model/final`, métricas y comparador quedaron idénticas a las previas. Se conservan por diseño las 95 peticiones en el presupuesto `manual-unlimited-20261017`.
+
+Para repetirlo:
 
 ```powershell
 $env:RADAR_URL = "https://mavericks-g12-mv-production.up.railway.app"

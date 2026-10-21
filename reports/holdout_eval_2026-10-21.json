@@ -1,0 +1,1033 @@
+{
+  "cleanup": {
+    "status": "deleted",
+    "counts": {
+      "batches": 1,
+      "articles": 30,
+      "analyses": 30,
+      "incidents": 16,
+      "alerts": 15,
+      "drafts": 0,
+      "comparisons": 0,
+      "suppliers": 0,
+      "materials": 0,
+      "mode": "delete"
+    },
+    "diffs": {},
+    "kept_by_design": {
+      "request_budget_delta": {
+        "manual-unlimited-20261017": 95
+      },
+      "note": "ApiCall rows, request budgets and grant counters keep this run's consumption (the app never deletes them)."
+    }
+  },
+  "run": {
+    "date": "2026-10-21",
+    "url": "https://mavericks-g12-mv-production.up.railway.app",
+    "revision": "21c92efde6468b5969013a2a46b24e33c5169e84",
+    "schema": "0010",
+    "default_profile": "radar-1.0.0-candidate",
+    "question_version": "decision-3.4.2",
+    "review_version": "review-1.3.1",
+    "jev": "jev-1.13.0",
+    "profile_components": {
+      "profile": "radar-1.0.0-candidate",
+      "matching": "link-3.3.0",
+      "retrieval": "link-3.0.0-dev",
+      "questions": "decision-3.4.2",
+      "risk": "risk-focus-1.2.0",
+      "review": "review-1.3.1",
+      "support": "decision-support-1.0.0",
+      "facts": "decision-facts-1.0.0",
+      "exclusion": "relational-exclusion-1.0.0",
+      "duration": "duration-1.1.0",
+      "transport": "fanout-1.0.0",
+      "policy": "1.0.0",
+      "model": "jev-1.13.0"
+    },
+    "batch_id": "b50f38db-8042-4022-94a5-388d6604245c",
+    "analysed": 30,
+    "article_errors": 0,
+    "mixed_profiles": false,
+    "batch_elapsed_seconds": null,
+    "client_seconds_import_to_done": 13.6,
+    "requests": 95,
+    "http_200": 95,
+    "retries": 0,
+    "tokens": {
+      "input_tokens": 845944,
+      "output_tokens": 62536
+    },
+    "approx_cost_usd": 0.035805457416208,
+    "predictions_source": "official export",
+    "batch_elapsed_seconds_note": "No registrado: el lote se leyó antes de que la app marcara completed_at y después se borró; usar client_seconds_import_to_done (13,6 s, incluye sondeo cada 5 s)."
+  },
+  "metrics": {
+    "n": 30,
+    "predicted": 30,
+    "risk": {
+      "n": 30,
+      "tp": 17,
+      "fp": 0,
+      "fn": 0,
+      "tn": 13,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "accuracy": 1.0
+    },
+    "urgent": {
+      "n": 30,
+      "tp": 8,
+      "fp": 1,
+      "fn": 0,
+      "tn": 21,
+      "precision": 0.8888888888888888,
+      "recall": 1.0,
+      "f1": 0.9411764705882353,
+      "accuracy": 0.9666666666666667
+    },
+    "suppliers": {
+      "pairs_expected": 20,
+      "tp": 20,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.9523809523809523,
+      "recall": 1.0,
+      "f1": 0.975609756097561,
+      "exact_sets": 29
+    },
+    "rows_exact": 28,
+    "by_case_type": {
+      "direct": {
+        "n": 8,
+        "risk_correct": 8,
+        "urgent_correct": 8,
+        "suppliers_exact": 8,
+        "rows_exact": 8,
+        "errors": []
+      },
+      "location_trap": {
+        "n": 3,
+        "risk_correct": 3,
+        "urgent_correct": 3,
+        "suppliers_exact": 3,
+        "rows_exact": 3,
+        "errors": []
+      },
+      "name_trap": {
+        "n": 4,
+        "risk_correct": 4,
+        "urgent_correct": 4,
+        "suppliers_exact": 4,
+        "rows_exact": 4,
+        "errors": []
+      },
+      "noise": {
+        "n": 3,
+        "risk_correct": 3,
+        "urgent_correct": 3,
+        "suppliers_exact": 2,
+        "rows_exact": 2,
+        "errors": [
+          "H015"
+        ]
+      },
+      "regional": {
+        "n": 6,
+        "risk_correct": 6,
+        "urgent_correct": 5,
+        "suppliers_exact": 6,
+        "rows_exact": 5,
+        "errors": [
+          "H016"
+        ]
+      },
+      "strategic": {
+        "n": 3,
+        "risk_correct": 3,
+        "urgent_correct": 3,
+        "suppliers_exact": 3,
+        "rows_exact": 3,
+        "errors": []
+      },
+      "supplier_positive": {
+        "n": 3,
+        "risk_correct": 3,
+        "urgent_correct": 3,
+        "suppliers_exact": 3,
+        "rows_exact": 3,
+        "errors": []
+      }
+    },
+    "automatic_vs_review": {
+      "automatic": {
+        "n": 14,
+        "risk_correct": 14,
+        "urgent_correct": 14,
+        "suppliers_exact": 14,
+        "rows_exact": 14,
+        "errors": []
+      },
+      "review_scope_resolved": {
+        "n": 0,
+        "risk_correct": 0,
+        "urgent_correct": 0,
+        "suppliers_exact": 0,
+        "rows_exact": 0,
+        "errors": []
+      },
+      "review": {
+        "n": 16,
+        "risk_correct": 16,
+        "urgent_correct": 15,
+        "suppliers_exact": 15,
+        "rows_exact": 14,
+        "errors": [
+          "H015",
+          "H016"
+        ]
+      },
+      "note": "automatic = shown as done with no model doubt; review_scope_resolved = model asked for review but the app shows it resolved (no risk and no supplier involved); review = pending human review."
+    }
+  },
+  "rows": [
+    {
+      "news_id": "H001",
+      "case_type": "noise",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H002",
+      "case_type": "supplier_positive",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": [
+          "S026"
+        ]
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": [
+          "S026"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H003",
+      "case_type": "location_trap",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H004",
+      "case_type": "direct",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S009"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S009"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "recovery_requires_compatible_incident",
+        "risk_impact_contradiction:S009"
+      ]
+    },
+    {
+      "news_id": "H005",
+      "case_type": "name_trap",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "scope_coverage_unconfirmed"
+      ]
+    },
+    {
+      "news_id": "H006",
+      "case_type": "regional",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S036"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S036"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "association_support_insufficient:S036",
+        "impact_state_confidence_low:S036",
+        "risk_evidence_insufficient:S036"
+      ]
+    },
+    {
+      "news_id": "H007",
+      "case_type": "noise",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H008",
+      "case_type": "strategic",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S040"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S040"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "urgency_ambiguous:S040"
+      ]
+    },
+    {
+      "news_id": "H009",
+      "case_type": "regional",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S016"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S016"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "association_support_insufficient:S010",
+        "risk_evidence_insufficient:S016",
+        "urgency_ambiguous:S016",
+        "urgency_support_insufficient:S016"
+      ]
+    },
+    {
+      "news_id": "H010",
+      "case_type": "supplier_positive",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": [
+          "S015"
+        ]
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": [
+          "S015"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H011",
+      "case_type": "name_trap",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "scope_coverage_unconfirmed"
+      ]
+    },
+    {
+      "news_id": "H012",
+      "case_type": "direct",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S003"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S003"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H013",
+      "case_type": "location_trap",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H014",
+      "case_type": "strategic",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S035"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S035"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "impact_state_confidence_low:S035"
+      ]
+    },
+    {
+      "news_id": "H015",
+      "case_type": "noise",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": [
+          "S015"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": false,
+      "row_exact": false,
+      "supplier_fp": [
+        "S015"
+      ],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "association_support_insufficient:S009",
+        "association_support_insufficient:S015",
+        "association_support_insufficient:S028",
+        "association_support_insufficient:S030",
+        "association_support_insufficient:S031",
+        "association_support_insufficient:S035",
+        "association_support_insufficient:S039",
+        "link_ambiguous:S009",
+        "link_ambiguous:S015",
+        "link_ambiguous:S028",
+        "link_ambiguous:S030",
+        "link_ambiguous:S031",
+        "link_ambiguous:S039",
+        "risk_evidence_insufficient:S015"
+      ]
+    },
+    {
+      "news_id": "H016",
+      "case_type": "regional",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S033"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S033"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": false,
+      "suppliers_exact": true,
+      "row_exact": false,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "association_support_insufficient:S003",
+        "association_support_insufficient:S005",
+        "association_support_insufficient:S007",
+        "association_support_insufficient:S024",
+        "risk_evidence_insufficient:S033",
+        "urgency_ambiguous:S033"
+      ]
+    },
+    {
+      "news_id": "H017",
+      "case_type": "direct",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S025"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S025"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H018",
+      "case_type": "name_trap",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "scope_coverage_unconfirmed"
+      ]
+    },
+    {
+      "news_id": "H019",
+      "case_type": "direct",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S018"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S018"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "urgency_ambiguous:S018"
+      ]
+    },
+    {
+      "news_id": "H020",
+      "case_type": "regional",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S011"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S011"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "association_support_insufficient:S035"
+      ]
+    },
+    {
+      "news_id": "H021",
+      "case_type": "direct",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S008"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S008"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H022",
+      "case_type": "supplier_positive",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": [
+          "S034"
+        ]
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": [
+          "S034"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "association_support_insufficient:S002",
+        "association_support_insufficient:S006",
+        "association_support_insufficient:S014"
+      ]
+    },
+    {
+      "news_id": "H023",
+      "case_type": "location_trap",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H024",
+      "case_type": "regional",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S028"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S028"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "association_support_insufficient:S009",
+        "association_support_insufficient:S015",
+        "association_support_insufficient:S039"
+      ]
+    },
+    {
+      "news_id": "H025",
+      "case_type": "direct",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S012"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S012"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H026",
+      "case_type": "direct",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S017"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S017"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H027",
+      "case_type": "regional",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S020"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "Y",
+        "suppliers": [
+          "S020"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    },
+    {
+      "news_id": "H028",
+      "case_type": "strategic",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S024"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S024"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "association_support_insufficient:S003",
+        "impact_state_confidence_low:S024"
+      ]
+    },
+    {
+      "news_id": "H029",
+      "case_type": "name_trap",
+      "expected": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "predicted": {
+        "is_risk": "N",
+        "urgent": "N",
+        "suppliers": []
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "review",
+      "review_scope_resolved": false,
+      "review_reasons": [
+        "scope_coverage_unconfirmed"
+      ]
+    },
+    {
+      "news_id": "H030",
+      "case_type": "direct",
+      "expected": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S029"
+        ]
+      },
+      "predicted": {
+        "is_risk": "Y",
+        "urgent": "N",
+        "suppliers": [
+          "S029"
+        ]
+      },
+      "risk_ok": true,
+      "urgent_ok": true,
+      "suppliers_exact": true,
+      "row_exact": true,
+      "supplier_fp": [],
+      "supplier_fn": [],
+      "state_shown": "done",
+      "review_scope_resolved": false,
+      "review_reasons": []
+    }
+  ],
+  "shared_incidents": [],
+  "warning": "Small sample (30 AI-generated fictional articles). One error moves precision/recall by several points."
+}
