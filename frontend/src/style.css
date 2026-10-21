@@ -2365,7 +2365,8 @@ dialog header {
   .attention-reason {
     grid-column: 1;
   }
-  .attention-card .procurement-brief {
+  .attention-card .procurement-brief,
+  .attention-card .attention-plan {
     grid-column: 2;
     grid-row: 1 / 6;
   }
@@ -2837,6 +2838,329 @@ dialog > header {
   overflow-wrap: anywhere;
   text-align: left;
   margin-block: 0.5rem;
+}
+
+/* Suggested action plan (from v3): red "Hoy" pills mark what cannot wait. */
+.badge.info {
+  background: #eef4ff;
+  color: #2c5fb8;
+  border-color: #d6e4ff;
+}
+.deadline-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: fit-content;
+  min-width: 7.5rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.deadline-pill.hoy {
+  background: #b42b45;
+  color: #fff;
+}
+.deadline-pill.esta_semana {
+  background: #fff7e8;
+  color: #875912;
+  border-color: #f5e1b9;
+}
+.deadline-pill.proximo_informe {
+  background: #f6f7fb;
+  color: #5b6475;
+  border-color: #e6eaf1;
+}
+.plan-card {
+  container-type: inline-size;
+  margin-block: 1rem;
+  border: 1px solid #e6eaf1;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+.plan-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.plan-head h4 {
+  margin: 0;
+}
+.plan-head span,
+.plan-note {
+  font-size: 12px;
+  color: #5b6475;
+}
+.plan-card .plan-actions {
+  display: grid;
+  gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0;
+}
+.plan-card .plan-actions li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 0.6rem;
+}
+.plan-card .plan-actions li small {
+  display: block;
+  color: #5b6475;
+  overflow-wrap: anywhere;
+}
+.plan-card .plan-actions .text-button {
+  justify-self: start;
+}
+.text-button {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 12px;
+  color: #6652bf;
+  text-decoration: underline;
+  cursor: pointer;
+  min-height: 24px;
+}
+.plan-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+.plan-facts dt {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #5b6475;
+}
+.plan-facts dd {
+  margin: 2px 0 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.plan-facts dd.plan-note {
+  font-weight: 400;
+}
+.plan-summary {
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.ai-badge {
+  gap: 4px;
+  margin-right: 6px;
+}
+.plan-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.plan-buttons .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.alert-plan {
+  margin-block: 0.5rem;
+}
+.alert-plan > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #6652bf;
+  min-height: 32px;
+}
+.attention-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.attention-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-block: 0.4rem;
+}
+.attention-next {
+  margin-block: 0.75rem;
+}
+.attention-next ul {
+  display: grid;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.35rem 0;
+}
+.attention-next li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+.attention-next li > span:last-child {
+  font-size: 13px;
+  line-height: 1.4;
+}
+.attention-next .deadline-pill {
+  min-width: 0;
+  font-size: 11px;
+}
+.attention-next small {
+  color: #5b6475;
+}
+.ai-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px 0 10px;
+  border: 1px solid #ddd7ff;
+  border-radius: 999px;
+  background: #fff;
+  color: #4b3fa0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+.ai-toggle:hover:not(:disabled) {
+  border-color: #b9adff;
+  background: #f7f5ff;
+}
+.ai-toggle:focus-visible {
+  outline: 2px solid #635bff;
+  outline-offset: 2px;
+}
+.ai-toggle:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.ai-toggle-track {
+  position: relative;
+  width: 30px;
+  height: 18px;
+  flex: none;
+  border-radius: 999px;
+  background: #e2e5f0;
+  transition: background 140ms ease;
+}
+.ai-toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(20 20 50 / 25%);
+  transition: transform 140ms ease;
+}
+.ai-toggle.on {
+  border-color: #6652bf;
+  background: linear-gradient(115deg, #f3f0ff, #eef4ff);
+  color: #3d2f99;
+}
+.ai-toggle.on .ai-toggle-track {
+  background: #635bff;
+}
+.ai-toggle.on .ai-toggle-knob {
+  transform: translateX(12px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-toggle,
+  .ai-toggle-track,
+  .ai-toggle-knob {
+    transition: none;
+  }
+}
+/* The card adapts to its own width: narrow supplier columns, alerts and phones. */
+@container (max-width: 600px) {
+  .plan-facts {
+    grid-template-columns: 1fr;
+  }
+  .plan-card .plan-actions li {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
+
+/* Opening briefing: urgent suppliers, what is due today and where to start. */
+.urgent-banner {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border: 1px solid #ffdae1;
+  border-left: 6px solid #b42b45;
+  border-radius: 12px;
+  background: #fff0f2;
+  color: #5a1424;
+}
+.urgent-banner-icon {
+  color: #b42b45;
+}
+.urgent-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.urgent-banner-text strong {
+  font-size: 15px;
+  color: #8c1d33;
+}
+.urgent-banner .urgent-banner-go {
+  background: #b42b45;
+  border-color: #b42b45;
+  color: #fff;
+  white-space: nowrap;
+}
+.urgent-banner .urgent-banner-go:hover {
+  background: #93223a;
+}
+.plan-howto {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #3d3570;
+  overflow-wrap: anywhere;
+}
+.plan-howto svg {
+  flex: none;
+  margin-top: 3px;
+  color: #6652bf;
+}
+@media (max-width: 640px) {
+  .urgent-banner {
+    grid-template-columns: auto 1fr auto;
+  }
+  .urgent-banner .urgent-banner-go {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+  .urgent-banner-close {
+    grid-column: 3;
+    grid-row: 1;
+  }
 }
 
 /* Comparative quality: consistent scales, keyboard drill-down, mobile cards. */

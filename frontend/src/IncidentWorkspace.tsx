@@ -17,7 +17,8 @@ export function IncidentWorkspace({ incidentId }: { incidentId: string }) {
     [error, setError] = useState(""),
     [message, setMessage] = useState(""),
     [draft, setDraft] = useState<any>(null);
-  const dialog = useRef<HTMLDialogElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null),
+    panel = useRef<HTMLDetailsElement>(null);
   async function load() {
     try {
       const w = await api("/incidents/" + incidentId + "/workspace");
@@ -46,14 +47,28 @@ export function IncidentWorkspace({ incidentId }: { incidentId: string }) {
         }
       }
     };
+    // A suggested plan action only pre-fills the form; the buyer still saves it.
+    const adopt = (e: Event) => {
+      const d = (e as CustomEvent).detail;
+      if (d?.incidentId !== incidentId) return;
+      setAction(d.action);
+      if (d.due) setDue(d.due);
+      setMessage("Acción del plan copiada. Revísala y guarda el seguimiento.");
+      if (panel.current) panel.current.open = true;
+      panel.current?.querySelector("input")?.focus();
+    };
     window.addEventListener("radar:incident-drafts", update);
-    return () => window.removeEventListener("radar:incident-drafts", update);
+    window.addEventListener("radar:plan-action", adopt);
+    return () => {
+      window.removeEventListener("radar:incident-drafts", update);
+      window.removeEventListener("radar:plan-action", adopt);
+    };
   }, [incidentId]);
   useEffect(() => {
     if (draft) dialog.current?.showModal();
   }, [draft?.id]);
   return (
-    <details className="incident-work">
+    <details className="incident-work" ref={panel}>
       <summary>
         Acción y seguimiento · {labels[work?.current?.status || "pending"]}
       </summary>
@@ -172,7 +187,8 @@ export function IncidentWorkspace({ incidentId }: { incidentId: string }) {
                   }}
                 >
                   Abrir consulta{" "}
-                  {d.kind === "alternate" ? "al alternativo" : "al proveedor"}
+                  {d.kind === "alternate" ? "al alternativo" : d.kind === "verification" ? "de verificación" : "al proveedor"}
+                  {d.from_plan ? " · del plan (" + String(d.language || "").toUpperCase() + ")" : ""}
                   {d.context_changed
                     ? " · contexto anterior, revisar"
                     : " · contexto vigente"}

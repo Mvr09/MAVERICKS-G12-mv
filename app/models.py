@@ -298,3 +298,24 @@ class CampaignRun(Base):
     audit: Mapped[dict] = mapped_column(JSON, default=dict)
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ActionPlan(Base):
+    """Suggested procurement actions per incident revision. Never changes
+    classification, priority, alerts or the human follow-up in incident_work."""
+    __tablename__ = "action_plans"
+    __table_args__ = (UniqueConstraint("incident_id", "revision"),)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=uid)
+    incident_id: Mapped[str] = mapped_column(ForeignKey("incidents.id"), index=True)
+    revision: Mapped[int] = mapped_column(Integer)
+    rules_version: Mapped[str] = mapped_column(String)
+    facts: Mapped[dict] = mapped_column(JSON)
+    actions: Mapped[list] = mapped_column(JSON)
+    facts_hash: Mapped[str] = mapped_column(String)
+    summary_template: Mapped[str] = mapped_column(Text)
+    summary_llm: Mapped[str | None] = mapped_column(Text, nullable=True)
+    summary_source: Mapped[str] = mapped_column(String, default="template")
+    summary_error: Mapped[str | None] = mapped_column(String, nullable=True)
+    llm: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)

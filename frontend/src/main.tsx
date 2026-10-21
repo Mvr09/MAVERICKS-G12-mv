@@ -3,6 +3,8 @@ import { PendingAnalysis } from "./PendingAnalysis";
 import { RssTriage } from "./RssTriage";
 import { HumanReview } from "./HumanReview";
 import { IncidentWorkspace } from "./IncidentWorkspace";
+import { ActionPlan, PlanCard, usePlans } from "./ActionPlan";
+import { UrgentBanner } from "./UrgentBanner";
 import {
   scopedPath,
   useNewsFilters,
@@ -64,6 +66,7 @@ import {
   Clock3,
   Menu,
   LogOut,
+  Sparkles,
 } from "lucide-react";
 
 import { api, setCsrf, date, number } from "./api";
@@ -295,6 +298,19 @@ function App() {
   } | null>(null);
   const scope = context + "|" + effectiveOrigin;
   const activeScope = useRef(scope);
+  // Plans follow incident revisions; refetch only when an incident or alert changes.
+  const plans = usePlans(
+    context,
+    presenter +
+      "|" +
+      alerts.map((a) => a.id + ":" + a.revision).join(",") +
+      "|" +
+      suppliers
+        .flatMap((s) =>
+          (s.incidents ?? []).map((i) => i.id + i.state + i.priority),
+        )
+        .join(","),
+  );
   const cursor = useRef<number | null>(null),
     file = useRef<HTMLInputElement>(null),
     activeContext = useRef(context),
@@ -663,6 +679,26 @@ function App() {
               )}
             </div>
           </div>
+          <UrgentBanner
+            plans={plans}
+            onGo={() => {
+              navigate(scopedPath("/", context));
+              // The Resumen route renders and refreshes its data after navigating; keep
+              // bringing the desk to the top until the layout settles (about 3 s at most).
+              let tries = 0,
+                settled = 0;
+              const reveal = () => {
+                const desk = document.getElementById("attention-title");
+                const off = desk ? Math.abs(desk.getBoundingClientRect().top - 16) : 999;
+                if (desk && off > 8) {
+                  settled = 0;
+                  window.scrollBy({ top: desk.getBoundingClientRect().top - 16 });
+                } else if (desk) settled++;
+                if (settled < 2 && ++tries < 12) window.setTimeout(reveal, 250);
+              };
+              window.setTimeout(reveal, 150);
+            }}
+          />
           {config.fixtures && (
             <div className="notice warning">
               Demostración de interfaz · MOCKS IDENTIFICADOS. Estos resultados
@@ -910,6 +946,7 @@ function App() {
                       suppliers={suppliers}
                       context={context}
                       origin={effectiveOrigin}
+                      plans={plans}
                     />
                     <FollowupDesk
                       suppliers={suppliers}
@@ -1231,6 +1268,24 @@ function App() {
                                 ? "Elegible para sonido"
                                 : "Solo aviso visual"}
                             </small>
+                            {plans[a.incident_id] &&
+                              a.is_current !== false &&
+                              !["superseded", "resolved"].includes(a.state) && (
+                                <details
+                                  className="alert-plan"
+                                  open={!a.acknowledged && a.urgent === "Y"}
+                                >
+                                  <summary>
+                                    Plan de acción (
+                                    {plans[a.incident_id]!.actions.length}{" "}
+                                    acciones)
+                                  </summary>
+                                  <PlanCard
+                                    plan={plans[a.incident_id]!}
+                                    presenter={presenter}
+                                  />
+                                </details>
+                              )}
                             {suppliers.find(
                               (s) => s.supplier_id === a.supplier_id,
                             ) && (
@@ -2574,6 +2629,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
     [draft, setDraft] = useState<{ id: string; text: string } | null>(null),
     [error, setError] = useState(""),
     [draftMessage, setDraftMessage] = useState(""),
+    [assist, setAssist] = useState(false),
     [resolution, setResolution] = useState<string | null>(null),
     [reason, setReason] = useState(""),
     [resolving, setResolving] = useState(false),
@@ -2617,12 +2673,17 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
   }, [id, context, origin]);
   async function create(kind: string, iid: string) {
     try {
-      setDraft(
-        await api("/drafts", {
-          method: "POST",
-          body: JSON.stringify({ supplier_id: id, incident_id: iid, kind }),
-        }),
+      const d = await api("/drafts", {
+        method: "POST",
+        body: JSON.stringify({ supplier_id: id, incident_id: iid, kind, assist }),
+      });
+      setDraftMessage(
+        d.llm_error ||
+          (d.writer === "claude"
+            ? "Redactado con IA en el idioma del destinatario. Revísalo antes de usarlo."
+            : ""),
       );
+      setDraft(d);
       window.dispatchEvent(
         new CustomEvent("radar:incident-drafts", { detail: iid }),
       );
@@ -2774,6 +2835,9 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     .map((h, n) => (
                       <p key={n}>Resolución registrada: {h.reason}</p>
                     ))}
+                  {i.state !== "resolved" && (
+                    <ActionPlan incidentId={i.id} presenter={presenter} />
+                  )}
                   {presenter && <IncidentWorkspace incidentId={i.id} />}
                   <small>
                     Máximo histórico: {number(i.historical_priority)} / 100
@@ -2795,6 +2859,20 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     >
                       Consultar alternativo
                     </AsyncButton>
+                    <button
+                      type="button"
+                      className={"ai-toggle" + (assist ? " on" : "")}
+                      aria-pressed={assist}
+                      disabled={!presenter}
+                      title="Las consultas se redactan con IA en el idioma del destinatario; si falla, se usa la plantilla."
+                      onClick={() => setAssist(!assist)}
+                    >
+                      <span className="ai-toggle-track" aria-hidden>
+                        <span className="ai-toggle-knob" />
+                      </span>
+                      <Sparkles size={15} aria-hidden />
+                      Redactar con IA
+                    </button>
                     {i.state !== "resolved" && (
                       <button
                         className="button"

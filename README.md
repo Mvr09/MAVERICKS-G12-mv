@@ -69,6 +69,8 @@ No ha sido necesario mapear nombres alternativos. Se usan `TYPESAFE_API_KEY`, `A
 | `RSS_ANALYSIS_ENABLED` | Mantener `false`: el análisis periódico de pago no está autorizado para esta demo. |
 | `PORT` | La entrada `app.web` escucha en `0.0.0.0:8000`; esta variable no cambia el puerto fijo ni el target 8000 del dominio. |
 | `DEMO_FIXTURES_ENABLED` | Solo ensayos identificados de interfaz. No habilita respuestas falsas ni llamadas de pago. |
+| `ANTHROPIC_API_KEY` | Opcional. Claude redacta resúmenes de planes de acción y borradores; sin ella se usan las plantillas. |
+| `ANTHROPIC_MODEL` / `ANTHROPIC_EFFORT` | Por defecto `claude-sonnet-5-5` y `low`. `LLM_PROVIDER=none` desactiva Claude. |
 
 No existen variables `VITE_*` con credenciales. `.env` queda fuera de Git, Docker, el paquete de despliegue y las rutas públicas. La lectura pública muestra catálogo, resúmenes y decisiones normalizadas; no ofrece etiquetas, Excel originales ni cuerpos de respuesta del proveedor. Las mutaciones requieren sesión y token CSRF; el login limita intentos en PostgreSQL.
 
@@ -78,7 +80,8 @@ No existen variables `VITE_*` con credenciales. `.env` queda fuera de Git, Docke
 2. Importar el XLSX. Se reconoce la hoja y se conservan `News_ID` y orden. Revisar el lote en la parte inferior o en Analítica.
 3. **Analizar** encola los artículos pendientes sin cupos locales de presupuesto. Los trabajos son persistentes; la interfaz consulta progreso cada tres segundos cuando está visible y al recuperar foco.
 4. Abrir proveedor → evidencia literal → factores → productos/materiales/alternativo. `—` significa sin prioridad disponible; no significa ausencia de riesgo. Inventario no informado, no aplicable y cero permanecen distintos.
-5. Crear una consulta a proveedor o alternativo desde un incidente sin revisión obligatoria. Editar, guardar, copiar o descargar TXT. No se envía nada. El alternativo debe confirmar disponibilidad; la consulta no constituye un pedido.
+5. Crear una consulta a proveedor o alternativo desde un incidente sin revisión obligatoria. Editar, guardar, copiar o descargar TXT. No se envía nada. El alternativo debe confirmar disponibilidad; la consulta no constituye un pedido. Con **Redactar con Claude**, Claude reescribe la plantilla en el idioma del destinatario; si falla o añade cifras, se conserva la plantilla.
+   Cada incidente abierto muestra un **Plan sugerido**: reglas explícitas eligen las acciones y su plazo, y Claude solo redacta el resumen. **Usar en el seguimiento** copia la acción al formulario; nada se guarda sin el presentador. Detalle en [docs/12_PLANES_Y_CLAUDE.md](docs/12_PLANES_Y_CLAUDE.md).
 6. **Activar sonido**, **Probar alarma**, ajustar volumen y mantener la pestaña activa. **Silenciar** no reconoce ni resuelve incidentes. El contador de la pestaña sigue mostrando alertas sin leer.
 7. Cuando todas las filas estén procesadas, **Exportar** descarga `News_ID`, `Is_Risk`, `Urgent`, `Affected_Supplier_IDs`; IDs únicos, ordenados y separados por `; `. Un error bloquea el archivo. Una revisión ya procesada exporta su mejor decisión y conserva su estado de revisión.
 8. En **Fuentes**, **Actualizar ahora** encola las seis consultas reales. Cada fuente conserva última consulta, último éxito, HTTP, novedades y error. Las demás continúan si una falla. Una respuesta cacheada de inferencia aparece identificada y no se presenta como consulta nueva.
