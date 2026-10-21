@@ -157,22 +157,48 @@ def wrap(tag, payload):
     return f"<<<{tag}>>>\n{json.dumps(payload, ensure_ascii=False, default=str)}\n<<<FIN_{tag}>>>"
 
 
-def write_text(system, user, *, purpose, min_chars=20, max_chars=4000):
-    """Texto redactado por Claude como JSON {"texto": ...}; lanza LLMError si no hay respuesta válida."""
+PLAN_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "texto": {"type": "string"},
+        "acciones": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {"codigo": {"type": "string"}, "nota": {"type": "string"}},
+                "required": ["codigo", "nota"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    "required": ["texto", "acciones"],
+    "additionalProperties": False,
+}
+
+
+def write_json(system, user, schema, *, purpose, min_chars=20, max_chars=4000):
+    """JSON redactado por Claude con un campo "texto" obligatorio; lanza LLMError si no hay respuesta válida."""
     provider = get_provider()
     if provider is None:
         raise LLMError("disabled", "Claude no está configurado (falta ANTHROPIC_API_KEY o LLM_PROVIDER=none).")
     t0 = time.monotonic()
-    raw, meta = provider.complete(system, user, TEXT_SCHEMA)
+    raw, meta = provider.complete(system, user, schema)
     try:
-        text = str(json.loads(raw)["texto"]).strip()
+        data = json.loads(raw)
+        data["texto"] = str(data["texto"]).strip()
     except (ValueError, KeyError, TypeError) as exc:
         raise LLMError("invalid_output", "La respuesta de Claude no era el JSON esperado.") from exc
-    if not min_chars <= len(text) <= max_chars:
-        raise LLMError("invalid_output", f"La respuesta de Claude tenía {len(text)} caracteres.")
+    if not min_chars <= len(data["texto"]) <= max_chars:
+        raise LLMError("invalid_output", f"La respuesta de Claude tenía {len(data['texto'])} caracteres.")
     rec = CallRecord(provider.name, provider.model, purpose, int((time.monotonic() - t0) * 1000),
                      meta.get("input_tokens"), meta.get("output_tokens"), meta.get("served_by"), meta.get("request_id"))
     # Nunca se registran prompts, respuestas ni credenciales.
     log.info("llm call provider=%s model=%s served_by=%s purpose=%s latency_ms=%s in=%s out=%s",
              rec.provider, rec.model, rec.served_by, purpose, rec.latency_ms, rec.input_tokens, rec.output_tokens)
-    return text, rec
+    return data, rec
+
+
+def write_text(system, user, *, purpose, min_chars=20, max_chars=4000):
+    """Texto redactado por Claude como JSON {"texto": ...}; lanza LLMError si no hay respuesta válida."""
+    data, rec = write_json(system, user, TEXT_SCHEMA, purpose=purpose, min_chars=min_chars, max_chars=max_chars)
+    return data["texto"], rec

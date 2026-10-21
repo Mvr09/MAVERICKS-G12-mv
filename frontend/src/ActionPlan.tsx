@@ -9,6 +9,7 @@ export type PlanAction = {
   reason: string;
   deadline: "hoy" | "esta_semana" | "proximo_informe";
   deadline_label: string;
+  nota?: string;
 };
 export type PlanDraft = {
   id: string;
@@ -29,8 +30,17 @@ export type Plan = {
   llm: { model: string; served_by: string | null } | null;
   decision: "JEV" | "humano";
   facts: {
-    incidente: { urgente: boolean; titular: string | null; tipo_evento: string | null };
-    proveedor: { criticidad: string | null; fuente_unica: boolean };
+    incidente: {
+      urgente: boolean;
+      prioridad: number | null;
+      titular: string | null;
+      tipo_evento: string | null;
+    };
+    proveedor: {
+      nombre: string;
+      criticidad: string | null;
+      fuente_unica: boolean;
+    };
     stock: {
       margen_dias: number | string;
       fecha_rotura_si_continua: string | null;
@@ -127,6 +137,15 @@ export function PlanCard({
             <div>
               <strong>{a.label}</strong>
               <small>{a.reason}</small>
+              {a.nota && (
+                <p className="plan-howto">
+                  <Bot size={13} aria-hidden />
+                  <span>
+                    <span className="sr-only">Cómo hacerlo, redactado por IA: </span>
+                    {a.nota}
+                  </span>
+                </p>
+              )}
             </div>
             {presenter && (
               <button

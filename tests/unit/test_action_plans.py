@@ -184,3 +184,16 @@ def test_pending_review_only_prepares_the_verification_mail(incident):
  db,a,inc=incident
  inc.history=[{**h,'assessment':{**h['assessment'],'needs_review':True,'exposure_kind':'potential','requires_pathway_confirmation':True}} for h in inc.history];db.flush()
  sync_plan(db,inc);assert [d['kind'] for d in plan_drafts(db,inc)]==['verification']
+
+def test_one_call_brings_summary_and_validated_how_to_notes(fake):
+ f=facts(incidente={'evidencia':'Alpha: A fire forced the evacuation of the API plant in Ningbo.'})
+ notes=[{'codigo':'contact_supplier','nota':'Preguntar si la planta de API de Ningbo sigue evacuada y qué lotes de API X quedan comprometidos.'},
+  {'codigo':'start_dual_sourcing','nota':'Pedir ofertas para 900 kg a dos proveedores nuevos.'},
+  {'codigo':'invented_action','nota':'Una acción que las reglas no han elegido nunca debe aparecer.'},
+  {'codigo':'shift_to_alternate','nota':'Corto.'}]
+ p=fake(lambda s,u:json.dumps({'texto':GOOD,'acciones':notes}));plan=summarize(None,plan_like(f))
+ by={a['code']:a.get('nota') for a in plan.actions}
+ assert by['contact_supplier'].startswith('Preguntar si la planta') and by['start_dual_sourcing'] is None and by['shift_to_alternate'] is None
+ assert 'invented_action' not in by and plan.llm['notes']==1 and plan.llm['notes_rejected']==3
+ assert 'evacuation of the API plant' in p.calls[0][1] and '"codigo": "contact_supplier"' in p.calls[0][1]
+ assert plan.summary_source=='llm'  # a bad note never discards a valid summary

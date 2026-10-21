@@ -4,6 +4,7 @@ import { RssTriage } from "./RssTriage";
 import { HumanReview } from "./HumanReview";
 import { IncidentWorkspace } from "./IncidentWorkspace";
 import { ActionPlan, PlanCard, usePlans } from "./ActionPlan";
+import { UrgentBanner } from "./UrgentBanner";
 import {
   scopedPath,
   useNewsFilters,
@@ -677,6 +678,26 @@ function App() {
               )}
             </div>
           </div>
+          <UrgentBanner
+            plans={plans}
+            onGo={() => {
+              navigate(scopedPath("/", context));
+              // The Resumen route renders and refreshes its data after navigating; keep
+              // bringing the desk to the top until the layout settles (about 3 s at most).
+              let tries = 0,
+                settled = 0;
+              const reveal = () => {
+                const desk = document.getElementById("attention-title");
+                const off = desk ? Math.abs(desk.getBoundingClientRect().top - 16) : 999;
+                if (desk && off > 8) {
+                  settled = 0;
+                  window.scrollBy({ top: desk.getBoundingClientRect().top - 16 });
+                } else if (desk) settled++;
+                if (settled < 2 && ++tries < 12) window.setTimeout(reveal, 250);
+              };
+              window.setTimeout(reveal, 150);
+            }}
+          />
           {config.fixtures && (
             <div className="notice warning">
               Demostración de interfaz · MOCKS IDENTIFICADOS. Estos resultados

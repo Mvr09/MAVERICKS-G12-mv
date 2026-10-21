@@ -27,6 +27,8 @@ El LLM **opina, no decide**: ninguna salida de Claude cambia `analyses`, `incide
   - **Verificar el vínculo** si la exposición es `potential` o p_vínculo < 0,65.
   - **Avisar a planificación** si es urgente y la parada supera la cobertura, o si es fuente única con duración desconocida.
 - Plantilla determinista siempre disponible. Claude redacta un resumen de 80–120 palabras; se descarta si añade cifras ausentes de los hechos, si se sale de 50–160 palabras o si la llamada falla. El motivo queda en `summary_error`.
+- Claude recibe también la **evidencia literal** de la noticia: la frase que guarda el análisis de JEV, hasta 600 caracteres.
+- En la misma llamada, Claude escribe una **nota «cómo hacerlo»** por acción: una frase en infinitivo con qué preguntar o comprobar en este caso. Cada nota se valida por separado (código de acción existente, 4–40 palabras, sin cifras ausentes de los hechos). Si una no pasa, esa acción se queda solo con el motivo de su regla y el resumen se conserva.
 - **Usar en el seguimiento** copia la acción y su fecha al formulario de `IncidentWorkspace`. No guarda nada: el presentador registra el seguimiento.
 - Tabla `action_plans` (migración `0011`), una fila por incidente y revisión. `/readyz` y el worker exigen ahora el esquema `0011`.
 
@@ -37,6 +39,7 @@ El LLM **opina, no decide**: ninguna salida de Claude cambia `analyses`, `incide
 | Ficha del proveedor | Tarjeta **Plan de acción** por incidente abierto: plazo de cada acción (píldora roja «Hoy», ámbar «Esta semana», gris «Próximo informe semanal») y su motivo; margen de stock y rotura estimada, productos en juego y alternativo; resumen («Redactado por IA» si es de Claude); botones de correo del plan con su idioma, p. ej. «Correo al proveedor (EN)». |
 | Resumen · mesa de atención | En cada tarjeta: «Urgente», «Decide: JEV/humano», criticidad y fuente única; el titular; **Siguiente acción** con las dos primeras acciones y su plazo; margen y productos; enlace «Ver plan completo y borradores». |
 | Alertas | Desplegable **Plan de acción (N acciones)** en cada alerta vigente, abierto por defecto en las urgentes sin reconocer. |
+| Al entrar, en cualquier página | **Banner de urgencias** en tres líneas: cuántos proveedores están en situación urgente y cuáles, acciones para hoy y para esta semana, y por dónde empezar. «Vamos a ver qué hacer» lo cierra y lleva a la mesa de atención; no vuelve a salir en esa sesión del navegador. Sale de los planes y no llama a Claude. |
 
 La lectura (`GET /api/plans?context=…` y `GET /api/incidents/{id}/plan`) es pública y no escribe nada. Si no hay plan guardado, se calcula al vuelo con la plantilla. Una lectura de presentador guarda el plan y sus correos y encola el resumen de Claude.
 

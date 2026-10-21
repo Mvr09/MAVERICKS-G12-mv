@@ -3033,6 +3033,73 @@ dialog > header {
   }
 }
 
+/* Opening briefing: urgent suppliers, what is due today and where to start. */
+.urgent-banner {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border: 1px solid #ffdae1;
+  border-left: 6px solid #b42b45;
+  border-radius: 12px;
+  background: #fff0f2;
+  color: #5a1424;
+}
+.urgent-banner-icon {
+  color: #b42b45;
+}
+.urgent-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.urgent-banner-text strong {
+  font-size: 15px;
+  color: #8c1d33;
+}
+.urgent-banner .urgent-banner-go {
+  background: #b42b45;
+  border-color: #b42b45;
+  color: #fff;
+  white-space: nowrap;
+}
+.urgent-banner .urgent-banner-go:hover {
+  background: #93223a;
+}
+.plan-howto {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #3d3570;
+  overflow-wrap: anywhere;
+}
+.plan-howto svg {
+  flex: none;
+  margin-top: 3px;
+  color: #6652bf;
+}
+@media (max-width: 640px) {
+  .urgent-banner {
+    grid-template-columns: auto 1fr auto;
+  }
+  .urgent-banner .urgent-banner-go {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+  .urgent-banner-close {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
 /* Comparative quality: consistent scales, keyboard drill-down, mobile cards. */
 .campaign-page {
   display: grid;

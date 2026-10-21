@@ -53,7 +53,15 @@ Usa solo las cifras, fechas, productos y nombres que aparecen en los datos. No a
 stock ni compromisos de compra. La prioridad es un orden de atención de 0 a 100, no una probabilidad. Si stock.margen_dias es
 "no aplica", el inventario no se aplica a ese tipo de proveedor (servicios o logística); no significa que falte stock.
 Si vinculo.por_confirmar es true, la afectación del proveedor no está confirmada: dilo así.
-Devuelve {"texto": "..."}."""
+incidente.evidencia es el fragmento literal de la noticia (en su idioma original): úsalo para concretar qué ocurrió,
+sin inventar nada que no diga.
+Además, para cada acción de ACCIONES escribe en "acciones" una nota de una sola frase (máximo 30 palabras) con su mismo
+"codigo", empezando por un verbo en infinitivo («Preguntar…», «Comprobar…»): cómo hacerla en este caso concreto, por
+ejemplo qué preguntar exactamente o qué comprobar, apoyándote en la
+evidencia. No repitas el motivo de la acción ni añadas cifras, plazos, contactos o compromisos que no estén en los datos.
+Devuelve {"texto": "...", "acciones": [{"codigo": "...", "nota": "..."}]}."""
+NOTE_WORDS = (4, 40)
+EVIDENCE_CHARS = 600
 
 
 def spanish_date(value):
@@ -104,7 +112,9 @@ def build_facts(db, inc):
             "id": inc.id, "revision": inc.revision, "tipo_evento": inc.event_type, "estado": inc.state,
             "urgente": a.get("urgent") == "Y" or bool(a.get("operational_urgent")),
             "prioridad": inc.priority, "banda": a.get("priority_band"), "fecha_evento": inc.event_date,
-            "titular": entry.get("headline"), "duracion_dias": a.get("duration_days"),
+            "titular": entry.get("headline"),
+            "evidencia": (entry.get("explanation") or "")[:EVIDENCE_CHARS] or None,
+            "duracion_dias": a.get("duration_days"),
             "duracion_es_minima": bool(a.get("duration_is_lower_bound")),
             "pendiente_de_revision": bool(a.get("needs_review")),
             "decision_humana": entry.get("decision_origin") == "human",
@@ -399,16 +409,19 @@ def sync_plan(db, inc):
 
 
 def summarize(db, plan):
-    """Resumen redactado por Claude; se descarta si añade cifras ausentes de los hechos o se sale de longitud."""
+    """Resumen y una nota «cómo hacerlo» por acción, redactados por Claude en una sola llamada. El resumen se
+    descarta si añade cifras ausentes de los hechos o se sale de longitud; cada nota se valida por separado y,
+    si no pasa, la acción se queda solo con el motivo de su regla."""
     if plan.summary_source == "llm":
         return plan
     payload = {"hechos": _without_ids(plan.facts),
-               "acciones": [{k: a[k] for k in ("label", "reason", "deadline")} for a in plan.actions]}
+               "acciones": [{"codigo": a["code"], **{k: a[k] for k in ("label", "reason", "deadline")}} for a in plan.actions]}
     try:
-        text, rec = llm.write_text(PLAN_SYSTEM, llm.wrap("DATOS", payload), purpose="plan_summary")
+        data, rec = llm.write_json(PLAN_SYSTEM, llm.wrap("DATOS", payload), llm.PLAN_SCHEMA, purpose="plan_summary")
     except llm.LLMError as exc:
         plan.summary_error = f"{exc.message} Se conserva la plantilla."
         return plan
+    text = data["texto"]
     extra = numbers_not_in_facts(text, plan.facts)
     words = len(text.split())
     if extra:
@@ -417,7 +430,18 @@ def summarize(db, plan):
         plan.summary_error = f"El texto de Claude tenía {words} palabras; se conserva la plantilla."
     else:
         plan.summary_llm, plan.summary_source, plan.summary_error = text, "llm", None
-    plan.llm = rec.as_dict()
+    notes, rejected = {}, 0
+    codes = {a["code"] for a in plan.actions}
+    for item in data.get("acciones") or []:
+        code, note = str(item.get("codigo", "")), str(item.get("nota", "")).strip()
+        if (code in codes and code not in notes and NOTE_WORDS[0] <= len(note.split()) <= NOTE_WORDS[1]
+                and not numbers_not_in_facts(note, plan.facts)):
+            notes[code] = note
+        else:
+            rejected += 1
+    plan.actions = [{**{k: v for k, v in a.items() if k != "nota"}, **({"nota": notes[a["code"]]} if a["code"] in notes else {})}
+                    for a in plan.actions]
+    plan.llm = {**rec.as_dict(), "notes": len(notes), "notes_rejected": rejected}
     return plan
 
 
