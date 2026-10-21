@@ -666,7 +666,8 @@ h1 {
   font-size: 9px;
   margin-left: auto;
 }
-.batches {
+.batches,
+.exposure-map {
   margin-top: 24px;
 }
 .batch-row {

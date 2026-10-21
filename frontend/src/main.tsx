@@ -23,7 +23,8 @@ import {
 import { ProcessingPulse } from "./ProcessingPulse";
 import { BusinessKpis } from "./BusinessKpis";
 import { BuyerDecision } from "./BuyerDecision";
-import { AttentionDesk, ProcurementBrief } from "./Procurement";
+import { AttentionDesk, ProcurementBrief } from "./Procurement.tsx";
+import { SupplierMap, toMapData } from "./SupplierMap";
 import React, { useEffect, useState, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -1034,6 +1035,37 @@ function App() {
                         </section>
                       </div>
                     </div>
+                    <section
+                      className="card exposure-map"
+                      aria-labelledby="exposure-title"
+                    >
+                      <div className="section-heading">
+                        <div>
+                          <h2 id="exposure-title">Mapa de exposición</h2>
+                          <p>
+                            Proveedores por prioridad actual y eventos abiertos
+                            del origen seleccionado
+                          </p>
+                        </div>
+                      </div>
+                      <div className="px-[22px] pb-[22px]">
+                        {loading && !suppliers.length ? (
+                          <p className="small-note">Cargando mapa…</p>
+                        ) : (
+                          <SupplierMap
+                            {...toMapData(suppliers)}
+                            onSupplierClick={(id) =>
+                              navigate(
+                                scopedPath(
+                                  "/proveedores/" + encodeURIComponent(id),
+                                  context,
+                                ),
+                              )
+                            }
+                          />
+                        )}
+                      </div>
+                    </section>
                     {context === "exercise" && (
                       <Batches
                         batches={
