@@ -253,7 +253,8 @@ def overview(
         "processed": len(processed),
         "pending": sum(a["state"] == "pending" for a in articles),
         "errors": sum(a["state"] == "error" for a in articles),
-        "review_model": sum(a["state"] == "review" for a in articles),
+        "review_model": sum(a["state"] == "review" or bool(a.get("review_scope")) for a in articles),
+        "review_scope_resolved": sum(bool(a.get("review_scope")) for a in articles),
         "review": sum((a["state"] == "review" and (a.get("human_review") or {}).get("state") != "resolved") or (a.get("human_review") or {}).get("state") == "in_verification" for a in articles),
         "human_review_completed": sum((a.get("human_review") or {}).get("state") == "resolved" for a in articles),
         "linked": sum(
@@ -1254,10 +1255,12 @@ from app.incident_work import WorkInput
 
 @app.get("/api/articles/{aid}/review", dependencies=[Depends(presenter)])
 def read_human_review(aid: str, db: Session = Depends(get_db)):
-    from app.human_review import view
+    from app.human_review import view, latest_analysis
+    from app import review_scope
     article = db.get(Article, aid)
     if not article: raise HTTPException(404, "Noticia no encontrada")
-    return view(db, article)
+    analysis = latest_analysis(db, article)
+    return review_scope.adjust_review(view(db, article), article.data, analysis.result if analysis else None, review_scope.catalog(db))
 
 @app.post("/api/articles/{aid}/review", status_code=201, dependencies=[Depends(presenter)])
 def write_human_review(aid: str, body: DecisionInput, db: Session = Depends(get_db)):

@@ -96,6 +96,8 @@ export type EventInfo = Partial<
 >;
 export interface Article {
   human_review?: { state: string; updated_at?: string };
+  /** Model review shown as resolved: no risk, urgency or supplier involved. */
+  review_scope?: { version: string; model_status: string; reasons: string[]; rule: string };
   preliminary_relevance?: {
     level: string;
     reasons: string[];

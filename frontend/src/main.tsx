@@ -2272,6 +2272,13 @@ function ArticleDetail({ context, presenter, action, suppliers = [] }: any) {
                     ? "Conserva la fuente y su fecha para seguimiento. La identificación de un proveedor no demuestra interrupción de suministro."
                     : "El análisis no ha vinculado la noticia a un proveedor. Una consulta manual debe explicar por qué podría ser relevante y qué falta por confirmar."}
         </p>
+        {a.review_scope && (
+          <small>
+            Revisión no obligatoria: {a.review_scope.rule} Dudas del modelo
+            conservadas:{" "}
+            {a.review_scope.reasons.map(reviewLabel).join(", ") || "—"}.
+          </small>
+        )}
         {a.analysis && (
           <ReviewGuidance analysis={a.analysis} suppliers={suppliers} />
         )}
@@ -3423,6 +3430,9 @@ function Analytics({
         <p>
           Ambos porcentajes usan {overview?.processed || 0} noticias procesadas.
           La tasa de revisión no mide precisión.
+          {overview?.review_scope_resolved
+            ? ` ${overview.review_scope_resolved} con dudas del modelo pero sin riesgo, urgencia ni proveedor implicado se cuentan como resueltas; sus motivos se conservan en cada noticia.`
+            : ""}
         </p>
         {context === "rss" && (
           <div className="analytics-stats">
