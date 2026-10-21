@@ -246,6 +246,135 @@ def _without_ids(v):
     return v
 
 
+# ------------------------------------------------------------------ correos desde el plan (v3)
+
+SPANISH_SPEAKING = {"Spain", "Mexico", "Argentina", "Chile", "Colombia", "Peru", "Uruguay", "Ecuador", "Bolivia",
+                    "Paraguay", "Venezuela", "Costa Rica", "Panama", "Guatemala", "Honduras", "El Salvador",
+                    "Nicaragua", "Cuba", "Dominican Republic", "Puerto Rico", "Puerto Rico (USA)"}
+DRAFT_LABELS = {"supplier": "Correo al proveedor", "verification": "Verificar vínculo", "alternate": "Correo al alternativo"}
+
+
+def language_for(country):
+    return "es" if country in SPANISH_SPEAKING else "en"
+
+
+def _supplier_mail(facts, lang):
+    inc, sup = facts["incidente"], facts["proveedor"]
+    if lang == "es":
+        return "\n".join([
+            f"Asunto: Consulta sobre continuidad de suministro de {sup['material']}", "",
+            f"Hola equipo de {sup['nombre']}:", "",
+            f"Hemos visto información publicada el {spanish_date(inc['fecha_evento'])} sobre «{inc['titular']}». "
+            f"Queremos confirmar si afecta a las entregas de {sup['material']} previstas para Helixa.", "",
+            "¿Podéis indicarnos el impacto en vuestra operación, los pedidos de Helixa potencialmente afectados "
+            "y la fecha estimada de recuperación, si se conoce? Os rogamos distinguir fechas confirmadas de estimaciones.", "",
+            "Esta consulta no constituye un pedido.", "", "Gracias,", "Equipo de Compras · Helixa Pharmaceuticals"])
+    return "\n".join([
+        f"Subject: Supply continuity inquiry: {sup['material']}", "",
+        f"Dear {sup['nombre']} team,", "",
+        f"We have seen news published on {str(inc['fecha_evento'])[:10]} about \"{inc['titular']}\". "
+        f"We would like to confirm whether it affects planned deliveries of {sup['material']} to Helixa.", "",
+        "Could you share the impact on your operations, which Helixa orders may be affected and the estimated "
+        "recovery date, if known? Please distinguish confirmed dates from estimates.", "",
+        "This inquiry is not a purchase order.", "", "Kind regards,", "Procurement Team · Helixa Pharmaceuticals"])
+
+
+def _verification_mail(facts, lang):
+    inc, sup = facts["incidente"], facts["proveedor"]
+    if lang == "es":
+        return "\n".join([
+            f"Asunto: Verificación: ¿os afecta «{inc['titular']}»?", "",
+            f"Hola equipo de {sup['nombre']}:", "",
+            f"Hemos visto una noticia publicada el {spanish_date(inc['fecha_evento'])} («{inc['titular']}») y no tenemos "
+            f"confirmado si vuestra planta u operación en {sup['ciudad']} está dentro del área o del alcance afectado.", "",
+            "¿Podéis confirmarnos si el evento os afecta y, en ese caso, a qué entregas para Helixa? Si no os afecta, "
+            "agradecemos que nos lo confirméis también.", "",
+            "Gracias,", "Equipo de Compras · Helixa Pharmaceuticals"])
+    return "\n".join([
+        f"Subject: Verification: are you affected by \"{inc['titular']}\"?", "",
+        f"Dear {sup['nombre']} team,", "",
+        f"We have seen news published on {str(inc['fecha_evento'])[:10]} (\"{inc['titular']}\") and we have not confirmed "
+        f"whether your site or operations in {sup['ciudad']} are within the affected area or scope.", "",
+        "Could you confirm whether the event affects you and, if so, which deliveries to Helixa? If it does not, "
+        "we would appreciate your confirmation as well.", "",
+        "Kind regards,", "Procurement Team · Helixa Pharmaceuticals"])
+
+
+def _alternate_mail(facts, lang):
+    sup, alt = facts["proveedor"], facts["alternativo"]
+    if lang == "es":
+        return "\n".join([
+            f"Asunto: Consulta de disponibilidad para {sup['material']}", "",
+            f"Hola equipo de {alt['nombre']}:", "",
+            f"Estamos revisando la continuidad de suministro de {sup['material']} y os tenemos registrados como "
+            "alternativo. ¿Podéis confirmar adecuación técnica, disponibilidad actual, capacidad adicional y plazo de entrega?", "",
+            "Es una consulta informativa: no constituye un pedido ni un compromiso de compra. No disponemos de "
+            "confirmación de vuestro stock ni capacidad.", "", "Gracias,", "Equipo de Compras · Helixa Pharmaceuticals"])
+    return "\n".join([
+        f"Subject: Availability inquiry: {sup['material']}", "",
+        f"Dear {alt['nombre']} team,", "",
+        f"We are reviewing supply continuity for {sup['material']} and you are registered as an alternate supplier. "
+        "Could you confirm technical suitability, current availability, additional capacity and lead time?", "",
+        "This is an information request only: it is not a purchase order or a purchase commitment. We have no "
+        "confirmation of your stock or capacity.", "", "Kind regards,", "Procurement Team · Helixa Pharmaceuticals"])
+
+
+def _text_hash(text):
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def sync_drafts(db, plan, inc):
+    """Correos del plan en el idioma del destinatario. Nunca se envían ni sustituyen un texto ya editado.
+    Con revisión pendiente solo se prepara la verificación: B no consulta al proveedor sin evidencia validada."""
+    from app.models import Draft
+
+    f = plan.facts
+    codes = {a["code"] for a in plan.actions}
+    review = f["incidente"]["pendiente_de_revision"]
+    wanted = {}
+    if "contact_supplier" in codes and not review:
+        lang = language_for(f["proveedor"]["pais"])
+        wanted["supplier"] = (f["proveedor"]["id"], lang, _supplier_mail(f, lang))
+    if "verify_link" in codes:
+        lang = language_for(f["proveedor"]["pais"])
+        wanted["verification"] = (f["proveedor"]["id"], lang, _verification_mail(f, lang))
+    if "shift_to_alternate" in codes and f["alternativo"] and not review:
+        lang = language_for(f["alternativo"]["pais"])
+        wanted["alternate"] = (f["alternativo"]["id"], lang, _alternate_mail(f, lang))
+    existing = {}
+    for d in db.scalars(select(Draft).where(Draft.incident_id == inc.id)):
+        snap = d.evidence_snapshot or {}
+        if snap.get("source") == "plan":
+            existing[d.kind] = d
+    for kind, (target, lang, text) in wanted.items():
+        d = existing.get(kind)
+        edited = d is not None and _text_hash(d.text) != (d.evidence_snapshot or {}).get("generated_hash")
+        if d is not None and (edited or d.context_hash == plan.facts_hash):
+            continue
+        snap = {"source": "plan", "plan_id": plan.id, "incident_id": inc.id, "revision": inc.revision,
+                "target_supplier_id": target, "language": lang, "writer": {"writer": "template"},
+                "generated_hash": _text_hash(text), "facts": _without_ids(f)}
+        if d is None:
+            db.add(Draft(supplier_id=inc.supplier_id, incident_id=inc.id, article_id=None, kind=kind, text=text,
+                         evidence_snapshot=snap, context_hash=plan.facts_hash))
+        else:
+            d.text, d.evidence_snapshot, d.context_hash = text, snap, plan.facts_hash
+    db.flush()
+
+
+def plan_drafts(db, inc):
+    from app.models import Draft
+
+    out = []
+    for d in db.scalars(select(Draft).where(Draft.incident_id == inc.id).order_by(Draft.id)):
+        snap = d.evidence_snapshot or {}
+        if snap.get("source") == "plan":
+            out.append({"id": d.id, "kind": d.kind, "label": DRAFT_LABELS.get(d.kind, "Correo"),
+                        "language": snap.get("language", "es"), "writer": (snap.get("writer") or {}).get("writer", "template")})
+    order = list(DRAFT_LABELS)
+    return sorted(out, key=lambda d: order.index(d["kind"]) if d["kind"] in order else 9)
+
+
 def sync_plan(db, inc):
     """Plan de la revisión actual del incidente; None si está resuelto. Idempotente por (incidente, revisión)."""
     if inc.state not in ("active", "monitoring"):
@@ -255,6 +384,7 @@ def sync_plan(db, inc):
     actions = choose_actions(facts)
     h = facts_hash(facts, actions)
     if plan is not None and plan.facts_hash == h:
+        sync_drafts(db, plan, inc)
         return plan
     if plan is None:
         plan = ActionPlan(incident_id=inc.id, revision=inc.revision)
@@ -264,6 +394,7 @@ def sync_plan(db, inc):
     plan.summary_template = template_summary(facts, actions)
     plan.summary_llm, plan.summary_source, plan.summary_error, plan.llm = None, "template", None, None
     db.flush()
+    sync_drafts(db, plan, inc)
     return plan
 
 
@@ -290,7 +421,7 @@ def summarize(db, plan):
     return plan
 
 
-def view(plan):
+def view(plan, db=None, inc=None):
     if plan is None:
         return None
     return {
@@ -299,8 +430,42 @@ def view(plan):
         "summary": plan.summary_llm if plan.summary_source == "llm" else plan.summary_template,
         "summary_source": plan.summary_source, "summary_error": plan.summary_error,
         "llm": {k: (plan.llm or {}).get(k) for k in ("model", "served_by", "latency_ms", "input_tokens", "output_tokens")} if plan.llm else None,
+        "decision": "humano" if plan.facts["incidente"].get("decision_humana") else "JEV",
         "facts": _without_ids(plan.facts), "updated_at": plan.updated_at,
+        "drafts": plan_drafts(db, inc) if db is not None and inc is not None and plan.id else [],
     }
+
+
+def read_plan(db, inc):
+    """Lectura sin escrituras (acceso público): el plan guardado de la revisión actual o uno calculado al vuelo
+    con la plantilla. Los borradores y el resumen de Claude solo existen en planes guardados."""
+    if inc.state not in ("active", "monitoring"):
+        return None
+    plan = db.scalar(select(ActionPlan).where(ActionPlan.incident_id == inc.id, ActionPlan.revision == inc.revision))
+    if plan is None:
+        facts = build_facts(db, inc)
+        actions = choose_actions(facts)
+        plan = ActionPlan(incident_id=inc.id, revision=inc.revision, rules_version=RULES_VERSION, facts=facts,
+                          actions=actions, facts_hash=facts_hash(facts, actions),
+                          summary_template=template_summary(facts, actions), summary_source="template")
+    return plan
+
+
+def plans_for_context(db, context, write=False):
+    """{incidente: plan} de los incidentes abiertos del contexto. Con `write` (presentador) guarda los planes y
+    sus correos y encola el resumen de Claude; sin él no escribe nada."""
+    from app.queue import enqueue
+
+    out = {}
+    for inc in db.scalars(select(Incident).where(Incident.context == context, Incident.state.in_(("active", "monitoring")))):
+        if write:
+            plan = sync_plan(db, inc)
+            if plan and plan.summary_source != "llm" and plan.summary_error is None:
+                enqueue(db, f"plan:{inc.id}:{inc.revision}", "action_plan", {"incident_id": inc.id, "revision": inc.revision}, 0)
+        else:
+            plan = read_plan(db, inc)
+        out[inc.id] = view(plan, db, inc)
+    return out
 
 
 def enqueue_for_article(db, article_id):

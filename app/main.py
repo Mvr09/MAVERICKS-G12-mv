@@ -1294,21 +1294,35 @@ def write_incident_work(iid: str, body: WorkInput, db: Session = Depends(get_db)
         db.rollback(); raise HTTPException(409 if isinstance(exc, ReviewConflict) else 422, str(exc))
 
 # Suggested action plans: rules pick the actions, Claude only drafts the summary.
-@app.get("/api/incidents/{iid}/plan", dependencies=[Depends(presenter)])
-def read_action_plan(iid: str, db: Session = Depends(get_db)):
-    from app.action_plans import sync_plan, view
+# Public reads never write; a presenter read stores the plan, its drafts and queues the summary.
+@app.get("/api/plans")
+def read_action_plans(request: Request, context: Literal["exercise", "rss"] = "exercise", db: Session = Depends(get_db)):
+    from app.action_plans import plans_for_context
+    from app.llm import status
+    write = identity(request, db) is not None
+    plans = plans_for_context(db, context, write=write)
+    if write: db.commit()
+    return {"plans": plans, "llm": {k: v for k, v in status().items() if k != "role"}}
+
+@app.get("/api/incidents/{iid}/plan")
+def read_action_plan(iid: str, request: Request, db: Session = Depends(get_db)):
+    from app.action_plans import read_plan, sync_plan, view
+    from app.llm import status
     from app.queue import enqueue
     inc = db.get(Incident, iid)
     if not inc: raise HTTPException(404, "Incidente no encontrado")
+    if identity(request, db) is None:
+        return {"plan": view(read_plan(db, inc), db, inc), "llm": status()}
     plan = sync_plan(db, inc)
     if plan and plan.summary_source != "llm" and plan.summary_error is None:
         enqueue(db, f"plan:{inc.id}:{inc.revision}", "action_plan", {"incident_id": inc.id, "revision": inc.revision}, 0)
     db.commit()
-    return {"plan": view(plan), "llm": __import__("app.llm", fromlist=["status"]).status()}
+    return {"plan": view(plan, db, inc), "llm": status()}
 
 @app.post("/api/incidents/{iid}/plan/summary", dependencies=[Depends(presenter)])
 def redraft_action_plan(iid: str, db: Session = Depends(get_db)):
     from app.action_plans import sync_plan, summarize, view
+    from app.llm import status
     inc = db.get(Incident, iid)
     if not inc: raise HTTPException(404, "Incidente no encontrado")
     plan = sync_plan(db, inc)
@@ -1317,7 +1331,26 @@ def redraft_action_plan(iid: str, db: Session = Depends(get_db)):
     plan.summary_source, plan.summary_llm, plan.summary_error = "template", None, None
     summarize(db, plan)
     db.commit()
-    return {"plan": view(plan), "llm": __import__("app.llm", fromlist=["status"]).status()}
+    return {"plan": view(plan, db, inc), "llm": status()}
+
+@app.post("/api/drafts/{did}/assist", dependencies=[Depends(presenter)])
+def assist_saved_draft(did: str, db: Session = Depends(get_db)):
+    """Claude rewrites a saved draft in its language; on any failure the text stays as it was."""
+    from app.drafts import rewrite
+    from app.llm import LLMError
+    d = db.get(Draft, did)
+    if not d: raise HTTPException(404, "Borrador no encontrado")
+    snap = d.evidence_snapshot or {}
+    target = db.get(Supplier, snap.get("target_supplier_id") or d.supplier_id)
+    lang = snap.get("language") or "es"
+    try:
+        text, writer = rewrite(d.text, lang, target.data.get("name"), target.data.get("country"))
+    except LLMError as exc:
+        return {"id": d.id, "text": d.text, "kind": d.kind, "writer": (snap.get("writer") or {}).get("writer", "template"), "llm_error": exc.message + " Se conserva el texto."}
+    d.text = text
+    d.evidence_snapshot = {**snap, "writer": writer}
+    db.commit()
+    return {"id": d.id, "text": d.text, "kind": d.kind, "writer": "claude", "llm_error": None}
 
 @app.get("/api/llm/status", dependencies=[Depends(presenter)])
 def llm_status():

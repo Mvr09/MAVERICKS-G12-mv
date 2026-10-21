@@ -155,3 +155,32 @@ def test_finished_analysis_enqueues_lowest_priority_plan_job(incident):
  db,a,inc=incident;enqueue_for_article(db,a.id);db.flush()
  job=db.scalar(select(Job).where(Job.key==f'plan:{inc.id}:{inc.revision}'))
  assert job.kind=='action_plan' and job.priority==0 and job.payload=={'incident_id':inc.id,'revision':inc.revision}
+
+def test_plan_mails_follow_recipient_language_and_cover_unconfirmed_links():
+ from app.action_plans import _supplier_mail,_verification_mail,_alternate_mail,language_for
+ f=facts()
+ assert language_for('Spain')=='es' and language_for('China')=='en'
+ assert _supplier_mail(f,'en').startswith('Subject:') and 'not a purchase order' in _supplier_mail(f,'en')
+ assert _supplier_mail(f,'es').startswith('Asunto:') and '2 de octubre de 2026' in _supplier_mail(f,'es')
+ assert 'Ningbo' in _verification_mail(f,'en') and 'Beta' in _alternate_mail(f,'es')
+
+@needs_db
+def test_plan_drafts_are_created_once_kept_when_edited_and_public_read_never_writes(incident):
+ from app.action_plans import plans_for_context,plan_drafts,read_plan
+ from app.models import Draft
+ db,a,inc=incident
+ assert read_plan(db,inc).id is None and db.scalar(select(ActionPlan.id).where(ActionPlan.incident_id==inc.id)) is None
+ public=plans_for_context(db,inc.context)[inc.id];assert public['drafts']==[] and public['decision']=='JEV'
+ assert db.scalar(select(ActionPlan.id).where(ActionPlan.incident_id==inc.id)) is None
+ plan=sync_plan(db,inc);drafts=plan_drafts(db,inc);assert [d['kind'] for d in drafts]==['supplier']
+ d=db.get(Draft,drafts[0]['id']);assert d.evidence_snapshot['language'] in ('es','en') and d.evidence_snapshot['source']=='plan'
+ d.text='Texto editado por el comprador, que no debe perderse.';db.flush()
+ plan.facts_hash='changed';sync_plan(db,inc);assert db.get(Draft,d.id).text.startswith('Texto editado')
+ assert len(plan_drafts(db,inc))==1
+
+@needs_db
+def test_pending_review_only_prepares_the_verification_mail(incident):
+ from app.action_plans import plan_drafts
+ db,a,inc=incident
+ inc.history=[{**h,'assessment':{**h['assessment'],'needs_review':True,'exposure_kind':'potential','requires_pathway_confirmation':True}} for h in inc.history];db.flush()
+ sync_plan(db,inc);assert [d['kind'] for d in plan_drafts(db,inc)]==['verification']

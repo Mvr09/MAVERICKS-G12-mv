@@ -3,7 +3,7 @@ from typing import Literal
 from datetime import date
 from pydantic import BaseModel,Field,ConfigDict,model_validator
 from sqlalchemy import select,text
-from app.models import Incident,IncidentWork,Draft
+from app.models import Incident,IncidentWork,Draft,ActionPlan
 from app.human_review import ReviewConflict
 from app.importer import digest
 class WorkInput(BaseModel):
@@ -19,8 +19,10 @@ class WorkInput(BaseModel):
         return self
 
 def view(db,inc):
+    # Plan drafts follow the plan's facts; manual drafts follow the incident history.
+    plan_hash=db.scalar(select(ActionPlan.facts_hash).where(ActionPlan.incident_id==inc.id,ActionPlan.revision==inc.revision))
     history=db.scalars(select(IncidentWork).where(IncidentWork.incident_id==inc.id).order_by(IncidentWork.created_at.desc(),IncidentWork.id.desc())).all()
-    return {'incident_id':inc.id,'state':inc.state,'current':{'id':history[0].id,**history[0].data}if history else None,'history':[{'id':r.id,'created_at':r.created_at,**r.data}for r in history],'drafts':[{'id':r.id,'kind':r.kind,'supplier_id':r.supplier_id,'context_changed':r.context_hash!=digest(inc.history),'preview':r.text.strip()[-160:]}for r in db.scalars(select(Draft).where(Draft.incident_id==inc.id))]}
+    return {'incident_id':inc.id,'state':inc.state,'current':{'id':history[0].id,**history[0].data}if history else None,'history':[{'id':r.id,'created_at':r.created_at,**r.data}for r in history],'drafts':[{'id':r.id,'kind':r.kind,'supplier_id':r.supplier_id,'from_plan':(r.evidence_snapshot or {}).get('source')=='plan','language':(r.evidence_snapshot or {}).get('language'),'context_changed':r.context_hash!=(plan_hash if (r.evidence_snapshot or {}).get('source')=='plan' else digest(inc.history)),'preview':r.text.strip()[-160:]}for r in db.scalars(select(Draft).where(Draft.incident_id==inc.id))]}
 
 def save(db,iid,body):
     db.execute(text("SELECT pg_advisory_xact_lock_shared(72642,4)"))

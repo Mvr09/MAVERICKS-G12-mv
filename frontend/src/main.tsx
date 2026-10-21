@@ -3,7 +3,7 @@ import { PendingAnalysis } from "./PendingAnalysis";
 import { RssTriage } from "./RssTriage";
 import { HumanReview } from "./HumanReview";
 import { IncidentWorkspace } from "./IncidentWorkspace";
-import { ActionPlan } from "./ActionPlan";
+import { ActionPlan, PlanCard, usePlans } from "./ActionPlan";
 import {
   scopedPath,
   useNewsFilters,
@@ -296,6 +296,19 @@ function App() {
   } | null>(null);
   const scope = context + "|" + effectiveOrigin;
   const activeScope = useRef(scope);
+  // Plans follow incident revisions; refetch only when an incident or alert changes.
+  const plans = usePlans(
+    context,
+    presenter +
+      "|" +
+      alerts.map((a) => a.id + ":" + a.revision).join(",") +
+      "|" +
+      suppliers
+        .flatMap((s) =>
+          (s.incidents ?? []).map((i) => i.id + i.state + i.priority),
+        )
+        .join(","),
+  );
   const cursor = useRef<number | null>(null),
     file = useRef<HTMLInputElement>(null),
     activeContext = useRef(context),
@@ -911,6 +924,7 @@ function App() {
                       suppliers={suppliers}
                       context={context}
                       origin={effectiveOrigin}
+                      plans={plans}
                     />
                     <FollowupDesk
                       suppliers={suppliers}
@@ -1232,6 +1246,24 @@ function App() {
                                 ? "Elegible para sonido"
                                 : "Solo aviso visual"}
                             </small>
+                            {plans[a.incident_id] &&
+                              a.is_current !== false &&
+                              !["superseded", "resolved"].includes(a.state) && (
+                                <details
+                                  className="alert-plan"
+                                  open={!a.acknowledged && a.urgent === "Y"}
+                                >
+                                  <summary>
+                                    Plan de acción (
+                                    {plans[a.incident_id]!.actions.length}{" "}
+                                    acciones)
+                                  </summary>
+                                  <PlanCard
+                                    plan={plans[a.incident_id]!}
+                                    presenter={presenter}
+                                  />
+                                </details>
+                              )}
                             {suppliers.find(
                               (s) => s.supplier_id === a.supplier_id,
                             ) && (
@@ -2774,8 +2806,8 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     .map((h, n) => (
                       <p key={n}>Resolución registrada: {h.reason}</p>
                     ))}
-                  {presenter && i.state !== "resolved" && (
-                    <ActionPlan incidentId={i.id} />
+                  {i.state !== "resolved" && (
+                    <ActionPlan incidentId={i.id} presenter={presenter} />
                   )}
                   {presenter && <IncidentWorkspace incidentId={i.id} />}
                   <small>

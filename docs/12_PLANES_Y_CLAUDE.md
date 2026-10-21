@@ -27,8 +27,28 @@ El LLM **opina, no decide**: ninguna salida de Claude cambia `analyses`, `incide
   - **Verificar el vínculo** si la exposición es `potential` o p_vínculo < 0,65.
   - **Avisar a planificación** si es urgente y la parada supera la cobertura, o si es fuente única con duración desconocida.
 - Plantilla determinista siempre disponible. Claude redacta un resumen de 80–120 palabras; se descarta si añade cifras ausentes de los hechos, si se sale de 50–160 palabras o si la llamada falla. El motivo queda en `summary_error`.
-- En la ficha del proveedor, **Usar en el seguimiento** copia la acción y su fecha al formulario de `IncidentWorkspace`. No guarda nada: el presentador registra el seguimiento.
+- **Usar en el seguimiento** copia la acción y su fecha al formulario de `IncidentWorkspace`. No guarda nada: el presentador registra el seguimiento.
 - Tabla `action_plans` (migración `0011`), una fila por incidente y revisión. `/readyz` y el worker exigen ahora el esquema `0011`.
+
+## Dónde se ve (como en la v3)
+
+| Pantalla | Qué muestra |
+| --- | --- |
+| Ficha del proveedor | Tarjeta **Plan de acción** por incidente abierto: plazo de cada acción (píldora roja «Hoy», ámbar «Esta semana», gris «Próximo informe semanal») y su motivo; margen de stock y rotura estimada, productos en juego y alternativo; resumen («Redactado por IA» si es de Claude); botones de correo del plan con su idioma, p. ej. «Correo al proveedor (EN)». |
+| Resumen · mesa de atención | En cada tarjeta: «Urgente», «Decide: JEV/humano», criticidad y fuente única; el titular; **Siguiente acción** con las dos primeras acciones y su plazo; margen y productos; enlace «Ver plan completo y borradores». |
+| Alertas | Desplegable **Plan de acción (N acciones)** en cada alerta vigente, abierto por defecto en las urgentes sin reconocer. |
+
+La lectura (`GET /api/plans?context=…` y `GET /api/incidents/{id}/plan`) es pública y no escribe nada. Si no hay plan guardado, se calcula al vuelo con la plantilla. Una lectura de presentador guarda el plan y sus correos y encola el resumen de Claude.
+
+## Correos del plan
+
+Se generan con plantillas, sin Claude y sin coste, en el idioma del destinatario según el país del catálogo: español para países hispanohablantes, inglés para el resto. Nunca se traducen al idioma local (chino, hindi…), porque el comprador no podría revisarlos.
+
+- **Correo al proveedor** si el plan incluye contactarle.
+- **Verificar vínculo** si la exposición está sin confirmar.
+- **Correo al alternativo** si hay alternativo sin incidente abierto.
+
+Con revisión pendiente solo se prepara la verificación: B no consulta al proveedor sin evidencia validada. Un correo editado por el comprador no se sobrescribe. En el diálogo, **Mejorar con Claude** (`POST /api/drafts/{id}/assist`) lo reescribe en el mismo idioma; si falla o añade cifras, el texto no cambia.
 
 ## Borradores con Claude
 
@@ -67,6 +87,9 @@ Sin `ANTHROPIC_API_KEY` la app funciona igual, con plantillas.
 - forma de la petición a Anthropic (salida estructurada y fallback por defecto) y rechazo `refusal`;
 - idioma y control de cifras de los borradores;
 - plan idempotente por revisión que no modifica el incidente;
-- trabajo encolado con prioridad 0.
+- trabajo encolado con prioridad 0;
+- correos del plan por idioma, que se crean una vez y no pisan textos editados;
+- solo verificación con revisión pendiente;
+- lectura pública sin escrituras.
 
 Usa un proveedor falso: sin red ni clave.

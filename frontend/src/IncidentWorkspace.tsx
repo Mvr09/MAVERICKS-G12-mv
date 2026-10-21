@@ -187,7 +187,8 @@ export function IncidentWorkspace({ incidentId }: { incidentId: string }) {
                   }}
                 >
                   Abrir consulta{" "}
-                  {d.kind === "alternate" ? "al alternativo" : "al proveedor"}
+                  {d.kind === "alternate" ? "al alternativo" : d.kind === "verification" ? "de verificación" : "al proveedor"}
+                  {d.from_plan ? " · del plan (" + String(d.language || "").toUpperCase() + ")" : ""}
                   {d.context_changed
                     ? " · contexto anterior, revisar"
                     : " · contexto vigente"}

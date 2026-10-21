@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import type { Supplier } from "./types";
 import { procurement } from "./procurement";
+import { DeadlinePill, marginText, type Plan } from "./ActionPlan";
+import { eventNames } from "./EventTag";
 
 export function ProcurementBrief({
   supplier: s,
@@ -98,11 +100,20 @@ export function AttentionDesk({
   suppliers,
   context,
   origin = "",
+  plans = {},
 }: {
   suppliers: Supplier[];
   context: string;
   origin?: string;
+  plans?: Record<string, Plan | null>;
 }) {
+  // The supplier's highest-priority open incident carries the plan shown on the card.
+  const planOf = (s: Supplier) => {
+    const top = (s.incidents ?? [])
+      .filter((i) => i.state === "active" || i.state === "monitoring")
+      .sort((a, b) => b.priority - a.priority)[0];
+    return top ? (plans[top.id] ?? null) : null;
+  };
   const attention = suppliers
     .filter((s) => s.incident_count > 0 || s.needs_review)
     .slice(0, 3);
@@ -161,8 +172,67 @@ export function AttentionDesk({
                 <ArrowUpRight size={18} />
               </Link>
               <p className="attention-material">{s.material}</p>
-              <p className="attention-reason">{s.reason}</p>
-              <ProcurementBrief supplier={s} context={context} compact />
+              {(() => {
+                const plan = planOf(s);
+                if (!plan)
+                  return (
+                    <>
+                      <p className="attention-reason">{s.reason}</p>
+                      <ProcurementBrief supplier={s} context={context} compact />
+                    </>
+                  );
+                const f = plan.facts;
+                return (
+                  <div className="attention-plan">
+                    <div className="attention-badges">
+                      {f.incidente.urgente && (
+                        <span className="badge danger">Urgente</span>
+                      )}
+                      <span className="badge info">Decide: {plan.decision}</span>
+                      {f.proveedor.criticidad && (
+                        <span className="badge purple">
+                          Criticidad{" "}
+                          {{ High: "alta", Medium: "media", Low: "baja" }[
+                            f.proveedor.criticidad
+                          ] ?? f.proveedor.criticidad}
+                        </span>
+                      )}
+                      {f.proveedor.fuente_unica && (
+                        <span className="badge purple">Fuente única</span>
+                      )}
+                    </div>
+                    {f.incidente.titular && (
+                      <p className="attention-reason">
+                        <strong>
+                          {eventNames[f.incidente.tipo_evento ?? ""] ?? "Evento"}:
+                        </strong>{" "}
+                        {f.incidente.titular}
+                      </p>
+                    )}
+                    <div className="attention-next">
+                      <div className="eyebrow">Siguiente acción</div>
+                      <ul>
+                        {plan.actions
+                          .filter((a) => a.code !== "monitor")
+                          .slice(0, 2)
+                          .map((a) => (
+                            <li key={a.code}>
+                              <DeadlinePill action={a} />
+                              <span>{a.label}</span>
+                            </li>
+                          ))}
+                      </ul>
+                      <small>
+                        Margen de stock: {marginText(f.stock.margen_dias)} ·
+                        Productos:{" "}
+                        {Array.isArray(f.productos)
+                          ? f.productos.join(", ")
+                          : f.productos}
+                      </small>
+                    </div>
+                  </div>
+                );
+              })()}
               <Link
                 className="button"
                 to={scopedPath(
@@ -172,7 +242,8 @@ export function AttentionDesk({
                   context,
                 )}
               >
-                Revisar suministro <ArrowRight size={15} />
+                {planOf(s) ? "Ver plan completo y borradores" : "Revisar suministro"}{" "}
+                <ArrowRight size={15} />
               </Link>
             </article>
           ))}
