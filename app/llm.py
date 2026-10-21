@@ -64,7 +64,7 @@ class AnthropicProvider:
         self.max_tokens = max_tokens
         self._anthropic = anthropic
         headers = {"anthropic-workspace-id": workspace_id} if workspace_id else None
-        self.client = anthropic.Anthropic(api_key=api_key, timeout=timeout, max_retries=2, default_headers=headers)
+        self.client = anthropic.Anthropic(api_key=api_key, timeout=timeout, max_retries=1, default_headers=headers)
 
     def complete(self, system, user, schema):
         a = self._anthropic

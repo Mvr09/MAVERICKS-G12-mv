@@ -64,7 +64,7 @@ La casilla **Redactar con Claude** de la ficha envía `assist: true` a `POST /ap
   - `output_config.effort` (`ANTHROPIC_EFFORT`, por defecto `low`);
   - salida JSON con esquema estricto `{"texto": ...}`.
 - Fallback de servidor activado (`fallbacks: "default"`, beta `server-side-fallback-2026-07-01`): si los clasificadores de seguridad rechazan una petición, Anthropic la reintenta con el modelo que recomienda para esa categoría.
-- Un `stop_reason: "refusal"` restante, un error HTTP, un timeout (`LLM_TIMEOUT_SECONDS`, 25 s) o un límite de uso se convierten en `LLMError` y se conserva la plantilla.
+- Un `stop_reason: "refusal"` restante, un error HTTP, un timeout (`LLM_TIMEOUT_SECONDS`, 12 s, con un reintento) o un límite de uso se convierten en `LLMError` y se conserva la plantilla.
 - Los logs registran modelo, latencia y tokens; nunca el prompt, la respuesta ni la clave.
 - El texto de la noticia se envía entre marcas `<<<DATOS>>>` y se declara como datos, no como instrucciones.
 
@@ -77,7 +77,7 @@ La casilla **Redactar con Claude** de la ficha envía `assist: true` a `POST /ap
 | `ANTHROPIC_MODEL` | `claude-sonnet-5-5` |
 | `ANTHROPIC_EFFORT` | `low` |
 | `LLM_PROVIDER` | `anthropic`; `none` desactiva Claude y deja solo plantillas |
-| `LLM_TIMEOUT_SECONDS` | `25` |
+| `LLM_TIMEOUT_SECONDS` | `12`: con un reintento, una petición desde la web nunca pasa de los 30 s de `api.ts`. Una llamada real tarda unos 6–7 s. |
 
 Sin `ANTHROPIC_API_KEY` la app funciona igual, con plantillas.
 

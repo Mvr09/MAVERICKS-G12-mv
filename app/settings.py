@@ -33,7 +33,8 @@ class Settings(BaseSettings):
     anthropic_workspace_id: str = ""
     anthropic_model: str = "claude-sonnet-5-5"
     anthropic_effort: str = "low"
-    llm_timeout_seconds: float = 25.0
+    # api.ts aborts at 30 s: 12 s x 2 attempts plus backoff stays below it.
+    llm_timeout_seconds: float = 12.0
     llm_max_tokens: int = 4000
 
     @field_validator("database_url", mode="before")
