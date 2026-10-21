@@ -1,3 +1,13 @@
+# Actualización · 21 de octubre de 2026
+
+- Publicado **21c92ef**: mapa de exposición en el Resumen (proveedores por banda de prioridad, anillo de urgencia, tamaño = gasto anual, eventos abiertos). Comprobado contra la API real: 40 puntos, 14 urgentes, 19 eventos, sin errores JS. **ba91a3f** (panel de 4 KPIs de exposición de compras) está en `main` y compila, pero no está desplegado: Railway tenía los deploys en pausa y sigue sirviendo 21c92ef.
+- Reanálisis explícito con el perfil 3.4.2 de los lotes validation, test y LiveDay en Railway, por decisión del equipo, mediante «Reanalizar lote». 44/44 completados, 0 errores, sin perfiles mezclados. Antes mostraban resultados 1.0.0. Historial conservado; alertas y borradores ligados a la revisión anterior retirados.
+- Validation contra referencias ya inspeccionadas: riesgo FN1 → 0, proveedores TP8/FN2 → TP10/FP1/FN0, conjuntos exactos 8/10 → 9/10, urgencia sin cambio (FP1 N044), revisión 8 → 7. Test y LiveDay sin referencias: cambian 5/20 y 5/14 decisiones. Revisiones del ejercicio: 26.
+- Tiempos de lote en servidor: validation 4,63 s, test 8,84 s, LiveDay 6,66 s. A20 conserva su medición histórica; el de LiveDay es un indicio, no una renovación del protocolo.
+- Sin cambios de preguntas, umbrales ni política. A06 sigue abierto (S003 provincia desconocida; N044 urgente por S003). RSS periódico de pago sigue desactivado.
+
+## Historial conservado
+
 # Cierre final verificado · 19 de octubre de 2026
 
 - Publicado funcional **af47731** por main/autodeploy. Perfil habitual **3.4.2/revisión1.3.1** completo de campaña148;1.0.0 avanzado/rollback. Sin reanálisis de históricos, cambios humanos ni alertas retroactivas. Nuevos trabajos y caché separados por instantánea; contraste auxiliar antiguo conserva su perfil.
