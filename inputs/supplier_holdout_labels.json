@@ -1,0 +1,253 @@
+{
+  "dataset": "supplier_holdout.xlsx",
+  "sheet": "News_Test",
+  "generated": "2026-10-21",
+  "generator": "scripts/build_holdout.py (AI-written fictional news)",
+  "catalog": "inputs/supplier_training.xlsx (Suppliers)",
+  "second_pass": "derive() agrees with every hand label",
+  "max_token_jaccard_vs_training_validation": 0.159,
+  "supplier_event_type_collisions_vs_training_validation": 0,
+  "compared_against_news": 40,
+  "labels": [
+    {
+      "News_ID": "H001",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "noise",
+      "explanation": "Car market statistics; no Helixa supplier or material involved."
+    },
+    {
+      "News_ID": "H002",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S026",
+      "case_type": "supplier_positive",
+      "explanation": "Alpine Filtration AG (S026) adds sterile filter capacity: positive news about a supplier, no threat to supply."
+    },
+    {
+      "News_ID": "H003",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "location_trap",
+      "explanation": "San Juan in Argentina, not San Juan, Puerto Rico (S025). No Helixa supplier in the affected area."
+    },
+    {
+      "News_ID": "H004",
+      "Is_Risk": "Y",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S009",
+      "case_type": "direct",
+      "explanation": "Named supplier S009 (Rhenvale) loses one day; deliveries at most two days late. Minor and short; approved alternate S010 and 40 days cover."
+    },
+    {
+      "News_ID": "H005",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "name_trap",
+      "explanation": "Polaris Film Studios is a US film company in Atlanta, not Polaris Films Sp. z o.o. (S019, Lodz)."
+    },
+    {
+      "News_ID": "H006",
+      "Is_Risk": "Y",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S036",
+      "case_type": "regional",
+      "explanation": "Ring-road closure delays Sao Paulo deliveries up to three days: affects Aurum Gelatin Capsules (S036, Sao Paulo) without naming it. Minor and short; alternate S037 and 40 days cover."
+    },
+    {
+      "News_ID": "H007",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "noise",
+      "explanation": "Cultural event in Oslo; no supply impact for Nordic Lipids (S012) or anyone else."
+    },
+    {
+      "News_ID": "H008",
+      "Is_Risk": "Y",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S040",
+      "case_type": "strategic",
+      "explanation": "Single-source S040 will stop cleanroom garments at end of 2027: supply risk that needs a new source, but slow-moving (over a year) and supply continues."
+    },
+    {
+      "News_ID": "H009",
+      "Is_Risk": "Y",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S016",
+      "case_type": "regional",
+      "explanation": "36-hour power cut in Bergamo affects Vitrum Medica (S016, Bergamo) without naming it. Short; alternate S015 and 35 days cover."
+    },
+    {
+      "News_ID": "H010",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S015",
+      "case_type": "supplier_positive",
+      "explanation": "Lumina Glassworks (S015) adds vial output: positive supplier news, no risk."
+    },
+    {
+      "News_ID": "H011",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "name_trap",
+      "explanation": "Celsius Heating Systems is a UK boiler maker, not Celsius Bioprocess Systems (S025, San Juan)."
+    },
+    {
+      "News_ID": "H012",
+      "Is_Risk": "Y",
+      "Urgent": "Y",
+      "Affected_Supplier_IDs": "S003",
+      "case_type": "direct",
+      "explanation": "Regulator stops all production at single-source, High-criticality S003 for at least six weeks; only 30 days of cover."
+    },
+    {
+      "News_ID": "H013",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "location_trap",
+      "explanation": "Lancaster in England, not Lancaster, USA (S017). The warehouse belongs to a local paint distributor."
+    },
+    {
+      "News_ID": "H014",
+      "Is_Risk": "Y",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S035",
+      "case_type": "strategic",
+      "explanation": "Single-source platform S035 will be switched off in mid-2028: supply risk that needs a replacement plan, not an immediate stop."
+    },
+    {
+      "News_ID": "H015",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "noise",
+      "explanation": "Competitor product launch; commercial news with no effect on Helixa's suppliers."
+    },
+    {
+      "News_ID": "H016",
+      "Is_Risk": "Y",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S033",
+      "case_type": "regional",
+      "explanation": "Main Xi'an China-Europe rail line closed four days: affects Silkroute Rail Freight (S033, Xi'an) without naming it. About one week of delay; alternate S032."
+    },
+    {
+      "News_ID": "H017",
+      "Is_Risk": "Y",
+      "Urgent": "Y",
+      "Affected_Supplier_IDs": "S025",
+      "case_type": "direct",
+      "explanation": "Single-source, High-criticality S025 stops bag output and recalls lots; no deliveries for at least ten weeks, beyond its 40 days of cover."
+    },
+    {
+      "News_ID": "H018",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "name_trap",
+      "explanation": "Kaveri Spinning Mills is a cotton yarn maker in Tamil Nadu, not Kaveri Fine Chemicals (S002, Ahmedabad)."
+    },
+    {
+      "News_ID": "H019",
+      "Is_Risk": "Y",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S018",
+      "case_type": "direct",
+      "explanation": "Named supplier S018 runs on one of two foil lines; some orders one week late. Minor; alternate S019."
+    },
+    {
+      "News_ID": "H020",
+      "Is_Risk": "Y",
+      "Urgent": "Y",
+      "Affected_Supplier_IDs": "S011",
+      "case_type": "regional",
+      "explanation": "All factories in Valencia closed for at least eight weeks: stops single-source S011 (Valencia) beyond its 35 days of cover."
+    },
+    {
+      "News_ID": "H021",
+      "Is_Risk": "Y",
+      "Urgent": "Y",
+      "Affected_Supplier_IDs": "S008",
+      "case_type": "direct",
+      "explanation": "Regulator stops all shipments from single-source, High-criticality S008 for 4-6 months, beyond its 90 days of cover."
+    },
+    {
+      "News_ID": "H022",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S034",
+      "case_type": "supplier_positive",
+      "explanation": "Cyprin Analytical Services (S034) doubles testing capacity: positive supplier news."
+    },
+    {
+      "News_ID": "H023",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "location_trap",
+      "explanation": "Hyderabad in Pakistan, not Hyderabad, India (S001)."
+    },
+    {
+      "News_ID": "H024",
+      "Is_Risk": "Y",
+      "Urgent": "Y",
+      "Affected_Supplier_IDs": "S028",
+      "case_type": "regional",
+      "explanation": "Every chemical and lab products plant in Darmstadt stopped for at least three months: stops single-source S028 (Darmstadt) beyond its 60 days of cover."
+    },
+    {
+      "News_ID": "H025",
+      "Is_Risk": "Y",
+      "Urgent": "Y",
+      "Affected_Supplier_IDs": "S012",
+      "case_type": "direct",
+      "explanation": "Reactor failure stops all production at single-source, High-criticality S012 for at least ten weeks; only 30 days of cover."
+    },
+    {
+      "News_ID": "H026",
+      "Is_Risk": "Y",
+      "Urgent": "Y",
+      "Affected_Supplier_IDs": "S017",
+      "case_type": "direct",
+      "explanation": "Explosion shuts single-source, High-criticality S017 (Lancaster, USA); no deliveries for at least three months, beyond 40 days of cover."
+    },
+    {
+      "News_ID": "H027",
+      "Is_Risk": "Y",
+      "Urgent": "Y",
+      "Affected_Supplier_IDs": "S020",
+      "case_type": "regional",
+      "explanation": "All Osaka factories closed for at least two months: stops single-source S020 (Osaka) beyond its 45 days of cover."
+    },
+    {
+      "News_ID": "H028",
+      "Is_Risk": "Y",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S024",
+      "case_type": "strategic",
+      "explanation": "Single-source S024 plans a move in H2 2027 with a gap of several weeks and requalification: slow-moving supply risk."
+    },
+    {
+      "News_ID": "H029",
+      "Is_Risk": "N",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "",
+      "case_type": "name_trap",
+      "explanation": "Nordic Lipid Foods is a Danish margarine maker, not Nordic Lipids AS (S012, Oslo)."
+    },
+    {
+      "News_ID": "H030",
+      "Is_Risk": "Y",
+      "Urgent": "N",
+      "Affected_Supplier_IDs": "S029",
+      "case_type": "direct",
+      "explanation": "Named supplier S029 delays some kits by up to ten days; Low criticality and 30 days cover: minor."
+    }
+  ]
+}
