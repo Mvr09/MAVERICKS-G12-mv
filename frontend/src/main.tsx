@@ -66,6 +66,7 @@ import {
   Clock3,
   Menu,
   LogOut,
+  Sparkles,
 } from "lucide-react";
 
 import { api, setCsrf, date, number } from "./api";
@@ -2672,7 +2673,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
       setDraftMessage(
         d.llm_error ||
           (d.writer === "claude"
-            ? "Redactado por Claude en el idioma del destinatario. Revísalo antes de usarlo."
+            ? "Redactado con IA en el idioma del destinatario. Revísalo antes de usarlo."
             : ""),
       );
       setDraft(d);
@@ -2851,15 +2852,20 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     >
                       Consultar alternativo
                     </AsyncButton>
-                    <label className="assist-toggle">
-                      <input
-                        type="checkbox"
-                        checked={assist}
-                        disabled={!presenter}
-                        onChange={(e) => setAssist(e.target.checked)}
-                      />
-                      Redactar con Claude
-                    </label>
+                    <button
+                      type="button"
+                      className={"ai-toggle" + (assist ? " on" : "")}
+                      aria-pressed={assist}
+                      disabled={!presenter}
+                      title="Las consultas se redactan con IA en el idioma del destinatario; si falla, se usa la plantilla."
+                      onClick={() => setAssist(!assist)}
+                    >
+                      <span className="ai-toggle-track" aria-hidden>
+                        <span className="ai-toggle-knob" />
+                      </span>
+                      <Sparkles size={15} aria-hidden />
+                      Redactar con IA
+                    </button>
                     {i.state !== "resolved" && (
                       <button
                         className="button"

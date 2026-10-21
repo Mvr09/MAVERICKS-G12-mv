@@ -3016,11 +3016,74 @@ dialog > header {
 .attention-next small {
   color: #5b6475;
 }
-.assist-toggle {
+.ai-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px 0 10px;
+  border: 1px solid #ddd7ff;
+  border-radius: 999px;
+  background: #fff;
+  color: #4b3fa0;
+  font: inherit;
   font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+.ai-toggle:hover:not(:disabled) {
+  border-color: #b9adff;
+  background: #f7f5ff;
+}
+.ai-toggle:focus-visible {
+  outline: 2px solid #635bff;
+  outline-offset: 2px;
+}
+.ai-toggle:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.ai-toggle-track {
+  position: relative;
+  width: 30px;
+  height: 18px;
+  flex: none;
+  border-radius: 999px;
+  background: #e2e5f0;
+  transition: background 140ms ease;
+}
+.ai-toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(20 20 50 / 25%);
+  transition: transform 140ms ease;
+}
+.ai-toggle.on {
+  border-color: #6652bf;
+  background: linear-gradient(115deg, #f3f0ff, #eef4ff);
+  color: #3d2f99;
+}
+.ai-toggle.on .ai-toggle-track {
+  background: #635bff;
+}
+.ai-toggle.on .ai-toggle-knob {
+  transform: translateX(12px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-toggle,
+  .ai-toggle-track,
+  .ai-toggle-knob {
+    transition: none;
+  }
 }
 /* The card adapts to its own width: narrow supplier columns, alerts and phones. */
 @container (max-width: 600px) {

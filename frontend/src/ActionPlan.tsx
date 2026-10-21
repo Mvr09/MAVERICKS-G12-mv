@@ -1,5 +1,5 @@
 import { AsyncButton } from "./OperationFeedback";
-import { Bot, CalendarClock, FileText, Package, Repeat2 } from "lucide-react";
+import { Bot, CalendarClock, FileText, Package, Repeat2, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { api } from "./api";
 
@@ -246,7 +246,7 @@ export function PlanCard({
         {presenter && llm?.configured && onPlan && (
           <AsyncButton
             className="button"
-            busyLabel="Claude está redactando…"
+            busyLabel="La IA está redactando…"
             onAction={async () => {
               try {
                 const r = await api(
@@ -260,7 +260,7 @@ export function PlanCard({
               }
             }}
           >
-            <Bot size={16} aria-hidden /> Volver a redactar con Claude
+            <Sparkles size={16} aria-hidden /> Volver a redactar con IA
           </AsyncButton>
         )}
       </div>
@@ -326,7 +326,7 @@ export function PlanCard({
               {llm?.configured && (
                 <AsyncButton
                   className="button"
-                  busyLabel="Claude está redactando…"
+                  busyLabel="La IA está redactando…"
                   onAction={async () => {
                     const r = await api("/drafts/" + draft.id + "/assist", {
                       method: "POST",
@@ -334,11 +334,11 @@ export function PlanCard({
                     setDraft({ ...draft, text: r.text });
                     setMessage(
                       r.llm_error ||
-                        "Reescrito por Claude en el mismo idioma. Revísalo antes de usarlo.",
+                        "Reescrito con IA en el mismo idioma. Revísalo antes de usarlo.",
                     );
                   }}
                 >
-                  <Bot size={16} aria-hidden /> Mejorar con Claude
+                  <Sparkles size={16} aria-hidden /> Mejorar con IA
                 </AsyncButton>
               )}
             </div>
@@ -407,7 +407,7 @@ export function ActionPlan({
         onPlan={(plan) => setData({ ...data, plan })}
       />
       {waiting && (
-        <small role="status">Claude está redactando el resumen…</small>
+        <small role="status">La IA está redactando el resumen…</small>
       )}
     </>
   );
