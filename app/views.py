@@ -2,6 +2,7 @@ from datetime import date
 from app.provenance import KNOWN_INPUT_FILENAMES
 from app.event_tags import event_tag
 from app.geography import payload_location
+from app import review_scope
 from app.settings import POLICY
 from sqlalchemy import select, func, and_
 from app.models import (
@@ -52,13 +53,13 @@ def origin_matches(article, origin):
     )
 
 
-def article_view(db, a):
+def article_view(db, a, suppliers=None):
     result = db.scalar(
         select(Analysis)
         .where(Analysis.article_id == a.id, Analysis.generation == a.generation)
         .order_by(Analysis.created_at.desc())
     )
-    return {
+    item = {
         "id": a.id,
         "batch_id": a.batch_id,
         "origin": "batch:" + a.batch_id if a.batch_id else "rss:" + (a.source_id or ""),
@@ -85,6 +86,9 @@ def article_view(db, a):
         "cache_stages": result.raw.get("_cache_stages", []) if result else [],
         "new_requests": result.raw.get("_new_requests") if result else None,
     }
+    return review_scope.adjust_article(
+        item, a.data, review_scope.catalog(db) if suppliers is None else suppliers
+    )
 
 
 def articles_view(db, context="exercise", include_history=False, origin=""):
@@ -105,7 +109,8 @@ def articles_view(db, context="exercise", include_history=False, origin=""):
     articles = db.scalars(
         query.order_by(Article.fetched_at.desc(), Article.row_order)
     ).all()
-    items = [article_view(db, a) for a in articles if origin_matches(a, origin)]
+    catalog = review_scope.catalog(db)
+    items = [article_view(db, a, catalog) for a in articles if origin_matches(a, origin)]
     # One batched lookup makes in-flight work visible after reload without exposing payloads.
     if items:
         jobs = db.scalars(select(Job).where(
