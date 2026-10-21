@@ -3416,13 +3416,65 @@ dialog > header {
 .daily-work {
   margin: 18px 0;
 }
+/* Rows and notes inside a card follow the inline padding of its heading. */
+.card {
+  --card-inline: 22px;
+}
 .daily-work article {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
   border-top: 1px solid #eceaf4;
-  padding: 12px 0;
+  padding: 17px var(--card-inline);
+}
+.daily-work article strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.55;
+  color: #0a2540;
+}
+.daily-work article p {
+  font-size: 10px;
+  margin-top: 4px;
+}
+.daily-work article .text-link {
+  font-size: 11px;
+  white-space: nowrap;
+}
+.daily-work > p {
+  font-size: 11px;
+  padding: 0 var(--card-inline) 18px;
+}
+.daily-work details > summary {
+  border-top: 1px solid #eceaf4;
+  padding: 14px var(--card-inline);
+  font-size: 11px;
+  font-weight: 600;
+  color: #5e54d8;
+  cursor: pointer;
+}
+.card > .section-heading + .small-note {
+  margin: 0;
+  padding: 0 var(--card-inline) 16px;
+}
+/* Profile selector of the exercise batches card (Resumen and Analítica). */
+.batches > .analysis-profile {
+  max-width: none;
+  margin: 0;
+  padding: 0 var(--card-inline) 18px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.batches > .analysis-profile select {
+  max-width: 40rem;
+  font-size: 12px;
+  font-weight: 400;
+}
+.batches > .analysis-profile small {
+  font-size: 10px;
+  font-weight: 400;
 }
 .daily-work h2 {
   font-size: 18px;
@@ -3436,9 +3488,20 @@ dialog > header {
 .page-heading h1 {
   font-size: clamp(25px, 3vw, 34px);
 }
+@media (max-width: 850px) {
+  .card {
+    --card-inline: 20px;
+  }
+}
+@media (max-width: 640px) {
+  .card {
+    --card-inline: 16px;
+  }
+}
 @media (max-width: 700px) {
   .daily-work article {
     display: grid;
+    gap: 8px;
   }
   .sound-bar {
     flex-wrap: wrap;
