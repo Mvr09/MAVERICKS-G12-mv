@@ -21,6 +21,7 @@ import {
   SupplierVerificationList,
 } from "./VerificationDraft";
 import { ProcessingPulse } from "./ProcessingPulse";
+import { BusinessKpis } from "./BusinessKpis";
 import { BuyerDecision } from "./BuyerDecision";
 import { AttentionDesk, ProcurementBrief } from "./Procurement.tsx";
 import { SupplierMap, toMapData } from "./SupplierMap";
@@ -945,6 +946,7 @@ function App() {
                         tone="green"
                       />
                     </div>
+                    <BusinessKpis suppliers={suppliers} context={context} />
                     <ProcessingPulse
                       key={scope}
                       articles={articles}

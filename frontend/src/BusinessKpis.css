@@ -1,0 +1,57 @@
+.bkpi {
+  margin-bottom: 26px;
+}
+.bkpi-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.bkpi-heading p {
+  font-size: 11px;
+  margin-top: 4px;
+}
+.bkpi-heading a {
+  color: #635bff;
+  font-size: 11px;
+  white-space: nowrap;
+}
+/* One row with every tile when there is room; otherwise two columns.
+   Column count comes from the tile array (--bkpi-cols), never 3 + 1. */
+.bkpi {
+  container: bkpi / inline-size;
+}
+.bkpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.bkpi-grid > .kpi:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+@container bkpi (min-width: 720px) {
+  .bkpi-grid {
+    grid-template-columns: repeat(var(--bkpi-cols), minmax(0, 1fr));
+  }
+  .bkpi-grid > .kpi:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+}
+.bkpi-num {
+  white-space: nowrap;
+}
+.bkpi-unit {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #52647a;
+}
+@media (max-width: 480px) {
+  .bkpi-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
