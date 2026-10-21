@@ -91,6 +91,21 @@ def run_job(jid):
                     "queued_at":j.payload.get("queued_at"),"new_requests":len(calls),
                     "cached_stages":result_row.raw.get("_cache_stages",[]) if result_row else [],
                     "usage":{k:sum(c.usage.get(k,0) for c in calls) if calls and all(isinstance(c.usage.get(k),(int,float)) for c in calls) else None for k in ("input_tokens","output_tokens","total_tokens")}}}
+                if j.state == "done":
+                    from app.action_plans import enqueue_for_article
+                    enqueue_for_article(db, article.id)
+            elif j.kind == "action_plan":
+                # Suggestion only: a failed or missing Claude call keeps the template and never fails the job.
+                from app.action_plans import sync_plan, summarize
+                from app.models import Incident
+                inc = db.scalar(select(Incident).where(Incident.id == j.payload["incident_id"]).with_for_update())
+                plan = sync_plan(db, inc) if inc and inc.revision == j.payload["revision"] else None
+                db.commit()  # release the incident lock before calling Claude
+                if plan:
+                    summarize(db, plan)
+                j = db.get(Job, jid)
+                j.state = "done"
+                j.error = None
             elif j.kind == "campaign":
                 from app.campaigns import process
                 result = process(db, j.payload["run_id"])
@@ -156,7 +171,7 @@ def main():
                 revision = db.execute(
                     text("select version_num from alembic_version")
                 ).scalar_one()
-                if revision == "0010":
+                if revision == "0011":
                     break
         except Exception:
             pass

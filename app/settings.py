@@ -25,6 +25,16 @@ class Settings(BaseSettings):
     demo_fixtures_enabled: bool = False
     max_upload_bytes: int = 10_000_000
     max_import_rows: int = 5000
+    # Redacción con Claude (planes de acción y borradores). Nunca decide riesgo,
+    # urgencia ni prioridad. Sin clave o con LLM_PROVIDER=none se usa la plantilla.
+    llm_provider: str = "anthropic"
+    anthropic_api_key: SecretStr = SecretStr("")
+    # Solo para claves sin workspace asignado: la API exige la cabecera anthropic-workspace-id.
+    anthropic_workspace_id: str = ""
+    anthropic_model: str = "claude-sonnet-5-5"
+    anthropic_effort: str = "low"
+    llm_timeout_seconds: float = 25.0
+    llm_max_tokens: int = 4000
 
     @field_validator("database_url", mode="before")
     @classmethod

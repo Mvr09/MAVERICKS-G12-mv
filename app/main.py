@@ -135,7 +135,7 @@ def ready(db: Session = Depends(get_db)):
         revision = db.execute(
             text("select version_num from alembic_version")
         ).scalar_one()
-        if revision != "0010":
+        if revision != "0011":
             raise ValueError()
     except Exception:
         raise HTTPException(503, "Base de datos o esquema no disponible")
@@ -1109,6 +1109,7 @@ class DraftInput(BaseModel):
     supplier_id: str
     incident_id: str
     kind: Literal["supplier", "alternate"] = "supplier"
+    assist: bool = False
 
 
 class DraftEdit(BaseModel):
@@ -1127,18 +1128,26 @@ def draft(body: DraftInput, db: Session = Depends(get_db)):
         content = make_draft(db, s, inc, body.kind)
     except ValueError as e:
         raise HTTPException(409, str(e))
+    writer, llm_error = {"writer": "template"}, None
+    if body.assist:
+        from app.drafts import assist_draft
+        from app.llm import LLMError
+        try:
+            content, writer = assist_draft(db, s, body.kind, content)
+        except LLMError as exc:
+            llm_error = exc.message + " Se conserva la plantilla."
     d = Draft(
         supplier_id=s.id,
         incident_id=inc.id,
         article_id=__import__("app.views",fromlist=["current"]).current(inc).get("article_id"),
-        evidence_snapshot={"incident_id":inc.id,"revision":inc.revision,"entry":__import__("app.views",fromlist=["current"]).current(inc)},
+        evidence_snapshot={"incident_id":inc.id,"revision":inc.revision,"entry":__import__("app.views",fromlist=["current"]).current(inc),"writer":writer},
         kind=body.kind,
         text=content,
         context_hash=digest(inc.history),
     )
     db.add(d)
     db.commit()
-    return {"id": d.id, "text": d.text}
+    return {"id": d.id, "text": d.text, "writer": writer["writer"], "llm_error": llm_error}
 
 
 @app.get("/api/model/candidates", dependencies=[Depends(presenter)])
@@ -1283,6 +1292,37 @@ def write_incident_work(iid: str, body: WorkInput, db: Session = Depends(get_db)
         return view(db, db.get(Incident, iid))
     except ValueError as exc:
         db.rollback(); raise HTTPException(409 if isinstance(exc, ReviewConflict) else 422, str(exc))
+
+# Suggested action plans: rules pick the actions, Claude only drafts the summary.
+@app.get("/api/incidents/{iid}/plan", dependencies=[Depends(presenter)])
+def read_action_plan(iid: str, db: Session = Depends(get_db)):
+    from app.action_plans import sync_plan, view
+    from app.queue import enqueue
+    inc = db.get(Incident, iid)
+    if not inc: raise HTTPException(404, "Incidente no encontrado")
+    plan = sync_plan(db, inc)
+    if plan and plan.summary_source != "llm" and plan.summary_error is None:
+        enqueue(db, f"plan:{inc.id}:{inc.revision}", "action_plan", {"incident_id": inc.id, "revision": inc.revision}, 0)
+    db.commit()
+    return {"plan": view(plan), "llm": __import__("app.llm", fromlist=["status"]).status()}
+
+@app.post("/api/incidents/{iid}/plan/summary", dependencies=[Depends(presenter)])
+def redraft_action_plan(iid: str, db: Session = Depends(get_db)):
+    from app.action_plans import sync_plan, summarize, view
+    inc = db.get(Incident, iid)
+    if not inc: raise HTTPException(404, "Incidente no encontrado")
+    plan = sync_plan(db, inc)
+    if not plan: raise HTTPException(409, "El incidente está resuelto; no hay plan abierto")
+    db.commit()
+    plan.summary_source, plan.summary_llm, plan.summary_error = "template", None, None
+    summarize(db, plan)
+    db.commit()
+    return {"plan": view(plan), "llm": __import__("app.llm", fromlist=["status"]).status()}
+
+@app.get("/api/llm/status", dependencies=[Depends(presenter)])
+def llm_status():
+    from app.llm import status
+    return status()
 
 # Private comparative campaigns. Public routes never expose evaluation references.
 class CampaignInput(BaseModel):

@@ -3,6 +3,7 @@ import { PendingAnalysis } from "./PendingAnalysis";
 import { RssTriage } from "./RssTriage";
 import { HumanReview } from "./HumanReview";
 import { IncidentWorkspace } from "./IncidentWorkspace";
+import { ActionPlan } from "./ActionPlan";
 import {
   scopedPath,
   useNewsFilters,
@@ -2567,6 +2568,7 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
     [draft, setDraft] = useState<{ id: string; text: string } | null>(null),
     [error, setError] = useState(""),
     [draftMessage, setDraftMessage] = useState(""),
+    [assist, setAssist] = useState(false),
     [resolution, setResolution] = useState<string | null>(null),
     [reason, setReason] = useState(""),
     [resolving, setResolving] = useState(false),
@@ -2610,12 +2612,17 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
   }, [id, context, origin]);
   async function create(kind: string, iid: string) {
     try {
-      setDraft(
-        await api("/drafts", {
-          method: "POST",
-          body: JSON.stringify({ supplier_id: id, incident_id: iid, kind }),
-        }),
+      const d = await api("/drafts", {
+        method: "POST",
+        body: JSON.stringify({ supplier_id: id, incident_id: iid, kind, assist }),
+      });
+      setDraftMessage(
+        d.llm_error ||
+          (d.writer === "claude"
+            ? "Redactado por Claude en el idioma del destinatario. Revísalo antes de usarlo."
+            : ""),
       );
+      setDraft(d);
       window.dispatchEvent(
         new CustomEvent("radar:incident-drafts", { detail: iid }),
       );
@@ -2767,6 +2774,9 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     .map((h, n) => (
                       <p key={n}>Resolución registrada: {h.reason}</p>
                     ))}
+                  {presenter && i.state !== "resolved" && (
+                    <ActionPlan incidentId={i.id} />
+                  )}
                   {presenter && <IncidentWorkspace incidentId={i.id} />}
                   <small>
                     Máximo histórico: {number(i.historical_priority)} / 100
@@ -2788,6 +2798,15 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
                     >
                       Consultar alternativo
                     </AsyncButton>
+                    <label className="assist-toggle">
+                      <input
+                        type="checkbox"
+                        checked={assist}
+                        disabled={!presenter}
+                        onChange={(e) => setAssist(e.target.checked)}
+                      />
+                      Redactar con Claude
+                    </label>
                     {i.state !== "resolved" && (
                       <button
                         className="button"
