@@ -17,11 +17,14 @@ export function ProcurementBrief({
   context,
   compact = false,
   incidentId,
+  hideNext = false,
 }: {
   supplier: Supplier;
   context: string;
   compact?: boolean;
   incidentId?: string;
+  // The action plan already shows the next action next to this brief.
+  hideNext?: boolean;
 }) {
   const p = procurement(s, context, incidentId);
   return (
@@ -68,14 +71,16 @@ export function ProcurementBrief({
           </div>
         </>
       )}
-      <div className="procurement-next">
-        <FileCheck2 size={17} />
-        <div>
-          <strong>Siguiente acción</strong>
-          <p>{p.action}</p>
-          {p.work && <small>Acción registrada: {p.work.action} · {p.work.status === "done" ? "Completada" : p.work.status === "verifying" ? "En verificación" : p.work.status === "followup" ? "Seguimiento" : "Pendiente"}{p.work.due_date ? " · " + p.work.due_date : ""}</small>}
+      {!hideNext && (
+        <div className="procurement-next">
+          <FileCheck2 size={17} />
+          <div>
+            <strong>Siguiente acción</strong>
+            <p>{p.action}</p>
+            {p.work && <small>Acción registrada: {p.work.action} · {p.work.status === "done" ? "Completada" : p.work.status === "verifying" ? "En verificación" : p.work.status === "followup" ? "Seguimiento" : "Pendiente"}{p.work.due_date ? " · " + p.work.due_date : ""}</small>}
+          </div>
         </div>
-      </div>
+      )}
       {!compact && (
         <>
           <p className="small-note">{p.alternative}</p>
