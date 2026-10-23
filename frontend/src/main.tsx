@@ -1298,6 +1298,11 @@ function App() {
                                 context={context}
                                 incidentId={a.incident_id}
                                 compact
+                                hideNext={
+                                  !!plans[a.incident_id] &&
+                                  a.is_current !== false &&
+                                  !["superseded", "resolved"].includes(a.state)
+                                }
                               />
                             )}
                             <div className="inline">
@@ -2735,8 +2740,16 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
           className="procurement-detail"
           aria-label="Decisión de suministro"
         >
-          <h3>Impacto y siguiente acción</h3>
-          <ProcurementBrief supplier={s} context={context} />
+          {/* Open incidents carry their own action plan below. */}
+          {(() => {
+            const planned = s.incidents.some((i) => i.state !== "resolved");
+            return (
+              <>
+                <h3>{planned ? "Impacto" : "Impacto y siguiente acción"}</h3>
+                <ProcurementBrief supplier={s} context={context} hideNext={planned} />
+              </>
+            );
+          })()}
         </section>
         <div className="detail-grid">
           <div>
