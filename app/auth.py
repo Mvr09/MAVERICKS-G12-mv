@@ -16,15 +16,22 @@ def codec():
 
 
 def identity(request: Request, db: Session):
-    token = request.cookies.get("radar_session")
-    if not token or not settings.session_secret.get_secret_value():
+    if not settings.session_secret.get_secret_value():
         return None
-    try:
-        sid = codec().loads(token)
-    except BadSignature:
-        return None
-    record = db.get(SessionRecord, sid)
-    return record if record and record.expires_at > now() else None
+    # Partitioned first when the top-level Site isolates third-party cookies;
+    # the ordinary session also supports user-granted Storage Access.
+    for name in ("radar_embed_session", "radar_session"):
+        token = request.cookies.get(name)
+        if not token:
+            continue
+        try:
+            sid = codec().loads(token)
+        except BadSignature:
+            continue
+        record = db.get(SessionRecord, sid)
+        if record and record.expires_at > now():
+            return record
+    return None
 
 
 def presenter(request: Request, db: Session = Depends(get_db)):

@@ -4024,3 +4024,12 @@ main > *,
     break-inside: avoid;
   }
 }
+
+/* Presentation framing keeps the normal application layout and offers a secure exit. */
+.embed-notice { display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; padding:12px 16px; margin-bottom:18px; border:1px solid #dcd6fb; border-radius:12px; background:#f3f0ff; font-size:13px; min-width:0; }
+.embed-notice > div { flex:1 1 260px; display:grid; gap:4px; min-width:0; }
+.embed-notice a { white-space:normal; }
+.embed-notice details { flex-basis:100%; min-width:0; }
+.embed-notice summary { cursor:pointer; padding:8px 0; }
+.embed-notice p { overflow-wrap:anywhere; }
+@media print { .embed-notice { display:none; } }

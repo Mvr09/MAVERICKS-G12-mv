@@ -7,6 +7,7 @@ export async function api<T = any>(
   options: RequestInit = {},
 ): Promise<T> {
   const headers = new Headers(options.headers);
+  if (window.self !== window.top) headers.set("X-Radar-Embed", "1");
   if (options.body && !(options.body instanceof FormData))
     headers.set("Content-Type", "application/json");
   if (options.method && options.method !== "GET")

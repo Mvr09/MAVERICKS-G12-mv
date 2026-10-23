@@ -17,6 +17,7 @@ from app.rss_questions import VERSION as RSS_QUESTION_VERSION
 from app.profiles import DEFAULT_PROFILE, PUBLIC_EXERCISE_PROFILES, LEGACY_PROFILE
 from app.models import *
 from app.auth import presenter, identity, login, codec
+from app.embedding import apply_framing_policy, set_session_cookies, clear_session_cookies
 from app.importer import import_excel, export_batch, digest
 from app.event_tags import event_tag
 from app.views import (
@@ -35,10 +36,7 @@ async def security(request, call_next):
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["Content-Security-Policy"] = (
-        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
-    )
+    apply_framing_policy(request, response)
     if request.url.path.startswith("/api/"):
         response.headers["Cache-Control"] = "no-store"
     return response
@@ -155,14 +153,7 @@ def start_session(
     ) != settings.app_base_url.rstrip("/"):
         raise HTTPException(403, "Origen no permitido")
     record = login(request, db, body.password)
-    response.set_cookie(
-        "radar_session",
-        codec().dumps(record.id),
-        httponly=True,
-        secure=settings.app_base_url.startswith("https://"),
-        samesite="lax",
-        max_age=28800,
-    )
+    set_session_cookies(response, codec().dumps(record.id), embedded=request.headers.get("x-radar-embed") == "1")
     return {"presenter": True, "csrf": record.csrf}
 
 
@@ -178,7 +169,7 @@ def logout(
 ):
     db.delete(record)
     db.commit()
-    response.delete_cookie("radar_session")
+    clear_session_cookies(response)
     return {"presenter": False}
 
 

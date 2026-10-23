@@ -1,0 +1,10 @@
+<!doctype html><meta charset="utf-8"><title>MOCK presentation parent — iframe contract</title>
+<style>body{margin:0}iframe{width:100%;height:850px;border:0}button{min-height:44px}</style>
+<button id="launch">Abrir aplicación</button><button id="retry">Reintentar</button><p id="status" role="status">Sin iniciar</p>
+<iframe id="app" title="Radar de pruebas" allow="autoplay; fullscreen; clipboard-write" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads allow-popups allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"></iframe>
+<script>
+const origin='https://mavericks-g12-mv-production.up.railway.app',frame=document.querySelector('iframe'),status=document.querySelector('#status');let id='',timer;
+function start(){clearInterval(timer);id=crypto.randomUUID();status.textContent='Cargando; load no confirma disponibilidad';frame.src=origin+'/?context=exercise';timer=setInterval(()=>frame.contentWindow.postMessage({type:'helixa:hello',version:1,requestId:id},origin),200)}
+document.querySelector('#launch').onclick=start;document.querySelector('#retry').onclick=start;
+addEventListener('message',e=>{const d=e.data;if(e.origin!==origin||e.source!==frame.contentWindow||!d||d.type!=='radar:ready'||d.version!==1||d.requestId!==id)return;clearInterval(timer);status.textContent='App lista'});
+</script>

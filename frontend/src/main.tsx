@@ -1,3 +1,4 @@
+import { EmbedIntegration } from "./EmbedIntegration";
 import { LoadingBlock, AsyncButton, downloadFile } from "./OperationFeedback";
 import { PendingAnalysis } from "./PendingAnalysis";
 import { RssTriage } from "./RssTriage";
@@ -275,6 +276,7 @@ function App() {
     [alerts, setAlerts] = useState<Alert[]>([]),
     [config, setConfig] = useState<any>({}),
     [presenter, setPresenter] = useState(false),
+    [sessionChecked, setSessionChecked] = useState(false),
     [loginOpen, setLoginOpen] = useState(false),
     [password, setPassword] = useState(""),
     [message, setMessage] = useState(""),
@@ -332,6 +334,7 @@ function App() {
       .then((s) => {
         setPresenter(s.presenter);
         setCsrf(s.csrf || "");
+        setSessionChecked(true);
       })
       .catch((e) => setError(e.message));
     api("/config")
@@ -624,6 +627,16 @@ function App() {
           </div>
         </header>
         <main id="contenido">
+          <EmbedIntegration
+            ready={!!overview && !!config.model && sessionChecked}
+            presenter={presenter}
+            context={context}
+            onSession={(s) => {
+              setPresenter(s.presenter);
+              setCsrf(s.csrf || "");
+              setSessionChecked(true);
+            }}
+          />
           <div className="page-heading">
             <div>
               <div className="eyebrow">INTELIGENCIA DE SUMINISTRO</div>
@@ -689,10 +702,14 @@ function App() {
                 settled = 0;
               const reveal = () => {
                 const desk = document.getElementById("attention-title");
-                const off = desk ? Math.abs(desk.getBoundingClientRect().top - 16) : 999;
+                const off = desk
+                  ? Math.abs(desk.getBoundingClientRect().top - 16)
+                  : 999;
                 if (desk && off > 8) {
                   settled = 0;
-                  window.scrollBy({ top: desk.getBoundingClientRect().top - 16 });
+                  window.scrollBy({
+                    top: desk.getBoundingClientRect().top - 16,
+                  });
                 } else if (desk) settled++;
                 if (settled < 2 && ++tries < 12) window.setTimeout(reveal, 250);
               };
@@ -1494,8 +1511,14 @@ function App() {
                   method: "POST",
                   body: JSON.stringify({ password }),
                 });
-                setCsrf(s.csrf);
+                const verified = await api("/session");
+                if (!verified.presenter)
+                  throw new Error(
+                    "El navegador no ha conservado la sesión. Usa «Conceder acceso a mi sesión» o «Abrir app en una ventana».",
+                  );
+                setCsrf(verified.csrf);
                 setPresenter(true);
+                setSessionChecked(true);
                 setLoginOpen(false);
                 setPassword("");
                 setError("");
@@ -2680,7 +2703,12 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
     try {
       const d = await api("/drafts", {
         method: "POST",
-        body: JSON.stringify({ supplier_id: id, incident_id: iid, kind, assist }),
+        body: JSON.stringify({
+          supplier_id: id,
+          incident_id: iid,
+          kind,
+          assist,
+        }),
       });
       setDraftMessage(
         d.llm_error ||
@@ -2746,7 +2774,11 @@ function SupplierDetail({ context, presenter, action, refresh }: any) {
             return (
               <>
                 <h3>{planned ? "Impacto" : "Impacto y siguiente acción"}</h3>
-                <ProcurementBrief supplier={s} context={context} hideNext={planned} />
+                <ProcurementBrief
+                  supplier={s}
+                  context={context}
+                  hideNext={planned}
+                />
               </>
             );
           })()}

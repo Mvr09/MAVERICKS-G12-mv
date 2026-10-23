@@ -1,3 +1,14 @@
+# Integración iframe · 23 de octubre de 2026 · en curso
+
+- Sincronizado main de ba91a3f a86edd28 (mismo SHA observado enRailway); cambios ajenos eninformes/entregables conservados. Sitio independiente9,source616b0ec,ownerpublic,checkout.runtime/helixa-presentation mediantehelperSites.
+- Causa confirmada porGET: middlewareFastAPI fijaXFODENY yCSPframe-ancestorsnone. SesiónactualLax;APIOrigin+CSRFestrictos. Sinframe-busting.
+- Implementado permisoHTMLself+origenexactohttps://helixa-signal-to-action.jvaswiss-9277.chatgpt.site, APIJSONmantieneDENY/none ysinCORS. CookiesHTTPSNone/Secure/HttpOnly +cookieembebidaPartitioned; identificaciónylogoutcubrenambas. UIverifica persistenciaantesdeautenticar yofreceStorageAccesscongesto/ventanaindependiente.
+- Handshake v1 hello→ready validandoorigen/ventana/nonce;readysolotrasdatos+config+sondeosesión,noeventload. Sitescontroles/permisoiframe/error/reintento/retornoimplementados;EMBED_ENABLEDsiguefalsehastaRailwaypreparado.
+-5testsbackendconFakeSessions y10E2E (Chrome/Firefox390/1440) pasan: cookiesparticionadas,recarga/logout,CSRF,padrenoautorizado,load/messageforjado yfallback. Build/paquete143archivossinsecretos/originales/diffcheckpasan. Pendiente:publicarbackend,verificarcabeceras/revisión,activar/publicarSite yrecorridorealconnuevosborradores/observaciónQA/exportación/audio técnico.
+-0JEV/0Claude;modelo/métricas/RSSperiódicoinmutados. No administracióndeRailway. Revisiónautomáticadepermisosagotóplazo enprimerfetch/conversión;reintentosacotadosautorizadosfuncionaron,sinpedircredenciales.
+
+## Estado previo conservado
+
 # Actualización · 21 de octubre de 2026
 
 - Publicado **21c92ef**: mapa de exposición en el Resumen (proveedores por banda de prioridad, anillo de urgencia, tamaño = gasto anual, eventos abiertos). Comprobado contra la API real: 40 puntos, 14 urgentes, 19 eventos, sin errores JS. **ba91a3f** (panel de 4 KPIs de exposición de compras) está en `main` y compila, pero no está desplegado: Railway tenía los deploys en pausa y sigue sirviendo 21c92ef.
