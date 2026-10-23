@@ -1339,7 +1339,7 @@ dialog header {
     font-size: 12px;
   }
   main {
-    padding: 24px 16px 100px;
+    padding: 24px 16px calc(100px + env(safe-area-inset-bottom));
   }
   .sound-bar {
     padding: 12px;
@@ -1525,7 +1525,9 @@ dialog header {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 72px;
+    /* The iPhone safe area is added on top of the 72px bar, never taken from it:
+       when Safari compacts its toolbar the inset appears and squeezed the icons. */
+    height: calc(72px + env(safe-area-inset-bottom));
     background: #fff;
     border-top: 1px solid #e0e5ef;
     z-index: 30;
@@ -1559,7 +1561,7 @@ dialog header {
   .more-menu {
     display: flex;
     position: fixed;
-    bottom: 80px;
+    bottom: calc(80px + env(safe-area-inset-bottom));
     right: 15px;
     z-index: 31;
     background: white;
@@ -2382,6 +2384,10 @@ dialog header {
     align-items: start;
     flex-direction: column;
     gap: 12px;
+  }
+  /* Stacked heading: the shared 220px flex-basis would become height here. */
+  .attention-desk > .section-heading > div {
+    flex: 0 0 auto;
   }
   .attention-card {
     display: flex;
